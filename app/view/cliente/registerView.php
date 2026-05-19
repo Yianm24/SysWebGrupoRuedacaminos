@@ -78,3 +78,4 @@
         </div>
     </div>
 </div>
+<script src="assets/js/cliente.js"></script>
