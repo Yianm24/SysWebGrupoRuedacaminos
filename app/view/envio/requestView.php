@@ -141,23 +141,28 @@
                     <div class="row mb-3">
                         
                         <div class="col-md-3">
-                            <label for="alto" class="form-label">Alto (cm)</label>
+                            <label for="alto" class="form-label">Alto Total (cm)</label>
                             <input type="number" step="0.01" class="form-control" id="alto" name="alto" required>
                         </div>
                         <div class="col-md-3">
-                            <label for="ancho" class="form-label">Ancho (cm)</label>
+                            <label for="ancho" class="form-label">Ancho Total(cm)</label>
                             <input type="number" step="0.01" class="form-control" id="ancho" name="ancho" required>
                         </div>
                         <div class="col-md-3">
-                            <label for="largo" class="form-label">Largo (cm)</label>
+                            <label for="largo" class="form-label">Largo Total(cm)</label>
                             <input type="number" step="0.01" class="form-control" id="largo" name="largo" required>
                         </div>
                         <div class="col-md-3">
-                            <label for="alto" class="form-label">holi</label>
+                            <label for="alto" class="form-label">Peso</label>
                             <div class=" input-group">
-                            <button class="btn btn-outline-secondary" type="button" id="button-addon1">Button</button>
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon1">Sumar</button>
                             <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
                             </div>
+                            </br>
+                            <button class="btn btn-secondary" type="button" id="button-addon1">Reset</button>
+                            <label class="form-label">Peso total aqui Kg</label>
+
+                            
                         </div>
                     </div>
                     
@@ -172,22 +177,6 @@
                     <h5 class="mb-0">Datos del Envío</h5>
                 </div>
                 <div class="card-body">
-
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="fecha_solicitud" class="form-label">Fecha de Solicitud</label>
-                            <input type="date" class="form-control" id="fecha_solicitud" name="fecha_solicitud" value="<?= date('Y-m-d') ?>" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="monto_base" class="form-label">Monto Base ($)</label>
-                            <input type="number" step="0.01" class="form-control" id="monto_base" name="monto_base" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="kilometraje" class="form-label">Kilometraje Estimado</label>
-                            <input type="number" step="0.1" class="form-control" id="kilometraje" name="kilometraje" required>
-                        </div>
-                    </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="ubicacion" class="form-label">Ubicación despacho</label>
@@ -210,6 +199,84 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="vehiculo" class="form-label">Vehiculo</label>
+                            <select class="form-select" id="vehiculo" name="vehiculo" required>
+                                <option value="" selected disabled>Seleccionar vehiculo...</option>
+                                <option value="1">Fiat AD543ED</option>
+                                <option value="2">Mitsubishi A17BN1E</option>
+                                <option value="3">Renault Canguro A19BQ78</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="chofer" class="form-label">Chofer</label>
+                            <select class="form-select" id="Chofer" name="Chofer" required>
+                                <option value="" selected disabled>Seleccionar chofer...</option>
+                                <option value="1">Ruben Perez</option>
+                                <option value="2">Alimir Perez</option>
+                                <option value="3">Alison Perez</option>
+                                
+                            </select>
+                        </div>
+                        <label for="kilometraje" class="form-label">Kilometraje Estimado</label>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-3 md-4">
+                            <label for="fecha_solicitud" class="form-label">Fecha de Envio</label>
+                            <input type="date" class="form-control" id="fecha_solicitud" name="fecha_solicitud" value="<?= date('Y-m-d') ?>" readonly>
+                        </div>
+                        <div class="col-3 md-4">
+                            <label for="kilometraje" class="form-label">Cliente Pago:</label>
+                            <select class="form-select" id="Chofer" name="Chofer" required>
+                                <option value="1">50%</option>
+                                <option value="2">+50%</option>
+                                <option value="3">Monto Completo</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-6 md-4 ">
+                            <label for="pago_envio" class="form-label">MetodoPago:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Pago Incial" aria-label="Dollar amount (with dot and two decimal places)">
+                                <span class="input-group-text">Monto Total:</span>
+                                <span class="input-group-text">Bs</span>
+                                <span class="input-group-text">0.00</span>
+                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">0.00</span>
+                            </div>
+                            </br>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="metodos" class="form-label">Metodo de Pago</label>
+                                <select class="form-select" id="metodos" name="metodos" required>
+                                    <option value="" selected disabled>Metodos...</option>
+                                    <option value="1">Pago Movil</option>
+                                    <option value="2">Transferencia</option>
+                                    <option value="3">Divisa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="chofer" class="form-label">Cuenta Destino</label>
+                                <select class="form-select" id="Chofer" name="Chofer" required>
+                                    <option value="" selected disabled>Seleccionar banco...</option>
+                                    <option value="1">Banesco</option>
+                                    <option value="2">Venezuela</option>
+                                    
+                                </select>
+                            </div>
+
+                            <div class="col-12 ">
+                            <label for="alto" class="form-label">Referencia</label>
+                            <input type="number" step="0.01" class="form-control" id="alto" name="alto" required>
+                        </div>
+                    </div>
+
+                        </div>
+                    </div>
+                    
+                    
 
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary"><i class="bi bi-send-check"></i> Registrar Envío</button>
