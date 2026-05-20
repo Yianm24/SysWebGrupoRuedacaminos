@@ -180,7 +180,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="ubicacion" class="form-label">Ubicación despacho</label>
-                            <select class="form-select" id="ubicacion" name="ubicacion" required>
+                            <select class="form-select" id="ubicacion" name="ubicacion_select" required>
                                 <option value="" selected disabled>Seleccionar Ubicación...</option>
                                 <option value="1">Caracas</option>
                                 <option value="2">Valencia</option>
@@ -190,7 +190,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="tipo_punto" class="form-label">Ubicación destino</label>
-                            <select class="form-select" id="ubicacion" name="ubicacion" required>
+                            <select class="form-select" id="ubicacion" name="ubicacion_select" required>
                                 <option value="" selected disabled>Seleccionar Ubicación...</option>
                                 <option value="1">Caracas</option>
                                 <option value="2">Valencia</option>
@@ -202,7 +202,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="vehiculo" class="form-label">Vehiculo</label>
-                            <select class="form-select" id="vehiculo" name="vehiculo" required>
+                            <select class="form-select" id="vehiculo" name="vehiculo_select" required>
                                 <option value="" selected disabled>Seleccionar vehiculo...</option>
                                 <option value="1">Fiat AD543ED</option>
                                 <option value="2">Mitsubishi A17BN1E</option>
@@ -211,7 +211,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="chofer" class="form-label">Chofer</label>
-                            <select class="form-select" id="Chofer" name="Chofer" required>
+                            <select class="form-select" id="chofer" name="chofer_select" required>
                                 <option value="" selected disabled>Seleccionar chofer...</option>
                                 <option value="1">Ruben Perez</option>
                                 <option value="2">Alimir Perez</option>
@@ -237,7 +237,7 @@
                             </select>
                         </div>
                         <div class="col-6 md-4 ">
-                            <label for="pago_envio" class="form-label">MetodoPago:</label>
+                            <label for="pago_envio" class="form-label">Pago del Envio:</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Pago Incial" aria-label="Dollar amount (with dot and two decimal places)">
                                 <span class="input-group-text">Monto Total:</span>
