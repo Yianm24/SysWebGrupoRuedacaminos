@@ -29,43 +29,32 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+58 414 1234567" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="correo" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@correo.com" required>
-                            </div>
-                        </div>
-
                         <!-- Campos de Persona Natural -->
                         <div id="remitente_natural-fields">
-                            <div class="row mb-3">
-                                <div class="col-4">
-                                    <label for="nombre" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre">
-                                </div>
-                                <div class="col-4">
-                                    <label for="apellido" class="form-label">Apellido</label>
-                                    <input type="text" class="form-control" id="apellido" name="apellido">
-                                </div>
-                                <div class="col-4">
+                            <div class="row mb-3 ">
+                                <div class="col-12 mb-3">
                                     <label for="cedula" class="form-label">Cédula</label>
                                     <input type="text" class="form-control" id="cedula" name="cedula">
                                 </div>
+                                
+                                <div class="col-12 input-group ">
+                                    <span class="input-group-text">Nombre Completo</span>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre:">
+                                    <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Apellido:">
+                                </div>
+                                
+                                
                             </div>
                         </div>
 
                         <!-- Campos de Persona Jurídica -->
                         <div id="remitente_juridico-fields" style="display: none;">
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label for="razon_social" class="form-label">Razón Social</label>
                                     <input type="text" class="form-control" id="razon_social" name="razon_social">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label for="rif" class="form-label">RIF</label>
                                     <input type="text" class="form-control" id="rif" name="rif">
                                 </div>
@@ -91,21 +80,12 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+58 414 1234567" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="correo" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@correo.com" required>
-                            </div>
-                        </div>
-
-                        <!-- Campos de Persona Natural -->
                         <div id="destinatario_natural-fields">
                             <div class="row mb-3">
+                                <div class="col-4">
+                                    <label for="cedula" class="form-label">Cédula</label>
+                                    <input type="text" class="form-control" id="cedula" name="cedula">
+                                </div>
                                 <div class="col-4">
                                     <label for="nombre" class="form-label">Nombre</label>
                                     <input type="text" class="form-control" id="nombre" name="nombre">
@@ -114,10 +94,7 @@
                                     <label for="apellido" class="form-label">Apellido</label>
                                     <input type="text" class="form-control" id="apellido" name="apellido">
                                 </div>
-                                <div class="col-4">
-                                    <label for="cedula" class="form-label">Cédula</label>
-                                    <input type="text" class="form-control" id="cedula" name="cedula">
-                                </div>
+                                
                             </div>
                         </div>
 
@@ -134,6 +111,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+58 414 1234567" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="correo" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@correo.com" required>
+                            </div>
+                        </div>
+
+                        <!-- Campos de Persona Natural -->
+                        
                 </div>
 
                 </div>
@@ -149,10 +139,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label for="peso" class="form-label">Peso (Kg)</label>
-                            <input type="number" step="0.01" class="form-control" id="peso" name="peso" required>
-                        </div>
+                        
                         <div class="col-md-3">
                             <label for="alto" class="form-label">Alto (cm)</label>
                             <input type="number" step="0.01" class="form-control" id="alto" name="alto" required>
@@ -165,8 +152,15 @@
                             <label for="largo" class="form-label">Largo (cm)</label>
                             <input type="number" step="0.01" class="form-control" id="largo" name="largo" required>
                         </div>
+                        <div class="col-md-3">
+                            <label for="alto" class="form-label">holi</label>
+                            <div class=" input-group">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon1">Button</button>
+                            <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                            </div>
+                        </div>
                     </div>
-
+                    
                     <div class="mb-4">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="articulos_fragil" name="articulos_fragil">
