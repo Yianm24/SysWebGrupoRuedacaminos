@@ -179,16 +179,6 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="ubicacion" class="form-label">Ubicación despacho</label>
-                            <select class="form-select" id="ubicacion" name="ubicacion_select" required>
-                                <option value="" selected disabled>Seleccionar Ubicación...</option>
-                                <option value="1">Caracas</option>
-                                <option value="2">Valencia</option>
-                                <option value="3">Maracaibo</option>
-                                <option value="4">Barquisimeto</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
                             <label for="tipo_punto" class="form-label">Ubicación destino</label>
                             <select class="form-select" id="ubicacion" name="ubicacion_select" required>
                                 <option value="" selected disabled>Seleccionar Ubicación...</option>
@@ -198,7 +188,19 @@
                                 <option value="4">Barquisimeto</option>
                             </select>
                         </div>
+                        <div class="col-md-6">
+                            <label for="ubicacion" class="form-label">Ubicación despacho</label>
+                            <select class="form-select" id="ubicacion" name="ubicacion_select" required>
+                                <option value="" selected disabled>Seleccionar Ubicación...</option>
+                                <option value="1">Caracas</option>
+                                <option value="2">Valencia</option>
+                                <option value="3">Maracaibo</option>
+                                <option value="4">Barquisimeto</option>
+                            </select>
+                        </div>
+                        
                     </div>
+                    <label for="kilometraje" class="form-label">Kilometraje Estimado</label>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="vehiculo" class="form-label">Vehiculo</label>
@@ -219,7 +221,7 @@
                                 
                             </select>
                         </div>
-                        <label for="kilometraje" class="form-label">Kilometraje Estimado</label>
+                        
                     </div>
 
                     <div class="row mb-3">

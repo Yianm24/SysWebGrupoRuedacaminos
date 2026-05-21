@@ -14,95 +14,68 @@
                         <div class="card-body">
                             <form action="#" method="POST">
                     
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="placa" class="form-label">Placa</label>
-                            <input type="text" class="form-control" id="placa" name="placa" placeholder="Ej: ABC12D" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="color" class="form-label">Color:</label>
-                            <input type="text" class="form-control" id="color" name="color"  required>
-                        </div>
-                       
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="categoria_vehiculo" class="form-label">Categoria del Vehiculo</label>
-                            <select class="form-select" id="categoria_vehiculo" name="categoria_vehiculo" required>
-                                <option value="pequeño">Camioneta pequeña</option>
-                                <option value="grande">Camioneta grande</option>
-                                <option value="gigante">Camion</option>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="placa" class="form-label">Placa</label>
+                                        <input type="text" class="form-control" id="placa" name="placa" placeholder="Ej: ABC12D" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="color" class="form-label">Color:</label>
+                                        <input type="text" class="form-control" id="color" name="color"  required>
+                                    </div>
+                                
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6">
+                        
+                            <label for="tipo_punto" class="form-label">Ubicación destino</label>
+                            <select class="form-select" id="ubicacion" name="ubicacion_select" required>
+                                <option value="" selected disabled>Seleccionar Ubicación...</option>
+                                <option value="1">Caracas</option>
+                                <option value="2">Valencia</option>
+                                <option value="3">Maracaibo</option>
+                                <option value="4">Barquisimeto</option>
                             </select>
                         </div>
-                         <div class="col-md-6">
-                            <label for="estado_operativo" class="form-label">Estado Operativo</label>
-                            <select class="form-select" id="estado_operativo" name="estado_operativo" required>
-                                <option value="disponible">Disponible</option>
-                                <option value="en_ruta">En Ruta</option>
-                                <option value="en_taller">En Taller</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                         <div class="col-md-12">
-                            <div class="input-group ">
-                            <select class="form-select" id="marca">
-                                <option selected>Marca</option>
-                                <option value="1">Fiat</option>
-                                <option value="2">Mitsubishi</option>
-                                <option value="3">Renoult</option>
-                            </select>
-                            <select class="form-select" id="modelo">
-                                <option selected>Modelo</option>
-                                <option value="1">Fiesta</option>
-                                <option value="2">Canguro</option>
-                                <option value="3">Fiorino</option>
-                            </select>
-                            <input type="text" class="form-control" id="year" name="year" placeholder="Año:" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="estado_operativo" class="form-label">Estado Operativo</label>
+                                        <select class="form-select" id="estado_operativo" name="estado_operativo" required>
+                                            <option value="disponible">Disponible</option>
+                                            <option value="en_ruta">En Ruta</option>
+                                            <option value="en_taller">En Taller</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="input-group ">
+                                        <select class="form-select" id="marca">
+                                            <option selected>Marca</option>
+                                            <option value="1">Fiat</option>
+                                            <option value="2">Mitsubishi</option>
+                                            <option value="3">Renoult</option>
+                                        </select>
+                                        <select class="form-select" id="modelo">
+                                            <option selected>Modelo</option>
+                                            <option value="1">Fiesta</option>
+                                            <option value="2">Canguro</option>
+                                            <option value="3">Fiorino</option>
+                                        </select>
+                                        <input type="text" class="form-control" id="year" name="year" placeholder="Año:" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary"><i class="bi bi-wrench-adjustable"></i> Guardar Registro</button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="card-header bg-white mt-2 border-top-0">
-                <h5 class="mb-0">Orden de Mantenimiento</h5>
-            </div>
-            <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="repuesto" class="form-label">Repuesto Utilizado</label>
-                            <select class="form-select" id="repuesto" name="repuesto">
-                                <option value="" selected disabled>Seleccionar Repuesto...</option>
-                                <option value="caucho">Caucho 750-16</option>
-                                <option value="aceite">Aceite de Motor 15W40</option>
-                                <option value="pastillas">Pastillas de Freno</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="cantidad" class="form-label">Cantidad</label>
-                            <input type="number" min="1" class="form-control" id="cantidad" name="cantidad">
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label for="costo" class="form-label">Costo de Reparación ($)</label>
-                            <input type="number" step="0.01" class="form-control" id="costo" name="costo">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="fecha_servicio" class="form-label">Fecha de Servicio</label>
-                            <input type="date" class="form-control" id="fecha_servicio" name="fecha_servicio" value="<?= date('Y-m-d') ?>">
-                        </div>
-                    </div>
-
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-wrench-adjustable"></i> Guardar Registro</button>
-                    </div>
-                </form>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            </div>
+        </div>
 
         <div class="col-xl-7 col-lg-6 mb-4">
             

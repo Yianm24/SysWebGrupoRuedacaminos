@@ -33,11 +33,11 @@
             <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
                 <i class="bi bi-person-fill me-2"></i> Empleado
             </a>
+            <a href="?url=calculadora" class="list-group-item list-group-item-action <?= $current_url == 'calculadora' ? 'active' : '' ?>">
+                <i class="bi bi-calculator me-2"></i> Calculadora
+            </a>
             <a href="?url=envio" class="list-group-item list-group-item-action <?= $current_url == 'envio' ? 'active' : '' ?>">
                 <i class="bi bi-box-seam me-2"></i> Envíos
-            </a>
-            <a href="?url=logistica" class="list-group-item list-group-item-action <?= $current_url == 'logistica' ? 'active' : '' ?>">
-                <i class="bi bi-map-fill me-2"></i> Logística
             </a>
             <a href="?url=pago" class="list-group-item list-group-item-action <?= $current_url == 'pago' ? 'active' : '' ?>">
                 <i class="bi bi-wallet2 me-2"></i> Pagos
