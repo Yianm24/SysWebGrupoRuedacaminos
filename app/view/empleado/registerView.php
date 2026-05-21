@@ -78,7 +78,7 @@
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar cliente...">
+                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar Empleado...">
                     </div>
                 </div>
 
@@ -91,6 +91,7 @@
                                     <th>NOMBRE</th>
                                     <th>CONTACTO</th>
                                     <th>CORREO ELECTRÓNICO</th>
+                                    <th>CARGO</th>
                                     <th class="pe-4 text-center">ACCIONES</th>
                                 </tr>
                             </thead>
@@ -102,6 +103,7 @@
                                     </td>
                                     <td class="text-secondary">0414-5551234</td>
                                     <td class="text-secondary">carlos.mendoza@email.com</td>
+                                    <td class="text-secondary">Administrador</td>
                                     <td class="pe-4 text-center">
                                         <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"><i class="bi bi-pencil"></i></a>
                                         <a href="#" class="text-secondary text-decoration-none" title="Eliminar"><i class="bi bi-trash"></i></a>
@@ -114,6 +116,7 @@
                                     </td>
                                     <td class="text-secondary">0424-9876543</td>
                                     <td class="text-secondary">mrodriguez22@email.com</td>
+                                    <td class="text-secondary">Administrador</td>
                                     <td class="pe-4 text-center">
                                         <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"><i class="bi bi-pencil"></i></a>
                                         <a href="#" class="text-secondary text-decoration-none" title="Eliminar"><i class="bi bi-trash"></i></a>
@@ -126,6 +129,7 @@
                                     </td>
                                     <td class="text-secondary">0412-3334455</td>
                                     <td class="text-secondary">jose.perez.contacto@email.com</td>
+                                    <td class="text-secondary">Chofer</td>
                                     <td class="pe-4 text-center">
                                         <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"><i class="bi bi-pencil"></i></a>
                                         <a href="#" class="text-secondary text-decoration-none" title="Eliminar"><i class="bi bi-trash"></i></a>
@@ -138,6 +142,7 @@
                                     </td>
                                     <td class="text-secondary">0416-1112233</td>
                                     <td class="text-secondary">ana.lucia.g@email.com</td>
+                                    <td class="text-secondary">Recepcionista</td>
                                     <td class="pe-4 text-center">
                                         <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"><i class="bi bi-pencil"></i></a>
                                         <a href="#" class="text-secondary text-decoration-none" title="Eliminar"><i class="bi bi-trash"></i></a>
