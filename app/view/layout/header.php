@@ -38,9 +38,6 @@
             <a href="?url=unidadesmedida" class="list-group-item list-group-item-action <?= $current_url == 'unidadesmedida' ? 'active' : '' ?>">
                 <i class="bi bi-rulers me-2"></i> Unidad de Medida
             </a>
-            <!-- <a href="?url=calculadora" class="list-group-item list-group-item-action <?= $current_url == 'calculadora' ? 'active' : '' ?>">
-                <i class="bi bi-calculator me-2"></i> Cotizar Envio
-            </a>-->
             <a href="?url=envio" class="list-group-item list-group-item-action <?= $current_url == 'envio' ? 'active' : '' ?>">
                 <i class="bi bi-box-seam me-2"></i> Envíos
             </a>
@@ -68,9 +65,7 @@
             <a href="?url=reportes" class="list-group-item list-group-item-action <?= $current_url == 'reportes' ? 'active' : '' ?>">
                 <i class="bi bi-file-earmark-bar-graph me-2"></i> Generar Reportes
             </a>
-            <!-- <a href="?url=seguimiento" class="list-group-item list-group-item-action <?= $current_url == 'seguimiento' ? 'active' : '' ?>">
-                <i class="bi bi-geo-alt-fill me-2"></i> Seguimiento
-            </a> -->
+            
         </div>
     </div>
     <!-- /#sidebar-wrapper -->
