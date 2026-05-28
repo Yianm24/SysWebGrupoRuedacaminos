@@ -33,5 +33,3 @@
         </div>
     </div>
 </main>
-
-<script src="assets/js/empleado.js"></script>

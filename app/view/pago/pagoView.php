@@ -1,11 +1,6 @@
 <main class="container-fluid py-5 px-4">
     <div class="row">
         <div class="col-12 mb-4">
-            <header class="d-flex justify-content-end mb-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerFlota">
-                    <i class="bi bi-person-plus"></i> Registrar Vehículo
-                </button> 
-            </header>
             
             <?php require 'componentes/modalRegistrar.php'; ?>
 
@@ -16,7 +11,7 @@
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar Vehículo...">
+                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar Pago...">
                     </div>
                 </div>
 

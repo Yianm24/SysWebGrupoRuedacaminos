@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <h2 class="mb-4 text-primary"><i class="bi bi-wallet2"></i> Gestión de Pagos</h2>
-        
+
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white">
                 <h5 class="mb-0">Registro de Pago o Adelanto</h5>
@@ -10,14 +10,14 @@
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle-fill"></i> Recuerde que se requiere un <strong>50% de adelanto</strong> para proceder con el envío.
                 </div>
-                
-                    <div class="input-group" >
-                        <span class="input-group-text bg-primary border-end-0 text-muted">
-                            <i class="bi bi-search" style="color: white"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar cliente...">
-                        
-                    </div>
+
+                <div class="input-group">
+                    <span class="input-group-text bg-primary border-end-0 text-muted">
+                        <i class="bi bi-search" style="color: white"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar cliente...">
+
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -29,30 +29,30 @@
                     </thead>
                     <tbody>
                         <tr>
-                        <th scope="row">15432987</th>
-                        <td>Carlos Mendoza</td>
-                        <td>15caju2052026</td>
-                        <td>20/05/2026</td>
+                            <th scope="row">15432987</th>
+                            <td>Carlos Mendoza</td>
+                            <td>15caju2052026</td>
+                            <td>20/05/2026</td>
                         </tr>
                     </tbody>
                 </table>
                 <form action="#" method="POST">
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-6 ">
-                            
+
                             <label for="monto_abonado" class="form-label">Monto Abonado:</label>
-                            <div class="input-group" id="monto_abonado" >
+                            <div class="input-group" id="monto_abonado">
                                 <input type="text" class="form-control" placeholder="" aria-label="Dollar amount (with dot and two decimal places)">
                                 <button class="btn btn-outline-secondary" type="button" id="button-addon1">Button</button>
                             </div>
-                            
-                                <div class="input-group col-12" id="monto_abonado" >
-                                    <span class="input-group-text">Restante:</span>
-                                    <span class="input-group-text">Bs</span>
-                                    <span class="input-group-text">0.00</span>
-                                    <span class="input-group-text">$</span>
-                                    <span class="input-group-text">0.00</span>
+
+                            <div class="input-group col-12" id="monto_abonado">
+                                <span class="input-group-text">Restante:</span>
+                                <span class="input-group-text">Bs</span>
+                                <span class="input-group-text">0.00</span>
+                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">0.00</span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -62,25 +62,25 @@
                     </div>
 
                     <div class="row mb-4">
-                        
+
                         <div class="col-md-4">
                             <label for="metodo_pago" class="form-label">Método de Pago</label>
                             <select class="form-select" id="metodos" name="metodos" required>
-                                    <option value="" selected disabled>Seleccionar...</option>
-                                    <option value="1">Pago Movil</option>
-                                    <option value="2">Transferencia</option>
-                                    <option value="3">Divisa</option>
-                                </select>
+                                <option value="" selected disabled>Seleccionar...</option>
+                                <option value="1">Pago Movil</option>
+                                <option value="2">Transferencia</option>
+                                <option value="3">Divisa</option>
+                            </select>
                         </div>
                         <div class="col-md-4">
-                                <label for="chofer" class="form-label">Cuenta Destino</label>
-                                <select class="form-select" id="Chofer" name="Chofer" required>
-                                    <option value="" selected disabled>Seleccionar banco...</option>
-                                    <option value="1">Banesco</option>
-                                    <option value="2">Venezuela</option>
-                                    
-                                </select>
-                            </div>
+                            <label for="chofer" class="form-label">Cuenta Destino</label>
+                            <select class="form-select" id="Chofer" name="Chofer" required>
+                                <option value="" selected disabled>Seleccionar banco...</option>
+                                <option value="1">Banesco</option>
+                                <option value="2">Venezuela</option>
+
+                            </select>
+                        </div>
                         <div class="col-md-4">
                             <label for="referencia" class="form-label">Referencia Bancaria</label>
                             <input type="text" class="form-control" id="referencia" name="referencia" placeholder="Ej: 123456789">

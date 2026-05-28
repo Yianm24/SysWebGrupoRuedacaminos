@@ -9,8 +9,8 @@
             <form action="?url=flota" method="POST" id="formFlota">
                 <div class="modal-body">
 
-                    <fieldset>
-                        <div class="row mb-3">
+                    <fieldset class="row mb-3">
+                        
                             <div class="col-md-6">
                                 <label for="placa" class="form-label">Placa</label>
                                 <input type="text" class="form-control" id="placa" name="placa" placeholder="Ej: ABC12D" required>
@@ -20,7 +20,6 @@
                                 <input type="text" class="form-control" id="color" name="color" required>
                             </div>
 
-                        </div>
                     </fieldset>
 
                     <fieldset>
