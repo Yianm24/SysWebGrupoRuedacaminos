@@ -3,11 +3,11 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light table-header-custom">
                 <tr>
-                    <th class="ps-4">CÉDULA/DOCUMENTO</th>
-                    <th>NOMBRE</th>
-                    <th>CONTACTO</th>
-                    <th>CORREO ELECTRÓNICO</th>
-                    <th class="text-center">TIPO PERSONA</th>
+                    <th class="ps-4">CODIGO</th>
+                    <th>REMITENTE</th>
+                    <th>DESTINO</th>
+                    <th>FECHA</th>
+                    <th class="text-center">VEHICULO ASIGNADO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
             </thead>
@@ -26,10 +26,10 @@
                         </td>
                         <td class="pe-4 text-center">
                             <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                data-bs-toggle="modal" data-bs-target="#registerCliente">
+                                data-bs-toggle="modal" data-bs-target="#createEnvio">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
+                            <a href="?url=envio&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este envío?');"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
                 <?php //endforeach; ?>
