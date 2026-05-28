@@ -1,69 +1,38 @@
-<div class="container-fluid py-5 px-4">
+<main class="container-fluid py-5 px-4">
     <div class="row">
-        <div class="col-xl-5 col-lg-6 mb-4">
-            <h2 class="mb-4 text-primary"><i class="bi bi-credit-card"></i> Métodos de Pago</h2>
-            <div class="card shadow-sm">
-                <div class="card-header bg-white"><h5 class="mb-0">Registrar Nuevo Método</h5></div>
-                <div class="card-body">
-                    <form action="?url=metodopago" method="POST">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre del Método</label>
-                            <input type="text" class="form-control" name="nombre_metodo" placeholder="Ej: Pago Móvil, Zelle, Transferencia" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-plus-circle"></i> Registrar
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <div class="col-12 mb-4">
+            
+            <header class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-credit-card"></i> Métodos de Pago</h2>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerMetodo">
+                    <i class="bi bi-plus-circle"></i> Registrar Método
+                </button> 
+            </header>
+            
+            <?php require 'componentes/modalRegistrar.php'; ?>
 
-        <div class="col-xl-7 col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-white"><h4 class="mb-0 fw-bold">Métodos Disponibles</h4></div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-4">Nombre del Método</th>
-                                    <th class="text-center pe-4">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="ps-4 fw-medium text-secondary">Pago Móvil</td>
-                                    <td class="text-center pe-4">
-                                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4 fw-medium text-secondary">Zelle</td>
-                                    <td class="text-center pe-4">
-                                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4 fw-medium text-secondary">Transferencia Bancaria</td>
-                                    <td class="text-center pe-4">
-                                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4 fw-medium text-secondary">Efectivo</td>
-                                    <td class="text-center pe-4">
-                                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <section class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fw-bold">Métodos Disponibles</h4>
+                    <div class="input-group" style="max-width: 250px;">
+                        <span class="input-group-text bg-transparent border-end-0 text-muted">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar método...">
                     </div>
                 </div>
-            </div>
+
+                <?php require 'componentes/tabla.php'; ?>
+
+                <footer class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center px-4 py-3">
+                    <span class="text-muted small">Mostrando resultados</span>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm px-3 text-muted" disabled>Anterior</button>
+                        <button class="btn btn-outline-secondary btn-sm px-3 text-muted">Siguiente</button>
+                    </div>
+                </footer>
+            </section>
+            
         </div>
     </div>
-</div>
+</main>
