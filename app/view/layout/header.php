@@ -45,6 +45,9 @@
             <a href="?url=flota" class="list-group-item list-group-item-action <?= $current_url == 'flota' ? 'active' : '' ?>">
                 <i class="bi bi-tools me-2"></i> Flota
             </a>
+            <a href="?url=prueba" class="list-group-item list-group-item-action <?= $current_url == 'prueba' ? 'active' : '' ?>">
+                <i class="bi bi-tools me-2"></i> Prueba
+            </a>
             <!-- <a href="?url=seguimiento" class="list-group-item list-group-item-action <?= $current_url == 'seguimiento' ? 'active' : '' ?>">
                 <i class="bi bi-geo-alt-fill me-2"></i> Seguimiento
             </a> -->

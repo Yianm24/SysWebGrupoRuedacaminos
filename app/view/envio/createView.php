@@ -1,3 +1,4 @@
+<main class="container-fluid py-5 px-4">
 <div class="row justify-content-center">
     <div class="col-md-11">
         <h2 class="mb-4 text-primary"><i class="bi bi-box-seam"></i> Solicitud de Envío y Paquetería</h2>
@@ -288,4 +289,5 @@
     </div>
 </div>
 </div>
+</main>
 <script src="assets\js\cliente.js"></script>
