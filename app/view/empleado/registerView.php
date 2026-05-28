@@ -58,7 +58,34 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="card shadow-sm mt-3 mb-4 border-0 bg-light">
+                                    <div class="card-body py-3">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="darAcceso" onclick="toggleAcceso()">
+                                            <label class="form-check-label fw-bold" for="darAcceso">¿Habilitar acceso al sistema?</label>
+                                        </div>
+                                        
+                                        <div id="camposAcceso" style="display: none;">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Usuario</label>
+                                                    <input type="text" class="form-control" name="usuario">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Password</label>
+                                                    <input type="password" class="form-control" name="password">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Rol</label>
+                                                    <select class="form-select" name="cod_rol">
+                                                        <option value="1">Administrador</option>
+                                                        <option value="2">Recepcionista</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="text-end mt-4">
                                     <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Empleado</button>
                                 </div>
@@ -165,5 +192,11 @@
         </div>
     </div>
 </div>
-
+<script>
+    function toggleAcceso() {
+        const campos = document.getElementById('camposAcceso');
+        const checkbox = document.getElementById('darAcceso');
+        campos.style.display = checkbox.checked ? 'block' : 'none';
+    }
+</script>
 <script src="assets/js/cliente.js"></script>

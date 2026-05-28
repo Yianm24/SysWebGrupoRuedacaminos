@@ -31,10 +31,16 @@
                 <i class="bi bi-people-fill me-2"></i> Clientes
             </a>
             <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
-                <i class="bi bi-person-fill me-2"></i> Empleado
+                <i class="bi bi-person-fill me-2"></i> Empleado/Usuarios
+            </a>
+            <a href="?url=rol" class="list-group-item list-group-item-action <?= $current_url == 'rol' ? 'active' : '' ?>">
+                <i class="bi bi-person-badge me-2"></i> Roles
+            </a>
+            <a href="?url=unidadesmedida" class="list-group-item list-group-item-action <?= $current_url == 'unidadesmedida' ? 'active' : '' ?>">
+                <i class="bi bi-rulers me-2"></i> Unidad de Medida
             </a>
             <a href="?url=calculadora" class="list-group-item list-group-item-action <?= $current_url == 'calculadora' ? 'active' : '' ?>">
-                <i class="bi bi-calculator me-2"></i> Calculadora
+                <i class="bi bi-calculator me-2"></i> Cotizar Envio
             </a>
             <a href="?url=envio" class="list-group-item list-group-item-action <?= $current_url == 'envio' ? 'active' : '' ?>">
                 <i class="bi bi-box-seam me-2"></i> Envíos
@@ -45,8 +51,23 @@
             <a href="?url=pago" class="list-group-item list-group-item-action <?= $current_url == 'pago' ? 'active' : '' ?>">
                 <i class="bi bi-wallet2 me-2"></i> Pagos
             </a>
+            <a href="?url=metodospago" class="list-group-item list-group-item-action <?= $current_url == 'metodospago' ? 'active' : '' ?>">
+                <i class="bi bi-wallet2 me-2"></i> Métodos de Pago
+            </a>
+            <a href="?url=bancos" class="list-group-item list-group-item-action <?= $current_url == 'bancos' ? 'active' : '' ?>">
+                <i class="bi bi-wallet2 me-2"></i> Bancos
+            </a>
+            <a href="?url=moneda" class="list-group-item list-group-item-action <?= $current_url == 'moneda' ? 'active' : '' ?>">
+                <i class="bi bi-currency-dollar me-2"></i> Moneda
+            </a>
+            <a href="?url=cambiomoneda" class="list-group-item list-group-item-action <?= $current_url == 'cambiomoneda' ? 'active' : '' ?>">
+                <i class="bi bi-currency-dollar me-2"></i> Cambio Moneda
+            </a>
             <a href="?url=flota" class="list-group-item list-group-item-action <?= $current_url == 'flota' ? 'active' : '' ?>">
-                <i class="bi bi-tools me-2"></i> Flota
+                <i class="bi bi-tools me-2"></i> Vehículos
+            </a>
+            <a href="?url=reportes" class="list-group-item list-group-item-action <?= $current_url == 'reportes' ? 'active' : '' ?>">
+                <i class="bi bi-file-earmark-bar-graph me-2"></i> Generar Reportes
             </a>
             <!-- <a href="?url=seguimiento" class="list-group-item list-group-item-action <?= $current_url == 'seguimiento' ? 'active' : '' ?>">
                 <i class="bi bi-geo-alt-fill me-2"></i> Seguimiento

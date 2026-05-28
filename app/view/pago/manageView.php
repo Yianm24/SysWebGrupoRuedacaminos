@@ -44,7 +44,7 @@
                             <label for="monto_abonado" class="form-label">Monto Abonado:</label>
                             <div class="input-group" id="monto_abonado" >
                                 <input type="text" class="form-control" placeholder="" aria-label="Dollar amount (with dot and two decimal places)">
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon1">Button</button>
+                                <button class="btn btn-primary" type="button" id="button-addon1">Agregar</button>
                             </div>
                             
                                 <div class="input-group col-12" id="monto_abonado" >
