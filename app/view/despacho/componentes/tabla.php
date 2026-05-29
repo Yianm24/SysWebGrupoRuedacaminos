@@ -3,12 +3,11 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light table-header-custom">
                 <tr>
-                    <th class="ps-4">CÓDIGO ENVIO</th>
-                    <th class="text-center">ESTADO</th>
-                    <th>MONTO TOTAL</th>
-                    <th>ULTIMO ABONO</th>
-                    <th>MONTO RESTANTE</th>
-                    <th class="text-center">AÑADIR PAGO</th>
+                    <th class="ps-4">FECHA ENVIO</th>
+                    <th class="text-center">VEHICULO</th>
+                    <th class="text-center">NUMERO DE ENVIOS</th>
+                    <th class="text-center">ASIGNAR CHOFER</th>
+                    <th class="text-center">GENERAR HOJA DESPACHO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
             </thead>
@@ -20,19 +19,23 @@
                             <span class="fw-medium"></span>
                         </td>
                         <td class="text-secondary"></td>
-                        <td class="text-secondary"></td>
+
                         <td class="text-center">
-                            <span class="badge">
-                            </span>
+                            <select class="form-select" id="metodos" name="metodos" required>
+                                <option value="" selected disabled>Choferes...</option>
+                                <option value="1">Ruben Perez</option>
+                                <option value="2">Carlos Rodriguez</option>
+                                <option value="3">Luis Martinez</option>
+                            </select>
                         </td>
-                        <td class="text-center">
+                         <td class="text-center">
                             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
-                                <i class="bi bi-person-plus"></i> Registrar Pago
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
                             </button>
                         </td>
                         <td class="pe-4 text-center">
                             
-                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Ver Detalles"
+                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Ver Envios"
                                 data-bs-toggle="modal" data-bs-target="#modalDetalles">
                                 <i class="bi bi-eye"></i>
                             </a>

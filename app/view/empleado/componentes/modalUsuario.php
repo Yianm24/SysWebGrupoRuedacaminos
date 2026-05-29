@@ -1,8 +1,8 @@
-<div class="modal fade" id="registerEmpleado" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
+<div class="modal fade" id="createUsuario" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">     
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Empleado</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Usuario</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
  

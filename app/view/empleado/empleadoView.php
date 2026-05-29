@@ -2,9 +2,14 @@
     <div class="row">
         <div class="col-12 mb-4">
             <header class="d-flex justify-content-end mb-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#register">
-                    <i class="bi bi-person-plus"></i> Registrar Empleado
-                </button> 
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#registerEmpleado">
+                        <i class="bi bi-person-plus"></i> Registrar Empleado
+                    </button>
+                    <button type="button"  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUsuario">
+                        <i class="bi bi-person-circle"></i> Crear Usuario
+                    </button>
+                </div>
             </header>
             
             <?php require 'componentes/modalRegistrar.php'; ?>

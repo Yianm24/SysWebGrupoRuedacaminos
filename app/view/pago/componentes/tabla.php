@@ -26,8 +26,8 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
-                                <i class="bi bi-person-plus"></i> Registrar Pago
+                            <button type="button" class="btn btn-outline-secondary" >
+                                <i class="bi bi-wallet2 me-2"></i> Registrar Pago
                             </button>
                         </td>
                         <td class="pe-4 text-center">
