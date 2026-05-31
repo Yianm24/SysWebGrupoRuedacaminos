@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
             tipoPersona_remitente.forEach(input => {
                 input.addEventListener('change', function() {
                     if(this.value === 'remitente_natural') {
+                        console.log('Remitente Natural seleccionado');
                         remitente_natural.style.display = 'block';
                         remitente_juridico.style.display = 'none';
                     } else if(this.value === 'remitente_juridico') {
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
             tipoPersona_destinatario.forEach(input => {
                 input.addEventListener('change', function() {
                     if(this.value === 'destinatario_natural') {
+                        console.log('Destinatario Natural seleccionado');
                         destinatario_natural.style.display = 'block';
                         destinatario_juridico .style.display = 'none';
                     } else if(this.value === 'destinatario_juridico') {

@@ -43,5 +43,48 @@
         </div>
     </div>
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+    // Utilizamos delegación de eventos en el documento para escuchar cualquier cambio
+    document.addEventListener('change', function(event) {
 
-<script src="assets/js/cliente.js"></script>
+        // --- Lógica para el Módulo de Remitente ---
+        if (event.target.name === 'tipo_persona_remitente') {
+            const remitente_natural = document.getElementById('remitente_natural-fields');
+            const remitente_juridico = document.getElementById('remitente_juridico-fields');
+
+            if (remitente_natural && remitente_juridico) {
+                if (event.target.value === 'remitente_natural') {
+                    console.log('Remitente Natural seleccionado');
+                    remitente_natural.style.display = 'block';
+                    remitente_juridico.style.display = 'none';
+                } else if (event.target.value === 'remitente_juridico') {
+                    console.log('Remitente Jurídico seleccionado');
+                    remitente_natural.style.display = 'none';
+                    remitente_juridico.style.display = 'block';
+                }
+            }
+        }
+
+        // --- Lógica para el Módulo de Destinatario ---
+        if (event.target.name === 'tipo_persona_destinatario') {
+            const destinatario_natural = document.getElementById('destinatario_natural-fields');
+            const destinatario_juridico = document.getElementById('destinatario_juridico-fields');
+
+            if (destinatario_natural && destinatario_juridico) {
+                if (event.target.value === 'destinatario_natural') {
+                    console.log('Destinatario Natural seleccionado');
+                    destinatario_natural.style.display = 'block';
+                    destinatario_juridico.style.display = 'none';
+                } else if (event.target.value === 'destinatario_juridico') {
+                    console.log('Destinatario Jurídico seleccionado');
+                    destinatario_natural.style.display = 'none';
+                    destinatario_juridico.style.display = 'block';
+                }
+            }
+        }
+    });
+});
+</script>
+<!-- <script src="assets/js/cliente.js"></script> -->
