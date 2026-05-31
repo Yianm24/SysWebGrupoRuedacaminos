@@ -1,12 +1,15 @@
 <main class="container-fluid py-5 px-4">
+
+    
+
     <div class="row">
         <div class="col-12 mb-4">
             <header class="d-flex justify-content-end mb-3">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#createEnvio">
+                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#carouselEnvio">
                         <i class="bi bi-person-plus"></i> Crear Envío
                     </button>
-                    <button type="button"  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cotizarEnvio">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cotizarEnvio">
                         <i class="bi bi-currency-dollar"></i> Cotizar Envío
                     </button>
                 </div>
@@ -14,6 +17,7 @@
 
             <?php require 'componentes/modalCreate.php'; ?>
             <?php require 'componentes/modalCotizar.php'; ?>
+            <?php require 'componentes/modalCreateCarousel.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
