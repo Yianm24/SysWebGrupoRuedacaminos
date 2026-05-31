@@ -38,8 +38,8 @@
             <a href="?url=pago" class="list-group-item list-group-item-action <?= $current_url == 'pago' ? 'active' : '' ?>">
                 <i class="bi bi-wallet2 me-2"></i> Pagos
             </a>
-            <a href="?url=reportes" class="list-group-item list-group-item-action <?= $current_url == 'reportes' ? 'active' : '' ?>">
-                <i class="bi bi-file-earmark-bar-graph me-2"></i> Generar Reportes
+            <a href="?url=reporte" class="list-group-item list-group-item-action <?= $current_url == 'reporte' ? 'active' : '' ?>">
+                <i class="bi bi-file-earmark-bar-graph me-2"></i>Reportes
             </a>
             <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
                 <i class="bi bi-person-fill me-2"></i> Empleado/Usuarios
