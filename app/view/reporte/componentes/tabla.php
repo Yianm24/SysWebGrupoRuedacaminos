@@ -3,10 +3,10 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light table-header-custom">
                 <tr>
-                    <th class="ps-4">FECHA INICIAL</th>
-                    <th class="text-center">FECHA FINAL</th>
-                    <th class="text-center">NUMERO DE ENVIOS</th>
-                    <th class="text-center">INGRESOS TOTALES</th>
+                    <th class="ps-4">CODIGO ENVIO</th>
+                    <th class="text-center">FECHA</th>
+                    <th class="text-center">REMITENTE</th>
+                    <th class="text-center">MONTO</th>
                     <th class="text-center">GENERAR REPORTE</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
