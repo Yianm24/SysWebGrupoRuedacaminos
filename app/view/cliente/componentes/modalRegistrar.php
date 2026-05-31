@@ -94,7 +94,7 @@
                 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar Cliente</button>
                 </footer>
             </form>
         </div>

@@ -4,9 +4,9 @@
             
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-currency-exchange"></i> Tasa de Cambio</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerCambio">
+                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerCambio">
                     <i class="bi bi-plus-circle"></i> Establecer Tasa
-                </button> 
+                </button>  -->
             </header>
             
             <?php require 'componentes/modalRegistrar.php'; ?>
@@ -18,7 +18,7 @@
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar tasa...">
+                        <input type="date" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar tasa...">
                     </div>
                 </div>
 

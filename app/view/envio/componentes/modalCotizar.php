@@ -65,7 +65,9 @@
                         </div>
                     </div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                    <button type="button" class="btn btn-primary"><i class="bi bi-save"></i> Calcular</button>
+                    <button type="button" class="btn btn-primary"><i class="bi bi-save"></i> Crear Envío</button>
+
                 </footer>
 
             </form>
