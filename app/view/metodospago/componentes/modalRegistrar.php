@@ -16,7 +16,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar Método</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

@@ -12,41 +12,36 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <?php //foreach ($result as $value): ?> -->
-                    <tr>
-                        <td class="ps-4 fw-medium"></td>
-                        <td>
-                            <span class="fw-medium"></span>
-                        </td>
-                        <td class="text-secondary"></td>
+                <!-- <?php //foreach ($result as $value): 
+                        ?> -->
+                <tr>
+                    <td class="ps-4 fw-medium"></td>
+                    <td>
+                        <span class="fw-medium"></span>
+                    </td>
+                    <td class="text-secondary"></td>
 
-                        <td class="text-center">
-                            <select class="form-select" id="metodos" name="metodos" required>
-                                <option value="" selected disabled>Choferes...</option>
-                                <option value="1">Ruben Perez</option>
-                                <option value="2">Carlos Rodriguez</option>
-                                <option value="3">Luis Martinez</option>
-                            </select>
-                        </td>
-                         <td class="text-center">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
-                                <i class="bi bi-file-earmark-pdf"></i> PDF
-                            </button>
-                        </td>
-                        <td class="pe-4 text-center">
-                            
-                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Ver Envios"
-                                data-bs-toggle="modal" data-bs-target="#modalDetalles">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                data-bs-toggle="modal" data-bs-target="#modalRegistrar">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
-                        </td>
-                    </tr>
-                <?php //endforeach; ?>
+                    <td class="text-center">
+                        <select class="form-select" id="metodos" name="metodos" required>
+                            <option value="" selected disabled>Choferes...</option>
+                            <option value="1">Ruben Perez</option>
+                            <option value="2">Carlos Rodriguez</option>
+                            <option value="3">Luis Martinez</option>
+                        </select>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
+                            <i class="bi bi-file-earmark-pdf"></i> PDF
+                        </button>
+                    </td>
+                    <td class="pe-4 text-center">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
+                            Guardar
+                        </button>
+                    </td>
+                </tr>
+                <?php //endforeach; 
+                ?>
             </tbody>
         </table>
     </div>
