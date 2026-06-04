@@ -1,43 +1,18 @@
-<?php
-$status = isset($_GET['status']) ? $_GET['status'] : '';
-$alertaClase = 'd-none';
-$alertaMensaje = '';
-$alertaIcono = '';
-
-if ($status === 'success_registro') {
-    $alertaClase = 'alert-success'; $alertaMensaje = 'Registro de Precio de Kilometraje realizado exitosamente.'; $alertaIcono = 'bi-check-circle-fill';
-} elseif ($status === 'success_eliminacion') {
-    $alertaClase = 'alert-success'; $alertaMensaje = 'Eliminación del Precio de Kilometraje realizado exitosamente.'; $alertaIcono = 'bi-check-circle-fill';
-} elseif ($status === 'error_duplicado') {
-    $alertaClase = 'alert-danger'; $alertaMensaje = 'El tipo de vehículo ya posee una tarifa registrada.'; $alertaIcono = 'bi-x-circle-fill';
-} elseif ($status === 'error_vinculado') {
-    $alertaClase = 'alert-danger'; $alertaMensaje = 'No se puede eliminar la tarifa, se encuentra vinculada a servicios en curso.'; $alertaIcono = 'bi-x-circle-fill';
-} elseif ($status === 'error_validacion') {
-    $alertaClase = 'alert-warning'; $alertaMensaje = 'Datos ingresados no cumplen con los estándares exigidos.'; $alertaIcono = 'bi-exclamation-triangle-fill';
-}
-?>
-
 <div class="container-fluid py-5 px-4">
     <div class="row">
         <div class="col-12 mb-4">
-            
             <header class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-currency-dollar"></i> Precios por Kilometraje</h2>
+                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-currency-dollar"></i> Precio de Kilometraje</h2>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerPrecio">
-                    <i class="bi bi-plus-circle"></i> Registrar Tarifa
+                    <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
-
-            <div id="alertaSistema" class="alert <?php echo $alertaClase; ?> alert-dismissible fade show shadow-sm" role="alert">
-                <i class="bi <?php echo $alertaIcono; ?> me-2"></i> <strong><?php echo $alertaMensaje; ?></strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
             
             <?php require 'componentes/modalRegistrar.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 fw-bold">Directorio de Tarifas</h4>
+                    <h4 class="mb-0 fw-bold">Directorio de Precios</h4>
                     <div class="input-group" style="max-width: 250px;">
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>

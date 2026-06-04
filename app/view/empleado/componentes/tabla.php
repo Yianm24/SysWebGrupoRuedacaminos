@@ -29,7 +29,7 @@
                                 data-bs-toggle="modal" data-bs-target="#registerModal">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
+                            <a href="?url=empleado&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este empleado?');"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
                 <?php //endforeach; ?>

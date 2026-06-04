@@ -22,12 +22,15 @@
                     <td class="text-secondary"></td>
 
                     <td class="text-center">
-                        <select class="form-select" id="metodos" name="metodos" required>
-                            <option value="" selected disabled>Choferes...</option>
+                        <div class="input-group">
+                        <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+                            <option selected>Choferes...</option>
                             <option value="1">Ruben Perez</option>
                             <option value="2">Carlos Rodriguez</option>
                             <option value="3">Luis Martinez</option>
                         </select>
+                        <button class="btn btn-outline-secondary" type="button">Guardar</button>
+                        </div>
                     </td>
                     <td class="text-center">
                         <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
@@ -35,10 +38,11 @@
                         </button>
                     </td>
                     <td class="pe-4 text-center">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
-                            Guardar
-                        </button>
-                    </td>
+                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
+                                data-bs-toggle="modal" data-bs-target="#registerdespacho">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
                 </tr>
                 <?php //endforeach; 
                 ?>

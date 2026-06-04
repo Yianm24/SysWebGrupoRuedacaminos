@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12 mb-4">
             <header class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-credit-card"></i> Generación de Reportes</h2>
+                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-file-earmark-bar-graph me-2"></i> Generación de Reportes</h2>
                 
             </header>
             <section class="card shadow-sm border-0 h-100 justify-content-center align-items-center">

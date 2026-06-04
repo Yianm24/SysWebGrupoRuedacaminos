@@ -66,7 +66,7 @@
                     </div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary"><i class="bi bi-save"></i> Calcular</button>
-                    <button type="button" class="btn btn-primary"><i class="bi bi-save"></i> Crear Envío</button>
+                    <button type="button" class="btn btn-primary"><i class="bi bi-dropbox"></i> Crear</button>
 
                 </footer>
 

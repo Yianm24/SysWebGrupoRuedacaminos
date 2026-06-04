@@ -1,0 +1,44 @@
+<div class="modal fade" id="createUsuario" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">     
+            <header class="modal-header">
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Usuario</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </header>
+            <form action="?url=usuario" method="POST" id="formUsuario">
+                <div class="modal-body">
+                    <fieldset>
+                        <legend class="visually-hidden">Datos de Usuario</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-2 mb-md-0">
+                                <label for="cedula" class="form-label">Cédula</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="cedula" name="cedula" placeholder="12345678">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-md-0">
+                                <label for="nombre" class="form-label">Nombre del Usuario</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="estado_operativo" class="form-label">Rol</label>
+                                <select class="form-select" id="estado_operativo" name="estado_operativo" required>
+                                    <option value="recepcionista">Recepcionista</option>
+                                    <option value="administrador">Administrador</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-md-0">
+                                <label for="nombre" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="contrasena" name="contrasena">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <footer class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+</div>

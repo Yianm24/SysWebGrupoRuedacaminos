@@ -21,7 +21,7 @@
                                 <label for="monto_abonado" class="form-label">Monto Abonado:</label>
                                 <div class="input-group" id="monto_abonado">
                                     <input type="text" class="form-control" placeholder="" aria-label="Dollar amount (with dot and two decimal places)">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon1">Button</button>
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon1">Añadir</button>
                                 </div>
 
                                 <div class="input-group col-12" id="monto_abonado">
@@ -74,7 +74,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

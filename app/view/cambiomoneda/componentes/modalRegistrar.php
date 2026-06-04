@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-currency-exchange"></i> Establecer Tasa de Cambio</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-currency-exchange"></i> Registrar Tasa de Cambio</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
@@ -25,7 +25,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-repeat"></i> Registrar Tasa</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-repeat"></i> Registrar</button>
                 </footer>
             </form>
         </div>

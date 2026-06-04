@@ -27,7 +27,7 @@
                         </td>
                         <td class="text-center">
                             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
-                                <i class="bi bi-wallet2 me-2"></i> Registrar Pago
+                                <i class="bi bi-wallet2 me-2"></i> Registrar
                             </button>
                         </td>
                         <td class="pe-4 text-center">
@@ -40,7 +40,7 @@
                                 >
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
+                            <a href="?url=pago&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este pago?');"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
                 <?php //endforeach; ?>
