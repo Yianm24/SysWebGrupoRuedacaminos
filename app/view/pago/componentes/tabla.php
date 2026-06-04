@@ -26,7 +26,7 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-outline-secondary" >
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPago">
                                 <i class="bi bi-wallet2 me-2"></i> Registrar Pago
                             </button>
                         </td>
@@ -37,7 +37,7 @@
                                 <i class="bi bi-eye"></i>
                             </a>
                             <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                data-bs-toggle="modal" data-bs-target="#modalRegistrar">
+                                >
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
