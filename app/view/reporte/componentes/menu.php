@@ -7,9 +7,9 @@
             <div class="card-body">
 
                 <div class="col-md-10 input-group  btn-group-lg">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-send-check"></i> Registrar Envío</button>
-                    <button type="submit" class="btn btn-secondary"><i class="bi bi-send-check"></i> Registrar Envío</button>
-                    <button type="submit" class="btn btn-success"><i class="bi bi-send-check"></i> Registrar Envío</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-send-check"></i> Semanal</button>
+                    <button type="submit" class="btn btn-secondary"><i class="bi bi-send-check"></i> Mensual</button>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-send-check"></i> Fecha Personalizada</button>
 
 
                 </div>

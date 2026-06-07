@@ -5,7 +5,7 @@
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-currency-exchange"></i> Gestión Cambio de Moneda</h2>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerCambio">
-                    <i class="bi bi-currency-exchange"></i> Registrar
+                    <i class="bi bi-plus-circle"></i> Registrar
                 </button>
             </header>
             
