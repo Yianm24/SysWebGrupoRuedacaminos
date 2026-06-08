@@ -10,6 +10,7 @@
 
 
                 <?php require 'componentes/menu.php'; ?>
+                <?php require 'componentes/modalReporte.php'; ?>
 
                 <!--
                 <footer class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center px-4 py-3">
