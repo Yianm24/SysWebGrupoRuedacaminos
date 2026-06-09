@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-06-2026 a las 02:01:08
+-- Tiempo de generación: 09-06-2026 a las 04:20:29
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `grupo_ruedacaminosv2`
+-- Base de datos: `grupo_ruedacaminos`
 --
 
 -- --------------------------------------------------------
@@ -407,14 +407,28 @@ CREATE TABLE `usuario` (
 --
 
 CREATE TABLE `vehiculo` (
+  `cod_vehiculo` int(11) NOT NULL,
   `placa` varchar(7) NOT NULL,
   `color` varchar(6) NOT NULL,
-  `cod_tipovehiculo` int(1) NOT NULL,
-  `disponibilidad` int(1) NOT NULL,
+  `cod_tipovehiculo` int(1) DEFAULT NULL,
+  `disponibilidad` int(1) DEFAULT NULL,
   `estado` tinyint(1) NOT NULL,
-  `cod_modelo` int(1) NOT NULL,
+  `cod_modelo` int(1) DEFAULT NULL,
   `ano` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `vehiculo`
+--
+
+INSERT INTO `vehiculo` (`cod_vehiculo`, `placa`, `color`, `cod_tipovehiculo`, `disponibilidad`, `estado`, `cod_modelo`, `ano`) VALUES
+(1, '12367', 'Yellow', NULL, NULL, 1, NULL, 2004),
+(2, 'ABC1234', 'Blanco', NULL, NULL, 1, NULL, 2022),
+(3, 'DEF5566', 'Azul', NULL, NULL, 1, NULL, 2021),
+(4, 'GHI1122', 'Gris', NULL, NULL, 1, NULL, 2023),
+(5, 'LMN4567', 'Rojo', NULL, NULL, 1, NULL, 2024),
+(6, 'XYZ9876', 'Negro', NULL, NULL, 1, NULL, 2020),
+(7, '12367', 'Yellow', NULL, NULL, 1, NULL, 2004);
 
 --
 -- Índices para tablas volcadas
@@ -615,7 +629,7 @@ ALTER TABLE `usuario`
 -- Indices de la tabla `vehiculo`
 --
 ALTER TABLE `vehiculo`
-  ADD PRIMARY KEY (`placa`),
+  ADD PRIMARY KEY (`cod_vehiculo`),
   ADD KEY `cod_tipovehiculo` (`cod_tipovehiculo`),
   ADD KEY `cod_modelo` (`cod_modelo`);
 
@@ -748,6 +762,12 @@ ALTER TABLE `ubicacion`
 --
 ALTER TABLE `unidades_medida`
   MODIFY `cod_unidad` int(1) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `vehiculo`
+--
+ALTER TABLE `vehiculo`
+  MODIFY `cod_vehiculo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
