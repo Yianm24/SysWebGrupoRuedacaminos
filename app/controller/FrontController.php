@@ -1,6 +1,6 @@
 <?php
 
-    namespace App\Prototipo001\Controller;
+    namespace App\Controller;
 
     class FrontController {
 

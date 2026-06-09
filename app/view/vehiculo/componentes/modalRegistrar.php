@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="?url=flota" method="POST" id="formFlota">
+            <form action="?url=vehiculo" method="POST" id="formFlota">
                 <div class="modal-body">
 
                     <fieldset class="row mb-3">
@@ -61,7 +61,7 @@
                                         <option value="2">Canguro</option>
                                         <option value="3">Fiorino</option>
                                     </select>
-                                    <input type="text" class="form-control" id="year" name="year" placeholder="Año:" required>
+                                    <input type="text" class="form-control" id="year" name="ano" placeholder="Año:" required>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button href="?tipoSolicitud=registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

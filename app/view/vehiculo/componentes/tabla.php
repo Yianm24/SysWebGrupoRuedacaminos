@@ -12,17 +12,16 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <?php //foreach ($result as $value): ?> -->
+                <?php foreach ($result as $value): ?> 
                     <tr>
-                        <td class="ps-4 fw-medium"></td>
+                        <td class="ps-4 fw-medium"><?= $value['placa'] ?></td>
                         <td>
-                            <span class="fw-medium"></span>
+                            <span class="fw-medium"><?= $value['color'] ?></span>
                         </td>
                         <td class="text-secondary"></td>
                         <td class="text-secondary"></td>
                         <td class="text-center">
-                            <span class="badge">
-                            </span>
+                            <span class="fw-medium"><?= $value['ano'] ?></span>
                         </td>
                         <td class="pe-4 text-center">
                             <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
@@ -32,7 +31,7 @@
                             <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
-                <?php //endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>

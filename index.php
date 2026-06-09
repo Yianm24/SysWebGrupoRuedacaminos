@@ -2,7 +2,7 @@
 
     require 'vendor/autoload.php';
 
-    use App\Prototipo001\Controller\FrontController;
+    use App\Controller\FrontController;
 
     $frontController = new FrontController();
 
