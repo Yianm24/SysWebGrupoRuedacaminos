@@ -39,7 +39,7 @@
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['ano']) ) {
 
-                    $result = $vehiculo->addVehiculo($_POST['placa'], $_POST['color'], $_POST['ano']);
+                    $result = $vehiculo->aggDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['ano']);
 
                     echo "<script>alert('Datos registrados correctamente');</script>";
                     
@@ -50,14 +50,15 @@
             }
             break;
 
-        /*case 'delete':
-            if (isset($_GET['id'])) {
-                $respuesta = $object->deleteCliente($_GET['id']);
+        case 'eliminar':
+            if (isset($_POST['cod_vehiculo'])) {
+                $respuesta = $vehiculo->eliminarVehiculo($_POST['cod_vehiculo']);
+                echo "<script>alert('Vehículo eliminado correctamente');</script>";
               
             }
             break;
 
-        case 'consultar':
+        /*case 'consultar':
            
             break;
 
@@ -67,7 +68,7 @@
             break;
      */       
     }
-    $result = $vehiculo->getAllVehiculos();
+    $registros = $vehiculo->obtRegistrosVehiculos();
     include 'app/view/layout/header.php';
     include 'app/view/vehiculo/vehiculoView.php';
     include 'app/view/layout/footer.php';

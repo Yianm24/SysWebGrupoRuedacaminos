@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form method="POST" id="formFlota">
+            <form action="?url=vehiculo" method="POST" id="formFlota">
                 <div class="modal-body">
 
                     <fieldset class="row mb-3">
@@ -70,7 +70,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button name="tipoSolicitud" value="registrar" href="?url=vehiculo" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button name="tipoSolicitud" value="registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

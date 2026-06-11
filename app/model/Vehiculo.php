@@ -5,6 +5,7 @@ use App\Config\Conexion;
 
 class Vehiculo extends Conexion 
 {
+    private $cod_vehiculo;
     private $placa;
     private $color;
     private $ano;
@@ -24,63 +25,64 @@ class Vehiculo extends Conexion
         
     }
 
-    public function getAllVehiculos()
+    public function obtRegistrosVehiculos()
     {
         try {
-            $consult = $this->conexion->prepare("SELECT * FROM vehiculo WHERE estado = 1");
-            $consult->execute();
-            return $consult->fetchAll(\PDO::FETCH_ASSOC);
+            $sentencia = "SELECT * FROM vehiculo WHERE estado = 1";
+            $consulta = $this->conexion->prepare($sentencia);
+            $consulta->execute();
+            return $consulta->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
             return [];
         }
     }
 
-    public function addVehiculo($placa, $color, $ano)
+    public function aggDatosVehiculo($placa, $color, $ano)
     {
         $this->placa = $placa;
         $this->color = $color;
         $this->ano = $ano;
         $this->estado = 1;
 
-        return $this->registerVehiculo();
+        return $this->registrarVehiculo();
     }
 
-    private function registerVehiculo()
+    private function registrarVehiculo()
     {
         try {
-            $query = "INSERT INTO vehiculo (placa, color, estado, ano) VALUES (?, ?, ?, ?)";
+            $sentencia = "INSERT INTO vehiculo (placa, color, estado, ano) VALUES (?, ?, ?, ?)";
 
-            $stmt = $this->conexion->prepare($query);
+            $insert = $this->conexion->prepare($sentencia);
 
-            $stmt->bindValue(1, $this->placa);
-            $stmt->bindValue(2, $this->color);
-            $stmt->bindValue(3, $this->estado);
-            $stmt->bindValue(4, $this->ano);
+            $insert->bindValue(1, $this->placa);
+            $insert->bindValue(2, $this->color);
+            $insert->bindValue(3, $this->estado);
+            $insert->bindValue(4, $this->ano);
             
 
-            $result = $stmt->execute();
+            $resultado = $insert->execute();
 
-            return $result;
+            return $resultado;
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
         }
     }
 
-    public function updateVehiculo($placa, $color, $ano, $estado)
+    public function obtDatosVehiculo($placa, $color, $ano, $estado)
     {
         $this->placa = $placa;
         $this->color = $color;
         $this->ano = $ano;
         $this->estado = $estado;
 
-        return $this->updateVehiculoById();
+        return $this->actualizarVehiculo();
     }
 
-    private function updateVehiculoById()
+    private function actualizarVehiculo()
     {
         try {
-            $query = "UPDATE `vehiculo` SET color = ?, ano = ?, estado = ? WHERE placa = ?";
-            $update = $this->conexion->prepare($query);
+            $sentencia = "UPDATE `vehiculo` SET color = ?, ano = ?, estado = ? WHERE placa = ?";
+            $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->color);
             $update->bindValue(2, $this->ano);
@@ -95,20 +97,20 @@ class Vehiculo extends Conexion
         }
     }
 
-    public function deleteVehiculo(int $id)
+    public function eliminarVehiculo(int $cod_vehiculo)
     {
-        $this->id = $id;
+        $this->cod_vehiculo = $cod_vehiculo;
 
-        return $this->deleteVehiculoById();
+        return $this->eliminarVehiculoById();
     }
 
-    private function deleteVehiculoById()
+    private function eliminarVehiculoById()
     {
         try {
-            $query = "UPDATE `vehiculo` SET estado = 0 WHERE placa = ?";
-            $delete = $this->conexion->prepare($query);
+            $sentencia = "UPDATE `vehiculo` SET estado = 0 WHERE cod_vehiculo = ?";
+            $delete = $this->conexion->prepare($sentencia);
 
-            $delete->bindValue(1, $this->id);
+            $delete->bindValue(1, $this->cod_vehiculo);
             $delete->execute();
 
             return "Vehículo eliminado exitosamente";

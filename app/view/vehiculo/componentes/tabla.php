@@ -12,23 +12,32 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($result as $value): ?> 
+                <?php foreach ($registros as $dato): ?>
                     <tr>
-                        <td class="ps-4 fw-medium"><?= $value['placa'] ?></td>
+                        <td class="ps-4 fw-medium"><?= $dato['placa'] ?></td>
                         <td>
-                            <span class="fw-medium"><?= $value['color'] ?></span>
+                            <span class="fw-medium"><?= $dato['color'] ?></span>
                         </td>
                         <td class="text-secondary"></td>
                         <td class="text-secondary"></td>
                         <td class="text-center">
-                            <span class="fw-medium"><?= $value['ano'] ?></span>
+                            <span class="fw-medium"><?= $dato['ano'] ?></span>
                         </td>
                         <td class="pe-4 text-center">
-                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                data-bs-toggle="modal" data-bs-target="#registerModal">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
+                            <form action="?url=vehiculo" method="POST" style="display: inline;">
+                                <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
+                                    data-bs-toggle="modal" data-bs-target="#registerModal">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <fieldset style="display: inline;">
+                                    <!-- Elemento para eliminar un vehiculo -->
+                                    <input type="hidden" name="cod_vehiculo" value="<?= $dato['cod_vehiculo'] ?>">
+                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este vehículo?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </fieldset>
+                            </form>
+
                         </td>
                     </tr>
                 <?php endforeach; ?>
