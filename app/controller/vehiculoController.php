@@ -4,7 +4,7 @@
 
     $vehiculo = new Vehiculo();
     
-    $solicitud = $_GET['tipoSolicitud'] ?? 'registrar';
+    $solicitud = $_POST['tipoSolicitud'] ?? '';
 
     switch ($solicitud) {
         /*case 'update':
@@ -42,9 +42,11 @@
                     $result = $vehiculo->addVehiculo($_POST['placa'], $_POST['color'], $_POST['ano']);
 
                     echo "<script>alert('Datos registrados correctamente');</script>";
+                    
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
                 }
+                
             }
             break;
 
@@ -55,29 +57,19 @@
             }
             break;
 
-        case 'main':
-            if (isset($_POST["getClientes"])) {
-                echo json_encode($object->getAllClientes());
-                die();
-            }
-            if (isset($_POST["deleteCliente"])) {
-                echo json_encode($object->deleteCliente($_POST["idCliente"]));
-                die();
-            }
-            
+        case 'consultar':
+           
             break;
 
         default:
-            echo "Error: Tipo de vista no válido.";
+            echo "Error: Solicitud no reconocida.";
             
             break;
-            */
+     */       
     }
-
     $result = $vehiculo->getAllVehiculos();
-
-
     include 'app/view/layout/header.php';
     include 'app/view/vehiculo/vehiculoView.php';
     include 'app/view/layout/footer.php';
+    
 ?>
