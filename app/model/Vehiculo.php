@@ -25,19 +25,7 @@ class Vehiculo extends Conexion
         
     }
 
-    public function obtRegistrosVehiculos()
-    {
-        try {
-            $sentencia = "SELECT * FROM vehiculo WHERE estado = 1";
-            $consulta = $this->conexion->prepare($sentencia);
-            $consulta->execute();
-            return $consulta->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
-        }
-    }
-
-    public function aggDatosVehiculo($placa, $color, $ano)
+    public function regDatosVehiculo($placa, $color, $ano)
     {
         $this->placa = $placa;
         $this->color = $color;
@@ -50,14 +38,14 @@ class Vehiculo extends Conexion
     private function registrarVehiculo()
     {
         try {
-            $sentencia = "INSERT INTO vehiculo (placa, color, estado, ano) VALUES (?, ?, ?, ?)";
+            $sentencia = "INSERT INTO vehiculo (placa, color, ano, estado) VALUES (?, ?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->placa);
             $insert->bindValue(2, $this->color);
-            $insert->bindValue(3, $this->estado);
-            $insert->bindValue(4, $this->ano);
+            $insert->bindValue(3, $this->ano);
+            $insert->bindValue(4, $this->estado);
             
 
             $resultado = $insert->execute();
@@ -67,8 +55,19 @@ class Vehiculo extends Conexion
             return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
         }
     }
-
-    public function obtDatosVehiculo($placa, $color, $ano, $estado)
+    
+    public function RegistrosVehiculos()
+        {
+            try {
+                $sentencia = "SELECT * FROM vehiculo WHERE estado = 1";
+                $select = $this->conexion->prepare($sentencia);
+                $select->execute();
+                return $select->fetchAll(\PDO::FETCH_ASSOC);
+            } catch (\PDOException $e) {
+                return [];
+            }
+        }
+    public function actDatosVehiculo($placa, $color, $ano, $estado)
     {
         $this->placa = $placa;
         $this->color = $color;
@@ -97,14 +96,14 @@ class Vehiculo extends Conexion
         }
     }
 
-    public function eliminarVehiculo(int $cod_vehiculo)
+    public function elmDatosVehiculo(int $cod_vehiculo)
     {
         $this->cod_vehiculo = $cod_vehiculo;
 
-        return $this->eliminarVehiculoById();
+        return $this->eliminarVehiculo();
     }
 
-    private function eliminarVehiculoById()
+    private function eliminarVehiculo()
     {
         try {
             $sentencia = "UPDATE `vehiculo` SET estado = 0 WHERE cod_vehiculo = ?";

@@ -24,20 +24,20 @@
                             <span class="fw-medium"><?= $dato['ano'] ?></span>
                         </td>
                         <td class="pe-4 text-center">
+                            <!--Elementos para Actualizar un vehiculo-->    
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            
                             <form action="?url=vehiculo" method="POST" style="display: inline;">
-                                <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                    data-bs-toggle="modal" data-bs-target="#registerModal">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
                                 <fieldset style="display: inline;">
-                                    <!-- Elemento para eliminar un vehiculo -->
+                                    <!-- Elementos para eliminar un vehiculo -->
                                     <input type="hidden" name="cod_vehiculo" value="<?= $dato['cod_vehiculo'] ?>">
                                     <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este vehículo?');">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </fieldset>
                             </form>
-
                         </td>
                     </tr>
                 <?php endforeach; ?>

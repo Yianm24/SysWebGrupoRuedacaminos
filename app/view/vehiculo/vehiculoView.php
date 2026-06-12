@@ -3,12 +3,16 @@
         <div class="col-12 mb-4">
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-truck me-2"></i> Gestión de Vehiculos</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerVehiculo">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrarVehiculo">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
             
-            <?php require 'componentes/modalRegistrar.php'; ?>
+            <?php 
+                require 'componentes/modalRegistrar.php';
+                require 'componentes/modalActualizar.php'; 
+            
+            ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">

@@ -1,12 +1,14 @@
-<div class="modal fade" id="registrarVehiculo" tabindex="-1" aria-labelledby="registrarModalLabel" aria-hidden="true">
+<div class="modal fade" id="actualizarVehiculo" tabindex="-1" aria-labelledby="actualizarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Vehículo</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Actualización de Vehículo</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
             <form action="?url=vehiculo" method="POST" id="formFlota">
+                <input type="hidden" name="cod_vehiculo" value="<?= $dato['cod_vehiculo'] ?>">
+                                    
                 <div class="modal-body">
 
                     <fieldset class="row mb-3">

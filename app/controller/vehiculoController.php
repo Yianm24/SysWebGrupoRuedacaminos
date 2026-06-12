@@ -7,27 +7,9 @@
     $solicitud = $_POST['tipoSolicitud'] ?? '';
 
     switch ($solicitud) {
-        /*case 'update':
+        case 'modificar':
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
                 $id = $_POST['id'];
-                
-                $tipo_persona = (isset($_POST['tipo_persona_remitente']) && $_POST['tipo_persona_remitente'] === 'remitente_juridico') ? 'juridica' : 'natural';
-                
-                if ($tipo_persona === 'natural') {
-                    $tipo_documento = $_POST['tipo_doc_natural'] ?? '';
-                    $numero_documento = $_POST['cedula'] ?? '';
-                    $nombre = $_POST['nombre'] ?? '';
-                    $apellido = $_POST['apellido'] ?? '';
-                } else {
-                    $tipo_documento = $_POST['tipo_doc_juridico'] ?? '';
-                    $numero_documento = $_POST['rif'] ?? '';
-                    $nombre = $_POST['razon_social'] ?? '';
-                    $apellido = null;
-                }
-                
-                $telefono = $_POST['telefono'] ?? '';
-                $correo = $_POST['correo'] ?? '';
-                $direccion = $_POST['direccion'] ?? '';
                 
                 $respuesta = $object->updateCliente($id, $tipo_persona, $tipo_documento, $numero_documento, $nombre, $apellido, $correo, $telefono, $direccion);
                 
@@ -35,11 +17,11 @@
             }
             break;
 
-        */case 'registrar':
+        case 'registrar':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['ano']) ) {
 
-                    $result = $vehiculo->aggDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['ano']);
+                    $resultado = $vehiculo->regDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['ano']);
 
                     echo "<script>alert('Datos registrados correctamente');</script>";
                     
@@ -52,7 +34,7 @@
 
         case 'eliminar':
             if (isset($_POST['cod_vehiculo'])) {
-                $respuesta = $vehiculo->eliminarVehiculo($_POST['cod_vehiculo']);
+                $resultado = $vehiculo->elmDatosVehiculo($_POST['cod_vehiculo']);
                 echo "<script>alert('Vehículo eliminado correctamente');</script>";
               
             }
@@ -61,14 +43,14 @@
         /*case 'consultar':
            
             break;
-
+            
         default:
             echo "Error: Solicitud no reconocida.";
             
             break;
      */       
     }
-    $registros = $vehiculo->obtRegistrosVehiculos();
+    $registros = $vehiculo->RegistrosVehiculos();
     include 'app/view/layout/header.php';
     include 'app/view/vehiculo/vehiculoView.php';
     include 'app/view/layout/footer.php';
