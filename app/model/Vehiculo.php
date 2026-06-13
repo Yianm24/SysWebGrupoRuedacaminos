@@ -51,12 +51,13 @@ class Vehiculo extends Conexion
             $resultado = $insert->execute();
 
             return $resultado;
+
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
         }
     }
     
-    public function RegistrosVehiculos()
+    public function obt_RegistrosVehiculos()
         {
             try {
                 $sentencia = "SELECT * FROM vehiculo WHERE estado = 1";

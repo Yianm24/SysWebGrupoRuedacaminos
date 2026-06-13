@@ -50,7 +50,7 @@
             break;
      */       
     }
-    $registros = $vehiculo->RegistrosVehiculos();
+    $registros = $vehiculo->obt_RegistrosVehiculos();
     include 'app/view/layout/header.php';
     include 'app/view/vehiculo/vehiculoView.php';
     include 'app/view/layout/footer.php';
