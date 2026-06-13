@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($registros as $dato): ?>
+                <?php foreach ($registros as $dato):?>
                     <tr>
                         <td class="ps-4 fw-medium"><?= $dato['placa'] ?></td>
                         <td>
@@ -24,10 +24,19 @@
                             <span class="fw-medium"><?= $dato['ano'] ?></span>
                         </td>
                         <td class="pe-4 text-center">
-                            <!--Elementos para Actualizar un vehiculo-->    
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo">
+
+                            
+                                <!--Elementos para Actualizar un vehiculo-->
+                                <input type="hidden" id="codigo_vehiculo" value="prueba">    
+                                <button type="button" id="obtener-codigo" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                
+                            
+                            <!--<a href="?url=vehiculo&obtenercodigo=<?= $dato['cod_vehiculo'] ?>" class="text-secondary text-decoration-none p-0 m-0" title="Actualizar"
+                            data-bs-toggle="modal" data-bs-target="#actualizarVehiculo">
                                 <i class="bi bi-pencil"></i>
-                            </button>
+                            </a>-->
                             
                             <form action="?url=vehiculo" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">

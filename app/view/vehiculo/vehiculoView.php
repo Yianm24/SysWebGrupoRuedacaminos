@@ -38,3 +38,4 @@
         </div>
     </div>
 </main>
+<script src="assets/js/vehiculo.js"></script>

@@ -2,11 +2,23 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Actualización de Vehículo</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Actualización de Vehículo </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
             <form action="?url=vehiculo" method="POST" id="formFlota">
+                <?php /*foreach ($registros as $dato):
+                    if ($dato['cod_vehiculo'] == $_POST['cod_vehiculo']) {
+                        echo $dato['cod_vehiculo'] . "<br>";
+                        echo $dato['placa'] . "<br>";
+                        echo $dato['color'] . "<br>";
+                        echo $dato['ano'] . "<br>";
+                        echo "encontrado";
+                    }*/
+                        var_dump($datosEditable);
+
+                    ?>
+                    <?php //endforeach; ?>  
                 <input type="hidden" name="cod_vehiculo" value="<?= $dato['cod_vehiculo'] ?>">
                                     
                 <div class="modal-body">
@@ -69,7 +81,7 @@
                         </div>
                     </fieldset>
                 </div>
-
+                 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button name="tipoSolicitud" value="registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
