@@ -85,7 +85,7 @@ class Cliente extends Conexion
     {
         $this->cod_cliente = $cod_cliente;
 
-        // return $this->eliminarCliente();
+        return $this->eliminarCliente();
     }
 
     public function eliminarCliente()
