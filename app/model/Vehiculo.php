@@ -57,7 +57,7 @@ class Vehiculo extends Conexion
         }
     }
     
-    public function obt_RegistrosVehiculos()
+    public function RegistrosVehiculos()
         {
             try {
                 $sentencia = "SELECT * FROM vehiculo WHERE estado = 1";

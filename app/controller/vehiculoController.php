@@ -51,8 +51,8 @@
      */       
     }
     $registros = $vehiculo->RegistrosVehiculos();
-    $datosEditable = null;
-    $datosEditable = $_GET['obtenercodigo'] ?? 'no me dieron nada';
+    
+    //$datosEditable = $_GET['prueba'] ?? 'no me dieron nada';
     /*foreach ($registros as $dato):
         if ($_REQUEST['obtener-codigo'] == $dato['cod_vehiculo']) {
             $datosEditable = $dato;

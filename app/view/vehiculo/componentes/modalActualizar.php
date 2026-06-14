@@ -15,7 +15,7 @@
                         echo $dato['ano'] . "<br>";
                         echo "encontrado";
                     }*/
-                        var_dump($datosEditable);
+                        //var_dump($datosEditable);
 
                     ?>
                     <?php //endforeach; ?>  
@@ -75,7 +75,7 @@
                                         <option value="2">Canguro</option>
                                         <option value="3">Fiorino</option>
                                     </select>
-                                    <input type="text" class="form-control" id="year" name="ano" placeholder="Año:" required>
+                                    <input type="text" class="form-control" id="ano" name="ano" placeholder="Año:" required>
                                 </div>
                             </div>
                         </div>
