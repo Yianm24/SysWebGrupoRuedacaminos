@@ -6,7 +6,7 @@ use PDOException;
 abstract class Conexion
 {
     public $host = "localhost";
-    public $namedb = "grupo_ruedacaminos";
+    public $namedb = "grupo_ruedacaminosv2";
     public $userdb = "root";
     public $passwd = "";
     protected $conexion;
