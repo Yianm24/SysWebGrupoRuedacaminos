@@ -28,7 +28,8 @@
                             
                                 <!--Elementos para Actualizar un vehiculo-->
                                 <input type="hidden" class="codigo_vehiculo" >    
-                                <button type="button" class="obtener-codigo btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo"
+                                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo"
+                                datos-cod-vehiculo="<?php echo $dato['cod_vehiculo']; ?>"
                                 datos-placa="<?php echo $dato['placa']; ?>"
                                 datos-color="<?php echo $dato['color']; ?>"
                                 datos-ano="<?php echo $dato['ano']; ?>"

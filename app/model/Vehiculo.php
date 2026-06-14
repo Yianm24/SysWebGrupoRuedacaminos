@@ -68,12 +68,13 @@ class Vehiculo extends Conexion
                 return [];
             }
         }
-    public function actDatosVehiculo($placa, $color, $ano, $estado)
+    public function actDatosVehiculo($cod_vehiculo, $placa, $color, $ano)
     {
+        $this->cod_vehiculo = $cod_vehiculo;
         $this->placa = $placa;
         $this->color = $color;
         $this->ano = $ano;
-        $this->estado = $estado;
+        
 
         return $this->actualizarVehiculo();
     }
@@ -81,17 +82,16 @@ class Vehiculo extends Conexion
     private function actualizarVehiculo()
     {
         try {
-            $sentencia = "UPDATE `vehiculo` SET color = ?, ano = ?, estado = ? WHERE placa = ?";
+            $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, ano = ? WHERE cod_vehiculo = ?";
             $update = $this->conexion->prepare($sentencia);
 
-            $update->bindValue(1, $this->color);
-            $update->bindValue(2, $this->ano);
-            $update->bindValue(3, $this->estado);
-            $update->bindValue(4, $this->placa);
+            $update->bindValue(1, $this->placa);
+            $update->bindValue(2, $this->color);
+            $update->bindValue(3, $this->ano);
+            $update->bindValue(4, $this->cod_vehiculo);
 
             $update->execute();
 
-            return "Vehículo actualizado exitosamente";
         } catch (\PDOException $e) {
             return "Error al actualizar el vehículo: " . $e->getMessage();
         }

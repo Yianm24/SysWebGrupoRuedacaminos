@@ -7,12 +7,17 @@
     $solicitud = $_POST['tipoSolicitud'] ?? '';
 
     switch ($solicitud) {
-        case 'modificar':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
-                $id = $_POST['id'];
-                
-                $respuesta = $object->updateCliente($id, $tipo_persona, $tipo_documento, $numero_documento, $nombre, $apellido, $correo, $telefono, $direccion);
-                
+        case 'actualizar':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-vehiculo'])) {
+                if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['ano']) ) {
+                    
+                    $resultado = $vehiculo->actDatosVehiculo($_POST['cod-vehiculo'], $_POST['placa'], $_POST['color'], $_POST['ano']);
+
+                    echo "<script>alert('Datos modificados correctamente');</script>";
+                    
+                } else {
+                    echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                }
                
             }
             break;

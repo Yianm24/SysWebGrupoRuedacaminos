@@ -19,10 +19,10 @@
 
                     ?>
                     <?php //endforeach; ?>  
-                <input type="hidden" name="cod_vehiculo" value="<?= $dato['cod_vehiculo'] ?>">
+                
                                     
                 <div class="modal-body">
-
+                    <input type="hidden" id="cod-vehiculo" name="cod-vehiculo" >
                     <fieldset class="row mb-3">
                         
                             <div class="col-md-6">
@@ -84,7 +84,7 @@
                  
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button name="tipoSolicitud" value="registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button name="tipoSolicitud" value="actualizar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Actualizar</button>
                 </footer>
             </form>
         </div>
