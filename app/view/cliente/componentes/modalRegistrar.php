@@ -14,7 +14,7 @@
                         <legend class="visually-hidden">Tipo de Persona</legend>
                         <div class="d-flex gap-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_natural" value="remitente_natural" checked>
+                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_natural" value="remitente_natural" checked >
                                 <label class="form-check-label" for="persona_natural">Persona Natural</label>
                             </div>
                             <div class="form-check">
@@ -75,18 +75,18 @@
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+58 414 1234567" required>
+                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+58 414 1234567">
                             </div>
                             <div class="col-md-6">
                                 <label for="correo" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@correo.com" required>
+                                <input type="email" class="form-control" id="correo" name="email" placeholder="ejemplo@correo.com">
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ej. Pueblo Nuevo, Calle 12" required>
+                                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ej. Pueblo Nuevo, Calle 12">
                             </div>
                         </div>
                     </fieldset>
@@ -94,7 +94,7 @@
                 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button name="tipoSolicitud" value="registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

@@ -36,7 +36,7 @@ class Cliente extends Conexion
     {
 
         $this->doc_identidad = $doc_identidad;
-        $this->$razon_social = $razon_social;
+        $this->razon_social = $razon_social;
         $this->apellido = $apellido;
         $this->telefono = $telefono;
         $this->email = $email;
@@ -50,7 +50,7 @@ class Cliente extends Conexion
     {
         try {
 
-            $sentencia = "INSERT INTO cliente (doc_identidad, razon_social, apellido, telefono,email,tipo_documento,estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $sentencia = "INSERT INTO cliente (doc_identidad, razon_social, apellido, telefono,email,tipo_documento,estado) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $insert = $this->conexion->prepare($sentencia);
             $insert->bindValue(1, $this->doc_identidad);
             $insert->bindValue(2, $this->razon_social);
