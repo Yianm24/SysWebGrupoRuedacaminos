@@ -5,10 +5,13 @@
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-people-fill me-2"></i> Gestión de Clientes</h2>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerCliente">
                     <i class="bi bi-person-plus"></i> Registrar
-                </button> 
+                </button>
             </header>
-            
-            <?php require 'componentes/modalRegistrar.php'; ?>
+
+            <?php
+            require 'componentes/modalRegistrar.php';
+            require 'componentes/modalEditar.php';
+            ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
@@ -34,5 +37,4 @@
         </div>
     </div>
 </main>
-
-<script src="assets/js/cliente.js"></script>
+<script src="assets/js/clienteold.js"></script>

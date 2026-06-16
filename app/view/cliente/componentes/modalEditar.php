@@ -1,14 +1,14 @@
-<div class="modal fade" id="registerCliente" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
+<div class="modal fade" id="editCliente" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">     
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registrar Cliente</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Editar Datos del Cliente</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
  
             <form action="?url=cliente" method="POST" id="formCliente">
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="cliente_id">
+                    <input type="hidden" name="id" id="cod_cliente">
 
                     <fieldset class="mb-4">
                         <legend class="visually-hidden">Tipo de Persona</legend>
@@ -39,7 +39,7 @@
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <label for="nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="nombre" name="nombre">
+                                <input type="text" class="form-control" id="razon_social" name="nombre">
                             </div>
                             <div class="col-md-4">
                                 <label for="apellido" class="form-label">Apellido</label>
@@ -61,6 +61,7 @@
                                     <select class="form-select" id="tipo_doc_juridico" name="tipo_doc_juridico" style="max-width: 80px;" aria-label="Tipo de documento jurídico">
                                         <option value="J">J-</option>
                                         <option value="G">G-</option>
+                                        <option value="V">V-</option>
                                         <option value="P">P-</option>
                                     </select>
                                     <input type="text" class="form-control" id="rif" name="rif" placeholder="12345678-9">
@@ -93,7 +94,7 @@
                 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button name="tipoSolicitud" value="registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button name="tipoSolicitud" value="editar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i>Editar</button>
                 </footer>
             </form>
         </div>

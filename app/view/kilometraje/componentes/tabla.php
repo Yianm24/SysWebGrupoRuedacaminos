@@ -10,26 +10,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="ps-4 fw-bold text-secondary">T-001</td>
-                    <td class="text-secondary">Camión NPR - Capacidad Alta</td>
-                    <td class="text-secondary">$ 2.50</td>
-                    <td class="pe-4 text-center">
-                        <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary text-decoration-none btn-eliminar" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalConfirmacion" data-id="1" data-codigo="1"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ps-4 fw-bold text-secondary">T-002</td>
-                    <td class="text-secondary">Furgón - Capacidad Media</td>
-                    <td class="text-secondary">$ 1.80</td>
-                    <td class="pe-4 text-center">
-                        <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary text-decoration-none btn-eliminar" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalConfirmacion" data-id="2" data-codigo="2"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-
-                </tbody>
+                <?php 
+                if (!empty($registros)) {
+                    foreach ($registros as $fila): ?>
+                        <tr>
+                            <td class="ps-4 fw-bold text-secondary">T-<?= $fila['cod_preciokilometraje'] ?></td>
+                            <td class="text-secondary"><?= $fila['nombre_vehiculo'] ?? 'Sin definir' ?></td>
+                            <td class="text-secondary">$ <?= number_format($fila['monto_tarifa'], 2) ?></td>
+                            <td class="pe-4 text-center">
+                                <a href="#" class="text-secondary me-3 btn-editar" data-bs-toggle="modal" data-bs-target="#modalEditar" data-id="<?= $fila['cod_preciokilometraje'] ?>" data-vehiculo="<?= $fila['nombre_vehiculo'] ?? 'Sin definir' ?>" data-precio="<?= $fila['monto_tarifa'] ?>"><i class="bi bi-pencil"></i></a>
+                                <a href="#" class="text-secondary btn-eliminar" data-id="<?= $fila['cod_preciokilometraje'] ?>" data-bs-toggle="modal" data-bs-target="#modalConfirmacion"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    <?php endforeach; 
+                } else {
+                    echo "<tr><td colspan='4' class='text-center'>No hay registros disponibles.</td></tr>";
+                }
+                ?>
+            </tbody>
         </table>
     </div>
 </div>

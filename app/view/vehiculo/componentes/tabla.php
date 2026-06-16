@@ -25,17 +25,16 @@
                         </td>
                         <td class="pe-4 text-center">
 
-                            
-                                <!--Elementos para Actualizar un vehiculo-->
-                                <input type="hidden" class="codigo_vehiculo" >    
-                                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo"
+                            <!--Elementos para Actualizar un vehiculo-->
+                            <input type="hidden" class="codigo_vehiculo" >    
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo"
                                 datos-cod-vehiculo="<?php echo $dato['cod_vehiculo']; ?>"
                                 datos-placa="<?php echo $dato['placa']; ?>"
                                 datos-color="<?php echo $dato['color']; ?>"
                                 datos-ano="<?php echo $dato['ano']; ?>"
                                 >
-                                    <i class="bi bi-pencil"></i>
-                                </button>
+                                <i class="bi bi-pencil"></i>
+                            </button>
                 
                             
                             <!--<a href="?url=vehiculo&obtenercodigo=<?php /*$dato['cod_vehiculo'];*/ ?>" class="text-secondary text-decoration-none p-0 m-0" title="Actualizar"
