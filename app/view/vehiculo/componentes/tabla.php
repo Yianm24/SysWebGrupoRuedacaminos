@@ -5,7 +5,7 @@
                 <tr>
                     <th class="ps-4">PLACA</th>
                     <th>COLOR</th>
-                    <th>MARCA</th>
+                    <th>TIPO VEHÍCULO</th>
                     <th>MODELO</th>
                     <th class="text-center">AÑO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
@@ -18,8 +18,8 @@
                         <td>
                             <span class="fw-medium"><?= $dato['color'] ?></span>
                         </td>
-                        <td class="text-secondary"></td>
-                        <td class="text-secondary"></td>
+                        <td class="text-secondary"><?php switch($dato['cod_tipovehiculo']) { case 1: echo "Grande"; break; case 2: echo "Mediano"; break; case 3: echo "Pequeño"; break; default: echo "Desconocido"; } ?></td>
+                        <td class="text-secondary"><?php switch($dato['cod_modelo']) { case 1: echo "Fiat"; break; case 2: echo "Canguro"; break; case 3: echo "Fiorino"; break; default: echo "Desconocido"; } ?></td>
                         <td class="text-center">
                             <span class="fw-medium"><?= $dato['ano'] ?></span>
                         </td>
