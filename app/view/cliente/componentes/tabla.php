@@ -7,32 +7,44 @@
                     <th>NOMBRE</th>
                     <th>CONTACTO</th>
                     <th>CORREO ELECTRÓNICO</th>
-                    <th class="text-center">TIPO PERSONA</th>
+                    <th class="text-center">TIPO DOCUMENTO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- <?php //foreach ($result as $value): ?> -->
+                <?php foreach ($registros as $dato): ?>
                     <tr>
-                        <td class="ps-4 fw-medium"></td>
+                        <td class="ps-4 fw-medium"><?= $dato['doc_identidad'] ?></td>
                         <td>
-                            <span class="fw-medium"></span>
+                            <span class="fw-medium"><?php echo $dato['razon_social'] . ' ' . $dato['apellido'] ?></span>
                         </td>
-                        <td class="text-secondary"></td>
-                        <td class="text-secondary"></td>
-                        <td class="text-center">
-                            <span class="badge">
-                            </span>
-                        </td>
+                        <td class="text-secondary"><?= $dato['telefono'] ?></td>
+                        <td class="text-secondary"><?= $dato['email'] ?></td>
+                        <td class="text-center"><?= $dato['tipo_documento'] ?></td>
                         <td class="pe-4 text-center">
-                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                data-bs-toggle="modal" data-bs-target="#registerCliente">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="?url=cliente&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');"><i class="bi bi-trash"></i></a>
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Editar" data-bs-toggle="modal" data-bs-target="#editCliente"
+                                datos-cod-cliente="<?php echo $dato['cod_cliente']; ?>"
+                                datos-doc-identidad="<?php echo $dato['doc_identidad']; ?>"
+                                datos-razon-social="<?php echo $dato['razon_social']; ?>"
+                                datos-apellido="<?php echo $dato['apellido']; ?>"    
+                                datos-telefono="<?php echo $dato['telefono']; ?>" 
+                                datos-email="<?php echo $dato['email']; ?>"
+                                datos-tipo-documento="<?php echo $dato['tipo_documento']; ?>"   
+                                >
+                            <i class="bi bi-pencil"></i>
+                            </button>
+                            <form action="?url=cliente" method="POST" style="display: inline;">
+                                <fieldset style="display: inline;">
+                                    <!-- Elementos para eliminar un vehiculo -->
+                                    <input type="hidden" name="cod_cliente" value="<?= $dato['cod_cliente'] ?>">
+                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </fieldset>
+                            </form>
                         </td>
                     </tr>
-                <?php //endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>
