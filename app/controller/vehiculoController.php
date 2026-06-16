@@ -43,17 +43,8 @@
             }
             break;
 
-        /*case 'consultar':
-           
-            break;
-            
-        default:
-            echo "Error: Solicitud no reconocida.";
-            
-            break;
-     */       
     }
-    $registros = $vehiculo->RegistrosVehiculos();
+    $registros = $vehiculo->obt_RegistrosVehiculos();
     
     //$datosEditable = $_GET['prueba'] ?? 'no me dieron nada';
     /*foreach ($registros as $dato):

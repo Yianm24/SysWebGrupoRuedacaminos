@@ -79,7 +79,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="correo" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="correo" name="email" placeholder="ejemplo@correo.com">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@correo.com">
                             </div>
                         </div>
 

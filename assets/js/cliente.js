@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const inputApellido = modal.querySelector('.modal-body #apellido')
             const inputTelefono = modal.querySelector('.modal-body #telefono')
             const inputEmail = modal.querySelector('.modal-body #email')
-            const inputTipoDocumento = modal.querySelector('.modal-body #tipo_documento')
+            const inputTipoDocumento = modal.querySelector('.modal-body #tipo_doc_natural')
 
             // Asignar los valores obtenidos a los campos del formulario
             inputCodCliente.value = cod_cliente;

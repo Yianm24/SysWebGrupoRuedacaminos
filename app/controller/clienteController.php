@@ -109,7 +109,7 @@ switch ($solicitud) {
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!empty($_POST['cod_cliente']) && !empty($_POST['cedula']) && !empty($_POST['nombre']) && !empty($_POST['apellido']) && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
 
-                        $resultado = $cliente->editDatosCliente($_POST['cod_cliente'],$_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
+                        $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
                         echo "<script>alert('ta tod chido');</script>";
                     } else {
                         echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
@@ -120,7 +120,7 @@ switch ($solicitud) {
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!empty($_POST['cod_cliente']) && !empty($_POST['rif']) && !empty($_POST['razon_social'])  && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
 
-                        $resultado = $cliente->editDatosCliente($_POST['cod_cliente'],$_POST['rif'], $_POST['razon_social'], null, $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_juridico']);
+                        $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['rif'], $_POST['razon_social'], null, $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_juridico']);
                         echo "<script>alert('ta mediocre');</script>";
                     } else {
                         echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
@@ -128,7 +128,6 @@ switch ($solicitud) {
                 }
                 break;
         }
-        //   echo "<script>alert('ta tod chido');</script>";
         break;
 >>>>>>> dfe0de8ef2e593da69e581107a1e0c8bd60499e0
 }
