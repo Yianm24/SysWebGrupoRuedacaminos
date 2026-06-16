@@ -23,20 +23,9 @@
                     </fieldset>
 
                     <fieldset>
+                        <!--
                         <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="col-md-6">
-
-                                    <label for="tipo_punto" class="form-label">Ubicación destino</label>
-                                    <select class="form-select" id="ubicacion" name="ubicacion_select" required>
-                                        <option value="" selected disabled>Seleccionar Ubicación...</option>
-                                        <option value="1">Caracas</option>
-                                        <option value="2">Valencia</option>
-                                        <option value="3">Maracaibo</option>
-                                        <option value="4">Barquisimeto</option>
-                                    </select>
-                                </div>
-                            </div>
+                            
                             <div class="col-md-6">
                                 <label for="estado_operativo" class="form-label">Estado Operativo</label>
                                 <select class="form-select" id="estado_operativo" name="estado_operativo" required>
@@ -45,23 +34,33 @@
                                     <option value="en_taller">En Taller</option>
                                 </select>
                             </div>
+                            
                         </div>
+                        -->
                         <div class="row mb-3">
                             <div class="col-md-12">
                                 <div class="input-group ">
-                                    <select class="form-select" id="marca">
-                                        <option selected>Marca</option>
-                                        <option value="1">Fiat</option>
-                                        <option value="2">Mitsubishi</option>
-                                        <option value="3">Renoult</option>
+                                    <input class="form-control" list="ano-options" name="ano" placeholder="Año" required>
+                                    <datalist id="ano-options">
+                                    <?php
+                                    $anoActual = date("Y");
+                                        for ($i = $anoActual; $i >= 1950; $i--) {
+                                        echo "<option value='$i' " . ( $i ? 'selected' : '') . ">$i</option>";
+                                        }
+                                    ?>
+                                    </datalist>
+                                    <select class="form-select" id="tipo-vehiculo" name="tipo-vehiculo">
+                                        <option selected>TipoVehiculo</option>
+                                        <option value="1">Grande</option>
+                                        <option value="2">Mediano</option>
+                                        <option value="3">Pequeño</option>
                                     </select>
-                                    <select class="form-select" id="modelo">
+                                    <select class="form-select" id="modelo" name="modelo">
                                         <option selected>Modelo</option>
                                         <option value="1">Fiesta</option>
                                         <option value="2">Canguro</option>
                                         <option value="3">Fiorino</option>
                                     </select>
-                                    <input type="text" class="form-control" id="year" name="ano" placeholder="Año:" required>
                                 </div>
                             </div>
                         </div>

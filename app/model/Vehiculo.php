@@ -8,11 +8,13 @@ class Vehiculo extends Conexion
     private $cod_vehiculo;
     private $placa;
     private $color;
+    private $tipo_vehiculo;
+    private $modelo;
     private $ano;
     private $estado;
 
 
-    public function __construct( $placa = null, $color = null, $ano = null, $estado = null)
+    public function __construct( $placa = null, $color = null, $tipo_vehiculo = null, $modelo = null, $ano = null, $estado = null)
     {
         parent::__construct();
 
@@ -20,15 +22,19 @@ class Vehiculo extends Conexion
             $this->placa = $placa;
         }
         $this->color = $color;
+        $this->tipo_vehiculo = $tipo_vehiculo;
+        $this->modelo = $modelo;
         $this->ano = $ano;
         $this->estado = $estado;
         
     }
 
-    public function regDatosVehiculo($placa, $color, $ano)
+    public function regDatosVehiculo($placa, $color,$tipo_vehiculo, $modelo, $ano)
     {
         $this->placa = $placa;
         $this->color = $color;
+        $this->tipo_vehiculo = $tipo_vehiculo;
+        $this->modelo = $modelo;
         $this->ano = $ano;
         $this->estado = 1;
 
@@ -38,15 +44,16 @@ class Vehiculo extends Conexion
     private function registrarVehiculo()
     {
         try {
-            $sentencia = "INSERT INTO vehiculo (placa, color, ano, estado) VALUES (?, ?, ?, ?)";
+            $sentencia = "INSERT INTO vehiculo (placa, color, cod_tipovehiculo, cod_modelo, ano, estado) VALUES (?, ?, ?, ?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->placa);
             $insert->bindValue(2, $this->color);
-            $insert->bindValue(3, $this->ano);
-            $insert->bindValue(4, $this->estado);
-            
+            $insert->bindValue(3, $this->tipo_vehiculo);
+            $insert->bindValue(4, $this->modelo);
+            $insert->bindValue(5, $this->ano);
+            $insert->bindValue(6, $this->estado);
 
             $resultado = $insert->execute();
 
@@ -68,11 +75,13 @@ class Vehiculo extends Conexion
                 return [];
             }
         }
-    public function actDatosVehiculo($cod_vehiculo, $placa, $color, $ano)
+    public function actDatosVehiculo($cod_vehiculo, $placa, $color, $tipo_vehiculo, $modelo, $ano)
     {
         $this->cod_vehiculo = $cod_vehiculo;
         $this->placa = $placa;
         $this->color = $color;
+        $this->tipo_vehiculo = $tipo_vehiculo;
+        $this->modelo = $modelo;
         $this->ano = $ano;
         
 
@@ -82,13 +91,15 @@ class Vehiculo extends Conexion
     private function actualizarVehiculo()
     {
         try {
-            $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, ano = ? WHERE cod_vehiculo = ?";
+            $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, tipo_vehiculo = ?, modelo = ?, ano = ? WHERE cod_vehiculo = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->placa);
             $update->bindValue(2, $this->color);
-            $update->bindValue(3, $this->ano);
-            $update->bindValue(4, $this->cod_vehiculo);
+            $update->bindValue(3, $this->tipo_vehiculo);
+            $update->bindValue(4, $this->modelo);
+            $update->bindValue(5, $this->ano);
+            $update->bindValue(6, $this->cod_vehiculo);
 
             $update->execute();
 
