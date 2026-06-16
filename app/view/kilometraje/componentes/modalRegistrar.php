@@ -8,16 +8,16 @@
 
             <form id="formPrecioKilometraje" action="#" method="POST">
                 <div class="modal-body">
-                    <input type="hidden" name="action" value="registrar">
+                    <input type="hidden" name="tipoSolicitud" value="registrar">
                     
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
                             <label for="codigo_tipovehiculo" class="form-label">Tipo de Vehículo</label>
                             <select class="form-select" id="codigo_tipovehiculo" name="codigo_tipovehiculo" required>
-                                <option value="" selected disabled>Seleccione un vehículo...</option>
-                                <option value="1">Camión NPR - Capacidad Alta</option>
-                                <option value="2">Furgón - Capacidad Media</option>
-                                <option value="3">Pick-Up - Capacidad Baja</option>
+                                <option value="" selected disabled>Seleccione el tipo devehículo...</option>
+                                <option value="1">Grande</option>
+                                <option value="2">Mediano</option>
+                                <option value="3">Pequeño</option>
                             </select>
                         </div>
                         <div class="col-md-12">

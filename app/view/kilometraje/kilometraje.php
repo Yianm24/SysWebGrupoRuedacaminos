@@ -9,6 +9,7 @@
             </header>
             
             <?php require 'componentes/modalRegistrar.php'; ?>
+            <?php require 'componentes/modalEditar.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
@@ -48,57 +49,14 @@
             <div class="modal-footer border-top-0 justify-content-center">
                 <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cancelar</button>
                 <form action="#" method="POST" class="m-0">
-                    <input type="hidden" name="action" value="eliminar">
+                    <input type="hidden" name="tipoSolicitud" value="eliminar">
                     <input type="hidden" name="id_tarifa" id="id_tarifa_eliminar" value="">
                     <input type="hidden" name="codigo_tipovehiculo" id="codigo_tipovehiculo_eliminar" value="">
-                    <button type="submit" class="btn btn-danger fw-bold px-4">Sí, Eliminar</button>
+                    <button type="submit" class="btn btn-danger fw-bold px-4">Confirmar</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    // Validar el Formulario de Registro
-    document.getElementById('formPrecioKilometraje').addEventListener('submit', function(event) {
-        const precioInput = document.getElementById('precio_kilometraje').value;
-        const alerta = document.getElementById('alertaSistema');
-        
-        if (precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
-            event.preventDefault(); 
-            alerta.classList.remove('d-none', 'alert-success');
-            alerta.classList.add('alert-danger');
-            alerta.innerHTML = '<i class="bi bi-x-circle-fill me-2"></i> <strong>Error:</strong> Datos ingresados no cumplen con los estándares exigidos.';
-            document.getElementById('precio_kilometraje').focus();
-        }
-    });
-
-    // Envío al Modal para borrado lógico
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-    botonesEliminar.forEach(boton => {
-        boton.addEventListener('click', function() {
-            document.getElementById('id_tarifa_eliminar').value = this.getAttribute('data-id');
-            document.getElementById('codigo_tipovehiculo_eliminar').value = this.getAttribute('data-codigo');
-        });
-    });
-
-    // Filtro de búsqueda
-    document.getElementById('inputBusqueda').addEventListener('keyup', function() {
-        let filter = this.value.toUpperCase();
-        let rows = document.querySelector("#tablaPrecios tbody").rows;
-        
-        for (let i = 0; i < rows.length; i++) {
-            // Ignorar filas comentadas o sin celdas
-            if(rows[i].cells.length > 1) {
-                let col1 = rows[i].cells[0].textContent.toUpperCase();
-                let col2 = rows[i].cells[1].textContent.toUpperCase();
-                
-                if (col1.indexOf(filter) > -1 || col2.indexOf(filter) > -1) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
-                }
-            }
-        }
-    });
-</script>
+<script src="assets/js/kilometraje.js"></script>

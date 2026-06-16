@@ -154,7 +154,7 @@ CREATE TABLE `envio` (
   `fecha` date NOT NULL,
   `monto_total` float NOT NULL,
   `cod_paqueteria` int(11) NOT NULL,
-  `cod_vehiculo` varchar(7) NOT NULL,
+  `cod_vehiculo` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `cod_despacho` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -301,6 +301,7 @@ CREATE TABLE `participante_envio` (
 
 CREATE TABLE `precio_kilometraje` (
   `cod_preciokilometraje` int(11) NOT NULL,
+  `cod_tipovehiculo` int(1) NOT NULL,
   `monto_tarifa` int(5) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -330,8 +331,7 @@ CREATE TABLE `tipos_vehiculo` (
   `peso_max` float NOT NULL,
   `largo_max` float NOT NULL,
   `anchura_max` float NOT NULL,
-  `estado` tinyint(1) NOT NULL,
-  `cod_preciokilometraje` int(11) NOT NULL
+  `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -577,7 +577,8 @@ ALTER TABLE `participante_envio`
 -- Indices de la tabla `precio_kilometraje`
 --
 ALTER TABLE `precio_kilometraje`
-  ADD PRIMARY KEY (`cod_preciokilometraje`);
+  ADD PRIMARY KEY (`cod_preciokilometraje`),
+  ADD KEY `cod_tipovehiculo` (`cod_tipovehiculo`);
 
 --
 -- Indices de la tabla `rol`
@@ -589,8 +590,7 @@ ALTER TABLE `rol`
 -- Indices de la tabla `tipos_vehiculo`
 --
 ALTER TABLE `tipos_vehiculo`
-  ADD PRIMARY KEY (`cod_tipovehiculo`),
-  ADD KEY `cod_preciokilometraje` (`cod_preciokilometraje`);
+  ADD PRIMARY KEY (`cod_tipovehiculo`);
 
 --
 -- Indices de la tabla `tipo_documento`
@@ -821,7 +821,7 @@ ALTER TABLE `empleado`
 --
 ALTER TABLE `envio`
   ADD CONSTRAINT `envio_ibfk_1` FOREIGN KEY (`cod_paqueteria`) REFERENCES `paqueteria` (`cod_paqueteria`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `envio_ibfk_2` FOREIGN KEY (`cod_vehiculo`) REFERENCES `vehiculo` (`placa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `envio_ibfk_2` FOREIGN KEY (`cod_vehiculo`) REFERENCES `vehiculo` (`cod_vehiculo`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `envio_ibfk_3` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -869,10 +869,10 @@ ALTER TABLE `participante_envio`
   ADD CONSTRAINT `participante_envio_ibfk_2` FOREIGN KEY (`cod_envio`) REFERENCES `envio` (`cod_envio`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `tipos_vehiculo`
+-- Filtros para la tabla `precio_kilometraje`
 --
-ALTER TABLE `tipos_vehiculo`
-  ADD CONSTRAINT `tipos_vehiculo_ibfk_1` FOREIGN KEY (`cod_preciokilometraje`) REFERENCES `precio_kilometraje` (`cod_preciokilometraje`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `precio_kilometraje`
+  ADD CONSTRAINT `precio_kilometraje_ibfk_1` FOREIGN KEY (`cod_tipovehiculo`) REFERENCES `tipos_vehiculo` (`cod_tipovehiculo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `ubicacion`
