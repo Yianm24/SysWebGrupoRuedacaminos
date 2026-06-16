@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-06-2026 a las 04:20:29
+-- Tiempo de generación: 16-06-2026 a las 08:53:45
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `grupo_ruedacaminos`
+-- Base de datos: `grupo_ruedacaminosbd`
 --
 
 -- --------------------------------------------------------
@@ -302,9 +302,19 @@ CREATE TABLE `participante_envio` (
 CREATE TABLE `precio_kilometraje` (
   `cod_preciokilometraje` int(11) NOT NULL,
   `cod_tipovehiculo` int(1) NOT NULL,
-  `monto_tarifa` int(5) NOT NULL,
+  `monto_tarifa` decimal(7,2) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `precio_kilometraje`
+--
+
+INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `cod_tipovehiculo`, `monto_tarifa`, `estado`) VALUES
+(1, 1, 3.65, 1),
+(2, 2, 3.00, 1),
+(3, 3, 2.10, 1),
+(11, 2, 3.20, 0);
 
 -- --------------------------------------------------------
 
@@ -333,6 +343,15 @@ CREATE TABLE `tipos_vehiculo` (
   `anchura_max` float NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipos_vehiculo`
+--
+
+INSERT INTO `tipos_vehiculo` (`cod_tipovehiculo`, `nombre`, `altura__max`, `peso_max`, `largo_max`, `anchura_max`, `estado`) VALUES
+(1, 'Grande', 0, 0, 0, 0, 1),
+(2, 'Mediano', 0, 0, 0, 0, 1),
+(3, 'Pequeño', 0, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -428,7 +447,8 @@ INSERT INTO `vehiculo` (`cod_vehiculo`, `placa`, `color`, `cod_tipovehiculo`, `d
 (4, 'GHI1122', 'Gris', NULL, NULL, 1, NULL, 2023),
 (5, 'LMN4567', 'Rojo', NULL, NULL, 1, NULL, 2024),
 (6, 'XYZ9876', 'Negro', NULL, NULL, 1, NULL, 2020),
-(7, '12367', 'Yellow', NULL, NULL, 1, NULL, 2004);
+(7, '12367', 'Yellow', NULL, NULL, 1, NULL, 2004),
+(8, 'AR19ZG9', 'Negro', NULL, NULL, 1, NULL, 2003);
 
 --
 -- Índices para tablas volcadas
@@ -731,7 +751,7 @@ ALTER TABLE `parroquia`
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`
 --
 ALTER TABLE `precio_kilometraje`
-  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -743,7 +763,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `tipos_vehiculo`
 --
 ALTER TABLE `tipos_vehiculo`
-  MODIFY `cod_tipovehiculo` int(1) NOT NULL AUTO_INCREMENT;
+  MODIFY `cod_tipovehiculo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_documento`
@@ -767,7 +787,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `vehiculo`
 --
 ALTER TABLE `vehiculo`
-  MODIFY `cod_vehiculo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `cod_vehiculo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
