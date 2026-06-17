@@ -22,16 +22,21 @@
                         <td class="text-secondary"><?= $dato['email'] ?></td>
                         <td class="text-center"><?= $dato['tipo_documento'] ?></td>
                         <td class="pe-4 text-center">
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Editar" data-bs-toggle="modal" data-bs-target="#editCliente"
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Editar" data-bs-toggle="modal"
+                                <?php if ($dato['tipo_documento'] == 'J' || $dato['tipo_documento'] == 'P' || $dato['tipo_documento'] == 'G') {
+                                    echo ' data-bs-target="#editClienteJuridico"';
+                                } else if ($dato['tipo_documento'] == 'V' || $dato['tipo_documento'] == 'E') {
+                                    echo ' data-bs-target="#editClienteNatural"';
+                                }
+                                ?>
                                 datos-cod-cliente="<?php echo $dato['cod_cliente']; ?>"
                                 datos-doc-identidad="<?php echo $dato['doc_identidad']; ?>"
                                 datos-razon-social="<?php echo $dato['razon_social']; ?>"
-                                datos-apellido="<?php echo $dato['apellido']; ?>"    
-                                datos-telefono="<?php echo $dato['telefono']; ?>" 
+                                datos-apellido="<?php echo $dato['apellido']; ?>"
+                                datos-telefono="<?php echo $dato['telefono']; ?>"
                                 datos-email="<?php echo $dato['email']; ?>"
-                                datos-tipo-documento="<?php echo $dato['tipo_documento']; ?>"   
-                                >
-                            <i class="bi bi-pencil"></i>
+                                datos-tipo-documento="<?php echo $dato['tipo_documento']; ?>">
+                                <i class="bi bi-pencil"></i>
                             </button>
                             <form action="?url=cliente" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">

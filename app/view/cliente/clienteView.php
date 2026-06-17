@@ -10,7 +10,8 @@
 
             <?php
             require 'componentes/modalRegistrar.php';
-            require 'componentes/modalEditar.php';
+            require 'componentes/modalEditarNatural.php';
+            require 'componentes/modalEditarJuridico.php';
             ?>
 
             <section class="card shadow-sm border-0 h-100">
