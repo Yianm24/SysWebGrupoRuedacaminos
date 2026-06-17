@@ -12,19 +12,14 @@
                     
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
-                            <label for="codigo_tipovehiculo" class="form-label">Tipo de Vehículo</label>
-                            <select class="form-select" id="codigo_tipovehiculo" name="codigo_tipovehiculo" required>
-                                <option value="" selected disabled>Seleccione el tipo devehículo...</option>
-                                <option value="1">Grande</option>
-                                <option value="2">Mediano</option>
-                                <option value="3">Pequeño</option>
-                            </select>
+                            <label for="kilometraje" class="form-label">Kilometraje</label>
+                            <input type="text" class="form-control" id="kilometraje" name="kilometraje" placeholder="Ej: 1km" required>
                         </div>
                         <div class="col-md-12">
                             <label for="precio_kilometraje" class="form-label">Precio por Kilómetro ($)</label>
                             <input type="number" step="0.01" min="0.1" class="form-control" id="precio_kilometraje" name="precio_kilometraje" placeholder="0.00" required>
-                            <div class="form-text">Debe ser un valor numérico y mayor a 0.</div>
-                        </div>
+                            <div class="form-text">Debe ser un valor numérico mayor a 0.00</div>
+                        </div> 
                     </div>
                 </div>
 

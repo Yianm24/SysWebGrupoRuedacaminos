@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-06-2026 a las 07:07:33
+-- Tiempo de generación: 17-06-2026 a las 09:55:48
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -311,10 +311,9 @@ CREATE TABLE `precio_kilometraje` (
 --
 
 INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `kilometraje`, `monto_tarifa`, `estado`) VALUES
-(1, '', 3.65, 1),
-(2, '', 3.00, 1),
-(3, '', 2.10, 1),
-(11, '', 3.20, 0);
+(1, '1km', 2.55, 1),
+(2, '5km', 4.50, 1),
+(3, '10km', 7.00, 1);
 
 -- --------------------------------------------------------
 
@@ -750,7 +749,7 @@ ALTER TABLE `parroquia`
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`
 --
 ALTER TABLE `precio_kilometraje`
-  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`

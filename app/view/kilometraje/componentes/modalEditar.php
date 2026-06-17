@@ -13,13 +13,13 @@
                     
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
-                            <label for="vehiculo_editar" class="form-label">Tipo de Vehículo</label>
-                            <input type="text" class="form-control bg-light" id="vehiculo_editar" readonly>
+                            <label for="kilometraje_editar" class="form-label">Kilometraje</label>
+                            <input type="text" class="form-control" id="kilometraje_editar" name="kilometraje_editar" required>
                         </div>
                         <div class="col-md-12">
                             <label for="precio_kilometraje_editar" class="form-label">Precio por Kilómetro ($)</label>
                             <input type="number" step="0.01" min="0.1" class="form-control" id="precio_kilometraje_editar" name="precio_kilometraje_editar" placeholder="0.00" required>
-                            <div class="form-text">Debe ser un valor numérico y mayor a 0.</div>
+                            <div class="form-text">Debe ser un valor numérico mayor a 0.00</div>
                         </div>
                     </div>
                 </div>

@@ -8,6 +8,13 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         if (!empty($_POST['kilometraje']) && !empty($_POST['precio_kilometraje'])) {
+            
+            // Verificar si ya existe una tarifa para el mismo kilometraje
+            if ($kilometraje->verificarTarifaExiste($_POST['kilometraje'])) {
+                header("Location: ?url=kilometraje&status=exists");
+                exit();
+            }
+
             $kilometraje->regDatosKilometraje($_POST['kilometraje'], $_POST['precio_kilometraje']);
             header("Location: ?url=kilometraje&status=success");
             exit();

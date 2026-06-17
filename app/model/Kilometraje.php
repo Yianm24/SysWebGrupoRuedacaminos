@@ -13,6 +13,13 @@ class Kilometraje extends Conexion
         parent::__construct();
     }
 
+    public function verificarTarifaExiste($kilometraje) {
+        $sentencia = "SELECT COUNT(*) FROM precio_kilometraje WHERE kilometraje = ? AND estado = 1";
+        $stmt = $this->conexion->prepare($sentencia);
+        $stmt->execute([$kilometraje]);
+        return $stmt->fetchColumn() > 0;
+    }
+
     public function regDatosKilometraje($kilometraje, $monto_tarifa) {
         $this->kilometraje = $kilometraje;
         $this->monto_tarifa = $monto_tarifa;
