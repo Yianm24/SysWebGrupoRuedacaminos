@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-06-2026 a las 08:53:45
+-- Tiempo de generación: 17-06-2026 a las 07:07:33
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `grupo_ruedacaminosbd`
+-- Base de datos: `grupo_ruedacaminos`
 --
 
 -- --------------------------------------------------------
@@ -301,7 +301,7 @@ CREATE TABLE `participante_envio` (
 
 CREATE TABLE `precio_kilometraje` (
   `cod_preciokilometraje` int(11) NOT NULL,
-  `cod_tipovehiculo` int(1) NOT NULL,
+  `kilometraje` varchar(50) NOT NULL,
   `monto_tarifa` decimal(7,2) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -310,11 +310,11 @@ CREATE TABLE `precio_kilometraje` (
 -- Volcado de datos para la tabla `precio_kilometraje`
 --
 
-INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `cod_tipovehiculo`, `monto_tarifa`, `estado`) VALUES
-(1, 1, 3.65, 1),
-(2, 2, 3.00, 1),
-(3, 3, 2.10, 1),
-(11, 2, 3.20, 0);
+INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `kilometraje`, `monto_tarifa`, `estado`) VALUES
+(1, '', 3.65, 1),
+(2, '', 3.00, 1),
+(3, '', 2.10, 1),
+(11, '', 3.20, 0);
 
 -- --------------------------------------------------------
 
@@ -597,8 +597,7 @@ ALTER TABLE `participante_envio`
 -- Indices de la tabla `precio_kilometraje`
 --
 ALTER TABLE `precio_kilometraje`
-  ADD PRIMARY KEY (`cod_preciokilometraje`),
-  ADD KEY `cod_tipovehiculo` (`cod_tipovehiculo`);
+  ADD PRIMARY KEY (`cod_preciokilometraje`);
 
 --
 -- Indices de la tabla `rol`
@@ -887,12 +886,6 @@ ALTER TABLE `parroquia`
 ALTER TABLE `participante_envio`
   ADD CONSTRAINT `participante_envio_ibfk_1` FOREIGN KEY (`cod_cliente`) REFERENCES `cliente` (`cod_cliente`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `participante_envio_ibfk_2` FOREIGN KEY (`cod_envio`) REFERENCES `envio` (`cod_envio`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `precio_kilometraje`
---
-ALTER TABLE `precio_kilometraje`
-  ADD CONSTRAINT `precio_kilometraje_ibfk_1` FOREIGN KEY (`cod_tipovehiculo`) REFERENCES `tipos_vehiculo` (`cod_tipovehiculo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `ubicacion`
