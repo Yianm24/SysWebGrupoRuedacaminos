@@ -37,4 +37,4 @@
         </div>
     </div>
 </main>
-<script src="assets/js/clienteold.js"></script>
+<script src="assets/js/cliente.js"></script>

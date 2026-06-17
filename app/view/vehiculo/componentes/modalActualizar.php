@@ -50,13 +50,13 @@
                                     ?>
                                     </datalist>
                                     <select class="form-select" id="tipo-vehiculo" name="tipo-vehiculo">
-                                        <option selected>TipoVehiculo</option>
+                                        <option >TipoVehiculo</option>
                                         <option value="1">Grande</option>
                                         <option value="2">Mediano</option>
                                         <option value="3">Pequeño</option>
                                     </select>
                                     <select class="form-select" id="modelo" name="modelo">
-                                        <option selected>Modelo</option>
+                                        <option >Modelo</option>
                                         <option value="1">Fiesta</option>
                                         <option value="2">Canguro</option>
                                         <option value="3">Fiorino</option>

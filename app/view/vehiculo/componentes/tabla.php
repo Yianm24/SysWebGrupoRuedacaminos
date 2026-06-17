@@ -31,6 +31,8 @@
                                 datos-cod-vehiculo="<?php echo $dato['cod_vehiculo']; ?>"
                                 datos-placa="<?php echo $dato['placa']; ?>"
                                 datos-color="<?php echo $dato['color']; ?>"
+                                datos-tipovehiculo="<?php echo $dato['cod_tipovehiculo']; ?>"
+                                datos-modelo="<?php echo $dato['cod_modelo']; ?>"
                                 datos-ano="<?php echo $dato['ano']; ?>"
                                 >
                                 <i class="bi bi-pencil"></i>

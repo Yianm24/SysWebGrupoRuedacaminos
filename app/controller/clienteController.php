@@ -23,6 +23,7 @@ switch ($solicitud) {
 
                         $resultado = $cliente->regDatosCliente($_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
                         echo "<script>alert('ta tod chido');</script>";
+                        
                     } else {
                         echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
                     }

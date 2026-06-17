@@ -17,7 +17,7 @@
                             <td class="text-secondary"><?= $fila['kilometraje'] ?></td>
                             <td class="text-secondary">$ <?= number_format($fila['monto_tarifa'], 2) ?></td>
                             <td class="pe-4 text-center">
-                                <a href="#" class="text-secondary me-3 btn-editar" 
+                                <a href="#" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Editar"
                                 data-bs-toggle="modal" 
                                 data-bs-target="#modalEditar" 
                                 data-id="<?= $fila['cod_preciokilometraje'] ?>" 
@@ -25,7 +25,7 @@
                                 data-precio="<?= $fila['monto_tarifa'] ?>">
                                 <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="#" class="text-secondary btn-eliminar" data-id="<?= $fila['cod_preciokilometraje'] ?>"><i class="bi bi-trash"></i></a>
+                                <a href="#" class="text-secondary btn-eliminar" title="Eliminar" data-id="<?= $fila['cod_preciokilometraje'] ?>"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                     <?php endforeach; 

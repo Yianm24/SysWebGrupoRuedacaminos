@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-06-2026 a las 09:55:48
+-- Tiempo de generación: 17-06-2026 a las 22:28:09
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -103,27 +103,8 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido`, `telefono`, `email`, `tipo_documento`, `estado`) VALUES
-(1, 10456789, 'Juan Carlos', 'Pérez Gómez', '555123456', 'juan.perez@email.com', 'D', 0),
-(2, 20789456, 'María Alejandra', 'Rodríguez Silva', '555987654', 'maria.rodriguez@email.com', 'C', 0),
-(3, 2147483647, 'Inversiones Tech S.A.C.', NULL, '555111222', 'contacto@techinversiones.com', 'R', 0),
-(4, 45678912, 'Carlos Alberto', 'López Mendoza', '555333444', 'carlos.lopez@email.com', 'D', 1),
-(5, 30987654, 'Ana Beatriz', 'Martínez Castro', '555555666', 'ana.martinez@email.com', 'P', 1),
-(6, 0, 'hola', '', '', '', 'V', 1),
-(7, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
-(8, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
 (9, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
-(10, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 0),
-(11, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
-(12, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
 (13, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
-(14, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
-(15, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 0),
-(16, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
-(17, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 0),
-(18, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
-(19, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
-(20, 89888888, 'ropa bejeros', NULL, '1231232', 'malsdasdl@fdsf', 'G', 1),
-(21, 89888888, 'ropa bejeros', NULL, '1231232', 'malsdasdl@fdsf', 'G', 0),
 (22, 7777, 'yuan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 1),
 (23, 3333, 'juan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 1);
 
@@ -281,9 +262,18 @@ CREATE TABLE `metodo_pago` (
 CREATE TABLE `modelo` (
   `cod_modelo` int(1) NOT NULL,
   `nombre` varchar(15) NOT NULL,
-  `cod_marca` int(1) NOT NULL,
+  `cod_marca` int(1) DEFAULT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `modelo`
+--
+
+INSERT INTO `modelo` (`cod_modelo`, `nombre`, `cod_marca`, `estado`) VALUES
+(1, 'Fiat', NULL, 1),
+(2, 'Canguro', NULL, 1),
+(3, 'Fiorino', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -371,9 +361,10 @@ CREATE TABLE `precio_kilometraje` (
 --
 
 INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `kilometraje`, `monto_tarifa`, `estado`) VALUES
-(1, '1km', 2.55, 1),
+(1, '1km', 2.35, 1),
 (2, '5km', 4.50, 1),
-(3, '10km', 7.00, 1);
+(3, '10km', 9.00, 1),
+(4, '6km', 777.00, 0);
 
 -- --------------------------------------------------------
 
@@ -396,12 +387,21 @@ CREATE TABLE `rol` (
 CREATE TABLE `tipos_vehiculo` (
   `cod_tipovehiculo` int(1) NOT NULL,
   `nombre` varchar(20) NOT NULL,
-  `altura_max` float NOT NULL,
-  `peso_max` float NOT NULL,
-  `largo_max` float NOT NULL,
-  `anchura_max` float NOT NULL,
+  `altura_max` float DEFAULT NULL,
+  `peso_max` float DEFAULT NULL,
+  `largo_max` float DEFAULT NULL,
+  `anchura_max` float DEFAULT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipos_vehiculo`
+--
+
+INSERT INTO `tipos_vehiculo` (`cod_tipovehiculo`, `nombre`, `altura_max`, `peso_max`, `largo_max`, `anchura_max`, `estado`) VALUES
+(1, 'Grande', NULL, NULL, NULL, NULL, 1),
+(2, 'Mediano', NULL, NULL, NULL, NULL, 1),
+(3, 'Pequeño', NULL, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -467,11 +467,21 @@ CREATE TABLE `vehiculo` (
   `placa` varchar(7) NOT NULL,
   `color` varchar(6) NOT NULL,
   `cod_tipovehiculo` int(1) NOT NULL,
-  `disponibilidad` int(1) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `cod_modelo` int(1) NOT NULL,
   `ano` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `vehiculo`
+--
+
+INSERT INTO `vehiculo` (`cod_vehiculo`, `placa`, `color`, `cod_tipovehiculo`, `estado`, `cod_modelo`, `ano`) VALUES
+(8, 'ABC1234', 'Blanco', 2, 1, 1, 2022),
+(9, 'ABC1234', 'Blanco', 1, 1, 2, 2022),
+(10, 'GHI1122', 'Gris', 2, 1, 3, 2023),
+(11, 'XYZ9876', 'Rojo', 3, 1, 2, 2019),
+(12, 'XYB9870', 'Negro', 2, 1, 2, 2004);
 
 --
 -- Índices para tablas volcadas
@@ -758,6 +768,12 @@ ALTER TABLE `metodo_pago`
   MODIFY `cod_metodo` int(1) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `modelo`
+--
+ALTER TABLE `modelo`
+  MODIFY `cod_modelo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `moneda`
 --
 ALTER TABLE `moneda`
@@ -785,19 +801,13 @@ ALTER TABLE `parroquia`
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`
 --
 ALTER TABLE `precio_kilometraje`
-  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
   MODIFY `cod_rol` int(1) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `tipos_vehiculo`
---
-ALTER TABLE `tipos_vehiculo`
-  MODIFY `cod_tipovehiculo` int(1) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `ubicacion`
@@ -815,7 +825,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `vehiculo`
 --
 ALTER TABLE `vehiculo`
-  MODIFY `cod_vehiculo` int(2) NOT NULL AUTO_INCREMENT;
+  MODIFY `cod_vehiculo` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas

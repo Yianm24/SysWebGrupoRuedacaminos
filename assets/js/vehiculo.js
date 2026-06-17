@@ -23,12 +23,16 @@ const modal = document.getElementById('actualizarVehiculo');
       const cod_vehiculo = boton.getAttribute('datos-cod-vehiculo');
       const placa = boton.getAttribute('datos-placa');
       const color = boton.getAttribute('datos-color');
+      const tipovehiculo = boton.getAttribute('datos-tipovehiculo');
+      const modelo = boton.getAttribute('datos-modelo');
       const ano = boton.getAttribute('datos-ano');
       
       // Obtener referencias a los campos del formulario dentro del modal
       const inputCodVehiculo = modal.querySelector('.modal-body #cod-vehiculo')
       const inputPlaca = modal.querySelector('.modal-body #placa')
       const inputColor = modal.querySelector('.modal-body #color')
+      const inputTipovehiculo = modal.querySelector('.modal-body #tipovehiculo')
+      const inputModelo = modal.querySelector('.modal-body #modelo')
       const inputAno = modal.querySelector('.modal-body #ano')
       
       
@@ -36,6 +40,8 @@ const modal = document.getElementById('actualizarVehiculo');
       inputCodVehiculo.value = cod_vehiculo;
       inputPlaca.value = placa;
       inputColor.value = color;
+      inputTipovehiculo.value = tipovehiculo;
+      inputModelo.value = modelo;
       inputAno.value = ano;
     })
   }

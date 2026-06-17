@@ -83,12 +83,6 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ej. Pueblo Nuevo, Calle 12">
-                            </div>
-                        </div>
                     </fieldset>
                 </div>
                 
