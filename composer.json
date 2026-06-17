@@ -1,10 +1,22 @@
 {
     "name": "marialaura/sobreruedas",
-    "description": "Sistema para una empresa de envios (SobreRuedas)",
+    "description": "Sistema de gestios de envio, dirigido a la empresa de transporte (Grupo Ruedacaminos C.A)",
     "type": "project",
     "authors": [
         {
-            "name": "Maria Laura"
+            "name": "María Laura Perez",
+            "email": "malau200104@gmail.com"
+        },
+        {
+            "name": "Yancarlos Camacaro",
+            "email": "yancamacaro@gmail.com"
+        },
+        {
+            "name": "Jose Fabrega",
+            "email": "jfabregamogollon@gmail.com"
+        },{
+            "name": "Cesar Carrera",
+            "email": "carreracesar2022@gmail.com"
         }
     ],
     "autoload": {

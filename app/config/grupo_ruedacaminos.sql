@@ -59,6 +59,15 @@ CREATE TABLE `cargo` (
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `cargo`
+--
+
+INSERT INTO `cargo` (`cod_cargo`, `nombre`, `estado`) VALUES
+(1, 'administracion', 1),
+(2, 'contaduria', 1),
+(3, 'presidencia', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -79,14 +88,44 @@ CREATE TABLE `ciudad` (
 --
 
 CREATE TABLE `cliente` (
-  `cod_cliente` varchar(10) NOT NULL,
+  `cod_cliente` int(10) NOT NULL,
+  `doc_identidad` int(10) NOT NULL COMMENT 'puede ser el rif,cedula,etc',
   `razon_social` varchar(30) NOT NULL,
   `apellido` varchar(20) DEFAULT NULL,
   `telefono` varchar(11) NOT NULL,
-  `correo_electronico` varchar(80) DEFAULT NULL,
-  `cod_tipodoc` int(11) NOT NULL,
+  `email` varchar(80) DEFAULT NULL,
+  `tipo_documento` varchar(1) NOT NULL COMMENT 'v=venezolano,j=juridico, e=extranjero, g=gubernamental',
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `cliente`
+--
+
+INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido`, `telefono`, `email`, `tipo_documento`, `estado`) VALUES
+(1, 10456789, 'Juan Carlos', 'Pérez Gómez', '555123456', 'juan.perez@email.com', 'D', 0),
+(2, 20789456, 'María Alejandra', 'Rodríguez Silva', '555987654', 'maria.rodriguez@email.com', 'C', 0),
+(3, 2147483647, 'Inversiones Tech S.A.C.', NULL, '555111222', 'contacto@techinversiones.com', 'R', 0),
+(4, 45678912, 'Carlos Alberto', 'López Mendoza', '555333444', 'carlos.lopez@email.com', 'D', 1),
+(5, 30987654, 'Ana Beatriz', 'Martínez Castro', '555555666', 'ana.martinez@email.com', 'P', 1),
+(6, 0, 'hola', '', '', '', 'V', 1),
+(7, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
+(8, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
+(9, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
+(10, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 0),
+(11, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
+(12, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
+(13, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
+(14, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
+(15, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 0),
+(16, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
+(17, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 0),
+(18, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
+(19, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
+(20, 89888888, 'ropa bejeros', NULL, '1231232', 'malsdasdl@fdsf', 'G', 1),
+(21, 89888888, 'ropa bejeros', NULL, '1231232', 'malsdasdl@fdsf', 'G', 0),
+(22, 7777, 'yuan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 1),
+(23, 3333, 'juan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 1);
 
 -- --------------------------------------------------------
 
@@ -110,7 +149,21 @@ CREATE TABLE `cuenta_banco` (
 
 CREATE TABLE `despacho` (
   `cod_despacho` int(11) NOT NULL,
-  `cod_empleado` varchar(8) NOT NULL
+  `cod_empleado` varchar(8) NOT NULL,
+  `cod_vehiculo` int(2) NOT NULL,
+  `cod_detalledespacho` int(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_despacho`
+--
+
+CREATE TABLE `detalle_despacho` (
+  `cod_detalledespacho` int(15) NOT NULL,
+  `fecha` datetime NOT NULL,
+  `estatus` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -143,6 +196,14 @@ CREATE TABLE `empleado` (
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `empleado`
+--
+
+INSERT INTO `empleado` (`cod_empleado`, `nombre`, `apellido`, `telefono`, `telefono_emergencia`, `cod_cargo`, `estado`) VALUES
+('2525', 'juan', 'jochis', '024255003', '565656', 2, 1),
+('8888', 'mari', 'pere', '024255003', '565656', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -153,10 +214,14 @@ CREATE TABLE `envio` (
   `cod_envio` int(11) NOT NULL,
   `fecha` date NOT NULL,
   `monto_total` float NOT NULL,
-  `cod_paqueteria` int(11) NOT NULL,
-  `cod_vehiculo` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL,
-  `cod_despacho` int(11) NOT NULL
+  `cod_despacho` int(11) NOT NULL,
+  `peso_total` decimal(10,0) NOT NULL,
+  `anchura` decimal(10,0) NOT NULL,
+  `altura` decimal(10,0) NOT NULL,
+  `descrip_contenido` varchar(50) NOT NULL,
+  `cod_unidadmedida` int(1) NOT NULL,
+  `cod_gasto` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -169,6 +234,17 @@ CREATE TABLE `estado` (
   `cod_estado` int(2) NOT NULL,
   `nombre` varchar(15) NOT NULL,
   `estado` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `gastos_funcionales`
+--
+
+CREATE TABLE `gastos_funcionales` (
+  `cod_gasto` int(11) NOT NULL,
+  `detalles` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -255,22 +331,6 @@ CREATE TABLE `pago` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `paqueteria`
---
-
-CREATE TABLE `paqueteria` (
-  `cod_paqueteria` int(11) NOT NULL,
-  `descripcion_contenido` text NOT NULL,
-  `peso_total` float NOT NULL,
-  `altura_total` float NOT NULL,
-  `anchura_total` float NOT NULL,
-  `cod_unidadmedida` int(11) NOT NULL,
-  `estado` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `parroquia`
 --
 
@@ -288,7 +348,7 @@ CREATE TABLE `parroquia` (
 --
 
 CREATE TABLE `participante_envio` (
-  `cod_cliente` varchar(10) NOT NULL,
+  `cod_cliente` int(10) NOT NULL,
   `cod_envio` int(11) NOT NULL,
   `rol_cliente` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -336,32 +396,10 @@ CREATE TABLE `rol` (
 CREATE TABLE `tipos_vehiculo` (
   `cod_tipovehiculo` int(1) NOT NULL,
   `nombre` varchar(20) NOT NULL,
-  `altura__max` float NOT NULL,
+  `altura_max` float NOT NULL,
   `peso_max` float NOT NULL,
   `largo_max` float NOT NULL,
   `anchura_max` float NOT NULL,
-  `estado` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `tipos_vehiculo`
---
-
-INSERT INTO `tipos_vehiculo` (`cod_tipovehiculo`, `nombre`, `altura__max`, `peso_max`, `largo_max`, `anchura_max`, `estado`) VALUES
-(1, 'Grande', 0, 0, 0, 0, 1),
-(2, 'Mediano', 0, 0, 0, 0, 1),
-(3, 'Pequeño', 0, 0, 0, 0, 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tipo_documento`
---
-
-CREATE TABLE `tipo_documento` (
-  `cod_tipodocumento` int(1) NOT NULL,
-  `nombre` varchar(20) NOT NULL,
-  `abreviatura` int(5) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -425,29 +463,15 @@ CREATE TABLE `usuario` (
 --
 
 CREATE TABLE `vehiculo` (
-  `cod_vehiculo` int(11) NOT NULL,
+  `cod_vehiculo` int(2) NOT NULL,
   `placa` varchar(7) NOT NULL,
   `color` varchar(6) NOT NULL,
-  `cod_tipovehiculo` int(1) DEFAULT NULL,
-  `disponibilidad` int(1) DEFAULT NULL,
+  `cod_tipovehiculo` int(1) NOT NULL,
+  `disponibilidad` int(1) NOT NULL,
   `estado` tinyint(1) NOT NULL,
-  `cod_modelo` int(1) DEFAULT NULL,
+  `cod_modelo` int(1) NOT NULL,
   `ano` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `vehiculo`
---
-
-INSERT INTO `vehiculo` (`cod_vehiculo`, `placa`, `color`, `cod_tipovehiculo`, `disponibilidad`, `estado`, `cod_modelo`, `ano`) VALUES
-(1, '12367', 'Yellow', NULL, NULL, 1, NULL, 2004),
-(2, 'ABC1234', 'Blanco', NULL, NULL, 1, NULL, 2022),
-(3, 'DEF5566', 'Azul', NULL, NULL, 1, NULL, 2021),
-(4, 'GHI1122', 'Gris', NULL, NULL, 1, NULL, 2023),
-(5, 'LMN4567', 'Rojo', NULL, NULL, 1, NULL, 2024),
-(6, 'XYZ9876', 'Negro', NULL, NULL, 1, NULL, 2020),
-(7, '12367', 'Yellow', NULL, NULL, 1, NULL, 2004),
-(8, 'AR19ZG9', 'Negro', NULL, NULL, 1, NULL, 2003);
 
 --
 -- Índices para tablas volcadas
@@ -483,8 +507,7 @@ ALTER TABLE `ciudad`
 -- Indices de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  ADD PRIMARY KEY (`cod_cliente`),
-  ADD KEY `cod_tipodoc` (`cod_tipodoc`);
+  ADD PRIMARY KEY (`cod_cliente`);
 
 --
 -- Indices de la tabla `cuenta_banco`
@@ -498,7 +521,15 @@ ALTER TABLE `cuenta_banco`
 --
 ALTER TABLE `despacho`
   ADD PRIMARY KEY (`cod_despacho`),
-  ADD KEY `cod_empleado` (`cod_empleado`);
+  ADD KEY `cod_empleado` (`cod_empleado`),
+  ADD KEY `cod_vehiculo` (`cod_vehiculo`),
+  ADD KEY `cod_detalledespacho` (`cod_detalledespacho`);
+
+--
+-- Indices de la tabla `detalle_despacho`
+--
+ALTER TABLE `detalle_despacho`
+  ADD PRIMARY KEY (`cod_detalledespacho`);
 
 --
 -- Indices de la tabla `detalle_pago`
@@ -520,15 +551,21 @@ ALTER TABLE `empleado`
 --
 ALTER TABLE `envio`
   ADD PRIMARY KEY (`cod_envio`),
-  ADD KEY `cod_paqueteria` (`cod_paqueteria`),
-  ADD KEY `cod_vehiculo` (`cod_vehiculo`),
-  ADD KEY `cod_despacho` (`cod_despacho`);
+  ADD KEY `cod_despacho` (`cod_despacho`),
+  ADD KEY `cod_unidadmedida` (`cod_unidadmedida`),
+  ADD KEY `cod_gasto` (`cod_gasto`);
 
 --
 -- Indices de la tabla `estado`
 --
 ALTER TABLE `estado`
   ADD PRIMARY KEY (`cod_estado`);
+
+--
+-- Indices de la tabla `gastos_funcionales`
+--
+ALTER TABLE `gastos_funcionales`
+  ADD PRIMARY KEY (`cod_gasto`);
 
 --
 -- Indices de la tabla `marca`
@@ -572,13 +609,6 @@ ALTER TABLE `pago`
   ADD KEY `cod_detallepago` (`cod_detallepago`);
 
 --
--- Indices de la tabla `paqueteria`
---
-ALTER TABLE `paqueteria`
-  ADD PRIMARY KEY (`cod_paqueteria`),
-  ADD KEY `cod_unidadmedida` (`cod_unidadmedida`);
-
---
 -- Indices de la tabla `parroquia`
 --
 ALTER TABLE `parroquia`
@@ -589,8 +619,8 @@ ALTER TABLE `parroquia`
 -- Indices de la tabla `participante_envio`
 --
 ALTER TABLE `participante_envio`
-  ADD KEY `cod_participante` (`cod_cliente`),
-  ADD KEY `cod_envio` (`cod_envio`);
+  ADD KEY `cod_envio` (`cod_envio`),
+  ADD KEY `cod_cliente` (`cod_cliente`);
 
 --
 -- Indices de la tabla `precio_kilometraje`
@@ -609,12 +639,6 @@ ALTER TABLE `rol`
 --
 ALTER TABLE `tipos_vehiculo`
   ADD PRIMARY KEY (`cod_tipovehiculo`);
-
---
--- Indices de la tabla `tipo_documento`
---
-ALTER TABLE `tipo_documento`
-  ADD PRIMARY KEY (`cod_tipodocumento`);
 
 --
 -- Indices de la tabla `ubicacion`
@@ -671,7 +695,7 @@ ALTER TABLE `cambio_moneda`
 -- AUTO_INCREMENT de la tabla `cargo`
 --
 ALTER TABLE `cargo`
-  MODIFY `cod_cargo` int(1) NOT NULL AUTO_INCREMENT;
+  MODIFY `cod_cargo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `ciudad`
@@ -680,10 +704,22 @@ ALTER TABLE `ciudad`
   MODIFY `cod_ciudad` int(2) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  MODIFY `cod_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
 -- AUTO_INCREMENT de la tabla `cuenta_banco`
 --
 ALTER TABLE `cuenta_banco`
   MODIFY `cod_cuenta` int(1) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_despacho`
+--
+ALTER TABLE `detalle_despacho`
+  MODIFY `cod_detalledespacho` int(15) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pago`
@@ -702,6 +738,12 @@ ALTER TABLE `envio`
 --
 ALTER TABLE `estado`
   MODIFY `cod_estado` int(2) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `gastos_funcionales`
+--
+ALTER TABLE `gastos_funcionales`
+  MODIFY `cod_gasto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
@@ -734,12 +776,6 @@ ALTER TABLE `pago`
   MODIFY `cod_pago` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `paqueteria`
---
-ALTER TABLE `paqueteria`
-  MODIFY `cod_paqueteria` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `parroquia`
 --
 ALTER TABLE `parroquia`
@@ -749,7 +785,7 @@ ALTER TABLE `parroquia`
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`
 --
 ALTER TABLE `precio_kilometraje`
-  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -761,13 +797,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `tipos_vehiculo`
 --
 ALTER TABLE `tipos_vehiculo`
-  MODIFY `cod_tipovehiculo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `tipo_documento`
---
-ALTER TABLE `tipo_documento`
-  MODIFY `cod_tipodocumento` int(1) NOT NULL AUTO_INCREMENT;
+  MODIFY `cod_tipovehiculo` int(1) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `ubicacion`
@@ -785,7 +815,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `vehiculo`
 --
 ALTER TABLE `vehiculo`
-  MODIFY `cod_vehiculo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `cod_vehiculo` int(2) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -804,12 +834,6 @@ ALTER TABLE `ciudad`
   ADD CONSTRAINT `ciudad_ibfk_1` FOREIGN KEY (`cod_municipio`) REFERENCES `municipio` (`cod_municipio`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `cliente`
---
-ALTER TABLE `cliente`
-  ADD CONSTRAINT `cliente_ibfk_1` FOREIGN KEY (`cod_tipodoc`) REFERENCES `tipo_documento` (`cod_tipodocumento`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Filtros para la tabla `cuenta_banco`
 --
 ALTER TABLE `cuenta_banco`
@@ -819,7 +843,9 @@ ALTER TABLE `cuenta_banco`
 -- Filtros para la tabla `despacho`
 --
 ALTER TABLE `despacho`
-  ADD CONSTRAINT `despacho_ibfk_1` FOREIGN KEY (`cod_empleado`) REFERENCES `empleado` (`cod_empleado`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `despacho_ibfk_1` FOREIGN KEY (`cod_empleado`) REFERENCES `empleado` (`cod_empleado`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `despacho_ibfk_2` FOREIGN KEY (`cod_vehiculo`) REFERENCES `vehiculo` (`cod_vehiculo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `despacho_ibfk_3` FOREIGN KEY (`cod_detalledespacho`) REFERENCES `detalle_despacho` (`cod_detalledespacho`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `detalle_pago`
@@ -838,9 +864,9 @@ ALTER TABLE `empleado`
 -- Filtros para la tabla `envio`
 --
 ALTER TABLE `envio`
-  ADD CONSTRAINT `envio_ibfk_1` FOREIGN KEY (`cod_paqueteria`) REFERENCES `paqueteria` (`cod_paqueteria`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `envio_ibfk_2` FOREIGN KEY (`cod_vehiculo`) REFERENCES `vehiculo` (`cod_vehiculo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `envio_ibfk_3` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `envio_ibfk_3` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `envio_ibfk_4` FOREIGN KEY (`cod_unidadmedida`) REFERENCES `unidades_medida` (`cod_unidad`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `envio_ibfk_5` FOREIGN KEY (`cod_gasto`) REFERENCES `gastos_funcionales` (`cod_gasto`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `metodo_pago`
@@ -866,12 +892,6 @@ ALTER TABLE `municipio`
 ALTER TABLE `pago`
   ADD CONSTRAINT `pago_ibfk_2` FOREIGN KEY (`cod_envio`) REFERENCES `envio` (`cod_envio`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `pago_ibfk_3` FOREIGN KEY (`cod_detallepago`) REFERENCES `detalle_pago` (`cod_detallepago`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `paqueteria`
---
-ALTER TABLE `paqueteria`
-  ADD CONSTRAINT `paqueteria_ibfk_1` FOREIGN KEY (`cod_unidadmedida`) REFERENCES `unidades_medida` (`cod_unidad`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `parroquia`
