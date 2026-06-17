@@ -8,7 +8,7 @@
  
             <form action="?url=cliente" method="POST" id="formCliente">
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="cod_cliente">
+                    <input type="hidden" name="cod_cliente" id="cod_cliente">
 
                     <fieldset class="mb-4">
                         <legend class="visually-hidden">Tipo de Persona</legend>
