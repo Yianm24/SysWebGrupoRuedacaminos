@@ -21,7 +21,7 @@
                             <?php if ($_GET['status'] == 'success'): ?>
                                 alert("Registro de Precio de Kilometraje realizado exitosamente.");
                             <?php elseif ($_GET['status'] == 'exists'): ?>
-                                alert("Ya existe una tarifa registradapara el Precio de Kilometraje seleccionado.");
+                                alert("Ya existe una tarifa registrada para el Precio de Kilometraje seleccionado.");
                             <?php elseif ($_GET['status'] == 'updated'): ?>
                                 alert("Actualización de Precio de Kilometraje realizado exitosamentente.");
                             <?php elseif ($_GET['status'] == 'deleted'): ?>
