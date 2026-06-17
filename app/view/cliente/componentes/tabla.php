@@ -12,19 +12,11 @@
                 </tr>
             </thead>
             <tbody>
-<<<<<<< HEAD
-                <?php foreach ($registros as $dato): ?> 
-                    <tr>
-                        <td class="ps-4 fw-medium"><?= $dato['doc_identidad'] ?></td>
-                        <td>
-                            <span class="fw-medium"><?php echo $dato['razon_social'].' '.$dato['apellido'] ?></span>
-=======
                 <?php foreach ($registros as $dato): ?>
                     <tr>
                         <td class="ps-4 fw-medium"><?= $dato['doc_identidad'] ?></td>
                         <td>
                             <span class="fw-medium"><?php echo $dato['razon_social'] . ' ' . $dato['apellido'] ?></span>
->>>>>>> dfe0de8ef2e593da69e581107a1e0c8bd60499e0
                         </td>
                         <td class="text-secondary"><?= $dato['telefono'] ?></td>
                         <td class="text-secondary"><?= $dato['email'] ?></td>
