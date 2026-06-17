@@ -35,13 +35,7 @@
                                 >
                                 <i class="bi bi-pencil"></i>
                             </button>
-                
-                            
-                            <!--<a href="?url=vehiculo&obtenercodigo=<?php /*$dato['cod_vehiculo'];*/ ?>" class="text-secondary text-decoration-none p-0 m-0" title="Actualizar"
-                            data-bs-toggle="modal" data-bs-target="#actualizarVehiculo">
-                                <i class="bi bi-pencil"></i>
-                            </a>-->
-                            
+    
                             <form action="?url=vehiculo" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">
                                     <!-- Elementos para eliminar un vehiculo -->

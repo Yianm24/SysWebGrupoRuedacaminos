@@ -130,9 +130,9 @@ class Cliente extends Conexion
             $delete = $this->conexion->prepare($sentencia);
             $delete->bindValue(1, $this->cod_cliente);
             $delete->execute();
-            return "Vehículo eliminado exitosamente";
+            return "Cliente eliminado exitosamente";
         } catch (\PDOException $e) {
-            return "Error al eliminar el vehículo: " . $e->getMessage();
+            return "Error al eliminar el cliente: " . $e->getMessage();
         }
     }
 }
