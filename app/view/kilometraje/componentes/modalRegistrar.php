@@ -12,11 +12,11 @@
                     
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
-                            <label for="kilometraje" class="form-label">Kilometraje</label>
+                            <label for="kilometraje" class="form-label">Kilometraje (km)</label>
                             <input type="text" class="form-control" id="kilometraje" name="kilometraje" placeholder="Ej: 1km" required>
                         </div>
                         <div class="col-md-12">
-                            <label for="precio_kilometraje" class="form-label">Precio por Kilómetro ($)</label>
+                            <label for="precio_kilometraje" class="form-label">Monto de la Tarifa ($)</label>
                             <input type="number" step="0.01" min="0.1" class="form-control" id="precio_kilometraje" name="precio_kilometraje" placeholder="0.00" required>
                             <div class="form-text">Debe ser un valor numérico mayor a 0.00</div>
                         </div> 
