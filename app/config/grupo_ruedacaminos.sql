@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-06-2026 a las 22:28:09
+-- Tiempo de generación: 18-06-2026 a las 03:53:52
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -351,7 +351,7 @@ CREATE TABLE `participante_envio` (
 
 CREATE TABLE `precio_kilometraje` (
   `cod_preciokilometraje` int(11) NOT NULL,
-  `kilometraje` varchar(50) NOT NULL,
+  `kilometraje` varchar(10) NOT NULL,
   `monto_tarifa` decimal(7,2) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
