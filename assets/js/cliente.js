@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const inputTelefono = modalJuridico.querySelector('.modal-body #telefono')
             const inputEmail = modalJuridico.querySelector('.modal-body #email')
-            const inputTipoDocumento = modalJuridico.querySelector('.modal-body #tipo_doc_natural')
+            const inputTipoDocumento = modalJuridico.querySelector('.modal-body #tipo_doc_juridico')
 
             // Asignar los valores obtenidos a los campos del formulario
             inputCodCliente.value = cod_cliente;
