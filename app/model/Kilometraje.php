@@ -16,7 +16,8 @@ class Kilometraje extends Conexion
     public function verificarTarifaExiste($kilometraje) {
         $sentencia = "SELECT COUNT(*) FROM precio_kilometraje WHERE kilometraje = ? AND estado = 1";
         $stmt = $this->conexion->prepare($sentencia);
-        $stmt->execute([$kilometraje]);
+        $stmt->bindValue(1, $kilometraje);
+        $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
 
@@ -30,7 +31,10 @@ class Kilometraje extends Conexion
     private function registrarKilometraje() {
         $sentencia = "INSERT INTO precio_kilometraje (kilometraje, monto_tarifa, estado) VALUES (?, ?, ?)";
         $insert = $this->conexion->prepare($sentencia);
-        return $insert->execute([$this->kilometraje, $this->monto_tarifa, $this->estado]);
+        $insert->bindValue(1, $this->kilometraje);
+        $insert->bindValue(2, $this->monto_tarifa);
+        $insert->bindValue(3, $this->estado);
+        return $insert->execute();
     }
 
     public function obt_RegistrosKilometraje() {
@@ -49,7 +53,12 @@ class Kilometraje extends Conexion
 
     private function actualizarKilometraje() {
         $sentencia = "UPDATE precio_kilometraje SET kilometraje = ?, monto_tarifa = ? WHERE cod_preciokilometraje = ?";
-        return $this->conexion->prepare($sentencia)->execute([$this->kilometraje, $this->monto_tarifa, $this->cod_preciokilometraje]);
+        $update = $this->conexion->prepare($sentencia);
+        $update->bindValue(1, $this->kilometraje);
+        $update->bindValue(2, $this->monto_tarifa);
+        $update->bindValue(3, $this->cod_preciokilometraje);
+
+        return $update->execute();
     }
 
     public function elmDatosKilometraje($id) {
@@ -60,6 +69,9 @@ class Kilometraje extends Conexion
 
     private function eliminarKilometraje() {
         $sentencia = "UPDATE precio_kilometraje SET estado = ? WHERE cod_preciokilometraje = ?";
-        return $this->conexion->prepare($sentencia)->execute([$this->estado, $this->cod_preciokilometraje]);
+        $delete = $this->conexion->prepare($sentencia);
+        $delete->bindValue(1, $this->estado);
+        $delete->bindValue(2, $this->cod_preciokilometraje);
+        return $delete->execute();
     }
 }

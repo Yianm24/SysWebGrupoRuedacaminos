@@ -19,11 +19,24 @@
                     document.addEventListener("DOMContentLoaded", function() {
                         setTimeout(function() {
                             <?php if ($_GET['status'] == 'success'): ?>
-                                alert("Registro de Precio de Kilometraje realizado exitosamente.");
+                                Swal.fire({
+                                title: "Registro exitoso!",
+                                text: "El precio de kilometraje ha sido registrado correctamente.",
+                                icon: "success"
+                                });
                             <?php elseif ($_GET['status'] == 'exists'): ?>
                                 alert("Ya existe una tarifa registrada para el Precio de Kilometraje seleccionado.");
                             <?php elseif ($_GET['status'] == 'updated'): ?>
-                                alert("Actualización de Precio de Kilometraje realizado exitosamentente.");
+                                Swal.fire({
+                                title: "Actualización exitosa!",
+                                text: "El precio de kilometraje ha sido actualizado correctamente.",
+                                icon: "success",
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary', // Clase personalizada para el botón de confirmación
+                                    cancelButton: 'btn btn-outline-secondary'
+                                }
+                                });
                             <?php elseif ($_GET['status'] == 'deleted'): ?>
                                 alert("Eliminación del Precio de Kilometraje realizado exitosamente.");
                             <?php endif; ?>
@@ -56,4 +69,5 @@
         </div>
     </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="assets/js/kilometraje.js"></script>
