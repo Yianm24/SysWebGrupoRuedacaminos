@@ -24,7 +24,7 @@ switch ($solicitud) {
                         $resultado = $cliente->regDatosCliente($_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
                         echo "<script>alert('Cliente registrado exitosamente');</script>";
                     } else {
-                        echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                        echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
                     }
                 }
                 break;
@@ -35,7 +35,7 @@ switch ($solicitud) {
                         $resultado = $cliente->regDatosCliente($_POST['rif'], $_POST['razon_social'], null, $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_juridico']);
                         echo "<script>alert('Cliente registrado exitosamente');</script>";
                     } else {
-                        echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                        echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
                     }
                 }
                 break;
@@ -60,7 +60,7 @@ switch ($solicitud) {
                 $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['rif'], $_POST['razon_social'], null, $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_juridico']);
                 echo "<script>alert('Cliente actualizado exitosamente');</script>";
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
             }
         }
         break;
@@ -75,7 +75,7 @@ switch ($solicitud) {
                 $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['cedula'], $_POST['razon_social'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
                 echo "<script>alert('Cliente actualizado exitosamente');</script>";
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
             }
         }
         break;

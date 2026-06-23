@@ -5,7 +5,7 @@
     $vehiculo = new Vehiculo();
     
     $solicitud = $_POST['tipoSolicitud'] ?? '';
-
+//
     switch ($solicitud) {
         case 'registrar':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
