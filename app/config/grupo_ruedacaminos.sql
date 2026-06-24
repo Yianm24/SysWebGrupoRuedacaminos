@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-06-2026 a las 01:10:49
+-- Tiempo de generación: 24-06-2026 a las 22:32:17
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -208,7 +208,7 @@ CREATE TABLE `detalle_pago` (
   `referencia` int(11) NOT NULL,
   `cod_metodopago` int(1) NOT NULL,
   `cod_banco` int(1) NOT NULL,
-  `monto` float NOT NULL
+  `monto` decimal(8,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -216,8 +216,8 @@ CREATE TABLE `detalle_pago` (
 --
 
 INSERT INTO `detalle_pago` (`cod_detallepago`, `referencia`, `cod_metodopago`, `cod_banco`, `monto`) VALUES
-(1, 30232, 1, 3, 10000),
-(2, 772791, 2, 1, 13892.5);
+(1, 30232, 1, 3, 10000.00),
+(2, 772791, 2, 1, 13892.50);
 
 -- --------------------------------------------------------
 
@@ -254,15 +254,17 @@ INSERT INTO `empleado` (`cod_empleado`, `cedula`, `nombre`, `apellido`, `telefon
 CREATE TABLE `envio` (
   `cod_envio` int(11) NOT NULL,
   `fecha` date NOT NULL,
-  `monto_total` float NOT NULL,
+  `monto_total` decimal(8,2) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `cod_despacho` int(11) NOT NULL,
-  `peso_total` decimal(10,0) NOT NULL,
-  `anchura` decimal(10,0) NOT NULL,
-  `altura` decimal(10,0) NOT NULL,
+  `peso_total` decimal(6,2) NOT NULL,
+  `anchura` decimal(5,2) NOT NULL,
+  `altura` decimal(5,2) NOT NULL,
   `descrip_contenido` varchar(50) NOT NULL,
+  `distancia_total` float(7,2) NOT NULL,
   `cod_unidadmedida` int(1) NOT NULL,
-  `cod_gasto` int(11) NOT NULL
+  `cod_gasto` int(11) NOT NULL,
+  `cod_preciokilometraje` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -429,7 +431,7 @@ CREATE TABLE `pago` (
   `cod_pago` int(11) NOT NULL,
   `fecha` date NOT NULL,
   `hora` datetime NOT NULL,
-  `monto` float NOT NULL,
+  `monto` decimal(8,2) NOT NULL,
   `referencia` varchar(20) NOT NULL,
   `cod_envio` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL,
@@ -483,7 +485,7 @@ CREATE TABLE `participante_envio` (
 
 CREATE TABLE `precio_kilometraje` (
   `cod_preciokilometraje` int(11) NOT NULL,
-  `kilometraje` varchar(10) NOT NULL,
+  `kilometraje` decimal(7,2) NOT NULL,
   `monto_tarifa` decimal(7,2) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -493,9 +495,9 @@ CREATE TABLE `precio_kilometraje` (
 --
 
 INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `kilometraje`, `monto_tarifa`, `estado`) VALUES
-(1, '1km', 2.35, 1),
-(2, '5km', 4.50, 1),
-(3, '10km', 9.00, 1);
+(1, 1.00, 2.35, 1),
+(2, 5.00, 4.50, 1),
+(3, 10.00, 9.00, 1);
 
 -- --------------------------------------------------------
 
@@ -727,7 +729,8 @@ ALTER TABLE `envio`
   ADD PRIMARY KEY (`cod_envio`),
   ADD KEY `cod_despacho` (`cod_despacho`),
   ADD KEY `cod_unidadmedida` (`cod_unidadmedida`),
-  ADD KEY `cod_gasto` (`cod_gasto`);
+  ADD KEY `cod_gasto` (`cod_gasto`),
+  ADD KEY `cod_preciokilometraje` (`cod_preciokilometraje`);
 
 --
 -- Indices de la tabla `estado`
@@ -825,6 +828,7 @@ ALTER TABLE `ubicacion`
 -- Indices de la tabla `ubicaciones_envio`
 --
 ALTER TABLE `ubicaciones_envio`
+  ADD PRIMARY KEY (`cod_ubicacion`,`cod_envio`),
   ADD KEY `cod_ubicacion` (`cod_ubicacion`),
   ADD KEY `cod_envio` (`cod_envio`);
 
@@ -1040,7 +1044,8 @@ ALTER TABLE `empleado`
 ALTER TABLE `envio`
   ADD CONSTRAINT `envio_ibfk_3` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `envio_ibfk_4` FOREIGN KEY (`cod_unidadmedida`) REFERENCES `unidades_medida` (`cod_unidad`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `envio_ibfk_5` FOREIGN KEY (`cod_gasto`) REFERENCES `gastos_funcionales` (`cod_gasto`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `envio_ibfk_5` FOREIGN KEY (`cod_gasto`) REFERENCES `gastos_funcionales` (`cod_gasto`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `envio_ibfk_6` FOREIGN KEY (`cod_preciokilometraje`) REFERENCES `precio_kilometraje` (`cod_preciokilometraje`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `metodo_pago`
