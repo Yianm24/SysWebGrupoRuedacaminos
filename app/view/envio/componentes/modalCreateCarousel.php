@@ -286,8 +286,8 @@
                     </div>
 
                     <div class="d-flex justify-content-between mt-3">
-                        <button class="btn btn-secondary btn-sm" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">Anterior</button>
-                        <button class="btn btn-primary btn-sm" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">Siguiente</button>
+                        <button class="btn btn-outline-secondary" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev"><i class="bi bi-arrow-left"></i>Anterior</button>
+                        <button class="btn btn-outline-primary" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">Siguiente<i class="bi bi-arrow-right"></i></button>
                     </div>
                 </div>
 
@@ -301,20 +301,20 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-       
+
         // Lógica para alternar campos de Persona Natural o Jurídica en el Módulo de Clientes
         const tipoPersona_remitente = document.querySelectorAll('input[name="tipo_persona_remitente"]');
         const remitente_natural = document.getElementById('remitente_natural-fields');
         const remitente_juridico = document.getElementById('remitente_juridico-fields');
 
-        if(tipoPersona_remitente.length > 0 && remitente_natural && remitente_juridico) {
+        if (tipoPersona_remitente.length > 0 && remitente_natural && remitente_juridico) {
             tipoPersona_remitente.forEach(input => {
                 input.addEventListener('change', function() {
-                    if(this.value === 'remitente_natural') {
+                    if (this.value === 'remitente_natural') {
                         console.log('Remitente Natural seleccionado');
                         remitente_natural.style.display = 'block';
                         remitente_juridico.style.display = 'none';
-                    } else if(this.value === 'remitente_juridico') {
+                    } else if (this.value === 'remitente_juridico') {
                         console.log('Remitente Jurídico seleccionado');
                         remitente_natural.style.display = 'none';
                         remitente_juridico.style.display = 'block';
@@ -327,15 +327,15 @@
         const destinatario_natural = document.getElementById('destinatario_natural-fields');
         const destinatario_juridico = document.getElementById('destinatario_juridico-fields');
 
-        if(tipoPersona_destinatario.length > 0 && destinatario_natural && destinatario_juridico ) {
+        if (tipoPersona_destinatario.length > 0 && destinatario_natural && destinatario_juridico) {
             tipoPersona_destinatario.forEach(input => {
                 input.addEventListener('change', function() {
-                    if(this.value === 'destinatario_natural') {
+                    if (this.value === 'destinatario_natural') {
                         destinatario_natural.style.display = 'block';
-                        destinatario_juridico .style.display = 'none';
-                    } else if(this.value === 'destinatario_juridico') {
+                        destinatario_juridico.style.display = 'none';
+                    } else if (this.value === 'destinatario_juridico') {
                         destinatario_natural.style.display = 'none';
-                        destinatario_juridico .style.display = 'block';
+                        destinatario_juridico.style.display = 'block';
                     }
                 });
             });

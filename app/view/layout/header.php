@@ -45,7 +45,7 @@
                     <i class="bi bi-person-fill me-2"></i> Empleado
                 </a>
 
-                <a href="?url=rol" class="list-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
+                <a href="?url=cargo" class="list-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
                     <i class="bi bi-person-vcard me-2" ></i> Cargo
                 </a>
                 <a href="?url=vehiculo" class="list-group-item list-group-item-action <?= $current_url == 'vehiculo' ? 'active' : '' ?>">
@@ -81,7 +81,7 @@
                     <i class="bi bi-wallet2 me-2"></i> Pago
                 </a>
 
-                <a href="?url=metodospago" class="list-group-item list-group-item-action <?= $current_url == 'metodospago' ? 'active' : '' ?>">
+                <a href="?url=metodopago" class="list-group-item list-group-item-action <?= $current_url == 'metodopago' ? 'active' : '' ?>">
                     <i class="bi bi-credit-card me-2"></i> Método de Pago
                 </a>
 
