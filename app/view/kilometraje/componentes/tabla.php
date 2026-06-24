@@ -14,14 +14,14 @@
                     foreach ($registros as $fila): ?>
                         <tr>
                             <td class="ps-4 fw-bold text-secondary">T-<?= $fila['cod_preciokilometraje'] ?></td>
-                            <td class="text-secondary"><?= $fila['kilometraje'] ?></td>
+                            <td class="text-secondary fw-bold"><?= str_replace('.', ',', (float)$fila['kilometraje']) ?> KM</td>
                             <td class="text-secondary">$ <?= number_format($fila['monto_tarifa'], 2) ?></td>
                             <td class="pe-4 text-center">
                                 <a href="#" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Editar"
                                 data-bs-toggle="modal" 
                                 data-bs-target="#modalEditar" 
                                 data-id="<?= $fila['cod_preciokilometraje'] ?>" 
-                                data-kilometraje="<?= $fila['kilometraje'] ?>" 
+                                data-kilometraje="<?= (float)$fila['kilometraje'] ?>" 
                                 data-precio="<?= $fila['monto_tarifa'] ?>">
                                 <i class="bi bi-pencil"></i>
                                 </a>

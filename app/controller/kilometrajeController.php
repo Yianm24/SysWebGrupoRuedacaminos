@@ -23,6 +23,12 @@ switch ($solicitud) {
 
     case 'actualizar':
         if (!empty($_POST['id_tarifa_editar']) && !empty($_POST['kilometraje_editar']) && !empty($_POST['precio_kilometraje_editar'])) {
+            
+            if ($kilometraje->verificarTarifaDuplicada($_POST['kilometraje_editar'], $_POST['id_tarifa_editar'])) {
+                header("Location: ?url=kilometraje&status=exists");
+                exit();
+            }
+            
             $kilometraje->actDatosKilometraje($_POST['id_tarifa_editar'], $_POST['kilometraje_editar'], $_POST['precio_kilometraje_editar']);
             header("Location: ?url=kilometraje&status=updated");
             exit();

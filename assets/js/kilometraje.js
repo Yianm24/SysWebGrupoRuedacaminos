@@ -52,12 +52,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const formRegistro = document.getElementById('formPrecioKilometraje');
     if (formRegistro) {
         formRegistro.addEventListener('submit', function(event) {
-            const kilometrajeInput = document.getElementById('kilometraje').value.trim();
+            const kilometrajeInput = document.getElementById('kilometraje').value;
             const precioInput = document.getElementById('precio_kilometraje').value;
             
-            if (kilometrajeInput === "" || precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
+            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || kilometrajeInput.length > 7 || 
+                precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0 || precioInput.length > 10) {
+                
                 event.preventDefault(); 
-                alert("Por favor, ingrese un kilometraje válido y un precio mayor a 0.");
+                alert("Ingrese valores válidos mayores a 0.00 y que no excedan el límite permitido.");
+
+                document.getElementById('kilometraje').classList.add('is-invalid');
+                document.getElementById('precio_kilometraje').classList.add('is-invalid');
+            } else {
+                document.getElementById('kilometraje').classList.remove('is-invalid');
+                document.getElementById('precio_kilometraje').classList.remove('is-invalid');
             }
         });
     }
@@ -65,18 +73,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Filtro de busqueda.
     const inputBusqueda = document.getElementById('inputBusqueda');
     if (inputBusqueda) {
-        inputBusqueda.addEventListener('keyup', function() {
-            let filter = this.value.toUpperCase();
-            let rows = document.querySelector("#tablaPrecios tbody").rows;
+        
+        inputBusqueda.addEventListener('input', function() {
+            const textoBuscado = this.value.toLowerCase();
+            const filas = document.querySelectorAll("#tablaPrecios tbody tr");
             
-            for (let i = 0; i < rows.length; i++) {
-                if(rows[i].cells.length > 1) {
-                    let col1 = rows[i].cells[0].textContent.toUpperCase();
-                    let col2 = rows[i].cells[1].textContent.toUpperCase();
-                    
-                    rows[i].style.display = (col1.indexOf(filter) > -1 || col2.indexOf(filter) > -1) ? "" : "none";
-                }
-            }
+            filas.forEach(fila => {
+                const contenidoFila = fila.textContent.toLowerCase();
+                fila.style.display = contenidoFila.includes(textoBuscado) ? "" : "none";
+            });
         });
     }
 });

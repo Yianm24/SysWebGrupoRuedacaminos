@@ -13,8 +13,8 @@
                     
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
-                            <label for="kilometraje_editar" class="form-label">Kilometraje (km)</label>
-                            <input type="text" class="form-control" id="kilometraje_editar" name="kilometraje_editar" required>
+                            <label for="kilometraje_editar" class="form-label">Kilometraje (Distancia)</label>
+                            <input type="number" step="0.01" min="0.1" class="form-control" id="kilometraje_editar" name="kilometraje_editar" required>
                         </div>
                         <div class="col-md-12">
                             <label for="precio_kilometraje_editar" class="form-label">Monto de la Tarifa ($)</label>

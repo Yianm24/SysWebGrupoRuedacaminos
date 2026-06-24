@@ -20,6 +20,15 @@ class Kilometraje extends Conexion
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
+    
+    public function verificarTarifaDuplicada($kilometraje, $id_actual) {
+        $sentencia = "SELECT COUNT(*) FROM precio_kilometraje WHERE kilometraje = ? AND cod_preciokilometraje != ? AND estado = 1";
+        $stmt = $this->conexion->prepare($sentencia);
+        $stmt->bindValue(1, $kilometraje);
+        $stmt->bindValue(2, $id_actual);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
 
     public function regDatosKilometraje($kilometraje, $monto_tarifa) {
         $this->kilometraje = $kilometraje;
