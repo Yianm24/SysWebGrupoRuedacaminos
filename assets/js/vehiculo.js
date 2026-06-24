@@ -31,7 +31,7 @@ const modal = document.getElementById('actualizarVehiculo');
       const inputCodVehiculo = modal.querySelector('.modal-body #cod-vehiculo')
       const inputPlaca = modal.querySelector('.modal-body #placa')
       const inputColor = modal.querySelector('.modal-body #color')
-      const inputTipovehiculo = modal.querySelector('.modal-body #tipovehiculo')
+      const inputTipovehiculo = modal.querySelector('.modal-body #tipo-vehiculo')
       const inputModelo = modal.querySelector('.modal-body #modelo')
       const inputAno = modal.querySelector('.modal-body #ano')
       

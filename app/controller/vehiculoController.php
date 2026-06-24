@@ -5,16 +5,16 @@
     $vehiculo = new Vehiculo();
     
     $solicitud = $_POST['tipoSolicitud'] ?? '';
-//
+
     switch ($solicitud) {
         case 'registrar':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo-vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano']) ) {
 
-                    $resultado = $vehiculo->regDatosVehiculo($_POST['placa'], $_POST['color'],$_POST['tipo-vehiculo'], $_POST['modelo'] ,$_POST['ano'] );
+                    $resultado = $vehiculo->regDatosVehiculo($_POST['placa'],$_POST['color'],$_POST['tipo-vehiculo'], $_POST['modelo'] ,$_POST['ano'] );
 
                     echo "<script>alert('Registro de datos de vehículo exitoso');</script>";
-                    echo($resultado);
+                    
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
                 }
