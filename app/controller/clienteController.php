@@ -5,9 +5,6 @@ namespace App\Controller;
 use App\Model\Cliente;
 
 $cliente = new Cliente();
-
-
-
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
@@ -22,7 +19,9 @@ switch ($solicitud) {
                     if (!empty($_POST['cedula']) && !empty($_POST['nombre']) && !empty($_POST['apellido']) && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
 
                         $resultado = $cliente->regDatosCliente($_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
-                        echo "<script>alert('Cliente registrado exitosamente');</script>";
+                        // echo "<script>alert('Cliente registrado exitosamente');</script>";
+                        header("Location: ?url=cliente&status=success");
+                        exit();
                     } else {
                         echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
                     }
@@ -33,7 +32,9 @@ switch ($solicitud) {
                     if (!empty($_POST['rif']) && !empty($_POST['razon_social'])  && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
 
                         $resultado = $cliente->regDatosCliente($_POST['rif'], $_POST['razon_social'], null, $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_juridico']);
-                        echo "<script>alert('Cliente registrado exitosamente');</script>";
+                        // echo "<script>alert('Cliente registrado exitosamente');</script>";
+                        header("Location: ?url=cliente&status=success");
+                        exit();
                     } else {
                         echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
                     }
@@ -58,7 +59,8 @@ switch ($solicitud) {
             if (!empty($_POST['cod_cliente']) && !empty($_POST['rif']) && !empty($_POST['razon_social'])  && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_juridico'])) {
 
                 $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['rif'], $_POST['razon_social'], null, $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_juridico']);
-                echo "<script>alert('Cliente actualizado exitosamente');</script>";
+                header("Location: ?url=cliente&status=updated");
+                exit();
             } else {
                 echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
             }
@@ -66,14 +68,15 @@ switch ($solicitud) {
         break;
 
 
-        
+
     case 'editarNatural':
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['cod_cliente']) && !empty($_POST['cedula']) && !empty($_POST['razon_social']) && !empty($_POST['apellido']) && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
 
                 $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['cedula'], $_POST['razon_social'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
-                echo "<script>alert('Cliente actualizado exitosamente');</script>";
+                header("Location: ?url=cliente&status=updated");
+                exit();
             } else {
                 echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
             }

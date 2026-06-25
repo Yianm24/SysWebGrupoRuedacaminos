@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
  
-            <form action="?url=cliente" method="POST" id="formCliente">
+            <form action="#" method="POST" id="formCliente">
                 <div class="modal-body">
                     <input type="hidden" name="id" id="cliente_id">
 
