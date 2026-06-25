@@ -13,7 +13,9 @@
 
                     $resultado = $vehiculo->regDatosVehiculo($_POST['placa'],$_POST['color'],$_POST['tipo-vehiculo'], $_POST['modelo'] ,$_POST['ano'] );
 
-                    echo "<script>alert('Registro de datos de vehículo exitoso');</script>";
+                    //echo "<script>alert('Registro de datos de vehículo exitoso');</script>";
+                    header("Location: ?url=vehiculo&status=success");
+                    exit();
                     
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";

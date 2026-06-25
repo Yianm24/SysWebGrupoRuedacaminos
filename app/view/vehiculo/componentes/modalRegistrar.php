@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="?url=vehiculo" method="POST" id="formFlota">
+            <form action="#" method="POST" id="formFlota">
                 <div class="modal-body">
 
                     <fieldset class="row mb-3">
