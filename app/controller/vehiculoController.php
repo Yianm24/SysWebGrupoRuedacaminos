@@ -23,12 +23,12 @@
             break;
         case 'actualizar':
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-vehiculo'])) {
-                if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['ano']) ) {
+                if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo-vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano']) ) {
                     
-                    $resultado = $vehiculo->actDatosVehiculo($_POST['cod-vehiculo'], $_POST['placa'], $_POST['color'], $_POST['ano']);
+                    $resultado = $vehiculo->actDatosVehiculo($_POST['cod-vehiculo'], $_POST['placa'], $_POST['color'],$_POST['tipo-vehiculo'], $_POST['modelo'], $_POST['ano']);
 
                     echo "<script>alert('Actualización de datos del vehículo realizado exitosamente');</script>";
-                    
+                    echo $resultado;
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
                 }

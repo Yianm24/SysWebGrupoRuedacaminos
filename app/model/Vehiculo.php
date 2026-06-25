@@ -91,7 +91,7 @@ class Vehiculo extends Conexion
     private function actualizarVehiculo()
     {
         try {
-            $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, tipo_vehiculo = ?, modelo = ?, ano = ? WHERE cod_vehiculo = ?";
+            $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, cod_tipovehiculo = ?, cod_modelo = ?, ano = ? WHERE cod_vehiculo = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->placa);
