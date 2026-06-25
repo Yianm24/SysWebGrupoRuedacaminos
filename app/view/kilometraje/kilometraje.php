@@ -25,7 +25,7 @@
                                 icon: "success"
                                 });
                             <?php elseif ($_GET['status'] == 'exists'): ?>
-                                alert("Ya existe una tarifa registrada para el Precio de Kilometraje seleccionado.");
+                                alert("Ya existe una tarifa registrada para el Precio de Kilometraje ingresado.");
                             <?php elseif ($_GET['status'] == 'updated'): ?>
                                 Swal.fire({
                                 title: "Actualización exitosa!",
