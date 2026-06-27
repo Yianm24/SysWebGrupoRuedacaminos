@@ -7,25 +7,17 @@
             </header>
 
             <form action="?url=metodopago" method="POST">
-                <div class=" row mb-3 modal-body">
+                <div class="modal-body">
 
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <label for="Moneda" class="form-label">Moneda</label>
-                        <select class="form-select" id="cod_moneda" name="cod_moneda" style="max-width: 80px;" aria-label="Moneda" required>
-                            <option value="V">USD</option>
-                            <option value="E">VES</option>
-                            <option value="E">USDT</option>
-                            <option value="E">EUR</option>
+                    <div class="input-group">
+                        <select class="form-select" id="moneda" name="moneda" style="max-width: 80px;" aria-label="Moneda">
+                            <option value="V">VES-</option>
+                            <option value="E">USD-</option>
+                            <option value="E">USDT-</option>
+                            <option value="E">EUR-</option>
                         </select>
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingrese el método de pago">
                     </div>
-
-                    <!-- hay que modificar las proporciones de los inputs para que se vean mejor -->
-                    <div class="col-md-5 mb-9 mb-md-0">
-                        <label class="form-label">Nombre Método</label>
-                        <input type="text" class="form-control" name="nombre_metodo" placeholder="Ej: Pago Móvil, Zelle, Transferencia" required>
-                    </div>
-
-
                 </div>
 
                 <footer class="modal-footer">
