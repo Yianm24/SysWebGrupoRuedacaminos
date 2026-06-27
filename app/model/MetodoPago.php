@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use Override;
 
 class MetodoPago extends Conexion
 {
@@ -17,7 +16,7 @@ class MetodoPago extends Conexion
 
     public function __construct()
     {
-        return parent::__construct();
+        parent::__construct();
     }
 
 
@@ -51,7 +50,13 @@ class MetodoPago extends Conexion
     public function obt_RegistrosMetodoPago()
     {
         try {
-            $sentencia = "SELECT * FROM metodo_pago WHERE estado = 1";
+            $sentencia = "SELECT metodo_pago.*, moneda.nombre 
+            AS nombremoneda 
+            FROM metodo_pago
+            INNER JOIN moneda 
+            ON metodo_pago.cod_moneda= moneda.cod_moneda
+            WHERE metodo_pago.estado=1";
+
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
             return $select->fetchAll(\PDO::FETCH_ASSOC);
@@ -59,6 +64,20 @@ class MetodoPago extends Conexion
             return [];
         }
     }
+
+    public function obt_RegistrosMoneda()
+    {
+        try {
+            $sentencia = "SELECT nombre FROM moneda WHERE estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
+
     public function actDatosMetodoPago($cod_metodo, $nombre, $moneda)
     {
         $this->cod_metodo = $cod_metodo;

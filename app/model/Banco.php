@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Model;
+
 use App\Config\Conexion;
 
-class Banco extends Conexion 
+class Banco extends Conexion
 {
     private $cod_banco;
     private $banco;
@@ -49,18 +50,18 @@ class Banco extends Conexion
             $resultado = $insert->execute();
 
             return $resultado;
-
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el banco: " . $e->getMessage() . "');</script>";
         }
     }
-    
+
     public function obt_RegistrosBancos()
     {
         try {
             $sentencia = "SELECT cuenta_banco.*, banco.nombre AS nombrebanco 
               FROM cuenta_banco 
-              INNER JOIN banco ON cuenta_banco.cod_banco = banco.cod_banco
+              INNER JOIN banco 
+              ON cuenta_banco.cod_banco = banco.cod_banco
               WHERE cuenta_banco.estado = 1";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
@@ -92,7 +93,6 @@ class Banco extends Conexion
             $update->bindValue(4, $this->cod_banco);
 
             $update->execute();
-
         } catch (\PDOException $e) {
             return "Error al actualizar el banco: " . $e->getMessage();
         }
