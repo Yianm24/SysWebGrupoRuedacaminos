@@ -5,6 +5,8 @@ use App\Model\MetodoPago;
 
 $metodo= new MetodoPago();
 
+
+$regMoneda=$metodo->obt_RegistrosMoneda();
 $registros=$metodo->obt_RegistrosMetodoPago();
 // app/controller/metodopagoController.php
 include 'app/view/layout/header.php';

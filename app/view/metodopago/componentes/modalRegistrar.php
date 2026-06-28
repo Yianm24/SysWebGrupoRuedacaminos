@@ -11,10 +11,12 @@
 
                     <div class="input-group">
                         <select class="form-select" id="moneda" name="moneda" style="max-width: 80px;" aria-label="Moneda">
-                            <option value="V">VES-</option>
-                            <option value="E">USD-</option>
-                            <option value="E">USDT-</option>
-                            <option value="E">EUR-</option>
+
+
+                            <?php
+                            foreach ($regMoneda as $dato): ?>
+                                <option value="<?php echo $dato['cod_moneda']; ?>"><?php echo $dato['abreviatura']; ?></option>
+                            <?php endforeach; ?>
                         </select>
                         <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingrese el método de pago">
                     </div>
