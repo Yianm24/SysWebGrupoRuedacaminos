@@ -26,6 +26,8 @@ class MetodoPago extends Conexion
         $this->nombre = $nombre;
         $this->moneda = $moneda;
         $this->estado = 1;
+
+        return $this->registrarMetodoPago();
     }
 
     private function registrarMetodoPago()

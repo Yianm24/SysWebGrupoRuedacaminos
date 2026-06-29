@@ -1,16 +1,54 @@
 <main class="container-fluid py-5 px-4">
     <div class="row">
         <div class="col-12 mb-4">
-            
+
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-credit-card"></i> Métodos de Pago</h2>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerMetodo">
                     <i class="bi bi-plus-circle"></i> Registrar
-                </button> 
+                </button>
             </header>
-            
             <?php require 'componentes/modalRegistrar.php'; ?>
-
+            <?php require 'componentes/modalActualizar.php'; ?>
+            <?php if (isset($_GET['status'])): ?>
+                <script>
+                    // Mostrar alertas basadas en el estado de la operación.
+                    document.addEventListener("DOMContentLoaded", function() {
+                        setTimeout(function() {
+                            <?php if ($_GET['status'] == 'success'): ?>
+                                Swal.fire({
+                                    title: "Registro exitoso!",
+                                    text: "El Metodo de Pago ha sido registrado correctamente.",
+                                    icon: "success"
+                                });
+                            <?php elseif ($_GET['status'] == 'exists'): ?>
+                                Swal.fire({
+                                    title: "Metodo de pago existente!",
+                                    text: "El vehículo ingresado ya existe en la base de datos.",
+                                    icon: "warning"
+                                });
+                            <?php elseif ($_GET['status'] == 'updated'): ?>
+                                Swal.fire({
+                                    title: "Actualización exitosa!",
+                                    text: "El Metodo de Pago ha sido actualizado correctamente.",
+                                    icon: "success",
+                                    buttonsStyling: false,
+                                    customClass: {
+                                        confirmButton: 'btn btn-primary', // Clase personalizada para el botón de confirmación
+                                        cancelButton: 'btn btn-outline-secondary'
+                                    }
+                                });
+                            <?php elseif ($_GET['status'] == 'deleted'): ?>
+                                Swal.fire({
+                                    title: "Eliminación exitosa!",
+                                    text: "El Metodo de Pago ha sido eliminado correctamente.",
+                                    icon: "success"
+                                });
+                            <?php endif; ?>
+                        }, 100);
+                    });
+                </script>
+            <?php endif; ?>
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold">Métodos Disponibles</h4>
@@ -32,7 +70,9 @@
                     </div>
                 </footer>
             </section>
-            
+
         </div>
     </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assets/js/metodopago.js"></script>
