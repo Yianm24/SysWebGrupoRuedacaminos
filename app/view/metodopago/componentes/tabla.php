@@ -22,13 +22,14 @@
                                 datos-cod-moneda="<?php echo $dato['cod_moneda']; ?>">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <form action="?url=metodopago" method="POST" style="display: inline;">
+                            <form action="#" id="formEliminar" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">
                                     <!-- Elementos para eliminar un vehiculo -->
                                     <input type="hidden" name="cod_metodo" value="<?= $dato['cod_metodo'] ?>">
-                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este método de pago?');">
-                                        <i class="bi bi-trash"></i>
+                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" > <i class="bi bi-trash"></i>
                                     </button>
+                                    
+
                                 </fieldset>
                             </form>
                         </td>
@@ -39,3 +40,38 @@
         </table>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+const formulario = document.getElementById('formEliminar')
+function confirmarEliminacion() {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        title: '¿Estás seguro?',
+        text: "¡No podrás revertir esta acción!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: 'Sí, ¡eliminar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) 
+            Swal.fire({
+    title: "Deleted!",
+    text: "Your file has been deleted.",
+    icon: "warning",
+  });
+    });
+}
+
+
+formulario.addEventListener('submit', function(event){
+event.preventDefault(); // Evita que el formulario se envíe automáticamente
+confirmarEliminacion();
+window.location.href = "?url=metodopago"; // Redirige a la página de listado después de la confirmación
+})
+
+</script>

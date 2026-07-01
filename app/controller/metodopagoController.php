@@ -38,6 +38,15 @@ switch ($solicitud) {
             }
         }
         break;
+
+
+    case 'eliminar':
+        if (isset($_POST['cod_metodo'])) {
+            $resultado = $metodo->elmDatosMetodoPago($_POST['cod_metodo']);
+            header("Location: ?url=metodopago&status=deleted");
+            exit();
+        }
+        break;
 }
 
 

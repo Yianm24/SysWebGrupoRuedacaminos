@@ -48,7 +48,8 @@ switch ($solicitud) {
     case 'eliminar':
         if (isset($_POST['cod_cliente'])) {
             $resultado = $cliente->elmDatosCliente($_POST['cod_cliente']);
-            echo "<script>alert('Cliente eliminado correctamente');</script>";
+            header("Location: ?url=cliente&status=deleted");
+                        exit();
         }
         break;
 

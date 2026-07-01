@@ -30,4 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
             inputCodMoneda.value = cod_moneda;
         })
     }
+
+
 });
+
+
