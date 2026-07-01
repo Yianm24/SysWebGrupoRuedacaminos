@@ -29,8 +29,10 @@
                     
                     $resultado = $vehiculo->actDatosVehiculo($_POST['cod-vehiculo'], $_POST['placa'], $_POST['color'],$_POST['tipo-vehiculo'], $_POST['modelo'], $_POST['ano']);
 
-                    echo "<script>alert('Actualización de datos del vehículo realizado exitosamente');</script>";
-                    echo $resultado;
+                    //echo "<script>alert('Actualización de datos del vehículo realizado exitosamente');</script>";
+                    //echo $resultado;
+                    header("Location: ?url=vehiculo&status=updated");
+                    exit();
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
                 }
@@ -40,8 +42,8 @@
         case 'eliminar':
             if (isset($_POST['cod_vehiculo'])) {
                 $resultado = $vehiculo->elmDatosVehiculo($_POST['cod_vehiculo']);
-                echo "<script>alert('Eliminacion de Vehiculo realizado exitosamente');</script>";
-              
+                header("Location: ?url=vehiculo&status=deleted");
+                exit();
             }
             break;
 
