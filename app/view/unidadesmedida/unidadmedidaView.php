@@ -11,6 +11,46 @@
             
             <?php require 'componentes/modalRegistrar.php'; ?>
 
+            <?php if (isset($_GET['status'])): ?>
+                <script>
+                    // Mostrar alertas basadas en el estado de la operación.
+                    document.addEventListener("DOMContentLoaded", function() {
+                        setTimeout(function() {
+                            <?php if ($_GET['status'] == 'success'): ?>
+                                Swal.fire({
+                                title: "Registro exitoso!",
+                                text: "El vehículo ha sido registrado correctamente.",
+                                icon: "success"
+                                });
+                            <?php elseif ($_GET['status'] == 'exists'): ?>
+                                Swal.fire({
+                                title: "Vehículo existente!",
+                                text: "El vehículo ingresado ya existe en la base de datos.",
+                                icon: "warning"
+                                });
+                            <?php elseif ($_GET['status'] == 'updated'): ?>
+                                Swal.fire({
+                                title: "Actualización exitosa!",
+                                text: "El vehículo ha sido actualizado correctamente.",
+                                icon: "success",
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-primary', // Clase personalizada para el botón de confirmación
+                                    cancelButton: 'btn btn-outline-secondary'
+                                }
+                                });
+                            <?php elseif ($_GET['status'] == 'deleted'): ?>
+                                Swal.fire({
+                                title: "Eliminación exitosa!",
+                                text: "El vehículo ha sido eliminado correctamente.",
+                                icon: "success"
+                                });
+                            <?php endif; ?>
+                        }, 100); 
+                    });
+                </script>
+            <?php endif; ?>
+
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold">Listado</h4>
@@ -36,3 +76,4 @@
         </div>
     </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

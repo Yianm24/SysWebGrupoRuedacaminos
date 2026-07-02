@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="?url=unidadmedida" method="POST">
+            <form action="#" method="POST">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Nombre de la Unidad</label>
@@ -20,20 +20,18 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Tipo de Unidad</label>
-                            <input class="form-control" list="listaTipos" name="tipo_unidad" placeholder="Escriba o seleccione..." required>
-                            <datalist id="listaTipos">
-                                <option value="Longitud">
-                                <option value="Peso">
-                                <option value="Volumen">
-                                <option value="Distancia">
-                            </datalist>
+                            <select class="form-control" name="tipo_unidad" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Longitud">Longitud</option>
+                                <option value="Masa">Masa</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>
