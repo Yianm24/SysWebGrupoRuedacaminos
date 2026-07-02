@@ -10,42 +10,17 @@
                 </tr>
             </thead>
             <tbody>
+                <?php foreach ($registros as $dato): ?>
                 <tr>
-                    <td class="ps-4 fw-bold text-secondary">CM</td>
-                    <td>Centímetros</td>
-                    <td>Longitud</span></td>
+                    <td class="ps-4 fw-bold text-secondary"><?php echo $dato['abreviatura']; ?></td>
+                    <td><?php echo $dato['nombre']; ?></td>
+                    <td><?php echo $dato['tipo']; ?></td>
                     <td class="text-end pe-4">
                         <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
                         <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
-                <tr>
-                    <td class="ps-4 fw-bold text-secondary">KG</td>
-                    <td>Kilogramos</td>
-                    <td>Peso</span></td>
-                    <td class="text-end pe-4">
-                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ps-4 fw-bold text-secondary">LT</td>
-                    <td>Litros</td>
-                    <td>Volumen</span></td>
-                    <td class="text-end pe-4">
-                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ps-4 fw-bold text-secondary">KM</td>
-                    <td>Kilómetros</td>
-                    <td>Distancia</span></td>
-                    <td class="text-end pe-4">
-                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
+                <?php endforeach; ?>
 
                 </tbody>
         </table>
