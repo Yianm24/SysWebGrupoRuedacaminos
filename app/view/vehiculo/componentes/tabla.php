@@ -38,11 +38,11 @@
                                 <i class="bi bi-pencil"></i>
                             </button>
     
-                            <form action="?url=vehiculo" method="POST" style="display: inline;">
+                            <form action="#" class="formEliminar" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">
                                     <!-- Elementos para eliminar un vehiculo -->
                                     <input type="hidden" name="cod_vehiculo" value="<?= $dato['cod_vehiculo'] ?>">
-                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este vehículo?');">
+                                    <button type="button" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline botonEliminar" title="Eliminar" >
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </fieldset>
@@ -54,3 +54,51 @@
         </table>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+       const formulariosEliminar = document.querySelector('form.formEliminar');
+    
+        
+    /*console.log("Formularios encontrados:", formulariosEliminar);
+    formulariosEliminar.forEach((formulario, indice) => {
+        console.log(`Formulario #${indice} encontrado:`, formulario);
+    });
+       
+    const botonEliminar = document.querySelectorAll('.botonEliminar');
+    botonEliminar.forEach((b) => {
+        b.addEventListener("click", (event) => {
+            console.log("Evento de clic detectado:", event.target);
+        });
+    });*/
+
+    });
+    
+
+
+
+    /*console.log("botones encontrados a traves del evento clic");
+    
+    //console.log("botones encontrados a traves del evento clic");*/
+
+
+    /*function alertaEliminarVehiculo() {
+        console.log("Formulario a eliminar:", formulariosEliminar); // Verificar que se está seleccionando el formulario correcto
+        //console.log("indice del formulario a eliminar:", formulariosEliminar.); // Verificar el índice del formulario
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Si el usuario confirma, enviar el formulario
+                //formulariosEliminar[0].submit();
+            }
+        });
+        return false; // Evitar que el formulario se envíe inmediatamente
+    }*/
+    </script>

@@ -13,7 +13,6 @@
 
                     $resultado = $vehiculo->regDatosVehiculo($_POST['placa'],$_POST['color'],$_POST['tipo-vehiculo'], $_POST['modelo'] ,$_POST['ano'] );
 
-                    //echo "<script>alert('Registro de datos de vehículo exitoso');</script>";
                     header("Location: ?url=vehiculo&status=success");
                     exit();
                     
@@ -29,7 +28,7 @@
                     
                     $resultado = $vehiculo->actDatosVehiculo($_POST['cod-vehiculo'], $_POST['placa'], $_POST['color'],$_POST['tipo-vehiculo'], $_POST['modelo'], $_POST['ano']);
 
-                    //echo "<script>alert('Actualización de datos del vehículo realizado exitosamente');</script>";
+                    
                     //echo $resultado;
                     header("Location: ?url=vehiculo&status=updated");
                     exit();
@@ -49,13 +48,6 @@
 
     }
     $registros = $vehiculo->obt_RegistrosVehiculos();
-    
-    //$datosEditable = $_GET['prueba'] ?? 'no me dieron nada';
-    /*foreach ($registros as $dato):
-        if ($_REQUEST['obtener-codigo'] == $dato['cod_vehiculo']) {
-            $datosEditable = $dato;
-        }
-    endforeach;*/
 
     include 'app/view/layout/header.php';
     include 'app/view/vehiculo/vehiculoView.php';
