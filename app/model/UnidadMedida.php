@@ -63,6 +63,34 @@ class UnidadMedida extends Conexion{
         }
     }
 
+    public function actUnidadMedida($cod_unidadmedida, $nombre, $abreviatura, $tipo)
+    {
+        $this->cod_unidadmedida = $cod_unidadmedida;
+        $this->nombre = $nombre;
+        $this->abreviatura = $abreviatura;
+        $this->tipo = $tipo;
+
+        return $this->actualizarUnidadMedida();
+    }
+   
+    private function actualizarUnidadMedida()
+    {
+        try {
+            $sentencia = "UPDATE `unidad_medida` SET nombre = ?, abreviatura = ?, tipo = ? WHERE cod_unidad = ?";
+            $update = $this->conexion->prepare($sentencia);
+
+            $update->bindValue(1, $this->nombre);
+            $update->bindValue(2, $this->abreviatura);
+            $update->bindValue(3, $this->tipo);
+            $update->bindValue(4, $this->cod_unidadmedida);
+
+            $update->execute();
+
+        } catch (\PDOException $e) {
+            return "Error al actualizar la unidad de medida: " . $e->getMessage();
+        }
+    }
+
 }
 
 

@@ -4,12 +4,13 @@
             
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-rulers"></i> Gestión Unidad de Medidas</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerUnidad">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrarUnidad">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
             
             <?php require 'componentes/modalRegistrar.php'; ?>
+            <?php require 'componentes/modalActualizar.php'; ?>
 
             <?php if (isset($_GET['status'])): ?>
                 <script>
@@ -19,19 +20,19 @@
                             <?php if ($_GET['status'] == 'success'): ?>
                                 Swal.fire({
                                 title: "Registro exitoso!",
-                                text: "El vehículo ha sido registrado correctamente.",
+                                text: "La unidad de medida ha sido registrada correctamente.",
                                 icon: "success"
                                 });
                             <?php elseif ($_GET['status'] == 'exists'): ?>
                                 Swal.fire({
-                                title: "Vehículo existente!",
-                                text: "El vehículo ingresado ya existe en la base de datos.",
+                                title: "Unidad de medida existente!",
+                                text: "La unidad de medida ingresada ya existe en la base de datos.",
                                 icon: "warning"
                                 });
                             <?php elseif ($_GET['status'] == 'updated'): ?>
                                 Swal.fire({
                                 title: "Actualización exitosa!",
-                                text: "El vehículo ha sido actualizado correctamente.",
+                                text: "La unidad de medida ha sido actualizada correctamente.",
                                 icon: "success",
                                 buttonsStyling: false,
                                 customClass: {
@@ -42,7 +43,7 @@
                             <?php elseif ($_GET['status'] == 'deleted'): ?>
                                 Swal.fire({
                                 title: "Eliminación exitosa!",
-                                text: "El vehículo ha sido eliminado correctamente.",
+                                text: "La unidad de medida ha sido eliminada correctamente.",
                                 icon: "success"
                                 });
                             <?php endif; ?>
@@ -77,3 +78,4 @@
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assets/js/unidadmedida.js"></script>

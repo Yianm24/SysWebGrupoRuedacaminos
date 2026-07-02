@@ -17,6 +17,17 @@ switch ($solicitud) {
             }
         }
         break;
+    case 'actualizar':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!empty($_POST['cod_unidad']) && !empty($_POST['nombre_unidad']) && !empty($_POST['abreviatura']) && !empty($_POST['tipo_unidad'])) {
+                $resultado = $unidadMedida->actUnidadMedida($_POST['cod_unidad'], $_POST['nombre_unidad'], $_POST['abreviatura'], $_POST['tipo_unidad']);
+                header("Location: ?url=unidadesmedida&status=updated");
+                exit();
+            } else {
+                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+            }
+        }
+        break;
 }
 
 

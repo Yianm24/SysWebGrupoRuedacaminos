@@ -16,7 +16,15 @@
                     <td><?php echo $dato['nombre']; ?></td>
                     <td><?php echo $dato['tipo']; ?></td>
                     <td class="text-end pe-4">
-                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <input type="hidden" class="codigo_vehiculo" >    
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarUnidad"
+                                datos-cod-unidad="<?php echo $dato['cod_unidad']; ?>"
+                                datos-nombre="<?php echo $dato['nombre']; ?>"
+                                datos-abreviatura="<?php echo $dato['abreviatura']; ?>"
+                                datos-tipo="<?php echo $dato['tipo']; ?>"
+                                >
+                                <i class="bi bi-pencil"></i>
+                            </button>
                         <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
