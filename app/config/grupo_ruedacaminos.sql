@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-07-2026 a las 17:44:36
+-- Tiempo de generación: 02-07-2026 a las 23:16:49
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -51,7 +51,7 @@ INSERT INTO `banco` (`cod_banco`, `nombre`, `estado`) VALUES
 CREATE TABLE `cambio_moneda` (
   `cod_cambio` int(11) NOT NULL,
   `tasa` float NOT NULL,
-  `fecha` date NOT NULL,
+  `fecha` datetime NOT NULL,
   `cod_moneda` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -61,12 +61,12 @@ CREATE TABLE `cambio_moneda` (
 --
 
 INSERT INTO `cambio_moneda` (`cod_cambio`, `tasa`, `fecha`, `cod_moneda`, `estado`) VALUES
-(1, 602.25, '2026-06-18', 1, 1),
-(2, 645.03, '2026-06-18', 3, 1),
-(3, 805.12, '2026-06-18', 4, 1),
-(4, 602.25, '2026-06-18', 1, 1),
-(5, 645.03, '2026-06-18', 3, 1),
-(6, 805.12, '2026-06-18', 4, 1);
+(1, 602.25, '2026-06-18 00:00:00', 1, 1),
+(2, 645.03, '2026-06-18 00:00:00', 3, 1),
+(3, 805.12, '2026-06-18 00:00:00', 4, 1),
+(4, 602.25, '2026-06-18 00:00:00', 1, 1),
+(5, 645.03, '2026-06-18 00:00:00', 3, 1),
+(6, 805.12, '2026-06-18 00:00:00', 4, 1);
 
 -- --------------------------------------------------------
 
