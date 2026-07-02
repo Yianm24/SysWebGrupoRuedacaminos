@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-06-2026 a las 22:32:17
+-- Tiempo de generación: 02-07-2026 a las 17:44:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -580,24 +580,26 @@ CREATE TABLE `ubicaciones_envio` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `unidades_medida`
+-- Estructura de tabla para la tabla `unidad_medida`
 --
 
-CREATE TABLE `unidades_medida` (
+CREATE TABLE `unidad_medida` (
   `cod_unidad` int(1) NOT NULL,
   `nombre` varchar(15) NOT NULL,
   `abreviatura` varchar(5) NOT NULL,
+  `tipo` enum('Masa','Longitud') NOT NULL COMMENT 'Unidades utilizadas en los servicios prestados',
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `unidades_medida`
+-- Volcado de datos para la tabla `unidad_medida`
 --
 
-INSERT INTO `unidades_medida` (`cod_unidad`, `nombre`, `abreviatura`, `estado`) VALUES
-(1, 'Centimetros', 'CM', 1),
-(2, 'Kilometros', 'KM', 1),
-(3, 'Kilogramos', 'KG', 1);
+INSERT INTO `unidad_medida` (`cod_unidad`, `nombre`, `abreviatura`, `tipo`, `estado`) VALUES
+(1, 'Centimetros', 'CM', 'Longitud', 1),
+(2, 'Kilometros', 'KM', 'Longitud', 1),
+(3, 'Kilogramos', 'KG', 'Masa', 1),
+(4, 'Gramos', 'G', 'Masa', 1);
 
 -- --------------------------------------------------------
 
@@ -643,11 +645,11 @@ CREATE TABLE `vehiculo` (
 --
 
 INSERT INTO `vehiculo` (`cod_vehiculo`, `placa`, `color`, `cod_tipovehiculo`, `estado`, `cod_modelo`, `ano`) VALUES
-(8, 'ABC1234', 'Blanco', 2, 1, 1, 2022),
+(8, 'ABC541', 'Blanco', 2, 1, 1, 2022),
 (9, 'ABC1234', 'Blanco', 1, 1, 2, 2022),
-(10, 'GHI1122', 'Gris', 2, 1, 3, 2023),
-(11, 'XYZ9876', 'Rojo', 3, 1, 2, 2019),
-(12, 'XYB9870', 'Negro', 2, 1, 2, 2004);
+(10, 'GHI1122', 'Gris', 1, 1, 3, 2023),
+(11, 'XYZ9876', 'Rojo', 3, 0, 2, 2019),
+(12, 'XYB9870', 'Negro', 2, 0, 2, 2004);
 
 --
 -- Índices para tablas volcadas
@@ -833,9 +835,9 @@ ALTER TABLE `ubicaciones_envio`
   ADD KEY `cod_envio` (`cod_envio`);
 
 --
--- Indices de la tabla `unidades_medida`
+-- Indices de la tabla `unidad_medida`
 --
-ALTER TABLE `unidades_medida`
+ALTER TABLE `unidad_medida`
   ADD PRIMARY KEY (`cod_unidad`);
 
 --
@@ -984,10 +986,10 @@ ALTER TABLE `ubicacion`
   MODIFY `cod_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `unidades_medida`
+-- AUTO_INCREMENT de la tabla `unidad_medida`
 --
-ALTER TABLE `unidades_medida`
-  MODIFY `cod_unidad` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `unidad_medida`
+  MODIFY `cod_unidad` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `vehiculo`
@@ -1043,7 +1045,7 @@ ALTER TABLE `empleado`
 --
 ALTER TABLE `envio`
   ADD CONSTRAINT `envio_ibfk_3` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `envio_ibfk_4` FOREIGN KEY (`cod_unidadmedida`) REFERENCES `unidades_medida` (`cod_unidad`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `envio_ibfk_4` FOREIGN KEY (`cod_unidadmedida`) REFERENCES `unidad_medida` (`cod_unidad`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `envio_ibfk_5` FOREIGN KEY (`cod_gasto`) REFERENCES `gastos_funcionales` (`cod_gasto`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `envio_ibfk_6` FOREIGN KEY (`cod_preciokilometraje`) REFERENCES `precio_kilometraje` (`cod_preciokilometraje`) ON DELETE CASCADE ON UPDATE CASCADE;
 

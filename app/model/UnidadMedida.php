@@ -33,14 +33,14 @@ class UnidadMedida extends Conexion{
     private function registrarUnidadMedida()
     {
         try {
-            $sentencia = "INSERT INTO unidad_medida (nombre, abreviatura, tipo) VALUES (?, ?, ?)";
+            $sentencia = "INSERT INTO unidad_medida (nombre, abreviatura, tipo, estado) VALUES (?, ?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
             $insert->bindValue(2, $this->abreviatura);
             $insert->bindValue(3, $this->tipo);
-
+            $insert->bindValue(4, $this->estado);
             $resultado = $insert->execute();
 
             return $resultado;
