@@ -53,7 +53,7 @@ class UnidadMedida extends Conexion{
     public function obt_RegistrosUnidadMedida(){
         
         try {
-            $sentencia = "SELECT * FROM unidad_medida";
+            $sentencia = "SELECT * FROM unidad_medida WHERE estado = 1";
             $consulta = $this->conexion->prepare($sentencia);
             $consulta->execute();
             return $consulta->fetchAll(\PDO::FETCH_ASSOC);
@@ -88,6 +88,28 @@ class UnidadMedida extends Conexion{
 
         } catch (\PDOException $e) {
             return "Error al actualizar la unidad de medida: " . $e->getMessage();
+        }
+    }
+
+    public function elmDatosUnidadMedida(int $cod_unidadmedida)
+    {
+        $this->cod_unidadmedida = $cod_unidadmedida;
+
+        return $this->eliminarUnidadMedida();
+    }
+
+    private function eliminarUnidadMedida()
+    {
+        try {
+            $sentencia = "UPDATE `unidad_medida` SET estado = 0 WHERE cod_unidad = ?";
+            $delete = $this->conexion->prepare($sentencia);
+
+            $delete->bindValue(1, $this->cod_unidadmedida);
+            $delete->execute();
+
+            return "Unidad de medida eliminada exitosamente";
+        } catch (\PDOException $e) {
+            return "Error al eliminar la unidad de medida: " . $e->getMessage();
         }
     }
 

@@ -25,7 +25,15 @@
                                 >
                                 <i class="bi bi-pencil"></i>
                             </button>
-                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
+                        <form action="?url=unidadesmedida" method="POST" style="display: inline;">
+                            <fieldset style="display: inline;">
+                                <!-- Elementos para eliminar un vehiculo -->
+                                <input type="hidden" name="cod-unidad" value="<?= $dato['cod_unidad'] ?>">
+                                <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar esta unidad de medida?');">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </fieldset>
+                        </form>
                     </td>
                 </tr>
                 <?php endforeach; ?>

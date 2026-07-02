@@ -28,6 +28,17 @@ switch ($solicitud) {
             }
         }
         break;
+    case 'eliminar':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!empty($_POST['cod-unidad'])) {
+                $resultado = $unidadMedida->elmDatosUnidadMedida($_POST['cod-unidad']);
+                echo $resultado;
+                header("Location: ?url=unidadesmedida&status=deleted");
+                exit();
+            } else {
+                echo "<script>alert('Falta el código de la unidad de medida');</script>";
+            }
+        }
 }
 
 
