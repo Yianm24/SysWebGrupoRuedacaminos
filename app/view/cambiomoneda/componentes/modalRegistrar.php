@@ -1,3 +1,7 @@
+<?php 
+if (!isset($listaMonedas)) $listaMonedas = []; 
+?>
+
 <div class="modal fade" id="registerCambio" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -6,15 +10,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="?url=cambiomoneda" method="POST">
+            <form action="?url=cambiomoneda" method="POST" id="formCambioMoneda">
                 <div class="modal-body">
+                    <input type="hidden" name="tipoSolicitud" value="registrar">
                     <div class="mb-3">
                         <label for="moneda" class="form-label">Moneda</label>
                         <select class="form-select" id="moneda" name="moneda" required>
                             <option value="" selected disabled>Seleccionar...</option>
-                            <option value="1">USD (Dólar)</option>
-                            <option value="2">EUR (Euro)</option>
-                            <option value="3">USDT (Dólar Tether)</option>
+                            <?php foreach ($listaMonedas as $moneda): ?>
+                                <option value="<?= $moneda['cod_moneda'] ?>">
+                                    <?= $moneda['abreviatura'] ?> (<?= $moneda['nombre'] ?>)
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="mb-3">

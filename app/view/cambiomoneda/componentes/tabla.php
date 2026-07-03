@@ -11,47 +11,42 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="ps-4 text-secondary">27/05/2026</td>
-                    <td class="fw-medium">01:10 PM</td>
-                    <td class="fw-medium">USD</td>
-                    <td class="fw-bold">
-                        549.04 VES 
-                        <small class="text-success ms-1"><i class="bi bi-arrow-up"></i> 0.87%</small>
-                    </td>
-                    <td class="pe-4 text-center">
-                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ps-4 text-secondary">27/05/2026</td>
-                    <td class="fw-medium">01:10 PM</td>
-                    <td class="fw-medium">EUR</td>
-                    <td class="fw-bold">
-                        627.70 VES 
-                        <small class="text-success ms-1"><i class="bi bi-arrow-up"></i> 1.25%</small>
-                    </td>
-                    <td class="pe-4 text-center">
-                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ps-4 text-secondary">27/05/2026</td>
-                    <td class="fw-medium">01:10 PM</td>
-                    <td class="fw-medium">USDT</td>
-                    <td class="fw-bold">
-                        737.75 VES 
-                        <small class="text-danger ms-1"><i class="bi bi-arrow-down"></i> 0.07%</small>
-                    </td>
-                    <td class="pe-4 text-center">
-                        <a href="#" class="text-secondary me-2" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary" title="Eliminar"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
+                <?php 
+                $tasaAnterior = null;
+                if (!empty($registros)): 
+                    foreach ($registros as $fila): ?>
+                    <tr>
+                        <td class="ps-4 text-secondary"><?= date('d/m/Y', strtotime($fila['fecha'])) ?></td>
+                        <td class="fw-medium"><?= date('h:i A', strtotime($fila['fecha'])) ?></td>
+                        <td class="fw-medium"><?= $fila['abreviatura'] ?></td>
+                        <td class="fw-bold">
+                            <?= number_format($fila['tasa'], 2) ?> VES
+                            <?php if ($tasaAnterior !== null): 
+                                $color = ($fila['tasa'] >= $tasaAnterior) ? "text-success" : "text-danger";
+                                $icono = ($fila['tasa'] >= $tasaAnterior) ? "bi-arrow-up" : "bi-arrow-down";
+                            ?>
+                                <small class="<?= $color ?> ms-1"><i class="bi <?= $icono ?>"></i></small>
+                            <?php endif; $tasaAnterior = $fila['tasa']; ?>
+                        </td>
+                        <td class="pe-4 text-center">
+                            <a href="#" class="text-secondary me-2 btn-editar" title="Editar"
+                            data-bs-toggle="modal" data-bs-target="#modalEditarCambio" 
+                            data-id="<?= $fila['cod_cambio'] ?>" 
+                            data-tasa="<?= $fila['tasa'] ?>"
+                            data-moneda="<?= $fila['cod_moneda'] ?>">
+                            <i class="bi bi-pencil"></i>
+                            </a>
 
-                </tbody>
+                            <a href="#" class="text-secondary btn-eliminar" 
+                            data-id="<?= $fila['cod_cambio'] ?>">
+                            <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; 
+                else: echo "<tr><td colspan='5' class='text-center'>No hay registros.</td></tr>"; 
+                endif; ?>
+            </tbody>
         </table>
     </div>
 </div>
