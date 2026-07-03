@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     
-    //Modal de Edición
+    // Modal Editar
     const modalEditar = document.getElementById('modalEditar');
     if (modalEditar) {
         modalEditar.addEventListener('show.bs.modal', event => {
             const boton = event.relatedTarget;
-            
-            // Obtener los datos del registro
             const id = boton.getAttribute('data-id');
             const kilometraje = boton.getAttribute('data-kilometraje'); 
             const precio = boton.getAttribute('data-precio');
@@ -21,63 +19,75 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Modal de Eliminación.
+    // Modal Eliminar
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(boton => {
         boton.addEventListener('click', function(event) {
             event.preventDefault(); 
-            
-            // Mostrar una confirmación antes de eliminar
-            let confirmacion = confirm("¿Está seguro de eliminar esta tarifa?");
-            
-            if (confirmacion) {
-                let idTarifa = this.getAttribute('data-id');
-                
-                let form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '';
-                
-                form.innerHTML = `
-                    <input type="hidden" name="tipoSolicitud" value="eliminar">
-                    <input type="hidden" name="id_tarifa" value="${idTarifa}">
-                `;
-                
-                document.body.appendChild(form);
-                form.submit();
-            }
+            let idTarifa = this.getAttribute('data-id');
+
+            // Configuración de SweetAlert2 con botones personalizados
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: "¿Está seguro que desea eliminar este registro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '?url=kilometraje';
+                    form.innerHTML = `
+                        <input type="hidden" name="tipoSolicitud" value="eliminar">
+                        <input type="hidden" name="id_tarifa" value="${idTarifa}">
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelado",
+                        text: "Eliminación del Precio de Kilometraje cancelada",
+                        icon: "error"
+                    });
+                }
+            });
         });
     });
 
-    //Validación de Registros.
+    // Validación de formulario
     const formRegistro = document.getElementById('formPrecioKilometraje');
     if (formRegistro) {
         formRegistro.addEventListener('submit', function(event) {
             const kilometrajeInput = document.getElementById('kilometraje').value;
             const precioInput = document.getElementById('precio_kilometraje').value;
             
-            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || kilometrajeInput.length > 7 || 
-                precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0 || precioInput.length > 10) {
+            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || 
+                precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
                 
                 event.preventDefault(); 
-                alert("Ingrese valores válidos mayores a 0.00 y que no excedan el límite permitido.");
-
-                document.getElementById('kilometraje').classList.add('is-invalid');
-                document.getElementById('precio_kilometraje').classList.add('is-invalid');
-            } else {
-                document.getElementById('kilometraje').classList.remove('is-invalid');
-                document.getElementById('precio_kilometraje').classList.remove('is-invalid');
+                Swal.fire({
+                    title: "Error de validación",
+                    text: "Ingrese valores válidos mayores a 0.00.",
+                    icon: "error"
+                });
             }
         });
     }
 
-    // Filtro de busqueda.
+    // Función de búsqueda 
     const inputBusqueda = document.getElementById('inputBusqueda');
     if (inputBusqueda) {
-        
         inputBusqueda.addEventListener('input', function() {
             const textoBuscado = this.value.toLowerCase();
             const filas = document.querySelectorAll("#tablaPrecios tbody tr");
-            
             filas.forEach(fila => {
                 const contenidoFila = fila.textContent.toLowerCase();
                 fila.style.display = contenidoFila.includes(textoBuscado) ? "" : "none";
