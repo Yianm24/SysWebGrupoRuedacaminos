@@ -20,13 +20,13 @@
                 document.addEventListener("DOMContentLoaded", function() {
                     setTimeout(function() {
                         <?php if ($_GET['status'] == 'success'): ?>
-                            Swal.fire({ title: "Registro exitoso!", text: "El precio de kilometraje ha sido registrado correctamente.", icon: "success" });
+                            Swal.fire({ title: "Registro exitoso!", text: "Registro de precio de kilometraje realizado exitosamente", icon: "success" });
                         <?php elseif ($_GET['status'] == 'exists'): ?>
-                            Swal.fire({ title: "¡Tarifa existente!", text: "Ya existe una tarifa registrada.", icon: "warning" });
+                            Swal.fire({ title: "¡Tarifa existente!", text: "Ya existe una tarifa registrada para el Kilometraje ingresado", icon: "warning" });
                         <?php elseif ($_GET['status'] == 'updated'): ?>
-                            Swal.fire({ title: "Actualización exitosa!", text: "El precio de kilometraje ha sido actualizado.", icon: "success" });
+                            Swal.fire({ title: "Actualización exitosa!", text: "Actualización del Precio de kilometraje realizado exitosamente", icon: "success" });
                         <?php elseif ($_GET['status'] == 'deleted'): ?>
-                            Swal.fire({ title: "¡Eliminado!", text: "El precio de kilometraje ha sido eliminado.", icon: "success" });
+                            Swal.fire({ title: "¡Eliminado!", text: "Eliminación del Precio de Kilometraje realizado exitosamente", icon: "success" });
                         <?php endif; ?>
                     }, 100);
                 });
