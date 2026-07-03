@@ -67,7 +67,13 @@ class Vehiculo extends Conexion
     public function obt_RegistrosVehiculos()
         {
             try {
-                $sentencia = "SELECT * FROM vehiculo WHERE estado = 1";
+                $sentencia = "SELECT vehiculo.* , tipos_vehiculo.nombre AS nombretipovehiculo, modelo.nombre AS nombremodelo
+                            FROM vehiculo
+                            INNER JOIN tipos_vehiculo
+                            ON vehiculo.cod_tipovehiculo = tipos_vehiculo.cod_tipovehiculo
+                            INNER JOIN modelo
+                            ON vehiculo.cod_modelo = modelo.cod_modelo
+                            WHERE vehiculo.estado= 1;";
                 $select = $this->conexion->prepare($sentencia);
                 $select->execute();
                 return $select->fetchAll(\PDO::FETCH_ASSOC);
