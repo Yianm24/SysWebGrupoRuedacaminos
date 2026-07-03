@@ -13,7 +13,7 @@
                 require 'componentes/modalActualizar.php'; 
             
             ?>
-
+            <script src="assets/js/sweetalert2.all.min.js"></script>
              <?php if (isset($_GET['status'])): ?>
                 <script>
                     // Mostrar alertas basadas en el estado de la operación.
@@ -78,5 +78,5 @@
         </div>
     </div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script src="assets/js/vehiculo.js"></script>

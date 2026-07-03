@@ -45,4 +45,40 @@ const modal = document.getElementById('actualizarVehiculo');
       inputAno.value = ano;
     })
   }
+
+  //Modal Eliminar
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+    botonesEliminar.forEach(boton => {
+        boton.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            let codvehiculo = this.getAttribute('data-id');
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: "¿Está seguro que desea eliminar este registro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '?url=vehiculo';
+                    form.innerHTML = `
+                        <input type="hidden" name="tipoSolicitud" value="eliminar">
+                        <input type="hidden" name="cod_vehiculo" value="${codvehiculo}">
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
 });
