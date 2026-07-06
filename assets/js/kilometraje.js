@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     
-    // Modal Editar
+    // Modal Editar.
     const modalEditar = document.getElementById('modalEditar');
     if (modalEditar) {
         modalEditar.addEventListener('show.bs.modal', event => {
@@ -9,13 +9,48 @@ document.addEventListener("DOMContentLoaded", function () {
             const kilometraje = boton.getAttribute('data-kilometraje'); 
             const precio = boton.getAttribute('data-precio');
 
-            const inputId = modalEditar.querySelector('.modal-body #id_tarifa_editar');
-            const inputKilometraje = modalEditar.querySelector('.modal-body #kilometraje_editar');
-            const inputPrecio = modalEditar.querySelector('.modal-body #precio_kilometraje_editar');
+            modalEditar.querySelector('#id_tarifa_editar').value = id;
+            modalEditar.querySelector('#kilometraje_editar').value = kilometraje;
+            modalEditar.querySelector('#precio_kilometraje_editar').value = precio;
 
-            if (inputId) inputId.value = id;
-            if (inputKilometraje) inputKilometraje.value = kilometraje;
-            if (inputPrecio) inputPrecio.value = precio;
+            document.getElementById('formEditarPrecio').setAttribute('data-km-original', kilometraje);
+            document.getElementById('formEditarPrecio').setAttribute('data-precio-original', precio);
+        });
+    }
+
+    // Validación de Edición.
+    const formEditar = document.getElementById('formEditarPrecio');
+    if (formEditar) {
+        formEditar.addEventListener('submit', function(event) {
+            const kmOrig = this.getAttribute('data-km-original');
+            const preOrig = this.getAttribute('data-precio-original');
+            const kmActual = document.getElementById('kilometraje_editar').value;
+            const preActual = document.getElementById('precio_kilometraje_editar').value;
+
+            if (Number(kmOrig) === Number(kmActual) && Number(preOrig) === Number(preActual)) {
+                event.preventDefault();
+                Swal.fire({ title: "Sin modificaciones", text: "Los valores ingresados son iguales a los actuales. No se registraron cambios.", icon: "info" });
+                return;
+            }
+
+            if (kmActual === "" || isNaN(kmActual) || Number(kmActual) <= 0 || preActual === "" || isNaN(preActual) || Number(preActual) <= 0) {
+                event.preventDefault(); 
+                Swal.fire({ title: "Error de validación", text: "Ingrese valores válidos mayores a 0.", icon: "error" });
+            }
+        });
+    }
+
+    // Validación de Registro
+    const formRegistro = document.getElementById('formPrecioKilometraje');
+    if (formRegistro) {
+        formRegistro.addEventListener('submit', function(event) {
+            const kilometrajeInput = document.getElementById('kilometraje').value;
+            const precioInput = document.getElementById('precio_kilometraje').value;
+            
+            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
+                event.preventDefault(); 
+                Swal.fire({ title: "Error de validación", text: "Ingrese valores válidos mayores a 0.", icon: "error" });
+            }
         });
     }
 
@@ -26,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault(); 
             let idTarifa = this.getAttribute('data-id');
 
-            // Configuración de SweetAlert2 con botones personalizados
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
                 buttonsStyling: false
@@ -45,49 +79,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     let form = document.createElement('form');
                     form.method = 'POST';
                     form.action = '?url=kilometraje';
-                    form.innerHTML = `
-                        <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="id_tarifa" value="${idTarifa}">
-                    `;
+                    form.innerHTML = `<input type="hidden" name="tipoSolicitud" value="eliminar"><input type="hidden" name="id_tarifa" value="${idTarifa}">`;
                     document.body.appendChild(form);
                     form.submit();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire({
-                        title: "Cancelado",
-                        text: "Eliminación del Precio de Kilometraje cancelada",
-                        icon: "error"
-                    });
+                    swalWithBootstrapButtons.fire({ title: "Cancelado", text: "Eliminación de la tarifa cancelada", icon: "error" });
                 }
             });
         });
     });
 
-    // Validación de formulario
-    const formRegistro = document.getElementById('formPrecioKilometraje');
-    if (formRegistro) {
-        formRegistro.addEventListener('submit', function(event) {
-            const kilometrajeInput = document.getElementById('kilometraje').value;
-            const precioInput = document.getElementById('precio_kilometraje').value;
-            
-            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || 
-                precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
-                
-                event.preventDefault(); 
-                Swal.fire({
-                    title: "Error de validación",
-                    text: "Ingrese valores válidos mayores a 0.00.",
-                    icon: "error"
-                });
-            }
-        });
-    }
-
-    // Función de búsqueda 
+    // Filtro de búsqueda en la tabla
     const inputBusqueda = document.getElementById('inputBusqueda');
     if (inputBusqueda) {
         inputBusqueda.addEventListener('input', function() {
             const textoBuscado = this.value.toLowerCase();
-            const filas = document.querySelectorAll("#tablaPrecios tbody tr");
+            const filas = document.querySelectorAll("table tbody tr");
             filas.forEach(fila => {
                 const contenidoFila = fila.textContent.toLowerCase();
                 fila.style.display = contenidoFila.includes(textoBuscado) ? "" : "none";

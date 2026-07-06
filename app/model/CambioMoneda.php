@@ -15,7 +15,7 @@ class CambioMoneda extends Conexion
     }
 
     public function obt_TodasLasMonedas() {
-        $sentencia = "SELECT cod_moneda, nombre, abreviatura FROM moneda WHERE estado = 1";
+        $sentencia = "SELECT cod_moneda, nombre, abreviatura FROM moneda WHERE estado = 1 AND abreviatura != 'VES'";
         $select = $this->conexion->prepare($sentencia);
         $select->execute();
         return $select->fetchAll(\PDO::FETCH_ASSOC);
@@ -61,7 +61,7 @@ class CambioMoneda extends Conexion
     }
 
     public function obt_RegistrosCambios() {
-        $sentencia ="SELECT c.cod_cambio, c.tasa, c.fecha, m.abreviatura 
+        $sentencia ="SELECT c.cod_cambio, c.tasa, c.fecha, c.cod_moneda, m.abreviatura 
                     FROM cambio_moneda c 
                     INNER JOIN moneda m ON c.cod_moneda = m.cod_moneda 
                     WHERE c.estado = 1 
