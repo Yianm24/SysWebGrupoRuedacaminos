@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-07-2026 a las 23:16:49
+-- Tiempo de generación: 06-07-2026 a las 21:38:03
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -64,9 +64,10 @@ INSERT INTO `cambio_moneda` (`cod_cambio`, `tasa`, `fecha`, `cod_moneda`, `estad
 (1, 602.25, '2026-06-18 00:00:00', 1, 1),
 (2, 645.03, '2026-06-18 00:00:00', 3, 1),
 (3, 805.12, '2026-06-18 00:00:00', 4, 1),
-(4, 602.25, '2026-06-18 00:00:00', 1, 1),
-(5, 645.03, '2026-06-18 00:00:00', 3, 1),
-(6, 805.12, '2026-06-18 00:00:00', 4, 1);
+(7, 667.05, '2026-07-06 14:13:04', 1, 1),
+(8, 763.19, '2026-07-06 14:15:50', 3, 1),
+(9, 757.23, '2026-07-06 14:16:09', 4, 1),
+(10, 12122, '2026-07-06 14:17:11', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -495,9 +496,10 @@ CREATE TABLE `precio_kilometraje` (
 --
 
 INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `kilometraje`, `monto_tarifa`, `estado`) VALUES
-(1, 1.00, 2.35, 1),
+(1, 1.00, 2.36, 1),
 (2, 5.00, 4.50, 1),
-(3, 10.00, 9.00, 1);
+(3, 10.00, 9.00, 1),
+(5, 6.00, 888.09, 0);
 
 -- --------------------------------------------------------
 
@@ -869,7 +871,7 @@ ALTER TABLE `banco`
 -- AUTO_INCREMENT de la tabla `cambio_moneda`
 --
 ALTER TABLE `cambio_moneda`
-  MODIFY `cod_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `cod_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `cargo`
@@ -971,7 +973,7 @@ ALTER TABLE `parroquia`
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`
 --
 ALTER TABLE `precio_kilometraje`
-  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cod_preciokilometraje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
