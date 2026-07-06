@@ -17,7 +17,7 @@ class Moneda extends Conexion
         parent::__construct();
     }
 
-    public function regDatosMetodoPago($nombre, $abreviatura)
+    public function regDatosMoneda($nombre, $abreviatura)
     {
 
         $this->nombre = $nombre;
@@ -44,6 +44,65 @@ class Moneda extends Conexion
             return $resultado;
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
+        }
+    }
+    public function obt_RegistrosMoneda()
+    {
+        try {
+            $sentencia = "SELECT * FROM moneda WHERE estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
+    public function modDatosMoneda($cod_moneda, $nombre, $abreviatura)
+    {
+        $this->cod_moneda = $cod_moneda;
+        $this->nombre = $nombre;
+        $this->abreviatura = $abreviatura;
+
+        return $this->modificarMoneda();
+    }
+
+    private function modificarMoneda()
+    {
+        try {
+            $sentencia = "UPDATE `moneda` SET nombre = ?, abreviatura = ? WHERE cod_moneda = ?";
+            $update = $this->conexion->prepare($sentencia);
+
+            $update->bindValue(1, $this->nombre);
+            $update->bindValue(2, $this->abreviatura);
+            $update->bindValue(3, $this->cod_moneda);
+
+            $update->execute();
+        } catch (\PDOException $e) {
+            return "Error al actualizar la moneda: " . $e->getMessage();
+        }
+    }
+
+    public function elmDatosMoneda(int $cod_moneda)
+    {
+        $this->cod_moneda = $cod_moneda;
+
+        return $this->eliminarMoneda();
+    }
+
+
+    private function eliminarMoneda()
+    {
+        try {
+            $sentencia = "UPDATE `moneda` SET estado = 0 WHERE cod_moneda = ?";
+            $delete = $this->conexion->prepare($sentencia);
+
+            $delete->bindValue(1, $this->cod_moneda);
+            $delete->execute();
+
+            return "Moneda eliminada exitosamente";
+        } catch (\PDOException $e) {
+            return "Error al eliminar la moneda: " . $e->getMessage();
         }
     }
 }

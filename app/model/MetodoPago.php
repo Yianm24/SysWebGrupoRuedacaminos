@@ -85,9 +85,7 @@ class MetodoPago extends Conexion
         $this->cod_metodo = $cod_metodo;
         $this->nombre = $nombre;
         $this->moneda = $moneda;
-
-
-
+        
         return $this->actualizarMetodoPago();
     }
 

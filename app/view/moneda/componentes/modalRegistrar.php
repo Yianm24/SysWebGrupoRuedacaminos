@@ -9,18 +9,18 @@
             <form action="?url=moneda" method="POST">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Nombre de la Moneda</label>
-                        <input type="text" class="form-control" name="nombre_moneda" required placeholder="Ej: Dólar, Bolívar">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" name="nombre" required placeholder="Ej: Dólar, Bolívar">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Siglas</label>
-                        <input type="text" class="form-control" name="siglas" required placeholder="Ej: USD, VES">
+                        <label class="form-label">Abreviatura</label>
+                        <input type="text" class="form-control" name="abreviatura" required placeholder="Ej: USD, VES">
                     </div>
                 </div>
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>
