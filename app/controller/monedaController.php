@@ -22,6 +22,14 @@ switch ($solicitud) {
             }
             break;
         }
+
+    case 'eliminar':
+        if (isset($_POST['cod_moneda'])) {
+            $resultado = $moneda->elmDatosMoneda($_POST['cod_moneda']);
+            header("Location: ?url=moneda&status=deleted");
+            exit();
+        }
+        break;
 }
 
 $registros = $moneda->obt_RegistrosMoneda();

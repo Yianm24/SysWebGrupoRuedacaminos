@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($registros as $dato):?>
+                <?php foreach ($registros as $dato): ?>
                     <tr>
                         <td class="ps-4 fw-medium"><?= $dato['placa'] ?></td>
                         <td>
@@ -26,21 +26,20 @@
                         <td class="pe-4 text-center">
 
                             <!--Elementos para Actualizar un vehiculo-->
-                            <input type="hidden" class="codigo_vehiculo" >    
+                            <input type="hidden" class="codigo_vehiculo">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarVehiculo"
                                 datos-cod-vehiculo="<?php echo $dato['cod_vehiculo']; ?>"
                                 datos-placa="<?php echo $dato['placa']; ?>"
                                 datos-color="<?php echo $dato['color']; ?>"
                                 datos-tipovehiculo="<?php echo $dato['cod_tipovehiculo']; ?>"
                                 datos-modelo="<?php echo $dato['cod_modelo']; ?>"
-                                datos-ano="<?php echo $dato['ano']; ?>"
-                                >
+                                datos-ano="<?php echo $dato['ano']; ?>">
                                 <i class="bi bi-pencil"></i>
                             </button>
-    
-                            <a href="#" class="text-secondary btn-eliminar" 
-                            data-id="<?= $dato['cod_vehiculo'] ?>">
-                            <i class="bi bi-trash"></i>
+
+                            <a href="#" class="text-secondary btn-eliminar"
+                                data-id="<?= $dato['cod_vehiculo'] ?>">
+                                <i class="bi bi-trash"></i>
                             </a>
                         </td>
                     </tr>

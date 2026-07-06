@@ -10,6 +10,8 @@
             </header>
 
             <?php require 'componentes/modalRegistrar.php'; ?>
+            <?php require 'componentes/modalModificar.php'; ?>
+
             <?php if (isset($_GET['status'])): ?>
                 <script>
                     // Mostrar alertas basadas en el estado de la operación.

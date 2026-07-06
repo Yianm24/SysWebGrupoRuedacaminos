@@ -18,14 +18,13 @@
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modificarMoneda"
                                 datos-cod-moneda="<?php echo $dato['cod_moneda']; ?>"
                                 datos-nombre="<?php echo $dato['nombre']; ?>"
-                                datos-abreviatura="<?php echo $dato['abreviatura']; ?>"
-                                >
+                                datos-abreviatura="<?php echo $dato['abreviatura']; ?>">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <form action="?url=moneda" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">
-                                    <!-- Elementos para eliminar una moneda -->
-                                    <input type="hidden" name="cod-moneda" value="<?= $dato['cod_moneda'] ?>">
+                                    <!-- Elementos para eliminar un vehiculo -->
+                                    <input type="hidden" name="cod_moneda" value="<?= $dato['cod_moneda'] ?>">
                                     <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar esta moneda?');">
                                         <i class="bi bi-trash"></i>
                                     </button>
