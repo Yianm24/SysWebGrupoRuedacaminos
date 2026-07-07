@@ -1,4 +1,4 @@
-<div class="modal fade" id="modifyMoneda" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+<div class="modal fade" id="modificarMoneda" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
@@ -8,13 +8,14 @@
 
             <form action="?url=moneda" method="POST">
                 <div class="modal-body">
+                    <input type="hidden" id="cod-moneda" name="cod_moneda">
                     <div class="mb-3">
                         <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" name="nombre" required placeholder="Ej: Dólar, Bolívar">
+                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Dólar, Bolívar">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Abreviatura</label>
-                        <input type="text" class="form-control" name="abreviatura" required placeholder="Ej: USD, VES">
+                        <input type="text" class="form-control" id="abreviatura" name="abreviatura" required placeholder="Ej: USD, VES">
                     </div>
                 </div>
 

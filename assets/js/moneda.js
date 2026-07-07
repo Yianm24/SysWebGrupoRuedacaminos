@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById('actualizarMetodoPago');
+    const modal = document.getElementById('modificarMoneda');
 
 
     if (modal) {
@@ -7,22 +7,20 @@ document.addEventListener("DOMContentLoaded", function () {
             // Obtener acceso al botón que disparó el modal
             const boton = event.relatedTarget;
 
-
-
             //Obtener los datos del vehículo desde los atributos datos- del botón
-            const cod_metodo = boton.getAttribute('datos-cod-metodo');
+            const cod_moneda= boton.getAttribute('datos-cod-moneda');
             const nombre = boton.getAttribute('datos-nombre');
-            const cod_moneda = boton.getAttribute('datos-cod-moneda');
+            const abreviatura = boton.getAttribute('datos-abreviatura');
             // Obtener referencias a los campos del formulario dentro del modal
-            const inputCodMetodo = modal.querySelector('.modal-body #cod-metodo')
+            const inputCodMoneda = modal.querySelector('.modal-body #cod-moneda')
             const inputNombre = modal.querySelector('.modal-body #nombre')
-            const inputCodMoneda = modal.querySelector('.modal-body #moneda')
+            const inputAbreviatura = modal.querySelector('.modal-body #abreviatura')
 
 
             // Asignar los valores obtenidos a los campos del formulario
-            inputCodMetodo.value = cod_metodo;
-            inputNombre.value = nombre;
             inputCodMoneda.value = cod_moneda;
+            inputNombre.value = nombre;
+            inputAbreviatura.value = abreviatura;
         })
     }
 
