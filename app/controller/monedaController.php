@@ -30,6 +30,22 @@ switch ($solicitud) {
             exit();
         }
         break;
+
+        case 'modificar':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-moneda'])) {
+            if (!empty($_POST['nombre']) && !empty($_POST['abreviatura'])) {
+
+                $resultado = $moneda->modDatosMoneda($_POST['cod-moneda'], $_POST['nombre'], $_POST['abreviatura']);
+
+                //echo "<script>alert('Actualización de datos de la moneda realizada exitosamente');</script>";
+                //echo $resultado;
+                header("Location: ?url=moneda&status=updated");
+                exit();
+            } else {
+                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+            }
+        }
+        break;
 }
 
 $registros = $moneda->obt_RegistrosMoneda();

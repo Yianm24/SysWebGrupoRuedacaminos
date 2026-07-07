@@ -8,7 +8,7 @@
 
             <form action="?url=moneda" method="POST">
                 <div class="modal-body">
-                    <input type="hidden" id="cod-moneda" name="cod_moneda">
+                    <input type="hidden" id="cod-moneda" name="cod-moneda">
                     <div class="mb-3">
                         <label class="form-label">Nombre</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Dólar, Bolívar">
