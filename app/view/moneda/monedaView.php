@@ -12,46 +12,6 @@
             <?php require 'componentes/modalRegistrar.php'; ?>
             <?php require 'componentes/modalModificar.php'; ?>
 
-            <?php if (isset($_GET['status'])): ?>
-                <script>
-                    // Mostrar alertas basadas en el estado de la operación.
-                    document.addEventListener("DOMContentLoaded", function() {
-                        setTimeout(function() {
-                            <?php if ($_GET['status'] == 'success'): ?>
-                                Swal.fire({
-                                    title: "Registro exitoso!",
-                                    text: "La moneda ha sido registrada correctamente.",
-                                    icon: "success"
-                                });
-                            <?php elseif ($_GET['status'] == 'exists'): ?>
-                                Swal.fire({
-                                    title: "Unidad de medida existente!",
-                                    text: "La unidad de medida ingresada ya existe en la base de datos.",
-                                    icon: "warning"
-                                });
-                            <?php elseif ($_GET['status'] == 'updated'): ?>
-                                Swal.fire({
-                                    title: "Actualización exitosa!",
-                                    text: "La unidad de medida ha sido actualizada correctamente.",
-                                    icon: "success",
-                                    buttonsStyling: false,
-                                    customClass: {
-                                        confirmButton: 'btn btn-primary', // Clase personalizada para el botón de confirmación
-                                        cancelButton: 'btn btn-outline-secondary'
-                                    }
-                                });
-                            <?php elseif ($_GET['status'] == 'deleted'): ?>
-                                Swal.fire({
-                                    title: "Eliminación exitosa!",
-                                    text: "La unidad de medida ha sido eliminada correctamente.",
-                                    icon: "success"
-                                });
-                            <?php endif; ?>
-                        }, 100);
-                    });
-                </script>
-            <?php endif; ?>
-
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold">Directorio</h4>
