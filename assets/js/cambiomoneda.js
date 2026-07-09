@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
             if (Number(tasaOriginal) === Number(tasaActual)) {
                 event.preventDefault();
-                Swal.fire({ title: "Sin modificaciones", text: "El valor ingresado es igual al actual. No se registraron cambios.", icon: "info" });
+                Swal.fire({ title: "Sin modificaciones", text: "El valor ingresado es igual al actual y no se registraron cambios.", icon: "info" });
                 return;
             }
 

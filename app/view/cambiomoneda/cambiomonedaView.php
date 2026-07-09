@@ -22,13 +22,13 @@
                 document.addEventListener("DOMContentLoaded", function() {
                     setTimeout(function() {
                         <?php if ($_GET['status'] == 'success'): ?>
-                            Swal.fire({ title: "Registro exitoso!", text: "La tasa de cambio ha sido registrada correctamente.", icon: "success" });
+                            Swal.fire({ title: "Registro exitoso!", text: "Registro de tasa de cambio exitoso", icon: "success" });
                         <?php elseif ($_GET['status'] == 'exists'): ?>
                             Swal.fire({ title: "¡Tasa existente!", text: "La moneda ya posee una tasa registrada el día de hoy.", icon: "warning" });
                         <?php elseif ($_GET['status'] == 'updated'): ?>
-                            Swal.fire({ title: "Modificación exitosa!", text: "Modificación de los datos realizado exitosamente.", icon: "success" });
+                            Swal.fire({ title: "Modificación exitosa!", text: "Modificación de los datos realizada exitosamente.", icon: "success" });
                         <?php elseif ($_GET['status'] == 'deleted'): ?>
-                            Swal.fire({ title: "¡Eliminado!", text: "Eliminación de la tasa realizada exitosamente.", icon: "success" });
+                            Swal.fire({ title: "¡Eliminado!", text: "Eliminación de la tasa realizada exitosamente.", icon: "success" }); 
                         <?php endif; ?>
                     }, 100);
                 });

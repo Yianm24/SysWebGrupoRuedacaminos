@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (Number(kmOrig) === Number(kmActual) && Number(preOrig) === Number(preActual)) {
                 event.preventDefault();
-                Swal.fire({ title: "Sin modificaciones", text: "Los valores ingresados son iguales a los actuales. No se registraron cambios.", icon: "info" });
+                Swal.fire({ title: "Sin modificaciones", text: "Los valores ingresados son iguales a los actuales y no se registraron cambios.", icon: "info" });
                 return;
             }
 
