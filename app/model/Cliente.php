@@ -17,19 +17,9 @@ class Cliente extends Conexion
     private $estado;
 
 
-    public function __construct($doc_identidad = null, $razon_social = null, $apellido = null, $telefono = null, $email = null, $tipo_documento = null, $estado = null)
+    public function __construct()
     {
         parent::__construct();
-
-        if ($doc_identidad !== null) {
-            $this->doc_identidad = $doc_identidad;
-        }
-        $this->razon_social = $razon_social;
-        $this->apellido = $apellido;
-        $this->telefono = $telefono;
-        $this->email = $email;
-        $this->tipo_documento = $tipo_documento;
-        $this->estado = $estado;
     }
 
     public function regDatosCliente($doc_identidad, $razon_social, $apellido, $telefono, $email, $tipo_documento)
