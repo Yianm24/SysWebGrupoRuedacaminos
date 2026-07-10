@@ -14,19 +14,27 @@ class Vehiculo extends Conexion
     private $estado;
 
 
-    public function __construct( $placa = null, $color = null, $tipo_vehiculo = null, $modelo = null, $ano = null, $estado = null)
+    public function __construct()
     {
         parent::__construct();
-
-        if ($placa !== null) {
-            $this->placa = $placa;
-        }
-        $this->color = $color;
-        $this->tipo_vehiculo = $tipo_vehiculo;
-        $this->modelo = $modelo;
-        $this->ano = $ano;
-        $this->estado = $estado;
         
+    }
+
+     public function verificarVehiculoExiste($placa) {
+        $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $placa);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
+
+    public function verificarVehiculoDuplicado($placa, $cod_vehiculo) {
+        $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND cod_vehiculo != ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $placa);
+        $count->bindValue(2, $cod_vehiculo);
+        $count->execute();
+        return $count->fetchColumn() > 0;
     }
 
     public function regDatosVehiculo($placa, $color,$tipo_vehiculo, $modelo, $ano)
