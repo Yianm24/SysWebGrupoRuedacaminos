@@ -10,14 +10,27 @@ class UnidadMedida extends Conexion{
     private $tipo;
     private $estado;
 
-    function __construct($nombre = null, $abreviatura = null, $tipo = null, $estado = null){
+    function __construct(){
         parent::__construct();
-        if ($nombre !== null) {
-            $this->nombre = $nombre;
-        }
-        $this->abreviatura = $abreviatura;
-        $this->tipo = $tipo;
-        $this->estado = $estado;
+    }
+
+    public function verificarUnidadMedidaExiste($abreviatura, $nombre ) {
+        $sentencia = "SELECT COUNT(*) FROM unidad_medida WHERE abreviatura = ? OR nombre = ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $abreviatura);
+        $count->bindValue(2, $nombre);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
+
+    public function verificarUnidadMedidaDuplicada($abreviatura, $nombre, $cod_unidadmedida) {
+        $sentencia = "SELECT COUNT(*) FROM unidad_medida WHERE abreviatura = ? OR nombre = ? AND cod_unidad != ? AND estado = 1;";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $abreviatura);
+        $count->bindValue(2, $nombre);
+        $count->bindValue(3, $cod_unidadmedida);
+        $count->execute();
+        return $count->fetchColumn() > 0;
     }
 
      public function regDatosUnidadMedida($nombre, $abreviatura, $tipo)
