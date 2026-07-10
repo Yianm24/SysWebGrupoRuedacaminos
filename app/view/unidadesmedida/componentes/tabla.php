@@ -16,7 +16,7 @@
                     <td><?php echo $dato['nombre']; ?></td>
                     <td><?php echo $dato['tipo']; ?></td>
                     <td class="text-end pe-4">
-                        <input type="hidden" class="codigo_vehiculo" >    
+                          
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarUnidad"
                                 datos-cod-unidad="<?php echo $dato['cod_unidad']; ?>"
                                 datos-nombre="<?php echo $dato['nombre']; ?>"
@@ -25,15 +25,10 @@
                                 >
                                 <i class="bi bi-pencil"></i>
                             </button>
-                        <form action="?url=unidadesmedida" method="POST" style="display: inline;">
-                            <fieldset style="display: inline;">
-                                <!-- Elementos para eliminar un vehiculo -->
-                                <input type="hidden" name="cod-unidad" value="<?= $dato['cod_unidad'] ?>">
-                                <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar esta unidad de medida?');">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </fieldset>
-                        </form>
+                        <a href="#" class="text-secondary btn-eliminar"
+                                data-id="<?= $dato['cod_unidad'] ?>">
+                                <i class="bi bi-trash"></i>
+                        </a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

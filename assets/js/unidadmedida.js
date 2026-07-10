@@ -29,6 +29,41 @@ document.addEventListener("DOMContentLoaded", function () {
     })
   }
 
+  const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+  botonesEliminar.forEach(boton => {
+    boton.addEventListener('click', function (event) {
+      event.preventDefault();
+      let codunidad = this.getAttribute('data-id');
+
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+        buttonsStyling: false
+      });
+
+      swalWithBootstrapButtons.fire({
+        title: "¿Está seguro que desea eliminar este registro?",
+        text: "¡No podrás revertir esto!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          let form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '?url=unidadesmedida';
+          form.innerHTML = `
+                        <input type="hidden" name="tipoSolicitud" value="eliminar">
+                        <input type="hidden" name="cod_unidad" value="${codunidad}">
+                    `;
+          document.body.appendChild(form);
+          form.submit();
+        }
+      });
+    });
+  });
+
   // Lógica para mostrar alertas de estado (éxito, error, etc.)
   const urlParams = new URLSearchParams(window.location.search);
   const status = urlParams.get('status');

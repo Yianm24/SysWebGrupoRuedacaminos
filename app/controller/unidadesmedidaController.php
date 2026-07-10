@@ -41,8 +41,8 @@ switch ($solicitud) {
         break;
     case 'eliminar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod-unidad'])) {
-                $resultado = $unidadMedida->elmDatosUnidadMedida($_POST['cod-unidad']);
+            if (!empty($_POST['cod_unidad'])) {
+                $resultado = $unidadMedida->elmDatosUnidadMedida($_POST['cod_unidad']);
                 echo $resultado;
                 header("Location: ?url=unidadesmedida&status=deleted");
                 exit();
