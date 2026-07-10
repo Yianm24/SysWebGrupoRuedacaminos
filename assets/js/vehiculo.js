@@ -81,4 +81,46 @@ const modal = document.getElementById('actualizarVehiculo');
             });
         });
     });
+
+    // Lógica para mostrar alertas de estado (éxito, error, etc.)
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+
+  if (status) {
+    // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+    setTimeout(() => {
+      let title, text, icon;
+
+      switch (status) {
+        case 'success':
+          title = "Registro exitoso!";
+          text = "La unidad de medida ha sido registrada correctamente.";
+          icon = "success";
+          break;
+        case 'updated':
+          title = "Actualización exitosa!";
+          text = "La unidad de medida ha sido actualizada correctamente.";
+          icon = "success";
+          break;
+        case 'deleted':
+          title = "Eliminación exitosa!";
+          text = "La unidad de medida ha sido eliminada correctamente.";
+          icon = "success";
+          break;
+        case 'exists':
+          title = "Unidad de medida existente!";
+          text = "La unidad de medida ingresada ya existe en la base de datos.";
+          icon = "warning";
+          break;
+      }
+
+      if (title && text && icon) {
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: icon
+        });
+      }
+    }, 100);
+  }
 });
