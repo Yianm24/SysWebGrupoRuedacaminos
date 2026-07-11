@@ -39,7 +39,7 @@ class Vehiculo extends Conexion
 
     public function regDatosVehiculo($placa, $color,$tipo_vehiculo, $modelo, $ano)
     {
-        $this->placa = $placa;
+        $this->placa =strtoupper($placa);
         $this->color = $color;
         $this->tipo_vehiculo = $tipo_vehiculo;
         $this->modelo = $modelo;

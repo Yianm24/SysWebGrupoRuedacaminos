@@ -29,7 +29,7 @@ class Cliente extends Conexion
         $this->razon_social = $razon_social;
         $this->apellido = $apellido;
         $this->telefono = $telefono;
-        $this->email = $email;
+        $this->email = strtolower($email);
         $this->tipo_documento = $tipo_documento;
         $this->estado = 1;
 

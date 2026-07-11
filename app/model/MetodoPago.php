@@ -22,9 +22,9 @@ class MetodoPago extends Conexion
 
     public function regDatosMetodoPago($nombre, $moneda)
     {
-
-        $this->nombre = $nombre;
-        $this->moneda = $moneda;
+        // $this->nombre =strtoupper($nombre);
+        $this->nombre = strtoupper($nombre);
+        $this->moneda = strtoupper($moneda);
         $this->estado = 1;
 
         return $this->registrarMetodoPago();
@@ -83,9 +83,9 @@ class MetodoPago extends Conexion
     public function actDatosMetodoPago($cod_metodo, $nombre, $moneda)
     {
         $this->cod_metodo = $cod_metodo;
-        $this->nombre = $nombre;
-        $this->moneda = $moneda;
-        
+        $this->nombre = strtoupper($nombre);
+        $this->moneda = strtoupper($moneda);
+
         return $this->actualizarMetodoPago();
     }
 
