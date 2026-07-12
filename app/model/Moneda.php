@@ -17,10 +17,19 @@ class Moneda extends Conexion
         parent::__construct();
     }
 
+    public function verificarMonedaExiste($nombre, $abreviatura)
+    {
+        $sentencia = "SELECT COUNT(*) FROM moneda WHERE nombre = ? or abreviatura = ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $nombre);
+        $count->bindValue(2, $abreviatura);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
     public function regDatosMoneda($nombre, $abreviatura)
     {
-        
-        $this->nombre =strtoupper($nombre);
+
+        $this->nombre = strtoupper($nombre);
         $this->abreviatura = strtoupper($abreviatura);
         $this->estado = 1;
 

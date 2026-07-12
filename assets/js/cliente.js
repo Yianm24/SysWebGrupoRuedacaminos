@@ -112,4 +112,45 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status) {
+        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+        setTimeout(() => {
+            let title, text, icon;
+
+            switch (status) {
+                case 'success':
+                    title = "Registro exitoso!";
+                    text = "El cliente ha sido registrado correctamente.";
+                    icon = "success";
+                    break;
+                case 'updated':
+                    title = "Actualización exitosa!";
+                    text = "El cliente ha sido actualizado correctamente.";
+                    icon = "success";
+                    break;
+                case 'deleted':
+                    title = "Eliminación exitosa!";
+                    text = "El cliente ha sido eliminado correctamente.";
+                    icon = "success";
+                    break;
+                case 'exists':
+                    title = "Cliente existente!";
+                    text = "El cliente ya se encuentra registrado.";
+                    icon = "warning";
+                    break;
+            }
+
+            if (title && text && icon) {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon
+                });
+            }
+        }, 100);
+    }
 });

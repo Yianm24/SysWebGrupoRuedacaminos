@@ -12,10 +12,12 @@ switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['moneda']) && !empty($_POST['nombre'])) {
+                if ($metodo->verificarMetodoPagoExiste($_POST['nombre'], $_POST['moneda'])) {
+                    header("Location: ?url=metodopago&status=exists");
+                    exit();
+                }
 
                 $resultado = $metodo->regDatosMetodoPago($_POST['nombre'], $_POST['moneda']);
-
-                //echo "<script>alert('Registro de datos de vehículo exitoso');</script>";
                 header("Location: ?url=metodopago&status=success");
                 exit();
             } else {
@@ -34,7 +36,7 @@ switch ($solicitud) {
                 header("Location: ?url=metodopago&status=updated");
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                echo "<script>alert('Falta uno o varios datos por ingresar');</>";
             }
         }
         break;

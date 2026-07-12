@@ -17,9 +17,12 @@ switch ($solicitud) {
             case 'remitente_natural':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!empty($_POST['cedula']) && !empty($_POST['nombre']) && !empty($_POST['apellido']) && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
+                        if ($cliente->verificarClienteExiste($_POST['cedula'])) {
+                            header("Location: ?url=cliente&status=exists");
+                            exit();
+                        }
 
                         $resultado = $cliente->regDatosCliente($_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
-                        // echo "<script>alert('Cliente registrado exitosamente');</script>";
                         header("Location: ?url=cliente&status=success");
                         exit();
                     } else {
@@ -29,10 +32,13 @@ switch ($solicitud) {
                 break;
             case 'remitente_juridico':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    if (!empty($_POST['rif']) && !empty($_POST['razon_social'])  && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
-
+                    if (!empty($_POST['rif']) && !empty($_POST['razon_social'])  && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_juridico'])) {
+                        if ($cliente->verificarClienteExiste($_POST['rif'])) {
+                            header("Location: ?url=cliente&status=exists");
+                            exit();
+                        }
                         $resultado = $cliente->regDatosCliente($_POST['rif'], $_POST['razon_social'], null, $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_juridico']);
-                        // echo "<script>alert('Cliente registrado exitosamente');</script>";
+
                         header("Location: ?url=cliente&status=success");
                         exit();
                     } else {
@@ -49,7 +55,7 @@ switch ($solicitud) {
         if (isset($_POST['cod_cliente'])) {
             $resultado = $cliente->elmDatosCliente($_POST['cod_cliente']);
             header("Location: ?url=cliente&status=deleted");
-                        exit();
+            exit();
         }
         break;
 

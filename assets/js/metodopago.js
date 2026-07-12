@@ -26,6 +26,46 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status) {
+        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+        setTimeout(() => {
+            let title, text, icon;
+
+            switch (status) {
+                case 'success':
+                    title = "Registro exitoso!";
+                    text = "El método de pago ha sido registrado correctamente.";
+                    icon = "success";
+                    break;
+                case 'updated':
+                    title = "Actualización exitosa!";
+                    text = "El método de pago ha sido actualizado correctamente.";
+                    icon = "success";
+                    break;
+                case 'deleted':
+                    title = "Eliminación exitosa!";
+                    text = "El método de pago ha sido eliminado correctamente.";
+                    icon = "success";
+                    break;
+                case 'exists':
+                    title = "Método de pago existente!";
+                    text = "El método de pago ya se encuentra registrado.";
+                    icon = "warning";
+                    break;
+            }
+
+            if (title && text && icon) {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon
+                });
+            }
+        }, 100);
+    }
 
 });
 

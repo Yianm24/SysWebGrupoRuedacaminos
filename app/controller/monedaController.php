@@ -12,7 +12,10 @@ switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['nombre']) && !empty($_POST['abreviatura'])) {
-
+                if ($moneda->verificarMonedaExiste($_POST['nombre'],$_POST['abreviatura'])) {
+                    header("Location: ?url=moneda&status=exists");
+                    exit();
+                }
                 $resultado = $moneda->regDatosMoneda($_POST['nombre'], $_POST['abreviatura']);
 
                 header("Location: ?url=moneda&status=success");
@@ -31,7 +34,7 @@ switch ($solicitud) {
         }
         break;
 
-        case 'modificar':
+    case 'modificar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-moneda'])) {
             if (!empty($_POST['nombre']) && !empty($_POST['abreviatura'])) {
 

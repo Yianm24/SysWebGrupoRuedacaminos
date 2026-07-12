@@ -19,7 +19,15 @@ class MetodoPago extends Conexion
         parent::__construct();
     }
 
-
+    public function verificarMetodoPagoExiste($nombre, $moneda)
+    {
+        $sentencia = "SELECT COUNT(*) FROM metodo_pago WHERE nombre = ? AND cod_moneda = ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $nombre);
+        $count->bindValue(2, $moneda);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
     public function regDatosMetodoPago($nombre, $moneda)
     {
         // $this->nombre =strtoupper($nombre);
