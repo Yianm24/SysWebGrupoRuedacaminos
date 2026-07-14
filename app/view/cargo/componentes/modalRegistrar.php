@@ -10,13 +10,13 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Nombre del Cargo</label>
-                        <input type="text" class="form-control" name="nombre_cargo" placeholder="Ej: Gerente" required>
+                        <input type="text" class="form-control" name="nombre" placeholder="Ej: Gerente" required>
                     </div>
                 </div>
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>
