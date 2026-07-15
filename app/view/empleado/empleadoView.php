@@ -10,7 +10,31 @@
                 </div>
             </header>
             
-            <?php require 'componentes/modalRegistrar.php'; ?>
+            <?php 
+            require 'componentes/modalRegistrar.php'; 
+            require 'componentes/modalEditar.php';
+            ?>
+
+            <!--Mensajes y alertas-->
+            <script src="assets/js/sweetalert2.all.min.js"></script>
+            <?php if (isset($_GET['status'])): ?>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    setTimeout(function() {
+                        <?php if ($_GET['status'] == 'success'): ?>
+                            Swal.fire({ title: "Registro exitoso!", text: "Registro de empleado realizado exitosamente", icon: "success" });
+                        <?php elseif ($_GET['status'] == 'exists'): ?>
+                            Swal.fire({ title: "¡Empleado existente!", text: "Ya existe un empleado registrado con la cédula ingresada", icon: "warning" });
+                        <?php elseif ($_GET['status'] == 'updated'): ?>
+                            Swal.fire({ title: "Modificación exitosa!", text: "Modificación del empleado realizado exitosamente", icon: "success" });
+                        <?php elseif ($_GET['status'] == 'deleted'): ?>
+                            Swal.fire({ title: "¡Eliminado!", text: "Eliminación del empleado realizado exitosamente", icon: "success" });
+                        <?php endif; ?>
+                    }, 100);
+                });
+            </script>
+            <?php endif; ?>
+
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
@@ -36,3 +60,4 @@
         </div>
     </div>
 </main>
+<script src="assets/js/empleado.js"></script>
