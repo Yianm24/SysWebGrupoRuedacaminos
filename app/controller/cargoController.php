@@ -35,14 +35,11 @@ switch ($solicitud) {
         break;
 
     case 'modificar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-moneda'])) {
-            if (!empty($_POST['nombre']) && !empty($_POST['abreviatura'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-cargo'])) {
+            if (!empty($_POST['nombre'])) {
 
-                $resultado = $moneda->modDatosMoneda($_POST['cod-moneda'], $_POST['nombre'], $_POST['abreviatura']);
-
-                //echo "<script>alert('Actualización de datos de la moneda realizada exitosamente');</script>";
-                //echo $resultado;
-                header("Location: ?url=moneda&status=updated");
+                $resultado = $cargo->modDatosCargo($_POST['cod-cargo'], $_POST['nombre']);
+                header("Location: ?url=cargo&status=updated");
                 exit();
             } else {
                 echo "<script>alert('Falta uno o varios datos por ingresar');</script>";

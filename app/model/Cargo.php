@@ -39,7 +39,7 @@ class Cargo extends Conexion
     public function regDatosCargo($nombre)
     {
 
-        $this->nombre = strtoupper($nombre);
+        $this->nombre = $this->formatearPalabra($nombre);
         $this->estado = 1;
 
         return $this->registrarCargo();
@@ -65,15 +65,15 @@ class Cargo extends Conexion
     }
 
 
-    public function actDatosCargo($cod_cargo, $nombre)
+    public function modDatosCargo($cod_cargo, $nombre)
     {
         $this->cod_cargo = $cod_cargo;
-        $this->nombre = strtoupper($nombre);
+        $this->nombre = $this->formatearPalabra($nombre);
 
-        return $this->actualizarCargo();
+        return $this->modificarCargo();
     }
 
-    private function actualizarCargo()
+    private function modificarCargo()
     {
         try {
             $sentencia = "UPDATE `cargo` SET nombre = ? WHERE cod_cargo = ?";
@@ -84,7 +84,7 @@ class Cargo extends Conexion
 
             $update->execute();
         } catch (\PDOException $e) {
-            return "Error al actualizar el cargo: " . $e->getMessage();
+            return "Error al modificar el cargo: " . $e->getMessage();
         }
     }
 

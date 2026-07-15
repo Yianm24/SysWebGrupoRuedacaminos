@@ -29,7 +29,7 @@ class Moneda extends Conexion
     public function regDatosMoneda($nombre, $abreviatura)
     {
 
-        $this->nombre = strtoupper($nombre);
+        $this->nombre = $this->formatearPalabra($nombre);
         $this->abreviatura = strtoupper($abreviatura);
         $this->estado = 1;
 
@@ -70,7 +70,7 @@ class Moneda extends Conexion
     public function modDatosMoneda($cod_moneda, $nombre, $abreviatura)
     {
         $this->cod_moneda = $cod_moneda;
-        $this->nombre = strtoupper($nombre);
+        $this->nombre = $this->formatearPalabra($nombre);
         $this->abreviatura = strtoupper($abreviatura);
 
         return $this->modificarMoneda();

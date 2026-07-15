@@ -10,10 +10,11 @@
             </header>
             
             <?php require 'componentes/modalRegistrar.php'; ?>
+            <?php require 'componentes/modalModificar.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 fw-bold">Cargos del Sistema</h4>
+                    <h4 class="mb-0 fw-bold">Listado</h4>
                     <div class="input-group" style="max-width: 250px;">
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>
@@ -35,3 +36,6 @@
         </div>
     </div>
 </main>
+
+<script src="assets/js/sweetalert2.all.min.js"></script>
+<script src="assets/js/cargo.js"></script>

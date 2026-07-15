@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Config;
+
 use PDO;
 use PDOException;
 
@@ -25,10 +27,21 @@ abstract class Conexion
             $conexion = new PDO($dsn, $this->userdb, $this->passwd);
 
             $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
         } catch (PDOException $error) {
             die('No se pudo conectar a la base de datos, error:' . $error->getMessage());
         }
         return $conexion;
+    }
+
+
+    public function formatearPalabra($palabra)
+    {
+        // 1. Primero pasamos toda la palabra a minúsculas
+        $enMinusculas = strtolower($palabra);
+
+        // 2. Luego convertimos la primera letra a mayúscula
+        $resultado = ucfirst($enMinusculas);
+
+        return $resultado;
     }
 }
