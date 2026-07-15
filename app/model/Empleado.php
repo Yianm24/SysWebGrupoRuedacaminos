@@ -47,6 +47,17 @@ class Empleado extends Conexion
         $count->execute();
         return $count->fetchColumn() > 0;
     }
+
+    public function verificarEmpleadoDuplicado($nombre, $id_actual)
+    {
+        $sentencia = "SELECT COUNT(*) FROM empleado WHERE nombre = ? AND cod_empleado != ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $nombre);
+        $count->bindValue(2, $id_actual);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
+
     public function regDatosEmpleado($nombre, $apellido, $cedula, $telefono, $telefono_emergencia, $cod_cargo)
     {
 
@@ -86,10 +97,15 @@ class Empleado extends Conexion
     }
 
 
-    public function modDatosEmpleado($cod_empleado, $nombre)
+    public function modDatosEmpleado($cod_empleado, $nombre, $apellido, $cedula, $telefono, $telefono_emergencia, $cod_cargo)
     {
         $this->cod_empleado = $cod_empleado;
         $this->nombre = $this->formatearPalabra($nombre);
+        $this->apellido = $this->formatearPalabra($apellido);
+        $this->cedula = $cedula;
+        $this->telefono = $telefono;
+        $this->telefono_emergencia = $telefono_emergencia;
+        $this->cod_cargo = $cod_cargo;
 
         return $this->modificarEmpleado();
     }

@@ -15,7 +15,7 @@ switch ($solicitud) {
                     header("Location: ?url=empleado&status=exists");
                     exit();
                 }
-                $resultado = $empleado->regDatosEmpleado($_POST['nombre']);
+                $resultado = $empleado->regDatosEmpleado($_POST['nombre'], $_POST['apellido'], $_POST['cedula'], $_POST['telefono'], $_POST['telefono_emergencia'], $_POST['cod_cargo']);
             var_dump($empleado);
                 header("Location: ?url=empleado&status=success");
                 exit();
@@ -36,8 +36,11 @@ switch ($solicitud) {
     case 'modificar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-empleado'])) {
             if (!empty($_POST['nombre'])) {
-
-                $resultado = $empleado->modDatosEmpleado($_POST['cod-empleado'], $_POST['nombre']);
+                if ($empleado->verificarEmpleadoExiste($_POST['nombre'])) {
+                    header("Location: ?url=empleado&status=exists");
+                    exit();
+                }
+                $resultado = $empleado->modDatosEmpleado($_POST['cod-empleado'], $_POST['nombre'], $_POST['apellido'], $_POST['cedula'], $_POST['telefono'], $_POST['telefono_emergencia'], $_POST['cod_cargo']);
                 header("Location: ?url=empleado&status=updated");
                 exit();
             } else {
