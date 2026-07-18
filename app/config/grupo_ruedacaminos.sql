@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-07-2026 a las 21:38:03
+-- Tiempo de generación: 19-07-2026 a las 01:40:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -139,7 +139,7 @@ INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido
 (9, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
 (13, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 1),
 (22, 7777, 'yuan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 1),
-(23, 3333, 'juan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 1);
+(23, 3333, 'Juana', 'pereira', '312123', 'mamdasmdska@ANSDMSAD', 'E', 1);
 
 -- --------------------------------------------------------
 
@@ -509,7 +509,7 @@ INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `kilometraje`, `monto
 
 CREATE TABLE `rol` (
   `cod_rol` int(1) NOT NULL,
-  `nombre` varchar(10) NOT NULL,
+  `nombre` varchar(20) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -518,8 +518,9 @@ CREATE TABLE `rol` (
 --
 
 INSERT INTO `rol` (`cod_rol`, `nombre`, `estado`) VALUES
-(1, 'Administra', 1),
-(2, 'Recepcioni', 1);
+(1, 'Administrador', 1),
+(2, 'Recepcionista', 1),
+(3, 'Trabajador', 1);
 
 -- --------------------------------------------------------
 
@@ -979,7 +980,7 @@ ALTER TABLE `precio_kilometraje`
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `cod_rol` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `cod_rol` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `ubicacion`
