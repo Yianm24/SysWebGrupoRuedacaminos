@@ -8,22 +8,31 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="ps-4 fw-medium text-secondary">Administrador</td>
-                    <td class="text-end pe-4">
-                        <a href="#" class="text-secondary me-2"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="ps-4 fw-medium text-secondary">Recepcionista</td>
-                    <td class="text-end pe-4">
-                        <a href="#" class="text-secondary me-2"><i class="bi bi-pencil"></i></a>
-                        <a href="#" class="text-secondary"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-
-                </tbody>
+                <?php foreach ($registros as $dato): ?>
+                    <tr>
+                        <td class="ps-4 fw-medium text-secondary"><?php echo $dato['nombre']; ?></td>
+                        <td class="text-end pe-4">
+                            <input type="hidden" class="codigo_rol">
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modificarRol"
+                                datos-cod-rol="<?php echo $dato['cod_rol']; ?>"
+                                datos-nombre="<?php echo $dato['nombre']; ?>">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <form action="?url=rol" method="POST" style="display: inline;">
+                                <fieldset style="display: inline;">
+                                    <!-- Elementos para eliminar un vehiculo -->
+                                    <input type="hidden" name="cod_rol" value="<?= $dato['cod_rol'] ?>">
+                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este rol?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </fieldset>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
         </table>
     </div>
 </div>
+
+

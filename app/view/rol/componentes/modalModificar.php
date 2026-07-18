@@ -1,17 +1,17 @@
-<div class="modal fade" id="modificarCargo" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+<div class="modal fade" id="modificarRol" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-coin"></i>Modificar Cargo</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-coin"></i>Modificar Rol</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="?url=cargo" method="POST">
+            <form action="?url=rol" method="POST">
                 <div class="modal-body">
-                    <input type="hidden" id="cod-cargo" name="cod-cargo">
+                    <input type="hidden" id="cod-rol" name="cod-rol">
                     <div class="mb-3">
                         <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Gerente">
+                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Dólar, Bolívar">
                     </div>
                 </div>
 
