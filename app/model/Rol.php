@@ -105,7 +105,6 @@ class Rol extends Conexion
             $delete->bindValue(1, $this->cod_rol);
             $delete->execute();
 
-            return "rol eliminado exitosamente";
         } catch (\PDOException $e) {
             return "Error al eliminar el rol: " . $e->getMessage();
         }
