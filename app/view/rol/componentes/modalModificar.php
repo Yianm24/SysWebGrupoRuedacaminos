@@ -11,7 +11,7 @@
                     <input type="hidden" id="cod-rol" name="cod-rol">
                     <div class="mb-3">
                         <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Dólar, Bolívar">
+                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Administrador">
                     </div>
                 </div>
 
