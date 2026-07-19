@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById('modificarRol');
+    const modal = document.getElementById('actualizarRol');
 
 
     if (modal) {
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     break;
                 case 'updated':
                     title = "Actualización exitosa!";
-                    text = "El rol ha sido modificado correctamente.";
+                    text = "El rol ha sido actualizado correctamente.";
                     icon = "success";
                     break;
                 case 'deleted':
