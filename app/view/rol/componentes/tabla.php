@@ -13,7 +13,7 @@
                         <td class="ps-4 fw-medium text-secondary"><?php echo $dato['nombre']; ?></td>
                         <td class="text-end pe-4">
                             <input type="hidden" class="codigo_rol">
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modificarRol"
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarRol"
                                 datos-cod-rol="<?php echo $dato['cod_rol']; ?>"
                                 datos-nombre="<?php echo $dato['nombre']; ?>">
                                 <i class="bi bi-pencil"></i>

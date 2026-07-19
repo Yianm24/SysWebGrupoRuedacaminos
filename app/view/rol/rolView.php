@@ -10,7 +10,7 @@
             </header>
             
             <?php require 'componentes/modalRegistrar.php'; ?>
-            <?php require 'componentes/modalModificar.php'; ?>
+            <?php require 'componentes/modalActualizar.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">

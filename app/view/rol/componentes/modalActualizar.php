@@ -1,8 +1,8 @@
-<div class="modal fade" id="modificarRol" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+<div class="modal fade" id="actualizarRol" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-coin"></i>Modificar Rol</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-coin"></i>Actualizar Rol</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
@@ -17,7 +17,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="modificar" class="btn btn-primary"><i class="bi bi-save"></i> Modificar</button>
+                    <button type="submit" name="tipoSolicitud" value="actualizar" class="btn btn-primary"><i class="bi bi-save"></i>Actualizar</button>
                 </footer>
             </form>
         </div>
