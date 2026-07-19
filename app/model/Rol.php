@@ -65,15 +65,15 @@ class Rol extends Conexion
     }
 
 
-    public function modDatosRol($cod_rol, $nombre)
+    public function actDatosRol($cod_rol, $nombre)
     {
         $this->cod_rol = $cod_rol;
         $this->nombre = $this->formatearPalabra($nombre);
 
-        return $this->modificarRol();
+        return $this->actualizarRol();
     }
 
-    private function modificarRol()
+    private function actualizarRol()
     {
         try {
             $sentencia = "UPDATE `rol` SET nombre = ? WHERE cod_rol = ?";
@@ -84,7 +84,7 @@ class Rol extends Conexion
 
             $update->execute();
         } catch (\PDOException $e) {
-            return "Error al modificar el rol: " . $e->getMessage();
+            return "Error al actualizar el rol: " . $e->getMessage();
         }
     }
 
