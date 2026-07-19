@@ -34,11 +34,11 @@ switch ($solicitud) {
         }
         break;
 
-    case 'modificar':
+    case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-rol'])) {
             if (!empty($_POST['nombre'])) {
 
-                $resultado = $rol->modDatosRol($_POST['cod-rol'], $_POST['nombre']);
+                $resultado = $rol->actDatosRol($_POST['cod-rol'], $_POST['nombre']);
                 header("Location: ?url=rol&status=updated");
                 exit();
             } else {
