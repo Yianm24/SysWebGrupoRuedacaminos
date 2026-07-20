@@ -55,7 +55,7 @@
    $registros = $bancoModel->obt_RegistrosBancos();
     
     include 'app/view/layout/header.php';
-    include 'app/view/bancos/bancosView.php';
+    include 'app/view/banco/bancoView.php';
     include 'app/view/layout/footer.php';
     
 ?>

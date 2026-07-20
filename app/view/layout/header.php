@@ -73,7 +73,7 @@
                 </a>
 
 
-                <a href="?url=bancos" class="list-group-item list-group-item-action <?= $current_url == 'bancos' ? 'active' : '' ?>">
+                <a href="?url=banco" class="list-group-item list-group-item-action <?= $current_url == 'banco' ? 'active' : '' ?>">
                     <i class="bi bi-bank me-2"></i> Banco
                 </a>
 
