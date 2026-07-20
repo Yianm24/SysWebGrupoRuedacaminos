@@ -1,11 +1,11 @@
-<div class="modal fade" id="createUsuario" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
+<div class="modal fade" id="actualizarUsuario" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">     
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Usuario</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
-            <form action="?url=usuario" method="POST" id="formUsuario">
+            <form action="#" method="POST" id="formUsuario">
                 <div class="modal-body">
                     <fieldset>
                         <legend class="visually-hidden">Datos de Usuario</legend>
@@ -36,7 +36,7 @@
                 </div>
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="actualizar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

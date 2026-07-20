@@ -53,7 +53,7 @@ class MetodoPago extends Conexion
 
             return $resultado;
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
+            return "<script>alert('Error al registrar el metodo de pago: " . $e->getMessage() . "');</script>";
         }
     }
 

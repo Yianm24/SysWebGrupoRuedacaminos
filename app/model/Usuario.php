@@ -21,12 +21,11 @@ class Usuario extends Conexion
         parent::__construct();
     }
 
-    public function verificarUsuarioExiste($nombre, $rol)
+    public function verificarUsuarioExiste($cedula)
     {
-        $sentencia = "SELECT COUNT(*) FROM usuario WHERE cedula = ? AND cod_rol = ? AND estado = 1";
+        $sentencia = "SELECT COUNT(*) FROM usuario WHERE cedula = ? AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
-        $count->bindValue(2, $rol);
+        $count->bindValue(1, $cedula);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
@@ -45,7 +44,7 @@ class Usuario extends Conexion
     private function registrarUsuario()
     {
         try {
-            $sentencia = "INSERT INTO usuario (cedula,nombre,cod_rol,password,estado) VALUES (?, ?, ?)";
+            $sentencia = "INSERT INTO usuario (cedula,nombre,cod_rol,password,estado) VALUES (?, ?, ?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 

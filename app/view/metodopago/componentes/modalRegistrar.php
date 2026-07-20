@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="#" method="POST">
+            <form action="#?url=metodopago" method="POST">
                 <div class="modal-body">
 
                     <div class="input-group">
