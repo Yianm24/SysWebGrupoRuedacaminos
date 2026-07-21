@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-07-2026 a las 01:40:11
+-- Tiempo de generación: 21-07-2026 a las 02:21:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -352,7 +352,8 @@ INSERT INTO `metodo_pago` (`cod_metodo`, `nombre`, `cod_moneda`, `estado`) VALUE
 (2, 'Transferencia', 2, 1),
 (3, 'Efectivo', 1, 1),
 (4, 'Zelle', 1, 1),
-(5, 'PayPal', 1, 1);
+(5, 'Paypal', 1, 1),
+(6, 'Juan', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -520,7 +521,8 @@ CREATE TABLE `rol` (
 INSERT INTO `rol` (`cod_rol`, `nombre`, `estado`) VALUES
 (1, 'Administrador', 1),
 (2, 'Recepcionista', 1),
-(3, 'Trabajador', 1);
+(3, 'Trabajador', 1),
+(4, 'Chambeadora', 0);
 
 -- --------------------------------------------------------
 
@@ -611,10 +613,10 @@ INSERT INTO `unidad_medida` (`cod_unidad`, `nombre`, `abreviatura`, `tipo`, `est
 --
 
 CREATE TABLE `usuario` (
-  `cod_usuario` varchar(11) NOT NULL,
-  `nombre` varchar(15) NOT NULL,
+  `cod_usuario` int(11) NOT NULL,
+  `nombre` varchar(20) NOT NULL,
+  `cedula` int(9) NOT NULL,
   `password` varchar(20) NOT NULL,
-  `telefono` varchar(11) NOT NULL,
   `cod_rol` int(1) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -623,9 +625,9 @@ CREATE TABLE `usuario` (
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`cod_usuario`, `nombre`, `password`, `telefono`, `cod_rol`, `estado`) VALUES
-('1', 'Administrador', '123456', '04123838383', 1, 1),
-('2', 'Recepcionista', '123456', '04243949940', 2, 1);
+INSERT INTO `usuario` (`cod_usuario`, `nombre`, `cedula`, `password`, `cod_rol`, `estado`) VALUES
+(1, 'maria', 3032411, '12121', 2, 1),
+(2, 'Juan', 2222, '4444', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -938,7 +940,7 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `metodo_pago`
 --
 ALTER TABLE `metodo_pago`
-  MODIFY `cod_metodo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `cod_metodo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `modelo`
@@ -980,7 +982,7 @@ ALTER TABLE `precio_kilometraje`
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `cod_rol` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cod_rol` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `ubicacion`
@@ -993,6 +995,12 @@ ALTER TABLE `ubicacion`
 --
 ALTER TABLE `unidad_medida`
   MODIFY `cod_unidad` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `cod_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `vehiculo`
