@@ -5,7 +5,7 @@
                 <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Usuario</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
-            <form action="?url=usuario" method="POST" id="formUsuario">
+            <form action="#" method="POST" id="formUsuario">
                 <div class="modal-body">
                     <fieldset>
                         <legend class="visually-hidden">Datos de Usuario</legend>
