@@ -1,8 +1,8 @@
-<div class="modal fade" id="actualizarUsuario" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
+<div class="modal fade" id="actualizarUsuario" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">     
+        <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Usuario</h1>
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Actualización de Usuario</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
             <form action="#" method="POST" id="formUsuario">
@@ -22,21 +22,23 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="estado_operativo" class="form-label">Rol</label>
-                                <select class="form-select" id="estado_operativo" name="estado_operativo" required>
-                                    <option value="recepcionista">Recepcionista</option>
-                                    <option value="administrador">Administrador</option>
+                                <select class="form-select" id="rol" name="rol" required>
+                                    <?php
+                                    foreach ($regRol as $dato): ?>
+                                        <option value="<?php echo $dato['cod_rol']; ?>"><?php echo $dato['nombre']; ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="col-md-3 mb-md-0">
-                                <label for="nombre" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="contrasena" name="contrasena">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="password" name="password">
                             </div>
                         </div>
                     </fieldset>
                 </div>
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="actualizar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

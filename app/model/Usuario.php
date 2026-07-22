@@ -125,7 +125,7 @@ class Usuario extends Conexion
     }
 
 
-    public function elmDatoUsuario(int $cod_usuario)
+    public function elmDatosUsuario(int $cod_usuario)
     {
         $this->cod_usuario = $cod_usuario;
 

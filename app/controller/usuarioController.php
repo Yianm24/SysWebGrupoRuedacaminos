@@ -44,9 +44,10 @@ switch ($solicitud) {
 
 
     case 'eliminar':
-        if (isset($_POST['cod_metodo'])) {
-            $resultado = $metodo->elmDatosMetodoPago($_POST['cod_metodo']);
-            header("Location: ?url=metodopago&status=deleted");
+        if (isset($_POST['cod_usuario'])) {
+            echo "<script>confirm('¿Está seguro de que deseas eliminar este usuario?');</script>";
+            $resultado = $usuario->elmDatosUsuario($_POST['cod_usuario']);
+            header("Location: ?url=usuario&status=deleted");
             exit();
         }
         break;

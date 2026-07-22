@@ -28,6 +28,7 @@ switch ($solicitud) {
 
     case 'eliminar':
         if (isset($_POST['cod_rol'])) {
+
             $resultado = $rol->elmDatosRol($_POST['cod_rol']);
             header("Location: ?url=rol&status=deleted");
             exit();

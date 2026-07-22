@@ -30,7 +30,7 @@
                                 <fieldset style="display: inline;">
                                     <!-- Elementos para eliminar un vehiculo -->
                                     <input type="hidden" name="cod_usuario" value="<?= $dato['cod_usuario'] ?>">
-                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" > <i class="bi bi-trash"></i>
+                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este usuario?');"> <i class="bi bi-trash"></i>
                                     </button>
                                 </fieldset>
                             </form>
