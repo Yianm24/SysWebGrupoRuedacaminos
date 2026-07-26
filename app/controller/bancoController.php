@@ -13,12 +13,13 @@
     switch ($solicitud) {
         case 'registrar':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-               if (!empty($_POST['banco']) && !empty($_POST['num_cuenta']) && !empty($_POST['titular'])) {
+               if (!empty($_POST['nombre']) && !empty($_POST['numero_cuenta']) && !empty($_POST['telefono'])) {
 
-                    $resultado = $bancoModel->regDatosBanco($_POST['banco'], $_POST['num_cuenta'], $_POST['titular']);
+                    $resultado = $bancoModel->regDatosBanco($_POST['nombre'], $_POST['numero_cuenta'], $_POST['telefono']);
 
-                    echo "<script>alert('Registro de datos de banco exitoso');</script>";
                     echo $resultado;
+                    echo "<script>alert('Registro de datos de banco exitoso');</script>";
+                    
                     
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";

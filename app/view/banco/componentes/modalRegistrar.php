@@ -10,13 +10,11 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Banco</label>
-                        <input class="form-control" list="listaBancos" name="nombre_banco" placeholder="Escriba o seleccione un banco..." required>
+                        <input class="form-control" list="listaBancos" name="nombre" placeholder="Escriba o seleccione un banco..." required>
                         <datalist id="listaBancos">
-                            <option value="Banco de Venezuela">
-                            <option value="Banesco">
-                            <option value="Mercantil">
-                            <option value="BBVA Provincial">
-                            <option value="BNC">
+                            <?php foreach ($registros as $banco): ?>
+                                <option value="<?= $banco['cod_banco'] ?>"> <?= $banco['nombrebanco'] ?></option>
+                            <?php endforeach; ?>
                         </datalist>
                     </div>
                     <div class="mb-3">
@@ -24,14 +22,14 @@
                         <input type="text" class="form-control" name="numero_cuenta" placeholder="0134-xxxx-xx-xxxxxxxxxx" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Titular / Razón Social</label>
-                        <input type="text" class="form-control" name="titular" value="Grupo RuedaCaminos C.A." readonly>
+                        <label class="form-label">Telefono</label>
+                        <input type="number" class="form-control" name="telefono" placeholder="0414-xxxxxxx" required>
                     </div>
                 </div>
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

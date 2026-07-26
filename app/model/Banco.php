@@ -9,27 +9,21 @@ class Banco extends Conexion
     private $cod_banco;
     private $banco;
     private $num_cuenta;
-    private $titular;
+    private $telefono;
     private $estado;
 
 
-    public function __construct($banco = null, $num_cuenta = null, $titular = null, $estado = null)
+    public function __construct()
     {
         parent::__construct();
 
-        if ($banco !== null) {
-            $this->banco = $banco;
-        }
-        $this->num_cuenta = $num_cuenta;
-        $this->titular = $titular;
-        $this->estado = $estado;
     }
 
-    public function regDatosBanco($banco, $num_cuenta, $titular)
+    public function regDatosBanco($banco, $num_cuenta, $telefono)
     {
         $this->banco = $banco;
         $this->num_cuenta = $num_cuenta;
-        $this->titular = $titular;
+        $this->telefono = $telefono;
         $this->estado = 1;
 
         return $this->registrarBanco();
@@ -38,18 +32,19 @@ class Banco extends Conexion
     private function registrarBanco()
     {
         try {
-            $sentencia = "INSERT INTO banco (banco, num_cuenta, titular, estado) VALUES (?, ?, ?, ?)";
-
+            $sentencia = "INSERT INTO cuenta_banco (telefono, numero_cuenta,cod_banco,estado) VALUES (?, ?, ?, ?);";
             $insert = $this->conexion->prepare($sentencia);
 
-            $insert->bindValue(1, $this->banco);
+            $insert->bindValue(1, $this->telefono);
             $insert->bindValue(2, $this->num_cuenta);
-            $insert->bindValue(3, $this->titular);
+            $insert->bindValue(3, $this->banco);
             $insert->bindValue(4, $this->estado);
 
             $resultado = $insert->execute();
-
             return $resultado;
+            
+
+            
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el banco: " . $e->getMessage() . "');</script>";
         }
@@ -58,7 +53,7 @@ class Banco extends Conexion
     public function obt_RegistrosBancos()
     {
         try {
-            $sentencia = "SELECT cuenta_banco.*, banco.nombre AS nombrebanco 
+            $sentencia = "SELECT cuenta_banco.*, banco.nombre AS nombrebanco ,banco.cod_banco
               FROM cuenta_banco 
               INNER JOIN banco 
               ON cuenta_banco.cod_banco = banco.cod_banco
@@ -71,12 +66,12 @@ class Banco extends Conexion
         }
     }
 
-    public function actDatosBanco($cod_banco, $banco, $num_cuenta, $titular)
+    public function actDatosBanco($cod_banco, $banco, $num_cuenta, $telefono)
     {
         $this->cod_banco = $cod_banco;
         $this->banco = $banco;
         $this->num_cuenta = $num_cuenta;
-        $this->titular = $titular;
+        $this->telefono = $telefono;
 
         return $this->actualizarBanco();
     }
@@ -84,12 +79,12 @@ class Banco extends Conexion
     private function actualizarBanco()
     {
         try {
-            $sentencia = "UPDATE `banco` SET banco = ?, num_cuenta = ?, titular = ? WHERE cod_banco = ?";
+            $sentencia = "UPDATE `banco` SET banco = ?, num_cuenta = ?, telefono = ? WHERE cod_banco = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->banco);
             $update->bindValue(2, $this->num_cuenta);
-            $update->bindValue(3, $this->titular);
+            $update->bindValue(3, $this->telefono);
             $update->bindValue(4, $this->cod_banco);
 
             $update->execute();
