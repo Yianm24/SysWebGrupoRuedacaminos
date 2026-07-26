@@ -7,6 +7,7 @@
             </header>
             <form action="#" method="POST" id="formUsuario">
                 <div class="modal-body">
+                    <input type="hidden" id="cod-usuario" name="cod-usuario">
                     <fieldset>
                         <legend class="visually-hidden">Datos de Usuario</legend>
                         <div class="row mb-3">
@@ -23,6 +24,7 @@
                             <div class="col-md-3">
                                 <label for="estado_operativo" class="form-label">Rol</label>
                                 <select class="form-select" id="rol" name="rol" required>
+                                    
                                     <?php
                                     foreach ($regRol as $dato): ?>
                                         <option value="<?php echo $dato['cod_rol']; ?>"><?php echo $dato['nombre']; ?></option>
@@ -38,7 +40,7 @@
                 </div>
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="actualizar" class="btn btn-primary"><i class="bi bi-save"></i> Actualizar</button>
                 </footer>
             </form>
         </div>

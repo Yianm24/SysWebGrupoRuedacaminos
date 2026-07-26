@@ -29,12 +29,12 @@ switch ($solicitud) {
 
     case 'actualizar':
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod_metodo'])) {
-            if (!empty($_POST['nombre']) && !empty($_POST['moneda'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-usuario'])) {
+            if (!empty($_POST['nombre']) && !empty($_POST['cedula']) && !empty($_POST['rol']) && !empty($_POST['password'])) {
 
-                $resultado = $metodo->actDatosMetodoPago($_POST['cod_metodo'], $_POST['nombre'], $_POST['moneda']);
+                $resultado = $usuario->actDatosUsuario($_POST['cod-usuario'], $_POST['cedula'], $_POST['nombre'], $_POST['rol'], $_POST['password']);
                 echo $resultado;
-                header("Location: ?url=metodopago&status=updated");
+                header("Location: ?url=usuario&status=updated");
                 exit();
             } else {
                 echo "<script>alert('Falta uno o varios datos por ingresar');</>";
