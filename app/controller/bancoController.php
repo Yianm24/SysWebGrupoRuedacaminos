@@ -17,7 +17,7 @@
 
                     $resultado = $bancoModel->regDatosBanco($_POST['nombre'], $_POST['numero_cuenta'], $_POST['telefono']);
 
-                    echo $resultado;
+                    //echo $resultado;
                     echo "<script>alert('Registro de datos de banco exitoso');</script>";
                     
                     
