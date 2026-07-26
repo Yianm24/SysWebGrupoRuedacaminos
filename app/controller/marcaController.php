@@ -9,17 +9,17 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre_unidad']) && !empty($_POST['abreviatura']) && !empty($_POST['tipo_unidad'])) {
-                if ($unidadMedida->verificarUnidadMedidaExiste($_POST['abreviatura'], $_POST['nombre_unidad'])) {
+            if (!empty($_POST['nombre_marca'])) {
+                /*if ($unidadMedida->verificarUnidadMedidaExiste($_POST['nombre_marca'])) {
                     header("Location: ?url=unidadesmedida&status=exists");
                     exit();
-                }
+                }*/
                 
-                $resultado = $unidadMedida->regDatosUnidadMedida($_POST['nombre_unidad'], $_POST['abreviatura'], $_POST['tipo_unidad']);
-                header("Location: ?url=unidadesmedida&status=success");
+                $resultado = $marca->regDatosMarca($_POST['nombre_marca']);
+                header("Location: ?url=marca&status=success");
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                echo "<script>alert('No fue ingresado el nombre de la marca');</script>";
             }
         }
         break;

@@ -31,33 +31,29 @@ class Marca extends Conexion{
         return $count->fetchColumn() > 0;
     }
 
-     public function regDatosUnidadMedida($nombre, $abreviatura, $tipo)
+     public function regDatosMarca($nombre)
     {
         $this->nombre = $nombre;
-        $this->abreviatura = $abreviatura;
-        $this->tipo = $tipo;
         $this->estado = 1;
 
-        return $this->registrarUnidadMedida();
+        return $this->registrarMarca();
     }
 
-    private function registrarUnidadMedida()
+    private function registrarMarca()
     {
         try {
-            $sentencia = "INSERT INTO unidad_medida (nombre, abreviatura, tipo, estado) VALUES (?, ?, ?, ?)";
+            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->abreviatura);
-            $insert->bindValue(3, $this->tipo);
-            $insert->bindValue(4, $this->estado);
+            $insert->bindValue(2, $this->estado);
             $resultado = $insert->execute();
 
             return $resultado;
 
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar la unidad de medida: " . $e->getMessage() . "');</script>";
+            return "<script>alert('Error al registrar la Marca: " . $e->getMessage() . "');</script>";
         }
     }
 
