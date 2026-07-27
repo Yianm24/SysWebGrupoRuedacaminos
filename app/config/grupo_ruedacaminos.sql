@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-07-2026 a las 23:32:34
+-- Tiempo de generación: 27-07-2026 a las 01:34:04
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -139,9 +139,9 @@ INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido
 
 CREATE TABLE `cuenta_banco` (
   `cod_cuenta` int(1) NOT NULL,
-  `telefono` varchar(11) NOT NULL,
-  `numero_cuenta` varchar(20) NOT NULL,
-  `cod_banco` int(11) NOT NULL,
+  `propietario` varchar(50) NOT NULL,
+  `numero_cuenta` varchar(4) NOT NULL,
+  `cod_banco` int(2) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -149,10 +149,11 @@ CREATE TABLE `cuenta_banco` (
 -- Volcado de datos para la tabla `cuenta_banco`
 --
 
-INSERT INTO `cuenta_banco` (`cod_cuenta`, `telefono`, `numero_cuenta`, `cod_banco`, `estado`) VALUES
-(1, '0412394949', '192912912112919', 3, 1),
-(2, '04123838383', '011202010201444332', 2, 1),
-(3, '04123838383', '01032020102033248', 1, 1);
+INSERT INTO `cuenta_banco` (`cod_cuenta`, `propietario`, `numero_cuenta`, `cod_banco`, `estado`) VALUES
+(1, '0412394949', '1929', 3, 1),
+(2, '04123838383', '0112', 2, 1),
+(3, '04123838383', '0103', 1, 1),
+(4, '415263', '7894', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -2361,7 +2362,7 @@ ALTER TABLE `cliente`
 -- AUTO_INCREMENT de la tabla `cuenta_banco`
 --
 ALTER TABLE `cuenta_banco`
-  MODIFY `cod_cuenta` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cod_cuenta` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_despacho`
