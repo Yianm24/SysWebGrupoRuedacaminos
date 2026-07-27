@@ -70,31 +70,27 @@ class Marca extends Conexion{
         }
     }
 
-    public function actUnidadMedida($cod_unidadmedida, $nombre, $abreviatura, $tipo)
+    public function actMarca($cod_marca,$nombre)
     {
-        $this->cod_unidadmedida = $cod_unidadmedida;
+        $this->cod_marca = $cod_marca;
         $this->nombre = $nombre;
-        $this->abreviatura = $abreviatura;
-        $this->tipo = $tipo;
 
-        return $this->actualizarUnidadMedida();
+        return $this->actualizarMarca();
     }
    
-    private function actualizarUnidadMedida()
+    private function actualizarMarca()
     {
         try {
-            $sentencia = "UPDATE `unidad_medida` SET nombre = ?, abreviatura = ?, tipo = ? WHERE cod_unidad = ?";
+            $sentencia = "UPDATE `marca` SET nombre = ? WHERE cod_marca = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->nombre);
-            $update->bindValue(2, $this->abreviatura);
-            $update->bindValue(3, $this->tipo);
-            $update->bindValue(4, $this->cod_unidadmedida);
+            $update->bindValue(2, $this->cod_marca);
 
             $update->execute();
 
         } catch (\PDOException $e) {
-            return "Error al actualizar la unidad de medida: " . $e->getMessage();
+            return "Error al actualizar el registro de la marca: " . $e->getMessage();
         }
     }
 

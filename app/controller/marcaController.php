@@ -25,15 +25,15 @@ switch ($solicitud) {
         break;
     case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_unidad']) && !empty($_POST['nombre_unidad']) && !empty($_POST['abreviatura']) && !empty($_POST['tipo_unidad'])) {
+            if (!empty($_POST['cod_marca']) && !empty($_POST['nombre_marca'])) {
 
-                if ($unidadMedida->verificarUnidadMedidaDuplicada($_POST['abreviatura'], $_POST['nombre_unidad'], $_POST['cod_unidad'])) {
+                /*if ($marca->verificarUnidadMedidaDuplicada($_POST['abreviatura'], $_POST['nombre_unidad'], $_POST['cod_unidad'])) {
                     header("Location: ?url=unidadesmedida&status=exists");
                     exit();
-                }
+                }*/
 
-                $resultado = $unidadMedida->actUnidadMedida($_POST['cod_unidad'], $_POST['nombre_unidad'], $_POST['abreviatura'], $_POST['tipo_unidad']);
-                header("Location: ?url=unidadesmedida&status=updated");
+                $resultado = $marca->actMarca($_POST['cod_marca'], $_POST['nombre_marca']);
+                header("Location: ?url=marca&status=updated");
                 exit();
             } else {
                 echo "<script>alert('Falta uno o varios datos por ingresar');</script>";

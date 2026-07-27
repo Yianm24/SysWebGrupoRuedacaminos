@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  const modal = document.getElementById('actualizarUnidad');
+  const modal = document.getElementById('actualizarMarca');
 
 
   if (modal) {
@@ -9,23 +9,17 @@ document.addEventListener("DOMContentLoaded", function () {
       const boton = event.relatedTarget;
 
       //Obtener los datos del vehículo desde los atributos datos- del botón
-      const cod_unidad = boton.getAttribute('datos-cod-unidad');
+      const cod_marca = boton.getAttribute('datos-cod-marca');
       const nombre = boton.getAttribute('datos-nombre');
-      const abreviatura = boton.getAttribute('datos-abreviatura');
-      const tipo = boton.getAttribute('datos-tipo');
 
       // Obtener referencias a los campos del formulario dentro del modal
-      const inputCodUnidad = modal.querySelector('.modal-body #cod-unidad')
-      const inputAbreviatura = modal.querySelector('.modal-body #abreviatura')
-      const inputNombre = modal.querySelector('.modal-body #nombre-unidad')
-      const inputTipo = modal.querySelector('.modal-body #tipo-unidad')
+      const inputCodMarca= modal.querySelector('.modal-body #cod-marca')
+      const inputNombre = modal.querySelector('.modal-body #nombre_marca')
 
 
       // Asignar los valores obtenidos a los campos del formulario
-      inputCodUnidad.value = cod_unidad;
-      inputAbreviatura.value = abreviatura;
+      inputCodMarca.value = cod_marca;
       inputNombre.value = nombre;
-      inputTipo.value = tipo;
     })
   }
 
