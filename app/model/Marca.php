@@ -98,25 +98,25 @@ class Marca extends Conexion{
         }
     }
 
-    public function elmDatosUnidadMedida(int $cod_unidadmedida)
+    public function elmDatosMarca(int $cod_marca)
     {
-        $this->cod_unidadmedida = $cod_unidadmedida;
+        $this->cod_marca = $cod_marca;
 
-        return $this->eliminarUnidadMedida();
+        return $this->eliminarMarca();
     }
 
-    private function eliminarUnidadMedida()
+    private function eliminarMarca()
     {
         try {
-            $sentencia = "UPDATE `unidad_medida` SET estado = 0 WHERE cod_unidad = ?";
+            $sentencia = "UPDATE `marca` SET estado = 0 WHERE cod_marca = ?";
             $delete = $this->conexion->prepare($sentencia);
 
-            $delete->bindValue(1, $this->cod_unidadmedida);
+            $delete->bindValue(1, $this->cod_marca);
             $delete->execute();
 
-            return "Unidad de medida eliminada exitosamente";
+            return "Marca de vehiculo eliminada exitosamente";
         } catch (\PDOException $e) {
-            return "Error al eliminar la unidad de medida: " . $e->getMessage();
+            return "Error al eliminar la Marca: " . $e->getMessage();
         }
     }
 

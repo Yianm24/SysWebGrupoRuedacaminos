@@ -42,13 +42,13 @@ switch ($solicitud) {
         break;
     case 'eliminar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_unidad'])) {
-                $resultado = $unidadMedida->elmDatosUnidadMedida($_POST['cod_unidad']);
-                echo $resultado;
-                header("Location: ?url=unidadesmedida&status=deleted");
+            if (!empty($_POST['cod_marca'])) {
+                $resultado = $marca->elmDatosMarca($_POST['cod_marca']);
+                //echo $resultado;
+                header("Location: ?url=marca&status=deleted");
                 exit();
             } else {
-                echo "<script>alert('Falta el código de la unidad de medida');</script>";
+                echo "<script>alert('Falta el código de la Marca');</script>";
             }
         }
 }

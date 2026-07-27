@@ -20,7 +20,7 @@
                                 <i class="bi bi-pencil"></i>
                             </button>
                         <a href="#" class="text-secondary btn-eliminar"
-                                data-id="<?= $dato['cod_marca'] ?>" >
+                                datos-cod-marca="<?= $dato['cod_marca'] ?>" >
                                 <i class="bi bi-trash"></i>
                         </a>
                     </td>
