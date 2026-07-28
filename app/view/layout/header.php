@@ -55,7 +55,7 @@
                     <i class="bi bi-ev-front"></i> Marca
                 </a>
 
-                <a href="?url=marca" class="list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
+                <a href="?url=modelo" class="list-group-item list-group-item-action <?= $current_url == 'modelo' ? 'active' : '' ?>">
                     <i class="bi bi-car-front"></i>Modelo
                 </a>
                 <a href="?url=reporte" class="list-group-item list-group-item-action <?= $current_url == 'reporte' ? 'active' : '' ?>">
