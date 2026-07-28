@@ -10,10 +10,10 @@ switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['nombre_marca'])) {
-                /*if ($unidadMedida->verificarUnidadMedidaExiste($_POST['nombre_marca'])) {
-                    header("Location: ?url=unidadesmedida&status=exists");
+                if ($marca->verificarMarcaExiste($_POST['nombre_marca'])) {
+                    header("Location: ?url=marca&status=exists");
                     exit();
-                }*/
+                }
                 
                 $resultado = $marca->regDatosMarca($_POST['nombre_marca']);
                 header("Location: ?url=marca&status=success");
@@ -27,10 +27,10 @@ switch ($solicitud) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['cod_marca']) && !empty($_POST['nombre_marca'])) {
 
-                /*if ($marca->verificarUnidadMedidaDuplicada($_POST['abreviatura'], $_POST['nombre_unidad'], $_POST['cod_unidad'])) {
-                    header("Location: ?url=unidadesmedida&status=exists");
+                if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
+                    header("Location: ?url=marca&status=exists");
                     exit();
-                }*/
+                }
 
                 $resultado = $marca->actMarca($_POST['cod_marca'], $_POST['nombre_marca']);
                 header("Location: ?url=marca&status=updated");

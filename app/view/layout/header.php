@@ -52,7 +52,11 @@
                     <i class="bi bi-truck me-2"></i> Vehículo
                 </a>
                 <a href="?url=marca" class="list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
-                    <i class="bi bi-rulers me-2"></i> Marca
+                    <i class="bi bi-ev-front"></i> Marca
+                </a>
+
+                <a href="?url=marca" class="list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
+                    <i class="bi bi-car-front"></i>Modelo
                 </a>
                 <a href="?url=reporte" class="list-group-item list-group-item-action <?= $current_url == 'reporte' ? 'active' : '' ?>">
                     <i class="bi bi-file-earmark-bar-graph me-2"></i> Reporte
