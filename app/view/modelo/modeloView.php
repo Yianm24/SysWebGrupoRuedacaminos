@@ -4,7 +4,7 @@
             
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-rulers"></i> Gestión Unidad de Medidas</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrarMarca">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrarModelo">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
@@ -40,4 +40,4 @@
     </div>
 </main>
 <script src="assets/js/sweetalert2.all.min.js"></script>
-<script src="assets/js/marca.js"></script>
+<script src="assets/js/modelo.js"></script>

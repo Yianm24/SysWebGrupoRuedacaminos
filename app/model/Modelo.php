@@ -1,120 +1,126 @@
 <?php
+
 namespace App\Model;
+
 use App\Config\Conexion;
 
-class Marca extends Conexion{
-    
-    private $cod_marca;
+class Modelo extends Conexion
+{
+
+    private $cod_modelo;
     private $nombre;
+    private $marca;
     private $estado;
 
-    function __construct(){
+
+
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function verificarMarcaExiste($nombre) {
-        $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND estado = 1";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
-        $count->execute();
-        return $count->fetchColumn() > 0;
-    }
-
-    public function verificarMarcaDuplicada($nombre,$cod_marca) {
-        $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND cod_marca != ? AND estado = 1;";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
-        $count->bindValue(2,$cod_marca);
-        $count->execute();
-        return $count->fetchColumn() > 0;
-    }
-
-     public function regDatosMarca($nombre)
+    public function verificarModeloExiste($nombre, $marca)
     {
-        $this->nombre = $nombre;
+        $sentencia = "SELECT COUNT(*) FROM modelo WHERE nombre = ? AND cod_marca = ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $nombre);
+        $count->bindValue(2, $marca);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
+    public function regDatosModelo($nombre, $marca)
+    {
+        // $this->nombre =strtoupper($nombre);
+        $this->nombre = $this->formatearPalabra($nombre);
+        $this->marca = $marca;
         $this->estado = 1;
 
-        return $this->registrarMarca();
+        return $this->registrarModelo();
     }
 
-    private function registrarMarca()
+    private function registrarModelo()
     {
         try {
-            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?, ?)";
+            $sentencia = "INSERT INTO modelo (nombre,cod_marca,estado) VALUES (?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->estado);
+            $insert->bindValue(2, $this->marca);
+            $insert->bindValue(3, $this->estado);
+
             $resultado = $insert->execute();
 
             return $resultado;
-
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar la Marca: " . $e->getMessage() . "');</script>";
+            return "<script>alert('Error al registrar el modelo: " . $e->getMessage() . "');</script>";
         }
     }
 
-    public function obt_RegistrosMarca(){
-        
+    public function obt_RegistrosModelo()
+    {
         try {
-            $sentencia = "SELECT * FROM marca WHERE estado = 1";
-            $consulta = $this->conexion->prepare($sentencia);
-            $consulta->execute();
-            return $consulta->fetchAll(\PDO::FETCH_ASSOC);
+            $sentencia = "SELECT modelo.*, marca.nombre AS nombre_marca, 
+            marca.cod_marca
+            FROM modelo
+            INNER JOIN marca 
+            ON modelo.cod_marca= marca.cod_marca
+            WHERE modelo.estado=1";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
             return [];
         }
     }
-
-    public function actMarca($cod_marca,$nombre)
+    
+    public function modDatosModelo($cod_modelo, $nombre, $marca)
     {
-        $this->cod_marca = $cod_marca;
-        $this->nombre = $nombre;
+        $this->cod_modelo = $cod_modelo;
+        $this->nombre = $this->formatearPalabra($nombre);
+        $this->marca = $marca;
 
-        return $this->actualizarMarca();
+        return $this->modificarModelo();
     }
-   
-    private function actualizarMarca()
+
+
+    private function modificarModelo()
     {
         try {
-            $sentencia = "UPDATE `marca` SET nombre = ? WHERE cod_marca = ?";
+            $sentencia = "UPDATE `modelo` SET nombre = ?, cod_marca = ? WHERE cod_modelo = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->nombre);
-            $update->bindValue(2, $this->cod_marca);
+            $update->bindValue(2, $this->marca);
+            $update->bindValue(3, $this->cod_modelo);
 
             $update->execute();
-
         } catch (\PDOException $e) {
-            return "Error al actualizar el registro de la marca: " . $e->getMessage();
+            return "Error al actualizar el modelo: " . $e->getMessage();
         }
     }
 
-    public function elmDatosMarca(int $cod_marca)
-    {
-        $this->cod_marca = $cod_marca;
 
-        return $this->eliminarMarca();
+    public function elmDatosModelo(int $cod_modelo)
+    {
+        $this->cod_modelo = $cod_modelo;
+
+        return $this->eliminarModelo();
     }
 
-    private function eliminarMarca()
+    private function eliminarModelo()
     {
         try {
-            $sentencia = "UPDATE `marca` SET estado = 0 WHERE cod_marca = ?";
+            $sentencia = "UPDATE `modelo` SET estado = 0 WHERE cod_modelo = ?";
             $delete = $this->conexion->prepare($sentencia);
 
-            $delete->bindValue(1, $this->cod_marca);
+            $delete->bindValue(1, $this->cod_modelo);
             $delete->execute();
 
-            return "Marca de vehiculo eliminada exitosamente";
+            return "Modelo de vehiculo eliminado exitosamente";
         } catch (\PDOException $e) {
-            return "Error al eliminar la Marca: " . $e->getMessage();
+            return "Error al eliminar el Modelo de vehiculo: " . $e->getMessage();
         }
     }
-
 }
-
-
-?>

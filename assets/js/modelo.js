@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  const modal = document.getElementById('actualizarMarca');
+  const modal = document.getElementById('actualizarModelo');
 
 
   if (modal) {
@@ -9,16 +9,16 @@ document.addEventListener("DOMContentLoaded", function () {
       const boton = event.relatedTarget;
 
       //Obtener los datos del vehículo desde los atributos datos- del botón
-      const cod_marca = boton.getAttribute('datos-cod-marca');
+      const codmodelo = boton.getAttribute('datos-cod-modelo');
       const nombre = boton.getAttribute('datos-nombre');
 
       // Obtener referencias a los campos del formulario dentro del modal
-      const inputCodMarca= modal.querySelector('.modal-body #cod-marca')
-      const inputNombre = modal.querySelector('.modal-body #nombre_marca')
+      const inputCodModelo= modal.querySelector('.modal-body #cod-modelo')
+      const inputNombre = modal.querySelector('.modal-body #nombre_modelo')
 
 
       // Asignar los valores obtenidos a los campos del formulario
-      inputCodMarca.value = cod_marca;
+      inputCodModelo.value = codmodelo;
       inputNombre.value = nombre;
     })
   }
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   botonesEliminar.forEach(boton => {
     boton.addEventListener('click', function (event) {
       event.preventDefault();
-      let codmarca = this.getAttribute('datos-cod-marca');
+      let codmarca = this.getAttribute('datos-cod-modelo');
 
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
@@ -46,10 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (result.isConfirmed) {
           let form = document.createElement('form');
           form.method = 'POST';
-          form.action = '?url=marca';
+          form.action = '?url=modelo';
           form.innerHTML = `
                         <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="cod_marca" value="${codmarca}">
+                        <input type="hidden" name="cod_modelo" value="${codmodelo}">
                     `;
           document.body.appendChild(form);
           form.submit();
@@ -70,22 +70,22 @@ document.addEventListener("DOMContentLoaded", function () {
       switch (status) {
         case 'success':
           title = "Registro exitoso!";
-          text = "La Marca ha sido registrada correctamente.";
+          text = "El Modelo ha sido registrada correctamente.";
           icon = "success";
           break;
         case 'updated':
           title = "Actualización exitosa!";
-          text = "La Marca ha sido actualizada correctamente.";
+          text = "El Modelo ha sido actualizada correctamente.";
           icon = "success";
           break;
         case 'deleted':
           title = "Eliminación exitosa!";
-          text = "La Marca ha sido eliminada correctamente.";
+          text = "El Modelo ha sido eliminada correctamente.";
           icon = "success";
           break;
         case 'exists':
-          title = "Marca existente!";
-          text = "La Marca ingresada ya existe en la base de datos.";
+          title = "Modelo existente!";
+          text = "El Modelo ingresada ya existe en la base de datos.";
           icon = "warning";
           break;
       }

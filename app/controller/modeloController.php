@@ -1,39 +1,39 @@
 <?php
 namespace App\Controller;
 
-use App\Model\Marca;
+use App\Model\Modelo;
 
-$marca = new Marca();
+$modelo = new Modelo();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre_marca'])) {
-                if ($marca->verificarMarcaExiste($_POST['nombre_marca'])) {
-                    header("Location: ?url=marca&status=exists");
+            if (!empty($_POST['nombre_modelo'])) {
+                if ($modelo->verificarModeloExiste($_POST['nombre_modelo'], $_POST['nombre_marca'])) {
+                    header("Location: ?url=modelo&status=exists");
                     exit();
                 }
                 
-                $resultado = $marca->regDatosMarca($_POST['nombre_marca']);
-                header("Location: ?url=marca&status=success");
+                $resultado = $modelo->regDatosmodelo($_POST['nombre_modelo'],$_POST['cod_marca']);
+                header("Location: ?url=modelo&status=success");
                 exit();
             } else {
-                echo "<script>alert('No fue ingresado el nombre de la marca');</script>";
+                echo "<script>alert('No fue ingresado el nombre de la modelo');</script>";
             }
         }
         break;
     case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_marca']) && !empty($_POST['nombre_marca'])) {
+            if (!empty($_POST['cod_modelo']) && !empty($_POST['nombre_modelo'])) {
 
-                if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
-                    header("Location: ?url=marca&status=exists");
+                if ($modelo->verificarModeloExiste($_POST['nombre_modelo'], $_POST['nombre_marca'])) {
+                    header("Location: ?url=modelo&status=exists");
                     exit();
                 }
 
-                $resultado = $marca->actMarca($_POST['cod_marca'], $_POST['nombre_marca']);
-                header("Location: ?url=marca&status=updated");
+                $resultado = $modelo->modDatosModelo($_POST['cod_modelo'], $_POST['nombre_modelo'],$_POST['cod_marca']);
+                header("Location: ?url=modelo&status=updated");
                 exit();
             } else {
                 echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
@@ -42,22 +42,21 @@ switch ($solicitud) {
         break;
     case 'eliminar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_marca'])) {
-                $resultado = $marca->elmDatosMarca($_POST['cod_marca']);
+            if (!empty($_POST['cod_modelo'])) {
+                $resultado = $modelo->elmDatosModelo($_POST['cod_modelo']);
                 //echo $resultado;
-                header("Location: ?url=marca&status=deleted");
+                header("Location: ?url=modelo&status=deleted");
                 exit();
             } else {
-                echo "<script>alert('Falta el código de la Marca');</script>";
+                echo "<script>alert('Falta el código de la modelo');</script>";
             }
         }
 }
 
 
-$registros = $marca->obt_RegistrosMarca();
-echo"<h1>Soy el controlador del modulo modelo</h1>";
+$registros = $modelo->obt_RegistrosModelo();
     // app/controller/unidadesmedidaController.php
     include 'app/view/layout/header.php';
-    include 'app/view/marca/marcaView.php';
+    include 'app/view/modelo/modeloView.php';
     include 'app/view/layout/footer.php';
 ?>
