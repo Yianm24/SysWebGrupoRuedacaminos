@@ -9,13 +9,13 @@
             <form action="#" method="POST">
                 <div class="modal-body">
                     <div class="input-group">
-                        <select class="form-select" id="moneda" name="moneda" style="max-width: 80px;" aria-label="Moneda">
+                        <select class="form-select" id="marca" name="marca" style="max-width: 80px;" aria-label="Marca">
                             <?php
                             foreach ($registros as $dato): ?>
                                 <option value="<?php echo $dato['cod_marca']; ?>"><?php echo $dato['nombre_marca']; ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="ej: Pago Movil">
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="ej: Fuso Canter">
                     </div>
                     
                 </div>

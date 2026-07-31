@@ -9,13 +9,13 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre_modelo'])) {
-                if ($modelo->verificarModeloExiste($_POST['nombre_modelo'], $_POST['nombre_marca'])) {
+            if (!empty($_POST['nombre']) && !empty($_POST['marca'])) {
+                if ($modelo->verificarModeloExiste($_POST['nombre'], $_POST['marca'])) {
                     header("Location: ?url=modelo&status=exists");
                     exit();
                 }
-                
-                $resultado = $modelo->regDatosmodelo($_POST['nombre_modelo'],$_POST['cod_marca']);
+
+                $resultado = $modelo->regDatosmodelo($_POST['nombre'],$_POST['marca']);
                 header("Location: ?url=modelo&status=success");
                 exit();
             } else {
