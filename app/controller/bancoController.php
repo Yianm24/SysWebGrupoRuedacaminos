@@ -44,8 +44,8 @@
             break;
             
         case 'eliminar':
-            if (isset($_POST['cod_banco'])) {
-                $resultado = $bancoModel->elmDatosBanco($_POST['cod_banco']);
+            if (isset($_POST['cod_cuenta'])) {
+                $resultado = $bancoModel->elmDatosBanco($_POST['cod_cuenta']);
                 echo "<script>alert('Eliminacion de Banco realizado exitosamente');</script>";
               
             }

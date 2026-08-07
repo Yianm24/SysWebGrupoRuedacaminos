@@ -22,11 +22,11 @@
                                 >
                             <i class="bi bi-pencil"></i>
                             </button>
-                            <form action="?url=cliente" method="POST" style="display: inline;">
+                            <form action="?url=banco" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">
                                     <!-- Elementos para eliminar un vehiculo -->
-                                    <input type="hidden" name="cod_cliente" >
-                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cliente?');">
+                                    <input type="hidden" name="cod_cuenta" value="<?= $dato['cod_cuenta'] ?>">
+                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este banco?');">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </fieldset>

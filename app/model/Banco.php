@@ -6,7 +6,7 @@ use App\Config\Conexion;
 
 class Banco extends Conexion
 {
-    private $cod_banco;
+    private $cod_cuenta;
     private $banco;
     private $num_cuenta;
     private $telefono;
@@ -66,9 +66,9 @@ class Banco extends Conexion
         }
     }
 
-    public function actDatosBanco($cod_banco, $banco, $num_cuenta, $telefono)
+    public function actDatosBanco($cod_cuenta, $banco, $num_cuenta, $telefono)
     {
-        $this->cod_banco = $cod_banco;
+        $this->cod_cuenta = $cod_cuenta;
         $this->banco = $banco;
         $this->num_cuenta = $num_cuenta;
         $this->telefono = $telefono;
@@ -79,13 +79,13 @@ class Banco extends Conexion
     private function actualizarBanco()
     {
         try {
-            $sentencia = "UPDATE `banco` SET banco = ?, num_cuenta = ?, telefono = ? WHERE cod_banco = ?";
+            $sentencia = "UPDATE `cuenta_banco` SET cod_banco = ?, numero_cuenta = ?, telefono = ? WHERE cod_cuenta = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->banco);
             $update->bindValue(2, $this->num_cuenta);
             $update->bindValue(3, $this->telefono);
-            $update->bindValue(4, $this->cod_banco);
+            $update->bindValue(4, $this->cod_cuenta);
 
             $update->execute();
         } catch (\PDOException $e) {
@@ -93,9 +93,9 @@ class Banco extends Conexion
         }
     }
 
-    public function elmDatosBanco(int $cod_banco)
+    public function elmDatosBanco(int $cod_cuenta)
     {
-        $this->cod_banco = $cod_banco;
+        $this->cod_cuenta = $cod_cuenta;
 
         return $this->eliminarBanco();
     }
@@ -103,10 +103,10 @@ class Banco extends Conexion
     private function eliminarBanco()
     {
         try {
-            $sentencia = "UPDATE `banco` SET estado = 0 WHERE cod_banco = ?";
+            $sentencia = "UPDATE `cuenta_banco` SET estado = 0 WHERE cod_cuenta = ?";
             $delete = $this->conexion->prepare($sentencia);
 
-            $delete->bindValue(1, $this->cod_banco);
+            $delete->bindValue(1, $this->cod_cuenta);
             $delete->execute();
 
             return "Banco eliminado exitosamente";
