@@ -4,12 +4,13 @@ namespace App\Model;
 
 use App\Config\Conexion;
 
-class Banco extends Conexion
+class Cuenta extends Conexion
 {
     private $cod_cuenta;
+    private $propietario;
+    private $etiqueta;
+    private $num_cuenta; 
     private $banco;
-    private $num_cuenta;
-    private $telefono;
     private $estado;
 
 
@@ -19,26 +20,28 @@ class Banco extends Conexion
 
     }
 
-    public function regDatosBanco($banco, $num_cuenta, $telefono)
+    public function regDatosCuenta($propietario, $etiqueta, $num_cuenta, $banco)
     {
-        $this->banco = $banco;
+        $this->propietario = $propietario;
+        $this->etiqueta = $etiqueta;
         $this->num_cuenta = $num_cuenta;
-        $this->telefono = $telefono;
+        $this->banco = $banco;
         $this->estado = 1;
-
-        return $this->registrarBanco();
+    
+        return $this->registrarCuenta();
     }
 
-    private function registrarBanco()
+    private function registrarCuenta()
     {
         try {
-            $sentencia = "INSERT INTO cuenta_banco (telefono, numero_cuenta,cod_banco,estado) VALUES (?, ?, ?, ?);";
+            $sentencia = "INSERT INTO `cuenta_banco`(`propietario`, `etiqueta`, `numero_cuenta`, `cod_banco`, `estado`) VALUES (?,?,?,?,?)";
             $insert = $this->conexion->prepare($sentencia);
 
-            $insert->bindValue(1, $this->telefono);
-            $insert->bindValue(2, $this->num_cuenta);
-            $insert->bindValue(3, $this->banco);
-            $insert->bindValue(4, $this->estado);
+            $insert->bindValue(1, $this->propietario);
+            $insert->bindValue(2, $this->etiqueta);
+            $insert->bindValue(3, $this->num_cuenta);
+            $insert->bindValue(4, $this->banco);
+            $insert->bindValue(5, $this->estado);
 
             $resultado = $insert->execute();
             return $resultado;
@@ -50,7 +53,7 @@ class Banco extends Conexion
         }
     }
 
-    public function obt_RegistrosBancos()
+    public function obt_RegistrosCuentas()
     {
         try {
             $sentencia = "SELECT cuenta_banco.*, banco.nombre AS nombrebanco ,banco.cod_banco
@@ -66,41 +69,43 @@ class Banco extends Conexion
         }
     }
 
-    public function actDatosBanco($cod_cuenta, $banco, $num_cuenta, $telefono)
+    public function actDatosCuenta($cod_cuenta, $banco, $num_cuenta, $propietario, $etiqueta)
     {
         $this->cod_cuenta = $cod_cuenta;
         $this->banco = $banco;
         $this->num_cuenta = $num_cuenta;
-        $this->telefono = $telefono;
+        $this->propietario = $propietario;
+        $this->etiqueta = $etiqueta;
 
-        return $this->actualizarBanco();
+        return $this->actualizarCuenta();
     }
 
-    private function actualizarBanco()
+    private function actualizarCuenta()
     {
         try {
-            $sentencia = "UPDATE `cuenta_banco` SET cod_banco = ?, numero_cuenta = ?, telefono = ? WHERE cod_cuenta = ?";
+            $sentencia = "UPDATE `cuenta_banco` SET cod_banco = ?, numero_cuenta = ?, propietario = ?, etiqueta = ? WHERE cod_cuenta = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->banco);
             $update->bindValue(2, $this->num_cuenta);
-            $update->bindValue(3, $this->telefono);
-            $update->bindValue(4, $this->cod_cuenta);
+            $update->bindValue(3, $this->propietario);
+            $update->bindValue(4, $this->etiqueta);
+            $update->bindValue(5, $this->cod_cuenta);
 
             $update->execute();
         } catch (\PDOException $e) {
-            return "Error al actualizar el banco: " . $e->getMessage();
+            return "Error al actualizar la cuenta: " . $e->getMessage();
         }
     }
 
-    public function elmDatosBanco(int $cod_cuenta)
+    public function elmDatosCuenta(int $cod_cuenta)
     {
         $this->cod_cuenta = $cod_cuenta;
 
-        return $this->eliminarBanco();
+        return $this->eliminarCuenta();
     }
 
-    private function eliminarBanco()
+    private function eliminarCuenta()
     {
         try {
             $sentencia = "UPDATE `cuenta_banco` SET estado = 0 WHERE cod_cuenta = ?";
@@ -109,9 +114,9 @@ class Banco extends Conexion
             $delete->bindValue(1, $this->cod_cuenta);
             $delete->execute();
 
-            return "Banco eliminado exitosamente";
+            return "Cuenta eliminada exitosamente";
         } catch (\PDOException $e) {
-            return "Error al eliminar el banco: " . $e->getMessage();
+            return "Error al eliminar la cuenta: " . $e->getMessage();
         }
     }
 }

@@ -3,8 +3,8 @@
         <div class="col-12 mb-4">
             
             <header class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-bank"></i> Gestión de Bancos</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerBanco">
+                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-bank"></i> Gestión de Cuentas</h2>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrarCuenta">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
@@ -36,3 +36,5 @@
         </div>
     </div>
 </main>
+<script src="assets/js/sweetalert2.all.min.js"></script>
+<script src="assets/js/cuenta.js"></script>

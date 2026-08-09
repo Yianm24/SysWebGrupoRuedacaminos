@@ -80,8 +80,8 @@
                 </a>
 
 
-                <a href="?url=banco" class="list-group-item list-group-item-action <?= $current_url == 'banco' ? 'active' : '' ?>">
-                    <i class="bi bi-bank me-2"></i> Banco
+                <a href="?url=cuenta" class="list-group-item list-group-item-action <?= $current_url == 'cuenta' ? 'active' : '' ?>">
+                    <i class="bi bi-bank me-2"></i> Cuenta
                 </a>
 
                 <a href="?url=pago" class="list-group-item list-group-item-action <?= $current_url == 'pago' ? 'active' : '' ?>">
