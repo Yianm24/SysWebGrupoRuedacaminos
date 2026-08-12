@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-07-2026 a las 01:34:04
+-- Tiempo de generación: 12-08-2026 a las 23:13:37
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -140,6 +140,7 @@ INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido
 CREATE TABLE `cuenta_banco` (
   `cod_cuenta` int(1) NOT NULL,
   `propietario` varchar(50) NOT NULL,
+  `etiqueta` varchar(15) NOT NULL,
   `numero_cuenta` varchar(4) NOT NULL,
   `cod_banco` int(2) NOT NULL,
   `estado` tinyint(1) NOT NULL
@@ -149,11 +150,21 @@ CREATE TABLE `cuenta_banco` (
 -- Volcado de datos para la tabla `cuenta_banco`
 --
 
-INSERT INTO `cuenta_banco` (`cod_cuenta`, `propietario`, `numero_cuenta`, `cod_banco`, `estado`) VALUES
-(1, '0412394949', '1929', 3, 1),
-(2, '04123838383', '0112', 2, 1),
-(3, '04123838383', '0103', 1, 1),
-(4, '415263', '7894', 2, 1);
+INSERT INTO `cuenta_banco` (`cod_cuenta`, `propietario`, `etiqueta`, `numero_cuenta`, `cod_banco`, `estado`) VALUES
+(1, 'Oswaldo', 'P2P', '5454', 2, 1),
+(2, '04123838383', '', '0112', 2, 1),
+(3, '04123838383', 'Popular', '0103', 1, 1),
+(4, '415263', '', '7894', 2, 1),
+(5, 'Ruben Perez', 'Pago Movil', '1234', 3, 1),
+(6, 'Prueba', 'Transferencia', '1212', 2, 0),
+(7, 'Prueba2', 'Pagomovil', '5555', 1, 1),
+(8, 'Maria Oropeza', 'MovilPago', '4545', 1, 1),
+(9, 'Praba', 'P2P', '0103', 1, 1),
+(10, 'YOMYOM', 'P2P', '0103', 1, 0),
+(11, 'Hola', 'PagoMV', '5666', 1, 1),
+(12, 'YAN', 'POL', '0103', 1, 1),
+(13, 'Ruben', 'Popular', '8904', 1, 1),
+(14, 'YAN', 'MOlgol', '5656', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -2362,7 +2373,7 @@ ALTER TABLE `cliente`
 -- AUTO_INCREMENT de la tabla `cuenta_banco`
 --
 ALTER TABLE `cuenta_banco`
-  MODIFY `cod_cuenta` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cod_cuenta` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_despacho`
