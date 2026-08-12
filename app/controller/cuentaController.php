@@ -18,9 +18,6 @@
                     $resultado = $cuenta->regDatosCuenta($_POST['nombre_propietario'], $_POST['etiqueta_cuenta'], $_POST['numero_cuenta'], $_POST['nombre_banco']);
                     header("Location: ?url=cuenta&status=success");
                     exit();
-                    //echo $resultado;
-                    //echo "<script>alert('Registro de datos de cuenta exitoso');</script>";
-                    
                     
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
@@ -30,12 +27,14 @@
             break;
             
         case 'actualizar':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-banco'])) {
-                if (!empty($_POST['banco']) && !empty($_POST['num_cuenta']) && !empty($_POST['titular'])) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod_cuenta'])) {
+                if (!empty($_POST['cod_cuenta']) && !empty($_POST['nombre_propietario']) && !empty($_POST['etiqueta_cuenta']) && !empty($_POST['numero_cuenta']) && !empty($_POST['nombre_banco'])) {
                     
-                    $resultado = $cuenta->actDatosCuenta($_POST['cod-cuenta'], $_POST['banco'], $_POST['num_cuenta'], $_POST['titular']);
-
-                    echo "<script>alert('Actualización de datos de la cuenta realizado exitosamente');</script>";
+                    $resultado = $cuenta->actDatosCuenta($_POST['cod_cuenta'],$_POST['nombre_propietario'], $_POST['etiqueta_cuenta'], $_POST['numero_cuenta'], $_POST['nombre_banco']);
+                    //echo $resultado;
+                    header("Location: ?url=cuenta&status=updated");
+                    exit();
+                   
                     
                 } else {
                     echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
@@ -48,7 +47,7 @@
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['cod_cuenta'])) {
                 $resultado = $cuenta->elmDatosCuenta($_POST['cod_cuenta']);
-                echo "<script>alert('Eliminación de cuenta realizada exitosamente');</script>";
+                //echo "<script>alert('Eliminación de cuenta realizada exitosamente');</script>";
                 header("Location: ?url=cuenta&status=deleted");
                 exit();
             } else {
@@ -58,7 +57,8 @@
 
     }
     // Llama al método correspondiente para listar los registros en la tabla
-   $registros = $cuenta->obt_RegistrosCuentas();
+   $bancos = $cuenta->obt_RegistrosBancos();
+    $registros = $cuenta->obt_RegistrosCuentas();
     
     include 'app/view/layout/header.php';
     include 'app/view/cuenta/cuentaView.php';

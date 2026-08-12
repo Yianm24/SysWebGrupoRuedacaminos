@@ -1,33 +1,80 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  /*const modal = document.getElementById('actualizarUnidad');
-
+  const modal = document.getElementById('registrarCuenta');
+  
+/*
+  if(botonRegistrar.className.includes('d-none')){
+    botonRegistrar.classList.remove('d-none');
+    botonActualizar.classList.add('d-none');
+  }
+*/
 
   if (modal) {
     modal.addEventListener('show.bs.modal', event => {
+      let botonDeModal = document.querySelector('button[name="tipoSolicitud"]');
+      //let botonActualizar = document.querySelector('button[name="tipoSolicitud"][value="actualizar"].d-none');
+
       // Obtener acceso al botón que disparó el modal
       const boton = event.relatedTarget;
+      console.log(boton);
+      if (boton.title === "Registrar") {
+        botonDeModal.value="registrar";
+        botonDeModal.innerHTML='<i class="bi bi-save"></i> Registrar';
+      console.log("Se ha abierto el modal para registrar una nueva cuenta bancaria.");
+      
+      const inputCodCuentaR = modal.querySelector('.modal-body #cod-cuenta')
+      const inputNombrePropietarioR = modal.querySelector('.modal-body #nombre-propietario')
+      const inputNumeroCuentaR = modal.querySelector('.modal-body #numero-cuenta')
+      const inputNombreBancoR = modal.querySelector('.modal-body #nombre-banco')
+      const inputEtiquetaR = modal.querySelector('.modal-body #etiqueta-cuenta')
 
+      inputCodCuentaR.value = ""; 
+      inputNombrePropietarioR.value="";
+      inputNumeroCuentaR.value = "";
+      inputNombreBancoR.value = "";
+      inputEtiquetaR.value = "";
+        
+      }if (boton.title === "Actualizar") {
+        botonDeModal.value="actualizar";
+        botonDeModal.innerHTML='<i class="bi bi-pencil"></i> Actualizar';
       //Obtener los datos del vehículo desde los atributos datos- del botón
-      const cod_unidad = boton.getAttribute('datos-cod-unidad');
-      const nombre = boton.getAttribute('datos-nombre');
-      const abreviatura = boton.getAttribute('datos-abreviatura');
-      const tipo = boton.getAttribute('datos-tipo');
+      const cod_cuenta = boton.getAttribute('datos-cod-cuenta');
+      const nombre_propietario = boton.getAttribute('datos-nombre-propietario');
+      const numero_cuenta = boton.getAttribute('datos-numero-cuenta');
+      const cod_banco = boton.getAttribute('datos-cod-banco');
+      const etiqueta = boton.getAttribute('datos-etiqueta');
+      const estado = boton.getAttribute('datos-estado');
 
       // Obtener referencias a los campos del formulario dentro del modal
-      const inputCodUnidad = modal.querySelector('.modal-body #cod-unidad')
-      const inputAbreviatura = modal.querySelector('.modal-body #abreviatura')
-      const inputNombre = modal.querySelector('.modal-body #nombre-unidad')
-      const inputTipo = modal.querySelector('.modal-body #tipo-unidad')
-
+      const inputCodCuenta = modal.querySelector('.modal-body #cod-cuenta')
+      const inputEstadoRegistro = modal.querySelector('.modal-body #estado')
+      const inputNombrePropietario = modal.querySelector('.modal-body #nombre-propietario')
+      const inputNumeroCuenta = modal.querySelector('.modal-body #numero-cuenta')
+      const inputNombreBanco = modal.querySelector('.modal-body #nombre-banco')
+      const inputEtiqueta = modal.querySelector('.modal-body #etiqueta-cuenta')
 
       // Asignar los valores obtenidos a los campos del formulario
-      inputCodUnidad.value = cod_unidad;
-      inputAbreviatura.value = abreviatura;
-      inputNombre.value = nombre;
-      inputTipo.value = tipo;
+     //if (cod_cuenta != "" && estado == 1) {
+        
+        //Cambiar propiedades del boton para reciclarlo
+        
+        
+        
+      //botonRegistrar.classList.add('d-none');
+      //botonActualizar.classList.remove('d-none');
+        //console.log(botonActualizar.value);
+      inputCodCuenta.value = cod_cuenta;
+      inputNombrePropietario.value=nombre_propietario;
+      inputNumeroCuenta.value = numero_cuenta;
+      inputNombreBanco.value = cod_banco;
+      inputEtiqueta.value = etiqueta;
+      
+     // }else{
+      //console.log("No se puede editar el registro, ya que está inactivo.");
+      //}
+      }
     })
-  }*/
+  }
 
   const botonesEliminar = document.querySelectorAll('.btn-eliminar');
   botonesEliminar.forEach(boton => {
@@ -52,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (result.isConfirmed) {
           let form = document.createElement('form');
           form.method = 'POST';
-          form.action = '?url=banco';
+          form.action = '?url=cuenta';
           form.innerHTML = `
                         <input type="hidden" name="tipoSolicitud" value="eliminar">
                         <input type="hidden" name="cod_cuenta" value="${codcuenta}">

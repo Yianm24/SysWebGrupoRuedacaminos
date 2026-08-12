@@ -68,14 +68,26 @@ class Cuenta extends Conexion
             return [];
         }
     }
-
-    public function actDatosCuenta($cod_cuenta, $banco, $num_cuenta, $propietario, $etiqueta)
+    
+    public function obt_RegistrosBancos()
+    {
+        try {
+            $sentencia = "SELECT * FROM banco WHERE estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+    
+    public function actDatosCuenta($cod_cuenta,$propietario, $etiqueta, $num_cuenta, $banco)
     {
         $this->cod_cuenta = $cod_cuenta;
-        $this->banco = $banco;
-        $this->num_cuenta = $num_cuenta;
         $this->propietario = $propietario;
         $this->etiqueta = $etiqueta;
+        $this->num_cuenta = $num_cuenta;
+        $this->banco = $banco;
 
         return $this->actualizarCuenta();
     }
@@ -83,18 +95,18 @@ class Cuenta extends Conexion
     private function actualizarCuenta()
     {
         try {
-            $sentencia = "UPDATE `cuenta_banco` SET cod_banco = ?, numero_cuenta = ?, propietario = ?, etiqueta = ? WHERE cod_cuenta = ?";
+            $sentencia = "UPDATE `cuenta_banco` SET propietario = ?, etiqueta = ?, numero_cuenta = ?, cod_banco = ? WHERE cod_cuenta = ?";
             $update = $this->conexion->prepare($sentencia);
 
-            $update->bindValue(1, $this->banco);
-            $update->bindValue(2, $this->num_cuenta);
-            $update->bindValue(3, $this->propietario);
-            $update->bindValue(4, $this->etiqueta);
+            $update->bindValue(1, $this->propietario);
+            $update->bindValue(2, $this->etiqueta);
+            $update->bindValue(3, $this->num_cuenta);
+            $update->bindValue(4, $this->banco);
             $update->bindValue(5, $this->cod_cuenta);
 
             $update->execute();
         } catch (\PDOException $e) {
-            return "Error al actualizar la cuenta: " . $e->getMessage();
+            return "<script>alert('Error al actualizar la cuenta: " . $e->getMessage() . "');</script>";
         }
     }
 

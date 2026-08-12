@@ -4,7 +4,7 @@
             
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-bank"></i> Gestión de Cuentas</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrarCuenta">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" title="Registrar" data-bs-target="#registrarCuenta">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>

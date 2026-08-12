@@ -21,7 +21,13 @@
                         </td>
 
                         <td class="pe-4 text-center">
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Editar" data-bs-toggle="modal" data-bs-target="#editCliente">
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#registrarCuenta"
+                                datos-cod-cuenta="<?php echo $dato['cod_cuenta'];?>"
+                                datos-nombre-propietario="<?php echo $dato['propietario']; ?>"
+                                datos-numero-cuenta="<?php echo $dato['numero_cuenta']; ?>"
+                                datos-cod-banco="<?php echo $dato['cod_banco']; ?>"
+                                datos-etiqueta="<?php echo $dato['etiqueta']; ?>"
+                                datos-estado="<?php echo $dato['estado'];?>">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <a href="#" class="text-secondary btn-eliminar"
