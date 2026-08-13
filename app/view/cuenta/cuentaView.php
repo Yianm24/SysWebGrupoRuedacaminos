@@ -4,12 +4,12 @@
             
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-bank"></i> Gestión de Cuentas</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" title="Registrar" data-bs-target="#registrarCuenta">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" title="Registrar" data-bs-target="#modalCuenta">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
             
-            <?php require 'componentes/modalRegistrar.php'; ?>
+            <?php require 'componentes/modal.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">

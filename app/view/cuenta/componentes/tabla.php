@@ -21,7 +21,7 @@
                         </td>
 
                         <td class="pe-4 text-center">
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#registrarCuenta"
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalCuenta"
                                 datos-cod-cuenta="<?php echo $dato['cod_cuenta'];?>"
                                 datos-nombre-propietario="<?php echo $dato['propietario']; ?>"
                                 datos-numero-cuenta="<?php echo $dato['numero_cuenta']; ?>"
