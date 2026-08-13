@@ -15,6 +15,10 @@
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                if (!empty($_POST['nombre_propietario']) && !empty($_POST['etiqueta_cuenta']) && !empty($_POST['numero_cuenta']) && !empty($_POST['nombre_banco'])) {
 
+                    if ($cuenta->verificarCuentaDuplicada($_POST['etiqueta_cuenta'], $_POST['numero_cuenta'], $_POST['cod_cuenta'] ?? null)) {
+                        header("Location: ?url=cuenta&status=exists");
+                        exit();
+                    }
                     $resultado = $cuenta->regDatosCuenta($_POST['nombre_propietario'], $_POST['etiqueta_cuenta'], $_POST['numero_cuenta'], $_POST['nombre_banco']);
                     header("Location: ?url=cuenta&status=success");
                     exit();
@@ -30,6 +34,10 @@
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod_cuenta'])) {
                 if (!empty($_POST['cod_cuenta']) && !empty($_POST['nombre_propietario']) && !empty($_POST['etiqueta_cuenta']) && !empty($_POST['numero_cuenta']) && !empty($_POST['nombre_banco'])) {
                     
+                    if ($cuenta->verificarCuentaDuplicada($_POST['etiqueta_cuenta'], $_POST['numero_cuenta'], $_POST['cod_cuenta'])) {
+                        header("Location: ?url=cuenta&status=exists");
+                        exit();
+                    }
                     $resultado = $cuenta->actDatosCuenta($_POST['cod_cuenta'],$_POST['nombre_propietario'], $_POST['etiqueta_cuenta'], $_POST['numero_cuenta'], $_POST['nombre_banco']);
                     //echo $resultado;
                     header("Location: ?url=cuenta&status=updated");

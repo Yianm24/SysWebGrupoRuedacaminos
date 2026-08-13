@@ -20,6 +20,21 @@ class Cuenta extends Conexion
 
     }
 
+    public function verificarCuentaDuplicada($etiqueta, $num_cuenta, $cod_cuenta = null) {
+        if ($cod_cuenta === null) {
+            $sentencia = "SELECT COUNT(*) FROM cuenta_banco WHERE etiqueta=? AND numero_cuenta = ? AND estado = 1;";
+        } else {
+            $sentencia = "SELECT COUNT(*) FROM cuenta_banco WHERE etiqueta=? AND numero_cuenta = ? AND cod_cuenta != ? AND estado = 1;";
+        }
+        //$sentencia = "SELECT COUNT(*) FROM cuenta_banco WHERE etiqueta=? AND numero_cuenta = ? AND cod_cuenta = ? AND estado = 1;";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $etiqueta);
+        $count->bindValue(2, $num_cuenta);
+        $count->bindValue(3, $cod_cuenta);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
+
     public function regDatosCuenta($propietario, $etiqueta, $num_cuenta, $banco)
     {
         $this->propietario = $propietario;
