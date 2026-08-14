@@ -11,43 +11,46 @@
                     <input type="hidden" name="cod_vehiculo" id="cod-vehiculo">
 
                     <fieldset class="row mb-3">
-                        
-                            <div class="col-md-6">
-                                <label for="placa" class="form-label">Placa</label>
-                                <input type="text" class="form-control" id="placa" name="placa" placeholder="Ej: ABC12D" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="color" class="form-label">Color:</label>
-                                <input type="text" class="form-control" id="color" name="color" required>
-                            </div>
+
+                        <div class="col-md-6">
+                            <label for="placa" class="form-label">Placa</label>
+                            <input type="text" class="form-control" id="placa" name="placa" placeholder="Ej: ABC12D" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="color" class="form-label">Color:</label>
+                            <input type="text" class="form-control" id="color" name="color" required>
+                        </div>
 
                     </fieldset>
 
                     <fieldset>
-                        
+
                         <div class="row mb-3">
                             <div class="col-md-12">
                                 <div class="input-group ">
                                     <input class="form-control" list="ano-options" id="ano" name="ano" placeholder="Año" required>
                                     <datalist id="ano-options">
-                                    <?php
-                                    $anoActual = date("Y");
+                                        <?php
+                                        $anoActual = date("Y");
                                         for ($i = $anoActual; $i >= 1950; $i--) {
-                                        echo "<option value='$i' " . ( $i ? 'selected' : '') . ">$i</option>";
+                                            echo "<option value='$i' " . ($i ? 'selected' : '') . ">$i</option>";
                                         }
-                                    ?>
+                                        ?>
                                     </datalist>
                                     <select class="form-select" id="tipo-vehiculo" name="tipo_vehiculo" placeholder="TipoVehiculo" required>
                                         <option selected>TipoVehiculo</option>
+
                                         <option value="1">Grande</option>
                                         <option value="2">Mediano</option>
                                         <option value="3">Pequeño</option>
                                     </select>
+
+                                    </select>
                                     <select class="form-select" id="modelo" name="modelo">
                                         <option selected>Modelo</option>
-                                        <option value="1">Fiesta</option>
-                                        <option value="2">Canguro</option>
-                                        <option value="3">Fiorino</option>
+                                        <?php foreach ($modelosRegistros as $registro): ?>
+                                            <option value=<?= $registro['cod_modelo'] ?>><?= $registro['nombre'] ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>

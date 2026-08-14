@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Model\Vehiculo;
+use App\Model\Modelo;
 
 $vehiculo = new Vehiculo();
+$modelo = new Modelo();
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
@@ -54,7 +56,7 @@ switch ($solicitud) {
         break;
 }
 $registros = $vehiculo->obt_RegistrosVehiculos();
-
+$modelosRegistros = $modelo->obt_RegistrosModelo();
 
 include 'app/view/layout/header.php';
 include 'app/view/vehiculo/vehiculoView.php';
