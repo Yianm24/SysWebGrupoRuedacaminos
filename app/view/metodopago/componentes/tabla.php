@@ -5,7 +5,6 @@
                 <tr>
                     <th class="ps-4">NOMBRE DEL MÉTODO</th>
                     <th class="ps-4">MONEDA AFILIADA</th>
-                    <th class="ps-4">MONEDA ABREVIATURA</th>
                     <th class="text-end pe-4">ACCIONES</th>
                 </tr>
             </thead>
@@ -15,7 +14,6 @@
                     <tr>
                         <td class="ps-4 fw-medium text-secondary"><?= $dato['nombre']; ?></td>
                         <td class="ps-4 fw-medium text-secondary"><?= $dato['nombremoneda']; ?></td>
-                        <td class="ps-4 fw-medium text-secondary"><?= $dato['abreviaturamoneda']; ?></td>
                         <td class="text-end pe-4">
                             <!--Elementos para Actualizar un vehiculo-->
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#actualizarMetodoPago"

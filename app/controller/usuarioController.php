@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Model\Usuario;
+//use App\Model\Cargo;
 
 $usuario = new Usuario();
+//$cargo = new Cargo();
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
