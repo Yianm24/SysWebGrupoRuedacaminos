@@ -3,16 +3,13 @@
         <div class="col-12 mb-4">
             
             <header class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-rulers"></i> Gestión Unidad de Medidas</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrarMarca">
+                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-ev-front me-2"></i> Gestion de Marcas de Vehiculo</h2>
+                <button type="button" class="btn btn-primary" title="Registrar" data-bs-toggle="modal" data-bs-target="#modalMarca">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
             
-            <?php 
-                require 'componentes/modalRegistrar.php';
-                require 'componentes/modalActualizar.php'; 
-            ?>
+            <?php require 'componentes/modal.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
@@ -21,7 +18,7 @@
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar unidad...">
+                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar marca...">
                     </div>
                 </div>
 

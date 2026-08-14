@@ -1,10 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  const modal = document.getElementById('actualizarMarca');
+  const modal = document.getElementById('modalMarca');
 
 
   if (modal) {
     modal.addEventListener('show.bs.modal', event => {
+      const encabezadoModal = modal.querySelector('h1#modalLabel');
+      const botonDeModal = document.querySelector('button[name="tipoSolicitud"]');
+
       // Obtener acceso al botón que disparó el modal
       const boton = event.relatedTarget;
 
@@ -13,13 +16,28 @@ document.addEventListener("DOMContentLoaded", function () {
       const nombre = boton.getAttribute('datos-nombre');
 
       // Obtener referencias a los campos del formulario dentro del modal
-      const inputCodMarca= modal.querySelector('.modal-body #cod-marca')
+      const inputCodMarca = modal.querySelector('.modal-body #cod-marca')
       const inputNombre = modal.querySelector('.modal-body #nombre_marca')
 
+      switch (boton.title) {
+        case "Registrar":
 
-      // Asignar los valores obtenidos a los campos del formulario
-      inputCodMarca.value = cod_marca;
-      inputNombre.value = nombre;
+          encabezadoModal.innerHTML = '<i class="bi bi-ev-front me-2"></i> Registro de Marca';
+          botonDeModal.value = "registrar";
+          botonDeModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+          inputCodMarca.value = "";
+          inputNombre.value = "";
+          break
+        case "Actualizar":
+          encabezadoModal.innerHTML = '<i class="bi bi-ev-front me-2"></i> Actualizacion de Marca';
+          botonDeModal.value = "Actualizar";
+          botonDeModal.innerHTML = '<i class="bi bi-save"></i> Actualizar';
+
+          // Asignar los valores obtenidos a los campos del formulario
+          inputCodMarca.value = cod_marca;
+          inputNombre.value = nombre;
+          break
+      }
     })
   }
 

@@ -10,11 +10,12 @@ switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['nombre_marca'])) {
-                if ($marca->verificarMarcaExiste($_POST['nombre_marca'])) {
+                
+                if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
                     header("Location: ?url=marca&status=exists");
                     exit();
                 }
-                
+
                 $resultado = $marca->regDatosMarca($_POST['nombre_marca']);
                 header("Location: ?url=marca&status=success");
                 exit();

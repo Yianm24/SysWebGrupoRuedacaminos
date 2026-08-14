@@ -12,16 +12,12 @@ class Marca extends Conexion{
         parent::__construct();
     }
 
-    public function verificarMarcaExiste($nombre) {
-        $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND estado = 1";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
-        $count->execute();
-        return $count->fetchColumn() > 0;
-    }
-
-    public function verificarMarcaDuplicada($nombre,$cod_marca) {
-        $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND cod_marca != ? AND estado = 1;";
+    public function verificarMarcaDuplicada($nombre,$cod_marca=null) {
+        if ($cod_marca === null) {
+            $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND estado = 1;";
+        }else{
+            $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND cod_marca != ? AND estado = 1;";
+        }
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
         $count->bindValue(2,$cod_marca);
