@@ -1,21 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
-    //const boton = document.querySelectorAll('.obtener-codigo');
-    //const codigo = document.querySelectorAll('.codigo_vehiculo');
-    const modal = document.getElementById('actualizarVehiculo');
 
-    /*boton.forEach(function(boton) {
-        boton.addEventListener('click', function() {
-            //console.log(codigo.value);
-            console.log(this.value);
-            
-            //location.href = "?url=vehiculo&prueba=" + encodeURIComponent(this.value);
-          
-        });
-    });*/
+    const modal = document.getElementById('modalVehiculo');
 
 
     if (modal) {
         modal.addEventListener('show.bs.modal', event => {
+            const encabezadoModal = modal.querySelector('h1#modalLabel');
+            const botonDeModal = document.querySelector('button[name="tipoSolicitud"]');
             // Obtener acceso al botón que disparó el modal
             const boton = event.relatedTarget;
 
@@ -26,23 +17,59 @@ document.addEventListener("DOMContentLoaded", function () {
             const tipovehiculo = boton.getAttribute('datos-tipovehiculo');
             const modelo = boton.getAttribute('datos-modelo');
             const ano = boton.getAttribute('datos-ano');
+            const estado = boton.getAttribute('datos-estado');
 
             // Obtener referencias a los campos del formulario dentro del modal
-            const inputCodVehiculo = modal.querySelector('.modal-body #cod-vehiculo')
-            const inputPlaca = modal.querySelector('.modal-body #placa')
-            const inputColor = modal.querySelector('.modal-body #color')
-            const inputTipovehiculo = modal.querySelector('.modal-body #tipo-vehiculo')
-            const inputModelo = modal.querySelector('.modal-body #modelo')
-            const inputAno = modal.querySelector('.modal-body #ano')
+            const inputCodVehiculo = modal.querySelector('.modal-body #cod-vehiculo');
+            const inputPlaca = modal.querySelector('.modal-body #placa');
+            const inputColor = modal.querySelector('.modal-body #color');
+            const inputTipovehiculo = modal.querySelector('.modal-body #tipo-vehiculo');
+            const inputModelo = modal.querySelector('.modal-body #modelo');
+            const inputAno = modal.querySelector('.modal-body #ano');
+
+            switch (boton.title) {
+                case "Registrar":
+                    const selectTipoVehiculo = modal.querySelector('.modal-body #tipo-vehiculo');
+                    const selectModelo = modal.querySelector('.modal-body #modelo');
+
+                    encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Registro de Vehículo';
 
 
-            // Asignar los valores obtenidos a los campos del formulario
-            inputCodVehiculo.value = cod_vehiculo;
-            inputPlaca.value = placa;
-            inputColor.value = color;
-            inputTipovehiculo.value = tipovehiculo;
-            inputModelo.value = modelo;
-            inputAno.value = ano;
+                    botonDeModal.value = "registrar";
+                    botonDeModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+
+                    inputCodVehiculo.value = "";
+                    inputPlaca.value = "";
+                    inputColor.value = "";
+                    inputTipovehiculo.value = "";
+                    selectTipoVehiculo.selectedIndex = 0; // Reinicia el select al primer valor
+                    inputModelo.value = "";
+                    selectModelo.selectedIndex = 0;
+                    inputAno.value = "";
+                    break
+                case "Actualizar":
+                    encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Actualización de Vehículo';
+                    botonDeModal.value = "actualizar";
+                    botonDeModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
+                    if (cod_vehiculo != "" && estado == 1) {
+                        //Inserta valores dentro de los inputs del formulario para actualizar
+                        inputCodVehiculo.value = cod_vehiculo;
+                        inputPlaca.value = placa;
+                        inputColor.value = color;
+                        inputTipovehiculo.value = tipovehiculo;
+                        inputModelo.value = modelo;
+                        inputAno.value = ano;
+                    } else {
+                        inputPlaca.value = "Error: Registro inactivo";
+                        inputColor.value = "Error: Registro inactivo";
+                        inputTipovehiculo.value = "Error: Registro inactivo";
+                        inputModelo.value = "Error: Registro inactivo";
+                        inputAno.value = "Error: Registro inactivo";
+                        console.log("No se puede editar el registro, ya que está inactivo.");
+                    }
+                    break
+
+            }
         })
     }
 

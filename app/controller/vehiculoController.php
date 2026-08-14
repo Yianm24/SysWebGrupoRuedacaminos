@@ -11,14 +11,14 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo-vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano'])) {
+            if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo_vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano'])) {
                 
-                if ($vehiculo->verificarVehiculoExiste($_POST['placa'])) {
+               if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod_vehiculo'])) {
                     header("Location: ?url=vehiculo&status=exists");
                     exit();
                 }
 
-                $resultado = $vehiculo->regDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['tipo-vehiculo'], $_POST['modelo'], $_POST['ano']);
+                $resultado = $vehiculo->regDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['tipo_vehiculo'], $_POST['modelo'], $_POST['ano']);
 
                 header("Location: ?url=vehiculo&status=success");
                 exit();
@@ -28,15 +28,15 @@ switch ($solicitud) {
         }
         break;
     case 'actualizar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-vehiculo'])) {
-            if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo-vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod_vehiculo'])) {
+            if (!empty($_POST['cod_vehiculo']) && !empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo_vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano'])) {
 
-                if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod-vehiculo'])) {
+                if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod_vehiculo'])) {
                     header("Location: ?url=vehiculo&status=exists");
                     exit();
                 }
 
-                $resultado = $vehiculo->actDatosVehiculo($_POST['cod-vehiculo'], $_POST['placa'], $_POST['color'], $_POST['tipo-vehiculo'], $_POST['modelo'], $_POST['ano']);
+                $resultado = $vehiculo->actDatosVehiculo($_POST['cod_vehiculo'], $_POST['placa'], $_POST['color'], $_POST['tipo_vehiculo'], $_POST['modelo'], $_POST['ano']);
 
                 header("Location: ?url=vehiculo&status=updated");
                 exit();
@@ -55,12 +55,6 @@ switch ($solicitud) {
 }
 $registros = $vehiculo->obt_RegistrosVehiculos();
 
-//$datosEditable = $_GET['prueba'] ?? 'no me dieron nada';
-/*foreach ($registros as $dato):
-        if ($_REQUEST['obtener-codigo'] == $dato['cod_vehiculo']) {
-            $datosEditable = $dato;
-        }
-    endforeach;*/
 
 include 'app/view/layout/header.php';
 include 'app/view/vehiculo/vehiculoView.php';

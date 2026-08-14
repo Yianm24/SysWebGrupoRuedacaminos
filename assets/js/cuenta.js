@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
           botonDeModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
           
           if (cod_cuenta != "" && estado == 1) {
-            //Cambiar propiedades del boton para reciclarlo
+            //Inserta valores dentro de los inputs del formulario para actualizar
             inputCodCuenta.value = cod_cuenta;
             inputNombrePropietario.value = nombre_propietario;
             inputNumeroCuenta.value = numero_cuenta;

@@ -20,16 +20,13 @@ class Vehiculo extends Conexion
         
     }
 
-     public function verificarVehiculoExiste($placa) {
-        $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND estado = 1";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $placa);
-        $count->execute();
-        return $count->fetchColumn() > 0;
-    }
 
-    public function verificarVehiculoDuplicado($placa, $cod_vehiculo) {
-        $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND cod_vehiculo != ? AND estado = 1";
+    public function verificarVehiculoDuplicado($placa, $cod_vehiculo=null) {
+        if ($cod_vehiculo === null) {
+            $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND estado = 1;";
+        } else {
+            $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND cod_vehiculo != ? AND estado = 1;";
+        }
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $placa);
         $count->bindValue(2, $cod_vehiculo);

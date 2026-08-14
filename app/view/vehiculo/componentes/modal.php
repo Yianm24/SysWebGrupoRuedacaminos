@@ -1,13 +1,14 @@
-<div class="modal fade" id="registrarVehiculo" tabindex="-1" aria-labelledby="registrarModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalVehiculo" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registro de Vehículo</h1>
+                <h1 class="modal-title fs-5" id="modalLabel"></h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
             <form action="#" method="POST" id="formFlota">
                 <div class="modal-body">
+                    <input type="hidden" name="cod_vehiculo" id="cod-vehiculo">
 
                     <fieldset class="row mb-3">
                         
@@ -23,24 +24,11 @@
                     </fieldset>
 
                     <fieldset>
-                        <!--
-                        <div class="row mb-3">
-                            
-                            <div class="col-md-6">
-                                <label for="estado_operativo" class="form-label">Estado Operativo</label>
-                                <select class="form-select" id="estado_operativo" name="estado_operativo" required>
-                                    <option value="disponible">Disponible</option>
-                                    <option value="en_ruta">En Ruta</option>
-                                    <option value="en_taller">En Taller</option>
-                                </select>
-                            </div>
-                            
-                        </div>
-                        -->
+                        
                         <div class="row mb-3">
                             <div class="col-md-12">
                                 <div class="input-group ">
-                                    <input class="form-control" list="ano-options" name="ano" placeholder="Año" required>
+                                    <input class="form-control" list="ano-options" id="ano" name="ano" placeholder="Año" required>
                                     <datalist id="ano-options">
                                     <?php
                                     $anoActual = date("Y");
@@ -49,7 +37,7 @@
                                         }
                                     ?>
                                     </datalist>
-                                    <select class="form-select" id="tipo-vehiculo" name="tipo-vehiculo">
+                                    <select class="form-select" id="tipo-vehiculo" name="tipo_vehiculo" placeholder="TipoVehiculo" required>
                                         <option selected>TipoVehiculo</option>
                                         <option value="1">Grande</option>
                                         <option value="2">Mediano</option>
@@ -69,7 +57,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button name="tipoSolicitud" value="registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button name="tipoSolicitud" value="" type="submit" class="btn btn-primary"></button>
                 </footer>
             </form>
         </div>
