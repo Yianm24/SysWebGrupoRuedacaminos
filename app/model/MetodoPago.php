@@ -60,8 +60,7 @@ class MetodoPago extends Conexion
     public function obt_RegistrosMetodoPago()
     {
         try {
-            $sentencia = "SELECT metodo_pago.*, moneda.nombre 
-            AS nombremoneda 
+            $sentencia = "SELECT metodo_pago.*,moneda.cod_moneda as codigomoneda, moneda.abreviatura as abreviaturamoneda, moneda.nombre AS nombremoneda 
             FROM metodo_pago
             INNER JOIN moneda 
             ON metodo_pago.cod_moneda= moneda.cod_moneda
@@ -74,19 +73,6 @@ class MetodoPago extends Conexion
             return [];
         }
     }
-
-    public function obt_RegistrosMoneda()
-    {
-        try {
-            $sentencia = "SELECT abreviatura, cod_moneda FROM moneda WHERE estado = 1";
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
-        }
-    }
-
 
     public function actDatosMetodoPago($cod_metodo, $nombre, $moneda)
     {

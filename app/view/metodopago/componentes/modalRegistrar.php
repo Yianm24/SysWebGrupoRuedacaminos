@@ -12,8 +12,8 @@
                     <div class="input-group">
                         <select class="form-select" id="moneda" name="moneda" style="max-width: 80px;" aria-label="Moneda">
                             <?php
-                            foreach ($regMoneda as $dato): ?>
-                                <option value="<?php echo $dato['cod_moneda']; ?>"><?php echo $dato['abreviatura']; ?></option>
+                            foreach ($registros as $dato): ?>
+                                <option value="<?php echo $dato['codigomoneda']; ?>"><?php echo $dato['abreviaturamoneda']; ?></option>
                             <?php endforeach; ?>
                         </select>
                         <input type="text" class="form-control" id="nombre" name="nombre" placeholder="ej: Pago Movil">
