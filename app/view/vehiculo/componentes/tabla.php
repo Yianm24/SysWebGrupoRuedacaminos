@@ -26,15 +26,14 @@
                         <td class="pe-4 text-center">
 
                             <!--Elementos para Actualizar un vehiculo-->
-                            <input type="hidden" class="codigo_vehiculo">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalVehiculo"
-                                datos-cod-vehiculo="<?php echo $dato['cod_vehiculo']; ?>"
-                                datos-placa="<?php echo $dato['placa']; ?>"
-                                datos-color="<?php echo $dato['color']; ?>"
-                                datos-tipovehiculo="<?php echo $dato['cod_tipovehiculo']; ?>"
-                                datos-modelo="<?php echo $dato['cod_modelo']; ?>"
-                                datos-ano="<?php echo $dato['ano']; ?>"
-                                datos-estado="<?php echo $dato['estado']; ?>">
+                                datos-cod-vehiculo="<?= $dato['cod_vehiculo']; ?>"
+                                datos-placa="<?= $dato['placa']; ?>"
+                                datos-color="<?= $dato['color']; ?>"
+                                datos-tipovehiculo="<?= $dato['cod_tipovehiculo']; ?>"
+                                datos-modelo="<?= $dato['cod_modelo']; ?>"
+                                datos-ano="<?= $dato['ano']; ?>"
+                                datos-estado="<?= $dato['estado']; ?>">
                                 <i class="bi bi-pencil"></i>
                             </button>
 

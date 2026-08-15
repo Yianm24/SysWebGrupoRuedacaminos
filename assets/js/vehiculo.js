@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modal) {
         modal.addEventListener('show.bs.modal', event => {
             const encabezadoModal = modal.querySelector('h1#modalLabel');
-            const botonDeModal = document.querySelector('button[name="tipoSolicitud"]');
+            const botonModal = document.querySelector('button[name="tipoSolicitud"]');
             // Obtener acceso al botón que disparó el modal
             const boton = event.relatedTarget;
 
@@ -35,8 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Registro de Vehículo';
 
 
-                    botonDeModal.value = "registrar";
-                    botonDeModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+                    botonModal.value = "registrar";
+                    botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
 
                     inputCodVehiculo.value = "";
                     inputPlaca.value = "";
@@ -49,8 +49,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     break
                 case "Actualizar":
                     encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Actualización de Vehículo';
-                    botonDeModal.value = "actualizar";
-                    botonDeModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
+                    botonModal.value = "actualizar";
+                    botonModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
                     if (cod_vehiculo != "" && estado == 1) {
                         //Inserta valores dentro de los inputs del formulario para actualizar
                         inputCodVehiculo.value = cod_vehiculo;
