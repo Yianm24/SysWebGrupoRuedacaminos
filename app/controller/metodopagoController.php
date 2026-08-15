@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Model\MetodoPago;
+use App\Model\Moneda;
 
 $metodo = new MetodoPago();
+$moneda = new Moneda();
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
@@ -51,8 +53,8 @@ switch ($solicitud) {
         break;
 }
 
-
-$regMoneda = $metodo->obt_RegistrosMoneda();
+$regMoneda = $moneda->obt_RegistrosMoneda();
+//$regMoneda = $metodo->obt_RegistrosMoneda();
 $registros = $metodo->obt_RegistrosMetodoPago();
 
 include 'app/view/layout/header.php';
