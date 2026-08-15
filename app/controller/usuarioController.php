@@ -3,10 +3,10 @@
 namespace App\Controller;
 
 use App\Model\Usuario;
-//use App\Model\Cargo;
+use App\Model\Rol;
 
 $usuario = new Usuario();
-//$cargo = new Cargo();
+$rol = new Rol();
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
@@ -56,7 +56,7 @@ switch ($solicitud) {
 }
 
 
-$regRol = $usuario->obt_RegistrosRol();
+$regRol = $rol->obt_RegistrosRol();
 $registros = $usuario->obt_RegistrosUsuario();
 
 include 'app/view/layout/header.php';
