@@ -22,6 +22,7 @@ class Vehiculo extends Conexion
 
 
     public function verificarVehiculoDuplicado($placa, $cod_vehiculo=null) {
+        $placa = strtoupper($placa);
         if ($cod_vehiculo === null) {
             $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND estado = 1;";
         } else {
@@ -37,7 +38,7 @@ class Vehiculo extends Conexion
     public function regDatosVehiculo($placa, $color,$tipo_vehiculo, $modelo, $ano)
     {
         $this->placa =strtoupper($placa);
-        $this->color = $color;
+        $this->color = $this->formatearPalabra($color);
         $this->tipo_vehiculo = $tipo_vehiculo;
         $this->modelo = $modelo;
         $this->ano = $ano;
@@ -89,8 +90,8 @@ class Vehiculo extends Conexion
     public function actDatosVehiculo($cod_vehiculo, $placa, $color, $tipo_vehiculo, $modelo, $ano)
     {
         $this->cod_vehiculo = $cod_vehiculo;
-        $this->placa = $placa;
-        $this->color = $color;
+        $this->placa = strtoupper($placa);
+        $this->color = $this->formatearPalabra($color);
         $this->tipo_vehiculo = $tipo_vehiculo;
         $this->modelo = $modelo;
         $this->ano = $ano;
