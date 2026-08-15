@@ -80,19 +80,6 @@ class Usuario extends Conexion
         }
     }
 
-    public function obt_RegistrosRol()
-    {
-        try {
-            $sentencia = "SELECT nombre, cod_rol FROM rol WHERE estado = 1";
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
-        }
-    }
-
-
     public function actDatosUsuario($cod_usuario, $cedula, $nombre, $rol, $password)
     {
         $this->cod_usuario = $cod_usuario;
