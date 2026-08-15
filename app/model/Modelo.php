@@ -19,15 +19,22 @@ class Modelo extends Conexion
         parent::__construct();
     }
 
-    public function verificarModeloExiste($nombre, $marca)
+    public function verificarModeloDuplicado($nombre, $marca, $cod_modelo = null)
     {
-        $sentencia = "SELECT COUNT(*) FROM modelo WHERE nombre = ? AND cod_marca = ? AND estado = 1";
+        $this->formatearPalabra($nombre);
+        if ($cod_modelo === null) {
+            $sentencia = "SELECT COUNT(*) FROM modelo WHERE nombre = ? AND cod_marca = ?";
+        } else {
+            $sentencia = "SELECT COUNT(*) FROM modelo WHERE nombre = ? AND cod_marca = ? AND cod_modelo != ? AND estado = 1";
+        }
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
         $count->bindValue(2, $marca);
+        $count->bindValue(3, $cod_modelo);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
+
     public function regDatosModelo($nombre, $marca)
     {
         // $this->nombre =strtoupper($nombre);
@@ -74,7 +81,7 @@ class Modelo extends Conexion
             return [];
         }
     }
-    
+
     public function modDatosModelo($cod_modelo, $nombre, $marca)
     {
         $this->cod_modelo = $cod_modelo;

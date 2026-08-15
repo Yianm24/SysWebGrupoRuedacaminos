@@ -1,25 +1,61 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  const modal = document.getElementById('actualizarModelo');
+  const modal = document.getElementById('modalModelo');
 
 
   if (modal) {
     modal.addEventListener('show.bs.modal', event => {
+      const encabezadoModal = modal.querySelector('h1#modalLabel');
+      const botonModal = document.querySelector('button[name="tipoSolicitud"]');
+
       // Obtener acceso al botón que disparó el modal
       const boton = event.relatedTarget;
 
       //Obtener los datos del vehículo desde los atributos datos- del botón
       const codmodelo = boton.getAttribute('datos-cod-modelo');
       const nombre = boton.getAttribute('datos-nombre');
+      const codmarca = boton.getAttribute('datos-marca');
+      const estado = boton.getAttribute('datos-estado');
 
       // Obtener referencias a los campos del formulario dentro del modal
-      const inputCodModelo= modal.querySelector('.modal-body #cod-modelo')
-      const inputNombre = modal.querySelector('.modal-body #nombre_modelo')
+      const inputCodModelo = modal.querySelector('.modal-body #cod-modelo');
+      const inputNombre = modal.querySelector('.modal-body #nombre_modelo');
+      const inputMarca = modal.querySelector('.modal-body #marca');
+
+      switch (boton.title) {
+        case "Registrar":
+          const selectMarca = document.querySelector('.modal-body #marca');
+
+          encabezadoModal.innerHTML = '<i class="bi bi-car-front me-2"></i> Registro de Modelo';
+          botonModal.value = "registrar";
+          botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+          inputCodModelo.value = "";
+          inputNombre.value = "";
+          inputMarca.value = "";
+          selectMarca.selectedIndex = 0;
 
 
-      // Asignar los valores obtenidos a los campos del formulario
-      inputCodModelo.value = codmodelo;
-      inputNombre.value = nombre;
+          break;
+
+        case "Actualizar":
+          encabezadoModal.innerHTML = '<i class="bi bi-car-front me-2"></i> Actualizacion de Modelo';
+          botonModal.value = "actualizar";
+          botonModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
+
+          if (codmarca != "" && estado == 1) {
+            // Asignar los valores obtenidos a los campos del formulario
+            inputCodModelo.value = codmodelo;
+            inputNombre.value = nombre;
+            inputMarca.value = codmarca;
+          } else {
+            inputCodModelo.value = "Error: Registro inactivo";
+            inputNombre.value = "Error: Registro inactivo";
+            inputMarca.value = "Error: Registro inactivo";
+          }
+
+          break;
+      }
+
     })
   }
 
@@ -27,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
   botonesEliminar.forEach(boton => {
     boton.addEventListener('click', function (event) {
       event.preventDefault();
-      let codmarca = this.getAttribute('datos-cod-modelo');
+      let codmodelo = this.getAttribute('datos-cod-modelo');
 
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
