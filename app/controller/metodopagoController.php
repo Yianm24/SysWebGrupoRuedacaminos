@@ -54,7 +54,6 @@ switch ($solicitud) {
 }
 
 $regMoneda = $moneda->obt_RegistrosMoneda();
-//$regMoneda = $metodo->obt_RegistrosMoneda();
 $registros = $metodo->obt_RegistrosMetodoPago();
 
 include 'app/view/layout/header.php';
