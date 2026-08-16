@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById('modificarMoneda');
+    const modal = document.getElementById('modalMoneda');
 
 
     if (modal) {
         modal.addEventListener('show.bs.modal', event => {
+            const encabezadoModal = modal.querySelector('h1#modalLabel');
+            const botonModal = document.querySelector('button[name="tipoSolicitud"]');
             // Obtener acceso al botón que disparó el modal
             const boton = event.relatedTarget;
 
@@ -11,16 +13,45 @@ document.addEventListener("DOMContentLoaded", function () {
             const cod_moneda = boton.getAttribute('datos-cod-moneda');
             const nombre = boton.getAttribute('datos-nombre');
             const abreviatura = boton.getAttribute('datos-abreviatura');
+            const estado = boton.getAttribute('datos-estado');
             // Obtener referencias a los campos del formulario dentro del modal
             const inputCodMoneda = modal.querySelector('.modal-body #cod-moneda')
             const inputNombre = modal.querySelector('.modal-body #nombre')
             const inputAbreviatura = modal.querySelector('.modal-body #abreviatura')
 
+            switch (boton.title) {
+                case "Registrar":
+                    encabezadoModal.innerHTML = '<i class="bi bi-coin"></i> Registro de Moneda';
+                    botonModal.value = "registrar";
+                    botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+                    inputCodMoneda.value = "";
+                    inputNombre.value = "";
+                    inputAbreviatura.value = "";
+                    break;
+                case "Modificar":
 
+                    encabezadoModal.innerHTML = '<i class="bi bi-coin"></i> Modificación de Moneda';
+                    botonModal.value = "modificar";
+                    botonModal.innerHTML = '<i class="bi bi-pencil"></i> Modificar';
+
+
+                    if (cod_moneda != "" && estado == 1) {
+                        // Asignar los valores obtenidos a los campos del formulario
+                        inputCodMoneda.value = cod_moneda;
+                        inputNombre.value = nombre;
+                        inputAbreviatura.value = abreviatura;
+                    } else {
+                        inputCodMoneda.value = "Error: Registro inactivo";
+                        inputNombre.value = "Error: Registro inactivo";
+                        inputAbreviatura.value = "Error: Registro inactivo";
+                    }
+
+
+                    break;
+
+            }
             // Asignar los valores obtenidos a los campos del formulario
-            inputCodMoneda.value = cod_moneda;
-            inputNombre.value = nombre;
-            inputAbreviatura.value = abreviatura;
+
         })
     }
 

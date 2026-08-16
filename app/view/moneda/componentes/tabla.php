@@ -14,11 +14,13 @@
                         <td class="ps-4 fw-bold text-secondary"><?php echo $dato['abreviatura']; ?></td>
                         <td><?php echo $dato['nombre']; ?></td>
                         <td class="text-end pe-4">
-                            <input type="hidden" class="codigo_moneda">
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modificarMoneda"
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modalMoneda"
                                 datos-cod-moneda="<?php echo $dato['cod_moneda']; ?>"
                                 datos-nombre="<?php echo $dato['nombre']; ?>"
-                                datos-abreviatura="<?php echo $dato['abreviatura']; ?>">
+                                datos-abreviatura="<?php echo $dato['abreviatura']; ?>"
+                                datos-estado="<?php echo $dato['estado']; ?>"
+                                >
+
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <form action="?url=moneda" method="POST" style="display: inline;">
