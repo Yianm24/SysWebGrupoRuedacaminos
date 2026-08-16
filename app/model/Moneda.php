@@ -19,7 +19,7 @@ class Moneda extends Conexion
 
     public function verificarMonedaExiste($nombre, $abreviatura)
     {
-        $sentencia = "SELECT COUNT(*) FROM moneda WHERE nombre = ? or abreviatura = ? AND estado = 1";
+        $sentencia = "SELECT COUNT(*) FROM moneda WHERE nombre = ? and abreviatura = ? AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
         $count->bindValue(2, $abreviatura);
