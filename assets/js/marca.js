@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (modal) {
     modal.addEventListener('show.bs.modal', event => {
       const encabezadoModal = modal.querySelector('h1#modalLabel');
-      const botonDeModal = document.querySelector('button[name="tipoSolicitud"]');
+      const botonModal = document.querySelector('button[name="tipoSolicitud"]');
 
       // Obtener acceso al botón que disparó el modal
       const boton = event.relatedTarget;
@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       //Obtener los datos del vehículo desde los atributos datos- del botón
       const cod_marca = boton.getAttribute('datos-cod-marca');
       const nombre = boton.getAttribute('datos-nombre');
+      const estado = boton.getAttribute('datos-estado');
 
       // Obtener referencias a los campos del formulario dentro del modal
       const inputCodMarca = modal.querySelector('.modal-body #cod-marca')
@@ -22,19 +23,24 @@ document.addEventListener("DOMContentLoaded", function () {
         case "Registrar":
 
           encabezadoModal.innerHTML = '<i class="bi bi-ev-front me-2"></i> Registro de Marca';
-          botonDeModal.value = "registrar";
-          botonDeModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+          botonModal.value = "registrar";
+          botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
           inputCodMarca.value = "";
           inputNombre.value = "";
           break
         case "Actualizar":
           encabezadoModal.innerHTML = '<i class="bi bi-ev-front me-2"></i> Actualizacion de Marca';
-          botonDeModal.value = "Actualizar";
-          botonDeModal.innerHTML = '<i class="bi bi-save"></i> Actualizar';
+          botonModal.value = "actualizar";
+          botonModal.innerHTML = '<i class="bi bi-save"></i> Actualizar';
 
-          // Asignar los valores obtenidos a los campos del formulario
-          inputCodMarca.value = cod_marca;
-          inputNombre.value = nombre;
+          if (cod_marca != "" && estado == 1) {
+            // Asignar los valores obtenidos a los campos del formulario
+            inputCodMarca.value = cod_marca;
+            inputNombre.value = nombre;
+          } else {
+            inputCodMarca.value = "Error: Registro inactivo";
+            inputNombre.value = "Error: Registro inactivo";
+          }
           break
       }
     })
