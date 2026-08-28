@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-08-2026 a las 23:13:37
+-- Tiempo de generación: 28-08-2026 a las 06:34:10
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -244,9 +244,9 @@ CREATE TABLE `empleado` (
 --
 
 INSERT INTO `empleado` (`cod_empleado`, `cedula`, `nombre`, `apellido`, `telefono`, `telefono_emergencia`, `cod_cargo`, `estado`) VALUES
-(2525, '', 'juan', 'jochis', '024255003', '565656', 2, 1),
-(8888, '', 'mari', 'pere', '024255003', '565656', 1, 1),
-(15151, '', 'antonis', 'caraqueña', '040656060', '87878481', 4, 1);
+(2525, '18050000', 'Juan', 'Londoño', '04245500302', '04122221111', 2, 1),
+(8888, '16023000', 'Camila', 'González', '02425500321', '04122221010', 1, 1),
+(15151, '22100200', 'Antonio', 'Requena', '04162002000', '04128788481', 4, 1);
 
 -- --------------------------------------------------------
 
