@@ -30,7 +30,10 @@ class Empleado extends Conexion
     public function obt_RegistrosEmpleado()
     {
         try {
-            $sentencia = "SELECT * FROM empleado WHERE estado = 1";
+            $sentencia = "SELECT e.*, c.nombre as nombre_cargo 
+                        FROM empleado e 
+                        INNER JOIN cargo c ON e.cod_cargo = c.cod_cargo 
+                        WHERE e.estado = 1";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
             return $select->fetchAll(\PDO::FETCH_ASSOC);
@@ -39,20 +42,20 @@ class Empleado extends Conexion
         }
     }
     
-    public function verificarEmpleadoExiste($nombre)
+    public function verificarEmpleadoExiste($cedula)
     {
-        $sentencia = "SELECT COUNT(*) FROM empleado WHERE nombre = ?  AND estado = 1";
+        $sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
+        $count->bindValue(1, $cedula);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
 
-    public function verificarEmpleadoDuplicado($nombre, $id_actual)
+    public function verificarEmpleadoDuplicado($cedula, $id_actual)
     {
-        $sentencia = "SELECT COUNT(*) FROM empleado WHERE nombre = ? AND cod_empleado != ? AND estado = 1";
+        $sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND cod_empleado != ? AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
+        $count->bindValue(1, $cedula);
         $count->bindValue(2, $id_actual);
         $count->execute();
         return $count->fetchColumn() > 0;
