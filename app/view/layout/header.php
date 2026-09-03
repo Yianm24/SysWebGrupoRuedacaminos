@@ -46,18 +46,31 @@
                 </a>
 
                 <a href="?url=cargo" class="list-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
-                    <i class="bi bi-person-vcard me-2" ></i> Cargo
-                </a>
-                <a href="?url=vehiculo" class="list-group-item list-group-item-action <?= $current_url == 'vehiculo' ? 'active' : '' ?>">
-                    <i class="bi bi-truck me-2"></i> Vehículo
-                </a>
-                <a href="?url=marca" class="list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
-                    <i class="bi bi-ev-front me-2"></i> Marca
+                    <i class="bi bi-person-vcard me-2"></i> Cargo
                 </a>
 
-                <a href="?url=modelo" class="list-group-item list-group-item-action <?= $current_url == 'modelo' ? 'active' : '' ?>">
-                    <i class="bi bi-car-front me-2"></i>Modelo
-                </a>
+
+                <div class="btn-group dropdown-center">
+
+                    <a href="?url=vehiculo" class="list-group-item list-group-item-action <?= $current_url == 'vehiculo' ? 'active' : '' ?>">
+                        <i class="bi bi-truck me-2"></i> Vehículo
+                    </a>
+                    
+                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Icono de </span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <a href="?url=marca" class="list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
+                                <i class="bi bi-ev-front me-2"></i> Marca
+                            </a>
+
+                            <a href="?url=modelo" class="list-group-item list-group-item-action <?= $current_url == 'modelo' ? 'active' : '' ?>">
+                                <i class="bi bi-car-front me-2"></i>Modelo
+                            </a>
+                        </ul>
+                    
+                </div>
+
                 <a href="?url=reporte" class="list-group-item list-group-item-action <?= $current_url == 'reporte' ? 'active' : '' ?>">
                     <i class="bi bi-file-earmark-bar-graph me-2"></i> Reporte
                 </a>
