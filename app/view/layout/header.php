@@ -45,7 +45,11 @@
                 </a>
 
                 <a href="?url=estado" class="list-group-item list-group-item-action <?= $current_url == 'estado' ? 'active' : '' ?>">
-                    <i class="bi bi-box-seam me-2"></i> Estado
+                    <i class="bi bi-map me-2"></i> Estado
+                </a>
+
+                <a href="?url=municipio" class="list-group-item list-group-item-action <?= $current_url == 'municipio' ? 'active' : '' ?>">
+                    <i class="bi bi-geo-alt me-2"></i> Municipio
                 </a>
 
                 <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
