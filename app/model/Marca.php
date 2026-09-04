@@ -1,33 +1,38 @@
 <?php
+
 namespace App\Model;
+
 use App\Config\Conexion;
 
-class Marca extends Conexion{
-    
+class Marca extends Conexion
+{
+
     private $cod_marca;
     private $nombre;
     private $estado;
 
-    function __construct(){
+    function __construct()
+    {
         parent::__construct();
     }
 
-    public function verificarMarcaDuplicada($nombre,$cod_marca=null) {
+    public function verificarMarcaDuplicada($nombre, $cod_marca = null)
+    {
         if ($cod_marca === null) {
             $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND estado = 1;";
-        }else{
+        } else {
             $sentencia = "SELECT COUNT(*) FROM marca WHERE nombre = ? AND cod_marca != ? AND estado = 1;";
         }
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
-        $count->bindValue(2,$cod_marca);
+        $count->bindValue(2, $cod_marca);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
 
-     public function regDatosMarca($nombre)
+    public function regDatosMarca($nombre)
     {
-        $this->nombre = $nombre;
+        $this->nombre = $this->formatearPalabra($nombre);
         $this->estado = 1;
 
         return $this->registrarMarca();
@@ -45,14 +50,14 @@ class Marca extends Conexion{
             $resultado = $insert->execute();
 
             return $resultado;
-
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar la Marca: " . $e->getMessage() . "');</script>";
         }
     }
 
-    public function obt_RegistrosMarca(){
-        
+    public function obt_RegistrosMarca()
+    {
+
         try {
             $sentencia = "SELECT * FROM marca WHERE estado = 1";
             $consulta = $this->conexion->prepare($sentencia);
@@ -64,14 +69,14 @@ class Marca extends Conexion{
         }
     }
 
-    public function actMarca($cod_marca,$nombre)
+    public function actMarca($cod_marca, $nombre)
     {
         $this->cod_marca = $cod_marca;
         $this->nombre = $nombre;
 
         return $this->actualizarMarca();
     }
-   
+
     private function actualizarMarca()
     {
         try {
@@ -82,7 +87,6 @@ class Marca extends Conexion{
             $update->bindValue(2, $this->cod_marca);
 
             $update->execute();
-
         } catch (\PDOException $e) {
             return "Error al actualizar el registro de la marca: " . $e->getMessage();
         }
@@ -109,8 +113,4 @@ class Marca extends Conexion{
             return "Error al eliminar la Marca: " . $e->getMessage();
         }
     }
-
 }
-
-
-?>
