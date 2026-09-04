@@ -18,7 +18,7 @@
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMunicipio"
                                 datos-cod-municipio="<?php echo $dato['cod_municipio']; ?>"
                                 datos-nombre="<?php echo $dato['nombre']; ?>"
-                                datos-estado-ubi="<?= $dato['cod_estado'] ?>"
+                                datos-cod-estado="<?= $dato['cod_estado'] ?>"
                                 datos-estado="<?= $dato['estado']?>">
                                 <i class="bi bi-pencil"></i>
                             </button>

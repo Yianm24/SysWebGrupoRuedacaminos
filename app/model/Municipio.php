@@ -9,7 +9,7 @@ class Municipio extends Conexion
 
     private $cod_municipio;
     private $nombre;
-    private $estado_ubi;
+    private $cod_estado;
     private $estado;
 
 
@@ -19,7 +19,23 @@ class Municipio extends Conexion
         parent::__construct();
     }
 
-    public function verificarMunicipioDuplicado($nombre, $estado_ubi, $cod_municipio = null)
+    // public function verificarMunicipioDuplicado($nombre, $estado_ubi, $cod_municipio = null)
+    // {
+    //     $this->formatearPalabra($nombre);
+    //     if ($cod_municipio === null) {
+    //         $sentencia = "SELECT COUNT(*) FROM municipio WHERE nombre = ? AND cod_estado = ?";
+    //     } else {
+    //         $sentencia = "SELECT COUNT(*) FROM municipio WHERE nombre = ? AND cod_estado = ? AND cod_municipio != ? AND estado = 1";
+    //     }
+    //     $count = $this->conexion->prepare($sentencia);
+    //     $count->bindValue(1, $nombre);
+    //     $count->bindValue(2, $estado_ubi);
+    //     $count->bindValue(3, $cod_municipio);
+    //     $count->execute();
+    //     return $count->fetchColumn() > 0;
+    // }
+
+    public function verificarMunicipioDuplicado($nombre, $cod_estado, $cod_municipio = null)
     {
         $this->formatearPalabra($nombre);
         if ($cod_municipio === null) {
@@ -29,17 +45,17 @@ class Municipio extends Conexion
         }
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
-        $count->bindValue(2, $estado_ubi);
+        $count->bindValue(2, $cod_estado);
         $count->bindValue(3, $cod_municipio);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosMunicipio($nombre, $estado_ubi)
+    public function regDatosMunicipio($nombre, $cod_estado)
     {
         // $this->nombre =strtoupper($nombre);
         $this->nombre = $this->formatearPalabra($nombre);
-        $this->estado_ubi = $estado_ubi;
+        $this->cod_estado = $cod_estado;
         $this->estado = 1;
 
         return $this->registrarMunicipio();
@@ -53,7 +69,7 @@ class Municipio extends Conexion
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->estado_ubi);
+            $insert->bindValue(2, $this->cod_estado);
             $insert->bindValue(3, $this->estado);
 
             $resultado = $insert->execute();
@@ -82,11 +98,11 @@ class Municipio extends Conexion
         }
     }
 
-    public function modDatosMunicipio($cod_municipio, $nombre, $estado_ubi)
+    public function modDatosMunicipio($cod_municipio, $nombre, $cod_estado)
     {
         $this->cod_municipio = $cod_municipio;
         $this->nombre = $this->formatearPalabra($nombre);
-        $this->estado_ubi = $estado_ubi;
+        $this->cod_estado = $cod_estado;
 
         return $this->modificarMunicipio();
     }
@@ -99,7 +115,7 @@ class Municipio extends Conexion
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->nombre);
-            $update->bindValue(2, $this->estado_ubi);
+            $update->bindValue(2, $this->cod_estado);
             $update->bindValue(3, $this->cod_municipio);
 
             $update->execute();

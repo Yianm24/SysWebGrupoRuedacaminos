@@ -13,7 +13,7 @@ switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['nombre_municipio']) && !empty($_POST['cod_estado'])) {
-                if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'])) {
+                if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
                     header("Location: ?url=municipio&status=exists");
                     exit();
                 }
@@ -29,7 +29,7 @@ switch ($solicitud) {
     case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['cod_municipio']) && !empty($_POST['nombre_municipio']) && !empty($_POST['cod_estado'])) {
-                if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'],$_POST['cod_municipio'])) {
+                if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
                     header("Location: ?url=municipio&status=exists");
                     exit();
                 }
