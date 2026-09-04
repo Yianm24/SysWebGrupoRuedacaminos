@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top border-white border-opacity-25 text-end">
-                <a href="?url=seguimiento" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+                <a href="?url=envio" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top border-white border-opacity-25 text-end">
-                <a href="?url=pago" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+                <a href="?url=cuenta" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </div>
@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top border-dark border-opacity-25 text-end">
-                <a href="?url=flota" class="text-dark text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+                <a href="?url=vehiculo" class="text-dark text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </div>
