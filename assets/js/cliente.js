@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     break;
                 case 'updated':
                     title = "Actualización exitosa!";
-                    text = "El cliente ha sido actualizado correctamente.";
+                    text = "El cliente ha sido editado correctamente.";
                     icon = "success";
                     break;
                 case 'deleted':
