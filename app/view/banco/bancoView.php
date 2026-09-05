@@ -3,8 +3,8 @@
         <div class="col-12 mb-4">
             
             <header class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-car-front me-2"></i> Gestión de Municipios</h2>
-                <button type="button" class="btn btn-primary" title="Registrar" data-bs-toggle="modal" data-bs-target="#modalMunicipio">
+                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-ev-front me-2"></i> Gestion de Bancos</h2>
+                <button type="button" class="btn btn-primary" title="Registrar" data-bs-toggle="modal" data-bs-target="#modalBanco">
                     <i class="bi bi-plus-circle"></i> Registrar
                 </button> 
             </header>
@@ -18,7 +18,7 @@
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar unidad...">
+                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar banco...">
                     </div>
                 </div>
 
@@ -37,4 +37,4 @@
     </div>
 </main>
 <script src="assets/js/sweetalert2.all.min.js"></script>
-<script src="assets/js/municipio.js"></script>
+<script src="assets/js/banco.js"></script>

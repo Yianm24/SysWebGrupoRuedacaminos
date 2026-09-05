@@ -14,7 +14,7 @@
                         <input type="text" class="form-control" id="nombre_municipio" name="nombre_municipio" placeholder="Ej: Iribarren" required>
                     </div>
                     <div class="mb-3">
-                        <select class="form-select" id="estado_ubi" name="estado_ubi">
+                        <select class="form-select" id="cod-estado" name="cod_estado">
                             <option selected>Estado</option>
                             <?php foreach ($estadosRegistros as $registro): ?>
                                 <option value=<?= $registro['cod_estado'] ?>><?= $registro['nombre'] ?></option>
