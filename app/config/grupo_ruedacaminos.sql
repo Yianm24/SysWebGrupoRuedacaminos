@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-09-2026 a las 17:03:20
+-- Tiempo de generación: 08-09-2026 a las 02:33:53
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -210,10 +210,10 @@ CREATE TABLE `empleado` (
 --
 
 INSERT INTO `empleado` (`cod_empleado`, `cedula`, `nombre`, `apellido`, `telefono`, `telefono_emergencia`, `cod_cargo`, `estado`) VALUES
-(0, '5555', 'Juimi', 'Mmfowf', '222', '1444', 3, 1),
-(2525, '', 'juan', 'jochis', '024255003', '565656', 2, 1),
-(8888, '', 'mari', 'pere', '024255003', '565656', 1, 1),
-(15151, '', 'antonis', 'caraqueña', '040656060', '87878481', 4, 1);
+(1, '18335555', 'Juan', 'Mendez', '04123441222', '04123401444', 3, 1),
+(2, '29201408', 'Juan', 'Pérez', '04242550034', '04123565656', 2, 1),
+(3, '30300100', 'María', 'Pérez', '04242550038', '04223568080', 1, 1),
+(4, '22800120', 'Antonio', 'Requena', '04161356060', '04128788481', 4, 1);
 
 -- --------------------------------------------------------
 
@@ -1173,6 +1173,12 @@ ALTER TABLE `cuenta_banco`
 --
 ALTER TABLE `detalle_pago`
   MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `empleado`
+--
+ALTER TABLE `empleado`
+  MODIFY `cod_empleado` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15152;
 
 --
 -- AUTO_INCREMENT de la tabla `envio`
