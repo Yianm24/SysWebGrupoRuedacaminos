@@ -82,17 +82,17 @@ class Modelo extends Conexion
         }
     }
 
-    public function modDatosModelo($cod_modelo, $nombre, $marca)
+    public function actDatosModelo($cod_modelo, $nombre, $marca)
     {
         $this->cod_modelo = $cod_modelo;
         $this->nombre = $this->formatearPalabra($nombre);
         $this->marca = $marca;
 
-        return $this->modificarModelo();
+        return $this->actualizarModelo();
     }
 
 
-    private function modificarModelo()
+    private function actualizarModelo()
     {
         try {
             $sentencia = "UPDATE `modelo` SET nombre = ?, cod_marca = ? WHERE cod_modelo = ?";

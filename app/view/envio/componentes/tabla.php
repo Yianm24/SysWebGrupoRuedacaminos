@@ -25,7 +25,7 @@
                             </span>
                         </td>
                         <td class="pe-4 text-center">
-                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
+                            <a href="#" class="text-secondary me-2 text-decoration-none" title="Modificar"
                                 data-bs-toggle="modal" data-bs-target="#carouselEnvio">
                                 <i class="bi bi-pencil"></i>
                             </a>

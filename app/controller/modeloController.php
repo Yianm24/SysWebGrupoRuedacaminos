@@ -35,7 +35,7 @@ switch ($solicitud) {
                 }
 
 
-                $resultado = $modelo->modDatosModelo($_POST['cod_modelo'], $_POST['nombre_modelo'], $_POST['marca']);
+                $resultado = $modelo->actDatosModelo($_POST['cod_modelo'], $_POST['nombre_modelo'], $_POST['marca']);
                 header("Location: ?url=modelo&status=updated");
                 exit();
             } else {
