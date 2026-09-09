@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-09-2026 a las 05:01:00
+-- Tiempo de generación: 09-09-2026 a las 20:42:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -164,7 +164,6 @@ CREATE TABLE `despacho` (
   `cod_despacho` int(11) NOT NULL,
   `cod_empleado` int(2) NOT NULL,
   `cod_vehiculo` int(2) NOT NULL,
-  `cod_gastosdespacho` int(11) NOT NULL,
   `fecha_salida` datetime NOT NULL,
   `fecha_entrega` datetime NOT NULL,
   `estatus` enum('PENDIENTE','ENTREGADO','','') NOT NULL,
@@ -290,20 +289,12 @@ INSERT INTO `estado` (`cod_estado`, `nombre`, `estado`) VALUES
 --
 
 CREATE TABLE `gastos_despacho` (
-  `cod_gastodespacho` int(15) NOT NULL,
+  `cod_gasto_despacho` int(11) NOT NULL,
+  `cod_despacho` int(11) NOT NULL,
   `descripcion` varchar(70) NOT NULL,
   `monto` decimal(6,2) NOT NULL,
   `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `gastos_despacho`
---
-
-INSERT INTO `gastos_despacho` (`cod_gastodespacho`, `descripcion`, `monto`, `estado`) VALUES
-(1, '', 0.00, 0),
-(2, '', 0.00, 0),
-(3, '', 0.00, 0);
 
 -- --------------------------------------------------------
 
@@ -980,8 +971,7 @@ ALTER TABLE `cuenta_banco`
 ALTER TABLE `despacho`
   ADD PRIMARY KEY (`cod_despacho`),
   ADD KEY `cod_empleado` (`cod_empleado`),
-  ADD KEY `cod_vehiculo` (`cod_vehiculo`),
-  ADD KEY `despacho_ibfk_5` (`cod_gastosdespacho`);
+  ADD KEY `cod_vehiculo` (`cod_vehiculo`);
 
 --
 -- Indices de la tabla `detalle_pago`
@@ -1017,7 +1007,8 @@ ALTER TABLE `estado`
 -- Indices de la tabla `gastos_despacho`
 --
 ALTER TABLE `gastos_despacho`
-  ADD PRIMARY KEY (`cod_gastodespacho`);
+  ADD PRIMARY KEY (`cod_gasto_despacho`),
+  ADD KEY `cod_despacho` (`cod_despacho`);
 
 --
 -- Indices de la tabla `marca`
@@ -1176,7 +1167,7 @@ ALTER TABLE `estado`
 -- AUTO_INCREMENT de la tabla `gastos_despacho`
 --
 ALTER TABLE `gastos_despacho`
-  MODIFY `cod_gastodespacho` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cod_gasto_despacho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
@@ -1271,8 +1262,7 @@ ALTER TABLE `cuenta_banco`
 --
 ALTER TABLE `despacho`
   ADD CONSTRAINT `despacho_ibfk_2` FOREIGN KEY (`cod_vehiculo`) REFERENCES `vehiculo` (`cod_vehiculo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `despacho_ibfk_4` FOREIGN KEY (`cod_empleado`) REFERENCES `empleado` (`cod_empleado`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `despacho_ibfk_5` FOREIGN KEY (`cod_gastosdespacho`) REFERENCES `gastos_despacho` (`cod_gastodespacho`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `despacho_ibfk_4` FOREIGN KEY (`cod_empleado`) REFERENCES `empleado` (`cod_empleado`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `detalle_pago`
@@ -1294,6 +1284,12 @@ ALTER TABLE `envio`
   ADD CONSTRAINT `envio_ibfk_3` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `envio_ibfk_4` FOREIGN KEY (`cod_unidadmedida`) REFERENCES `unidad_medida` (`cod_unidad`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `envio_ibfk_6` FOREIGN KEY (`cod_preciokilometraje`) REFERENCES `precio_kilometraje` (`cod_preciokilometraje`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `gastos_despacho`
+--
+ALTER TABLE `gastos_despacho`
+  ADD CONSTRAINT `gastos_despacho_ibfk_1` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`);
 
 --
 -- Filtros para la tabla `metodo_pago`
