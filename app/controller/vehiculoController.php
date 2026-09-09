@@ -13,14 +13,14 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo_vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano'])) {
+            if (!empty($_POST['placa']) && !empty($_POST['modelo']) && !empty($_POST['color']) && !empty($_POST['anio']) && !empty($_POST['anchura']) && !empty($_POST['altura']) && !empty($_POST['peso_max'])) {
                 
-               if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod_vehiculo'])) {
+               if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], null)) {
                     header("Location: ?url=vehiculo&status=exists");
                     exit();
                 }
 
-                $resultado = $vehiculo->regDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['tipo_vehiculo'], $_POST['modelo'], $_POST['ano']);
+                $resultado = $vehiculo->regDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['anio'],$_POST['anchura'],$_POST['altura'], $_POST['peso_max'], $_POST['modelo']);
 
                 header("Location: ?url=vehiculo&status=success");
                 exit();
@@ -31,14 +31,14 @@ switch ($solicitud) {
         break;
     case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod_vehiculo'])) {
-            if (!empty($_POST['cod_vehiculo']) && !empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['tipo_vehiculo']) && !empty($_POST['modelo']) && !empty($_POST['ano'])) {
+            if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['anio']) && !empty($_POST['anchura']) && !empty($_POST['altura']) && !empty($_POST['peso_max']) && !empty($_POST['modelo'])) {
 
                 if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod_vehiculo'])) {
                     header("Location: ?url=vehiculo&status=exists");
                     exit();
                 }
 
-                $resultado = $vehiculo->actDatosVehiculo($_POST['cod_vehiculo'], $_POST['placa'], $_POST['color'], $_POST['tipo_vehiculo'], $_POST['modelo'], $_POST['ano']);
+                $resultado = $vehiculo->actDatosVehiculo($_POST['cod_vehiculo'], $_POST['placa'], $_POST['color'], $_POST['anio'],$_POST['anchura'],$_POST['altura'], $_POST['peso_max'], $_POST['modelo']);
 
                 header("Location: ?url=vehiculo&status=updated");
                 exit();

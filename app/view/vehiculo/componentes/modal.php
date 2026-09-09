@@ -13,7 +13,7 @@
                     <fieldset class="row mb-3">
 
                         <div class="col-md-6">
-                            <label for="placa" class="form-label">Placa</label>
+                            <label for="placa" class="form-label">Placa:</label>
                             <input type="text" class="form-control" id="placa" name="placa" placeholder="Ej: ABC12D" required>
                         </div>
                         <div class="col-md-6">
@@ -23,36 +23,38 @@
 
                     </fieldset>
 
-                    <fieldset>
+                    <fieldset class="row mb-3">
 
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <div class="input-group ">
-                                    <input class="form-control" list="ano-options" id="ano" name="ano" placeholder="Año" required>
-                                    <datalist id="ano-options">
-                                        <?php
-                                        $anoActual = date("Y");
-                                        for ($i = $anoActual; $i >= 1950; $i--) {
-                                            echo "<option value='$i' " . ($i ? 'selected' : '') . ">$i</option>";
-                                        }
-                                        ?>
-                                    </datalist>
-                                    <select class="form-select" id="tipo-vehiculo" name="tipo_vehiculo" placeholder="TipoVehiculo" required>
-                                        <option selected>TipoVehiculo</option>
+                        <div class="col-md-12">
+                            <div class="input-group ">
+                                <select class="form-select" id="modelo" name="modelo">
+                                    <option value="" selected>Modelo</option>
+                                    <?php foreach ($modelosRegistros as $registro): ?>
+                                        <option value=<?= $registro['cod_modelo'] ?> required ><?= $registro['nombre'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
 
-                                        <option value="1">Grande</option>
-                                        <option value="2">Mediano</option>
-                                        <option value="3">Pequeño</option>
-                                    </select>
+                                <input class="form-control" list="ano-options" id="anio" name="anio" placeholder="Año" required>
+                                <datalist id="ano-options">
+                                    <?php
+                                    $anoActual = date("Y");
+                                    for ($i = $anoActual; $i >= 1950; $i--) {
+                                        echo "<option value='$i' " . ($i ? 'selected' : '') . ">$i</option>";
+                                    }
+                                    ?>
+                                </datalist>
+                            </div>
+                        </div>
 
-                                    </select>
-                                    <select class="form-select" id="modelo" name="modelo">
-                                        <option selected>Modelo</option>
-                                        <?php foreach ($modelosRegistros as $registro): ?>
-                                            <option value=<?= $registro['cod_modelo'] ?>><?= $registro['nombre'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
+                    </fieldset>
+
+                    <fieldset class="row mb-3">
+                        <legend class="col-form-label col-sm-2 pt-0">Dimensiones:</legend>
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="anchura" name="anchura" step="0.01" placeholder="Anchura (m)" required>
+                                <input type="number" class="form-control" id="altura" name="altura" step="0.01" placeholder="Altura (m)" required>
+                                <input type="number" class="form-control" id="peso_max" name="peso_max" step="0.01" placeholder="Peso máximo (kg)" required>
                             </div>
                         </div>
                     </fieldset>

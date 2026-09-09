@@ -14,18 +14,22 @@ document.addEventListener("DOMContentLoaded", function () {
             const cod_vehiculo = boton.getAttribute('datos-cod-vehiculo');
             const placa = boton.getAttribute('datos-placa');
             const color = boton.getAttribute('datos-color');
-            const tipovehiculo = boton.getAttribute('datos-tipovehiculo');
+            const anio = boton.getAttribute('datos-anio');
+            const anchura = boton.getAttribute('datos-anchura');
+            const altura = boton.getAttribute('datos-altura');
+            const peso_max = boton.getAttribute('datos-peso-max');
             const modelo = boton.getAttribute('datos-modelo');
-            const ano = boton.getAttribute('datos-ano');
             const estado = boton.getAttribute('datos-estado');
 
             // Obtener referencias a los campos del formulario dentro del modal
             const inputCodVehiculo = modal.querySelector('.modal-body #cod-vehiculo');
             const inputPlaca = modal.querySelector('.modal-body #placa');
             const inputColor = modal.querySelector('.modal-body #color');
-            const inputTipovehiculo = modal.querySelector('.modal-body #tipo-vehiculo');
+            const inputAnio = modal.querySelector('.modal-body #anio');
+            const inputAnchura = modal.querySelector('.modal-body #anchura');
+            const inputAltura = modal.querySelector('.modal-body #altura');
+            const inputPesoMax = modal.querySelector('.modal-body #peso_max');
             const inputModelo = modal.querySelector('.modal-body #modelo');
-            const inputAno = modal.querySelector('.modal-body #ano');
 
             switch (boton.title) {
                 case "Registrar":
@@ -41,11 +45,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     inputCodVehiculo.value = "";
                     inputPlaca.value = "";
                     inputColor.value = "";
-                    inputTipovehiculo.value = "";
-                    selectTipoVehiculo.selectedIndex = 0; // Reinicia el select al primer valor
+                    inputAnio.value = "";
+                    inputAnchura.value = "";
+                    inputAltura.value = "";
+                    inputPesoMax.value = "";
                     inputModelo.value = "";
                     selectModelo.selectedIndex = 0;
-                    inputAno.value = "";
                     break
                 case "Actualizar":
                     encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Actualización de Vehículo';
@@ -56,15 +61,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         inputCodVehiculo.value = cod_vehiculo;
                         inputPlaca.value = placa;
                         inputColor.value = color;
-                        inputTipovehiculo.value = tipovehiculo;
+                        inputAnio.value = anio;
+                        inputAnchura.value = anchura;
+                        inputAltura.value = altura;
+                        inputPesoMax.value = peso_max;
                         inputModelo.value = modelo;
-                        inputAno.value = ano;
+                        
                     } else {
                         inputPlaca.value = "Error: Registro inactivo";
                         inputColor.value = "Error: Registro inactivo";
-                        inputTipovehiculo.value = "Error: Registro inactivo";
+                        inputAnio.value = "Error: Registro inactivo";
+                        inputAnchura.value = "Error: Registro inactivo";
+                        inputAltura.value = "Error: Registro inactivo";
+                        inputPesoMax.value = "Error: Registro inactivo";
                         inputModelo.value = "Error: Registro inactivo";
-                        inputAno.value = "Error: Registro inactivo";
                         console.log("No se puede editar el registro, ya que está inactivo.");
                     }
                     break
@@ -121,22 +131,22 @@ document.addEventListener("DOMContentLoaded", function () {
             switch (status) {
                 case 'success':
                     title = "Registro exitoso!";
-                    text = "La unidad de medida ha sido registrada correctamente.";
+                    text = "El Vehiculo ha sido registrada correctamente.";
                     icon = "success";
                     break;
                 case 'updated':
                     title = "Actualización exitosa!";
-                    text = "La unidad de medida ha sido actualizada correctamente.";
+                    text = "El Vehiculo ha sido actualizada correctamente.";
                     icon = "success";
                     break;
                 case 'deleted':
                     title = "Eliminación exitosa!";
-                    text = "La unidad de medida ha sido eliminada correctamente.";
+                    text = "El Vehiculo ha sido eliminada correctamente.";
                     icon = "success";
                     break;
                 case 'exists':
-                    title = "Unidad de medida existente!";
-                    text = "La unidad de medida ingresada ya existe en la base de datos.";
+                    title = "Vehiculo existente!";
+                    text = "El Vehiculo ingresada ya existe en la base de datos.";
                     icon = "warning";
                     break;
             }

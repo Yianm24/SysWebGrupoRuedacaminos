@@ -5,9 +5,11 @@
                 <tr>
                     <th class="ps-4">PLACA</th>
                     <th>COLOR</th>
-                    <th>TIPO VEHÍCULO</th>
                     <th>MODELO</th>
                     <th class="text-center">AÑO</th>
+                    <th class="text-center">ANCHURA</th>
+                    <th class="text-center">ALTURA</th>
+                    <th class="text-center">PESO MÁXIMO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
             </thead>
@@ -18,10 +20,18 @@
                         <td>
                             <span class="fw-medium"><?= $dato['color'] ?></span>
                         </td>
-                        <td class="text-secondary"><?= $dato['nombretipovehiculo'] ?></td>
                         <td class="text-secondary"><?= $dato['nombremodelo'] ?></td>
                         <td class="text-center">
-                            <span class="fw-medium"><?= $dato['ano'] ?></span>
+                            <span class="fw-medium"><?= $dato['anio'] ?></span>
+                        </td>
+                        <td class="text-center">
+                            <span class="fw-medium"><?= $dato['anchura'] ?>M</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="fw-medium"><?= $dato['altura'] ?>M</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="fw-medium"><?= $dato['peso_max'] ?>KG</span>
                         </td>
                         <td class="pe-4 text-center">
 
@@ -30,9 +40,11 @@
                                 datos-cod-vehiculo="<?= $dato['cod_vehiculo']; ?>"
                                 datos-placa="<?= $dato['placa']; ?>"
                                 datos-color="<?= $dato['color']; ?>"
-                                datos-tipovehiculo="<?= $dato['cod_tipovehiculo']; ?>"
+                                datos-anio="<?= $dato['anio']; ?>"
+                                datos-anchura="<?= $dato['anchura']; ?>"
+                                datos-altura="<?= $dato['altura']; ?>"
+                                datos-peso-max="<?= $dato['peso_max']; ?>"
                                 datos-modelo="<?= $dato['cod_modelo']; ?>"
-                                datos-ano="<?= $dato['ano']; ?>"
                                 datos-estado="<?= $dato['estado']; ?>">
                                 <i class="bi bi-pencil"></i>
                             </button>

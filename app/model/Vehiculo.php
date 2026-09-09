@@ -8,9 +8,11 @@ class Vehiculo extends Conexion
     private $cod_vehiculo;
     private $placa;
     private $color;
-    private $tipo_vehiculo;
-    private $modelo;
-    private $ano;
+    private $anio;
+    private $anchura;
+    private $altura;
+    private $peso_max;
+    private $cod_modelo;
     private $estado;
 
 
@@ -25,7 +27,7 @@ class Vehiculo extends Conexion
         $placa = strtoupper($placa);
         if ($cod_vehiculo === null) {
             $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND estado = 1;";
-        } else {
+        }else {
             $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND cod_vehiculo != ? AND estado = 1;";
         }
         $count = $this->conexion->prepare($sentencia);
@@ -35,13 +37,15 @@ class Vehiculo extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosVehiculo($placa, $color,$tipo_vehiculo, $modelo, $ano)
+    public function regDatosVehiculo($placa, $color,$anio, $anchura,$altura,$peso_max, $cod_modelo )
     {
         $this->placa =strtoupper($placa);
         $this->color = $this->formatearPalabra($color);
-        $this->tipo_vehiculo = $tipo_vehiculo;
-        $this->modelo = $modelo;
-        $this->ano = $ano;
+        $this->anchura = $anchura;
+        $this->altura = $altura;
+        $this->peso_max = $peso_max;
+        $this->cod_modelo = $cod_modelo;
+        $this->anio = $anio;
         $this->estado = 1;
 
         return $this->registrarVehiculo();
@@ -50,16 +54,18 @@ class Vehiculo extends Conexion
     private function registrarVehiculo()
     {
         try {
-            $sentencia = "INSERT INTO vehiculo (placa, color, cod_tipovehiculo, cod_modelo, ano, estado) VALUES (?, ?, ?, ?, ?, ?)";
+            $sentencia = "INSERT INTO vehiculo (placa, color, anio, anchura, altura, peso_max, cod_modelo, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->placa);
             $insert->bindValue(2, $this->color);
-            $insert->bindValue(3, $this->tipo_vehiculo);
-            $insert->bindValue(4, $this->modelo);
-            $insert->bindValue(5, $this->ano);
-            $insert->bindValue(6, $this->estado);
+            $insert->bindValue(3, $this->anio);
+            $insert->bindValue(4, $this->anchura);
+            $insert->bindValue(5, $this->altura);
+            $insert->bindValue(6, $this->peso_max);
+            $insert->bindValue(7, $this->cod_modelo);
+            $insert->bindValue(8, $this->estado);
 
             $resultado = $insert->execute();
 
@@ -73,10 +79,8 @@ class Vehiculo extends Conexion
     public function obt_RegistrosVehiculos()
         {
             try {
-                $sentencia = "SELECT vehiculo.* , tipos_vehiculo.nombre AS nombretipovehiculo, modelo.nombre AS nombremodelo
+                $sentencia = "SELECT vehiculo.* , modelo.nombre AS nombremodelo
                             FROM vehiculo
-                            INNER JOIN tipos_vehiculo
-                            ON vehiculo.cod_tipovehiculo = tipos_vehiculo.cod_tipovehiculo
                             INNER JOIN modelo
                             ON vehiculo.cod_modelo = modelo.cod_modelo
                             WHERE vehiculo.estado= 1;";
@@ -87,15 +91,16 @@ class Vehiculo extends Conexion
                 return [];
             }
         }
-    public function actDatosVehiculo($cod_vehiculo, $placa, $color, $tipo_vehiculo, $modelo, $ano)
+    public function actDatosVehiculo($cod_vehiculo, $placa, $color,$anio,$anchura, $altura, $peso_max, $cod_modelo)
     {
         $this->cod_vehiculo = $cod_vehiculo;
         $this->placa = strtoupper($placa);
         $this->color = $this->formatearPalabra($color);
-        $this->tipo_vehiculo = $tipo_vehiculo;
-        $this->modelo = $modelo;
-        $this->ano = $ano;
-        
+        $this->anio = $anio;
+        $this->anchura = $anchura;
+        $this->altura = $altura;
+        $this->peso_max = $peso_max;
+        $this->cod_modelo = $cod_modelo;
 
         return $this->actualizarVehiculo();
     }
@@ -103,15 +108,17 @@ class Vehiculo extends Conexion
     private function actualizarVehiculo()
     {
         try {
-            $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, cod_tipovehiculo = ?, cod_modelo = ?, ano = ? WHERE cod_vehiculo = ?";
+            $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, anio = ?, anchura = ?, altura = ?, peso_max = ?, cod_modelo = ? WHERE cod_vehiculo = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->placa);
             $update->bindValue(2, $this->color);
-            $update->bindValue(3, $this->tipo_vehiculo);
-            $update->bindValue(4, $this->modelo);
-            $update->bindValue(5, $this->ano);
-            $update->bindValue(6, $this->cod_vehiculo);
+            $update->bindValue(3, $this->anio);
+            $update->bindValue(4, $this->anchura);
+            $update->bindValue(5, $this->altura);
+            $update->bindValue(6, $this->peso_max);
+            $update->bindValue(7, $this->cod_modelo);
+            $update->bindValue(8, $this->cod_vehiculo);
 
             $update->execute();
 
