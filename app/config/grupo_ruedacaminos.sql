@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-09-2026 a las 02:33:53
+-- Tiempo de generación: 09-09-2026 a las 05:01:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -114,7 +114,7 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido`, `telefono`, `email`, `tipo_documento`, `estado`) VALUES
-(9, 12345678, 'Maria', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
+(9, 12345678, 'María', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
 (13, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 0),
 (22, 7777, 'yuan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 0),
 (23, 3333, 'Juana', 'pereira', '312123', 'mamdasmdska@ANSDMSAD', 'E', 0);
@@ -163,7 +163,12 @@ INSERT INTO `cuenta_banco` (`cod_cuenta`, `propietario`, `etiqueta`, `numero_cue
 CREATE TABLE `despacho` (
   `cod_despacho` int(11) NOT NULL,
   `cod_empleado` int(2) NOT NULL,
-  `cod_vehiculo` int(2) NOT NULL
+  `cod_vehiculo` int(2) NOT NULL,
+  `cod_gastosdespacho` int(11) NOT NULL,
+  `fecha_salida` datetime NOT NULL,
+  `fecha_entrega` datetime NOT NULL,
+  `estatus` enum('PENDIENTE','ENTREGADO','','') NOT NULL,
+  `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -299,26 +304,6 @@ INSERT INTO `gastos_despacho` (`cod_gastodespacho`, `descripcion`, `monto`, `est
 (1, '', 0.00, 0),
 (2, '', 0.00, 0),
 (3, '', 0.00, 0);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `gastos_funcionales`
---
-
-CREATE TABLE `gastos_funcionales` (
-  `cod_gasto` int(11) NOT NULL,
-  `detalles` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `gastos_funcionales`
---
-
-INSERT INTO `gastos_funcionales` (`cod_gasto`, `detalles`) VALUES
-(1, 'Viaticos'),
-(2, 'Peajes'),
-(3, 'Gasolina');
 
 -- --------------------------------------------------------
 
@@ -995,7 +980,8 @@ ALTER TABLE `cuenta_banco`
 ALTER TABLE `despacho`
   ADD PRIMARY KEY (`cod_despacho`),
   ADD KEY `cod_empleado` (`cod_empleado`),
-  ADD KEY `cod_vehiculo` (`cod_vehiculo`);
+  ADD KEY `cod_vehiculo` (`cod_vehiculo`),
+  ADD KEY `despacho_ibfk_5` (`cod_gastosdespacho`);
 
 --
 -- Indices de la tabla `detalle_pago`
@@ -1032,12 +1018,6 @@ ALTER TABLE `estado`
 --
 ALTER TABLE `gastos_despacho`
   ADD PRIMARY KEY (`cod_gastodespacho`);
-
---
--- Indices de la tabla `gastos_funcionales`
---
-ALTER TABLE `gastos_funcionales`
-  ADD PRIMARY KEY (`cod_gasto`);
 
 --
 -- Indices de la tabla `marca`
@@ -1199,12 +1179,6 @@ ALTER TABLE `gastos_despacho`
   MODIFY `cod_gastodespacho` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `gastos_funcionales`
---
-ALTER TABLE `gastos_funcionales`
-  MODIFY `cod_gasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
 -- AUTO_INCREMENT de la tabla `marca`
 --
 ALTER TABLE `marca`
@@ -1297,7 +1271,8 @@ ALTER TABLE `cuenta_banco`
 --
 ALTER TABLE `despacho`
   ADD CONSTRAINT `despacho_ibfk_2` FOREIGN KEY (`cod_vehiculo`) REFERENCES `vehiculo` (`cod_vehiculo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `despacho_ibfk_4` FOREIGN KEY (`cod_empleado`) REFERENCES `empleado` (`cod_empleado`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `despacho_ibfk_4` FOREIGN KEY (`cod_empleado`) REFERENCES `empleado` (`cod_empleado`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `despacho_ibfk_5` FOREIGN KEY (`cod_gastosdespacho`) REFERENCES `gastos_despacho` (`cod_gastodespacho`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `detalle_pago`
