@@ -33,7 +33,7 @@
                         </div>
                         <div class="col-md-4 mb-3 mb-md-0">
                             <label for="telefono_emergencia" class="form-label">Telf. Emergencia</label>
-                            <input type="tel" class="form-control" id="telefono_emergencia" name="telefono_emergencia" placeholder="04147778654" required>
+                            <input type="tel" class="form-control" id="telefono_emergencia" name="telefono_emergencia" placeholder="04147778654">
                         </div>
                         <div class="col-md-4">
                             <label for="cod_cargo" class="form-label">Cargo</label>
