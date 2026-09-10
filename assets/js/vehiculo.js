@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             switch (boton.title) {
                 case "Registrar":
-                    const selectTipoVehiculo = modal.querySelector('.modal-body #tipo-vehiculo');
                     const selectModelo = modal.querySelector('.modal-body #modelo');
 
                     encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Registro de Vehículo';

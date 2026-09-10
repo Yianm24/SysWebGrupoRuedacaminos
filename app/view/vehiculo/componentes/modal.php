@@ -54,7 +54,7 @@
                             <div class="input-group">
                                 <input type="number" class="form-control" id="anchura" name="anchura" step="0.01" placeholder="Anchura (m)" required>
                                 <input type="number" class="form-control" id="altura" name="altura" step="0.01" placeholder="Altura (m)" required>
-                                <input type="number" class="form-control" id="peso_max" name="peso_max" step="0.01" placeholder="Peso máximo (kg)" required>
+                                <input type="number" class="form-control" id="peso_max" name="peso_max" step="0gi.01" placeholder="Peso máximo (kg)" required>
                             </div>
                         </div>
                     </fieldset>
