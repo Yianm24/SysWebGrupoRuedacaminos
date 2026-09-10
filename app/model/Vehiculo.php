@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Model;
+
 use App\Config\Conexion;
 
-class Vehiculo extends Conexion 
+class Vehiculo extends Conexion
 {
     private $cod_vehiculo;
     private $placa;
@@ -19,27 +20,31 @@ class Vehiculo extends Conexion
     public function __construct()
     {
         parent::__construct();
-        
     }
 
 
-    public function verificarVehiculoDuplicado($placa, $cod_vehiculo=null) {
+    public function verificarVehiculoDuplicado($placa, $cod_vehiculo = null)
+    {
         $placa = strtoupper($placa);
         if ($cod_vehiculo === null) {
             $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND estado = 1;";
-        }else {
+            $count = $this->conexion->prepare($sentencia);
+            $count->bindValue(1, $placa);
+            $count->execute();
+            return $count->fetchColumn() > 0;
+        } else {
             $sentencia = "SELECT COUNT(*) FROM vehiculo WHERE placa = ? AND cod_vehiculo != ? AND estado = 1;";
+            $count = $this->conexion->prepare($sentencia);
+            $count->bindValue(1, $placa);
+            $count->bindValue(2, $cod_vehiculo);
+            $count->execute();
+            return $count->fetchColumn() > 0;
         }
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $placa);
-        $count->bindValue(2, $cod_vehiculo);
-        $count->execute();
-        return $count->fetchColumn() > 0;
     }
 
-    public function regDatosVehiculo($placa, $color,$anio, $anchura,$altura,$peso_max, $cod_modelo )
+    public function regDatosVehiculo($placa, $color, $anio, $anchura, $altura, $peso_max, $cod_modelo)
     {
-        $this->placa =strtoupper($placa);
+        $this->placa = strtoupper($placa);
         $this->color = $this->formatearPalabra($color);
         $this->anchura = $anchura;
         $this->altura = $altura;
@@ -70,28 +75,27 @@ class Vehiculo extends Conexion
             $resultado = $insert->execute();
 
             return $resultado;
-
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
         }
     }
-    
+
     public function obt_RegistrosVehiculos()
-        {
-            try {
-                $sentencia = "SELECT vehiculo.* , modelo.nombre AS nombremodelo
+    {
+        try {
+            $sentencia = "SELECT vehiculo.* , modelo.nombre AS nombremodelo
                             FROM vehiculo
                             INNER JOIN modelo
                             ON vehiculo.cod_modelo = modelo.cod_modelo
                             WHERE vehiculo.estado= 1;";
-                $select = $this->conexion->prepare($sentencia);
-                $select->execute();
-                return $select->fetchAll(\PDO::FETCH_ASSOC);
-            } catch (\PDOException $e) {
-                return [];
-            }
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
         }
-    public function actDatosVehiculo($cod_vehiculo, $placa, $color,$anio,$anchura, $altura, $peso_max, $cod_modelo)
+    }
+    public function actDatosVehiculo($cod_vehiculo, $placa, $color, $anio, $anchura, $altura, $peso_max, $cod_modelo)
     {
         $this->cod_vehiculo = $cod_vehiculo;
         $this->placa = strtoupper($placa);
@@ -121,7 +125,6 @@ class Vehiculo extends Conexion
             $update->bindValue(8, $this->cod_vehiculo);
 
             $update->execute();
-
         } catch (\PDOException $e) {
             return "Error al actualizar el vehículo: " . $e->getMessage();
         }
