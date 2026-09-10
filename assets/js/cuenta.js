@@ -1,4 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+  const inputBusqueda = document.getElementById('inputBusqueda');
+  if (inputBusqueda) {
+    inputBusqueda.addEventListener('input', function () {
+      const textoBuscado = this.value.toLowerCase();
+      const filas = document.querySelectorAll("table tbody tr");
+      filas.forEach(fila => {
+        const contenidoFila = fila.textContent.toLowerCase();
+        fila.style.display = contenidoFila.includes(textoBuscado) ? "" : "none";
+      });
+    });
+  }
+
   const modal = document.getElementById('modalCuenta');
 
   if (modal) {
@@ -25,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       switch (boton.title) {
         case "Registrar":
-          
+
           botonDeModal.value = "registrar";
           botonDeModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
           //console.log("Se ha abierto el modal para registrar una nueva cuenta bancaria.");
@@ -36,12 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
           inputNombreBanco.value = "";
           inputEtiqueta.value = "";
 
-        break;
+          break;
         case "Actualizar":
 
           botonDeModal.value = "actualizar";
           botonDeModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
-          
+
           if (cod_cuenta != "" && estado == 1) {
             //Inserta valores dentro de los inputs del formulario para actualizar
             inputCodCuenta.value = cod_cuenta;
@@ -58,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("No se puede editar el registro, ya que está inactivo.");
           }
 
-        break;
+          break;
       }
     })
   }

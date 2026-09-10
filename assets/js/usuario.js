@@ -1,4 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    const inputBusqueda = document.getElementById('inputBusqueda');
+    if (inputBusqueda) {
+        inputBusqueda.addEventListener('input', function () {
+            const textoBuscado = this.value.toLowerCase();
+            const filas = document.querySelectorAll("table tbody tr");
+            filas.forEach(fila => {
+                const contenidoFila = fila.textContent.toLowerCase();
+                fila.style.display = contenidoFila.includes(textoBuscado) ? "" : "none";
+            });
+        });
+    }
+
     const modal = document.getElementById('actualizarUsuario');
 
 
@@ -14,9 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const cedula = boton.getAttribute('datos-cedula');
             const password = boton.getAttribute('datos-password');
             const rol = boton.getAttribute('datos-cod-rol');
-            
-            
-            
+
+
+
             // Obtener referencias a los campos del formulario dentro del modal
             const inputCodUsuario = modal.querySelector('.modal-body #cod-usuario')
             const inputNombre = modal.querySelector('.modal-body #nombre')

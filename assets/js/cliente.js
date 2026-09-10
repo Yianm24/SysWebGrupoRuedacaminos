@@ -1,4 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
+    
+    const inputBusqueda = document.getElementById('inputBusqueda');
+    if (inputBusqueda) {
+        inputBusqueda.addEventListener('input', function() {
+            const textoBuscado = this.value.toLowerCase();
+            const filas = document.querySelectorAll("table tbody tr");
+            filas.forEach(fila => {
+                const contenidoFila = fila.textContent.toLowerCase();
+                fila.style.display = contenidoFila.includes(textoBuscado) ? "" : "none";
+            });
+        });
+    }
+    
+    
+    
     console.log("Cliente.js cargado correctamente.");
     // Lógica para alternar campos de Persona Natural o Jurídica en el Módulo de Clientes
     const tipoPersona_remitente = document.querySelectorAll('input[name="tipo_persona_remitente"]');

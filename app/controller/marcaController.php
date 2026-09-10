@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Model\Marca;
@@ -10,7 +11,7 @@ switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['nombre_marca'])) {
-                
+
                 if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
                     header("Location: ?url=marca&status=exists");
                     exit();
@@ -54,11 +55,10 @@ switch ($solicitud) {
         }
 }
 
-
 $registros = $marca->obt_RegistrosMarca();
+//$marca->buscarId();
+// app/controller/unidadesmedidaController.php
+include 'app/view/layout/header.php';
+include 'app/view/marca/marcaView.php';
 
-    // app/controller/unidadesmedidaController.php
-    include 'app/view/layout/header.php';
-    include 'app/view/marca/marcaView.php';
-    include 'app/view/layout/footer.php';
-?>
+include 'app/view/layout/footer.php';
