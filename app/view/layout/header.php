@@ -136,10 +136,22 @@
                         </button>
                     </li>
 
-                    <li class="nav-item btn-group ms-2 mb-2 d-flex shadow-sm">
+                <li class="nav-item ms-2 mb-2">
+                    <div class="btn-group d-flex shadow-sm">
                         <button type="button" class="btn list-group-item list-group-item-action text-start w-100 <?= $current_url == 'despacho' ? 'active' : '' ?>" onclick="window.location.href='?url=despacho'">
                             <i class="bi bi-boxes me-2"></i> Despacho
                         </button>
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split flex-shrink-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Icono de Menú Desplegable</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow w-100">
+                                <li>
+                                    <a href="?url=gastodespacho" class="list-group-item list-group-item-action <?= $current_url == 'gastodespacho' ? 'active' : '' ?>">
+                                        <i class="bi bi-coin me-2"></i> Gasto Despacho
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
 
                     <li class="nav-item ms-2 mb-2">
