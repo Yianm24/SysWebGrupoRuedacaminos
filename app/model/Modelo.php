@@ -37,8 +37,8 @@ class Modelo extends Conexion
 
     public function regDatosModelo($nombre, $marca)
     {
-        // $this->nombre =strtoupper($nombre);
-        $this->nombre = $this->formatearPalabra($nombre);
+        $this->nombre =strtoupper($nombre);
+        // $this->nombre = $this->formatearPalabra($nombre);
         $this->marca = $marca;
         $this->estado = 1;
 
@@ -85,7 +85,7 @@ class Modelo extends Conexion
     public function actDatosModelo($cod_modelo, $nombre, $marca)
     {
         $this->cod_modelo = $cod_modelo;
-        $this->nombre = $this->formatearPalabra($nombre);
+        $this->nombre =strtoupper($nombre);
         $this->marca = $marca;
 
         return $this->actualizarModelo();

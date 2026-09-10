@@ -32,7 +32,7 @@ class Marca extends Conexion
 
     public function regDatosMarca($nombre)
     {
-        $this->nombre = $this->formatearPalabra($nombre);
+        $this->nombre = strtoupper($nombre);
         $this->estado = 1;
 
         return $this->registrarMarca();
@@ -72,8 +72,7 @@ class Marca extends Conexion
     public function actMarca($cod_marca, $nombre)
     {
         $this->cod_marca = $cod_marca;
-        $this->nombre = $nombre;
-
+        $this->nombre = strtoupper($nombre);
         return $this->actualizarMarca();
     }
 

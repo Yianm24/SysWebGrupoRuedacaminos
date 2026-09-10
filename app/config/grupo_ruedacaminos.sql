@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-09-2026 a las 20:42:11
+-- Tiempo de generación: 10-09-2026 a las 04:46:41
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -90,7 +90,8 @@ INSERT INTO `cargo` (`cod_cargo`, `nombre`, `estado`) VALUES
 (1, 'administracion', 1),
 (2, 'contaduria', 1),
 (3, 'presidencia', 1),
-(4, 'chofer', 1);
+(4, 'chofer', 1),
+(5, 'Seguridad', 1);
 
 -- --------------------------------------------------------
 
@@ -117,7 +118,11 @@ INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido
 (9, 12345678, 'María', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
 (13, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 0),
 (22, 7777, 'yuan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 0),
-(23, 3333, 'Juana', 'pereira', '312123', 'mamdasmdska@ANSDMSAD', 'E', 0);
+(23, 3333, 'Juana', 'pereira', '312123', 'mamdasmdska@ANSDMSAD', 'E', 0),
+(24, 30353577, 'Yancarlos', 'Camacaro', '04245188451', 'yancamacaro@gmail.com', 'V', 1),
+(25, 13267915, 'Laura', 'Oropeza', '04265541233', 'malaurpo@hotmail.com', 'V', 0),
+(26, 28375138, 'Anyerli', 'Moreno', '04147888016', 'anyerlimoreno@gmail.com', 'V', 1),
+(27, 302289990, 'INSUSERVI', NULL, '04125114443', 'insuservi@gmail.com', 'J', 1);
 
 -- --------------------------------------------------------
 
@@ -217,7 +222,10 @@ INSERT INTO `empleado` (`cod_empleado`, `cedula`, `nombre`, `apellido`, `telefon
 (1, '18335555', 'Juan', 'Mendez', '04123441222', '04123401444', 3, 1),
 (2, '29201408', 'Juan', 'Pérez', '04242550034', '04123565656', 2, 1),
 (3, '30300100', 'María', 'Pérez', '04242550038', '04223568080', 1, 1),
-(4, '22800120', 'Antonio', 'Requena', '04161356060', '04128788481', 4, 1);
+(4, '22800120', 'Antonio', 'Requena', '04161356060', '04128788481', 4, 1),
+(15152, '12852296', 'Ruben', 'Perez', '04125114443', '', 4, 1),
+(15153, '13267915', 'Laura', 'Oropeza', '04265541233', '', 3, 1),
+(15154, '7308028', 'Esteban', 'Oropeza', '04265541233', '', 5, 1);
 
 -- --------------------------------------------------------
 
@@ -289,10 +297,10 @@ INSERT INTO `estado` (`cod_estado`, `nombre`, `estado`) VALUES
 --
 
 CREATE TABLE `gastos_despacho` (
-  `cod_gasto_despacho` int(11) NOT NULL,
-  `cod_despacho` int(11) NOT NULL,
+  `cod_gasto_despacho` int(15) NOT NULL,
   `descripcion` varchar(70) NOT NULL,
   `monto` decimal(6,2) NOT NULL,
+  `cod_despacho` int(11) NOT NULL,
   `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -316,7 +324,8 @@ INSERT INTO `marca` (`cod_marca`, `nombre`, `estado`) VALUES
 (1, 'FORD', 1),
 (2, 'FIAT', 1),
 (3, 'CHEVROLET', 1),
-(4, 'pdasd', 0);
+(4, 'pdasd', 0),
+(5, 'IVECO', 1);
 
 -- --------------------------------------------------------
 
@@ -354,7 +363,7 @@ INSERT INTO `metodo_pago` (`cod_metodo`, `nombre`, `cod_moneda`, `estado`) VALUE
 CREATE TABLE `modelo` (
   `cod_modelo` int(1) NOT NULL,
   `nombre` varchar(15) NOT NULL,
-  `cod_marca` int(1) DEFAULT NULL,
+  `cod_marca` int(1) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -363,9 +372,8 @@ CREATE TABLE `modelo` (
 --
 
 INSERT INTO `modelo` (`cod_modelo`, `nombre`, `cod_marca`, `estado`) VALUES
-(1, 'Fiat', NULL, 1),
-(2, 'Canguro', NULL, 1),
-(3, 'Fiorino', NULL, 1);
+(4, 'DAILY', 5, 1),
+(5, 'FIORINO', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -919,17 +927,6 @@ CREATE TABLE `vehiculo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `vehiculo`
---
-
-INSERT INTO `vehiculo` (`cod_vehiculo`, `placa`, `color`, `anio`, `anchura`, `altura`, `peso_max`, `cod_modelo`, `estado`) VALUES
-(8, 'ABC541', 'Blanco', 2022, 0, 0, 0, 1, 1),
-(9, 'ABC1234', 'Blanco', 2022, 0, 0, 0, 2, 1),
-(10, 'GHI1122', 'Gris', 2023, 0, 0, 0, 3, 1),
-(11, 'XYZ9876', 'Rojo', 2019, 0, 0, 0, 2, 0),
-(12, 'XYB9870', 'Negro', 2004, 0, 0, 0, 2, 0);
-
---
 -- Índices para tablas volcadas
 --
 
@@ -1125,13 +1122,13 @@ ALTER TABLE `cambio_moneda`
 -- AUTO_INCREMENT de la tabla `cargo`
 --
 ALTER TABLE `cargo`
-  MODIFY `cod_cargo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cod_cargo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `cod_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `cod_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `cuenta_banco`
@@ -1149,7 +1146,7 @@ ALTER TABLE `detalle_pago`
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `cod_empleado` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15152;
+  MODIFY `cod_empleado` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15155;
 
 --
 -- AUTO_INCREMENT de la tabla `envio`
@@ -1167,13 +1164,13 @@ ALTER TABLE `estado`
 -- AUTO_INCREMENT de la tabla `gastos_despacho`
 --
 ALTER TABLE `gastos_despacho`
-  MODIFY `cod_gasto_despacho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cod_gasto_despacho` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
 --
 ALTER TABLE `marca`
-  MODIFY `cod_marca` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cod_marca` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `metodo_pago`
@@ -1185,7 +1182,7 @@ ALTER TABLE `metodo_pago`
 -- AUTO_INCREMENT de la tabla `modelo`
 --
 ALTER TABLE `modelo`
-  MODIFY `cod_modelo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cod_modelo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `moneda`
@@ -1289,7 +1286,7 @@ ALTER TABLE `envio`
 -- Filtros para la tabla `gastos_despacho`
 --
 ALTER TABLE `gastos_despacho`
-  ADD CONSTRAINT `gastos_despacho_ibfk_1` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`);
+  ADD CONSTRAINT `gastos_despacho_ibfk_1` FOREIGN KEY (`cod_despacho`) REFERENCES `despacho` (`cod_despacho`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `metodo_pago`
