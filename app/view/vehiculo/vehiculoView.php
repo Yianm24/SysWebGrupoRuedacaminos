@@ -17,7 +17,7 @@
                         <span class="input-group-text bg-transparent border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0 ps-0 text-muted" placeholder="Buscar Vehículo...">
+                        <input type="text" class="form-control border-start-0 ps-0 text-muted" id="inputBusqueda" placeholder="Buscar Vehículo...">
                     </div>
                 </div>
 
