@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-09-2026 a las 21:31:22
+-- Tiempo de generación: 11-09-2026 a las 03:10:03
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -768,6 +768,7 @@ CREATE TABLE `pago` (
   `hora` datetime NOT NULL,
   `monto` decimal(8,2) NOT NULL,
   `referencia` varchar(20) NOT NULL,
+  `estado_pago` tinyint(1) NOT NULL DEFAULT 0,
   `cod_envio` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `cod_detallepago` int(11) NOT NULL
