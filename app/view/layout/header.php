@@ -72,73 +72,73 @@
                 </a>
 
                 <div class=" dropdown-center">
-                    <button type="button" class="btn list-group-item dropdown-toggle text-start" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn list-group-item dropdown-toggle text-start w-100" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-gear-fill me-2"></i> Configuración
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end w-100">
                         <li>
-                            <a href="?url=kilometraje" class="list-group-item list-group-item-action <?= $current_url == 'kilometraje' ? 'active' : '' ?>">
+                            <a href="?url=kilometraje" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'kilometraje' ? 'active' : '' ?>">
                                 <i class="bi bi-currency-dollar me-2"></i> Precio Kilometraje
                             </a>
                         </li>
                         <li>
-                            <a href="?url=unidadesmedida" class="list-group-item list-group-item-action <?= $current_url == 'unidadesmedida' ? 'active' : '' ?>">
+                            <a href="?url=unidadesmedida" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'unidadesmedida' ? 'active' : '' ?>">
                                 <i class="bi bi-rulers me-2"></i> Unidad de Medida
                             </a>
                         </li>
                         <li>
-                            <a href="?url=estado" class="list-group-item list-group-item-action <?= $current_url == 'estado' ? 'active' : '' ?>">
+                            <a href="?url=estado" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'estado' ? 'active' : '' ?>">
                                 <i class="bi bi-map me-2"></i> Estado
                             </a>
                         </li>
                         <li>
-                            <a href="?url=municipio" class="list-group-item list-group-item-action <?= $current_url == 'municipio' ? 'active' : '' ?>">
+                            <a href="?url=municipio" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'municipio' ? 'active' : '' ?>">
                                 <i class="bi bi-geo-alt me-2"></i> Municipio
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
 
-                            <a href="?url=cargo" class="list-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
+                            <a href="?url=cargo" class="dropdown-item  ist-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
                                 <i class="bi bi-person-vcard me-2"></i> Cargo
                             </a>
                         </li>
                         <li>
-                            <a href="?url=rol" class="list-group-item list-group-item-action <?= $current_url == 'rol' ? 'active' : '' ?>">
+                            <a href="?url=rol" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'rol' ? 'active' : '' ?>">
                                 <i class="bi bi-person-badge me-2"></i> Rol
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a href="?url=marca" class="list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
+                            <a href="?url=marca" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
                                 <i class="bi bi-ev-front me-2"></i> Marca
                             </a>
                         </li>
                         <li>
-                            <a href="?url=modelo" class="list-group-item list-group-item-action <?= $current_url == 'modelo' ? 'active' : '' ?>">
+                            <a href="?url=modelo" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'modelo' ? 'active' : '' ?>">
                                 <i class="bi bi-car-front me-2"></i>Modelo
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a href="?url=metodopago" class="list-group-item list-group-item-action <?= $current_url == 'metodopago' ? 'active' : '' ?>">
+                            <a href="?url=metodopago" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'metodopago' ? 'active' : '' ?>">
                                 <i class="bi bi-credit-card me-2"></i> Método de Pago
                             </a>
                         </li>
                         <li>
-                            <a href="?url=moneda" class="list-group-item list-group-item-action <?= $current_url == 'moneda' ? 'active' : '' ?>">
+                            <a href="?url=moneda" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'moneda' ? 'active' : '' ?>">
                                 <i class="bi bi-coin me-2"></i> Moneda
                             </a>
                         </li>
                         <li>
 
-                            <a href="?url=banco" class="list-group-item list-group-item-action <?= $current_url == 'banco' ? 'active' : '' ?>">
+                            <a href="?url=banco" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'banco' ? 'active' : '' ?>">
                                 <i class="bi bi-bank me-2"></i> Banco
                             </a>
                         </li>
                         <li>
-                            <a href="?url=cuenta" class="list-group-item list-group-item-action <?= $current_url == 'cuenta' ? 'active' : '' ?>">
+                            <a href="?url=cuenta" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'cuenta' ? 'active' : '' ?>">
                                 <i class="bi bi-cash-coin me-2"></i> Cuenta
                             </a>
                         </li>
