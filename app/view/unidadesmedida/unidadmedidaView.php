@@ -40,4 +40,5 @@
     </div>
 </main>
 <script src="assets/js/sweetalert2.all.min.js"></script>
+<script src="assets/js/busqueda.js"></script>
 <script src="assets/js/unidadmedida.js"></script>
