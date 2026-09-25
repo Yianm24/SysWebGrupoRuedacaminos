@@ -12,9 +12,9 @@
     <!-- Bootstrap Icons -->
     <link href="assets/icons/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
-
-<body>
 <?php if ($_GET['url'] != 'login'): ?>
+<body>
+
     <?php
     $current_url = isset($_GET['url']) ? $_GET['url'] : 'dashboard';
     ?>
@@ -160,6 +160,6 @@
                     </div>
                 </div>
             </nav>
-<?php endif; ?>
 
             <main class="container-fluid">
+<?php endif; ?>
