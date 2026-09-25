@@ -16,7 +16,8 @@
                 $this->controller = 'Controller.php';
                 $this->getURL();
             } else {
-                echo "<script>location='?url=dashboard'</script>";
+                //echo "<script>location='?url=dashboard'</script>";
+                header("Location: ?url=login");
             }
         }
 

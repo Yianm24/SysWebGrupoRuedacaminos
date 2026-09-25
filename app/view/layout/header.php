@@ -14,7 +14,7 @@
 </head>
 
 <body>
-
+<?php if ($_GET['url'] != 'login'): ?>
     <?php
     $current_url = isset($_GET['url']) ? $_GET['url'] : 'dashboard';
     ?>
@@ -160,5 +160,6 @@
                     </div>
                 </div>
             </nav>
+<?php endif; ?>
 
             <main class="container-fluid">
