@@ -21,6 +21,29 @@ class Usuario extends Conexion
         parent::__construct();
     }
 
+public function accesoDatosUsuario($cedula, $password)
+    {
+        
+        $this->cedula = $cedula;
+        $this->password = $password;
+
+        return $this->accesoUsuario();
+    }
+
+private function accesoUsuario()
+    {
+        try {
+            $sentencia = "SELECT * FROM usuario WHERE cedula = ? AND password = ? AND estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->bindValue(1, $this->cedula);
+            $select->bindValue(2, $this->password);
+            $select->execute();
+            return true;
+        } catch (\PDOException $e) {
+            return "Error al acceder al usuario: " . $e->getMessage();
+        }
+    }   
+
     public function verificarUsuarioExiste($cedula)
     {
         $sentencia = "SELECT COUNT(*) FROM usuario WHERE cedula = ? AND estado = 1";
@@ -29,6 +52,7 @@ class Usuario extends Conexion
         $count->execute();
         return $count->fetchColumn() > 0;
     }
+
     public function regDatosUsuario($cedula, $nombre, $rol, $password)
     {
 
