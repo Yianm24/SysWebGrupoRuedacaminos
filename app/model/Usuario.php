@@ -38,8 +38,8 @@ private function accesoUsuario()
             $select->bindValue(1, $this->cedula);
             $select->bindValue(2, $this->password);
             $select->execute();
-            return true;
-        } catch (\PDOException $e) {
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) { 
             return "Error al acceder al usuario: " . $e->getMessage();
         }
     }   
@@ -59,7 +59,7 @@ private function accesoUsuario()
         $this->cedula = $cedula;
         $this->nombre = $this->formatearPalabra($nombre);
         $this->rol = $rol;
-        $this->password = $password;
+        $this->password = password_hash($password, PASSWORD_BCRYPT);
         $this->estado = 1;
 
         return $this->registrarUsuario();
@@ -109,7 +109,7 @@ private function accesoUsuario()
         $this->cod_usuario = $cod_usuario;
         $this->nombre = $this->formatearPalabra($nombre);
         $this->cedula = $cedula;
-        $this->password = $password;
+        $this->password = password_hash($password, PASSWORD_BCRYPT);
         $this->rol = $rol;
 
         return $this->actualizarUsuario();
