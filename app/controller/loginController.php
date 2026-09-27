@@ -12,11 +12,14 @@ switch ($solicitud) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['cedula']) && !empty($_POST['password'])) {
                 $resultado = $usuario->accesoDatosUsuario($_POST['cedula'], $_POST['password']);
-                if ($resultado && password_verify($_POST['password'], $resultado[0]['password'])) {
+                /* var_dump($resultado);
+                echo $resultado['password']; */
+                //Funcion para verificar la contraseña ingresada con la almacenada en la base de datos
+                if (password_verify($_POST['password'], $resultado['password'])) {
                     header("Location: ?url=dashboard");
                     exit();
                 } else {
-                    echo "<script>alert('Error al acceder al usuario: " . $resultado . "');</script>";
+                    echo "<script>alert('Cédula o contraseña incorrectas');</script>";
                 }
             } else {
                 echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";

@@ -33,14 +33,13 @@ public function accesoDatosUsuario($cedula, $password)
 private function accesoUsuario()
     {
         try {
-            $sentencia = "SELECT * FROM usuario WHERE cedula = ? AND password = ? AND estado = 1";
+            $sentencia = "SELECT * FROM usuario WHERE cedula = ? AND estado = 1";
             $select = $this->conexion->prepare($sentencia);
             $select->bindValue(1, $this->cedula);
-            $select->bindValue(2, $this->password);
             $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+            return $select->fetch();
         } catch (\PDOException $e) { 
-            return "Error al acceder al usuario: " . $e->getMessage();
+            return "Error buscar al usuario: " . $e->getMessage();
         }
     }   
 
