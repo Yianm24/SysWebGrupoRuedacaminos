@@ -156,7 +156,7 @@
                 <div class="container-fluid">
                     <button class="btn btn-light border" id="sidebarToggle"><i class="bi bi-list fs-5"></i></button>
                     <div class="ms-auto d-flex align-items-center">
-                        <span class="text-muted fw-bold"><i class="bi bi-person-circle fs-5 me-2 text-primary"></i> Maria Laura</span>
+                        <a href="?url=login" class="btn btn-outline-primary" role="button">Cerrar Sesión <i class="bi bi-box-arrow-right"></i></a>
                     </div>
                 </div>
             </nav>
