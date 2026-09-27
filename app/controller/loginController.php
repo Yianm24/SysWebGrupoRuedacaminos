@@ -14,19 +14,24 @@ switch ($solicitud) {
                 $resultado = $usuario->accesoDatosUsuario($_POST['cedula'], $_POST['password']);
                  //var_dump($resultado);
                  if  (!$resultado){
-                   echo "<script>alert('Cedula incorrecta');</script>";
-                    break;
+                 header("Location: ?url=login&status=incorrect&msg=Cédula incorrecta");
+                    exit();
+                   //echo "<script>alert('Cedula incorrecta');</script>";
+                    //break;
                  }
                 /*echo $resultado['password']; */
                 //Funcion para verificar la contraseña ingresada con la almacenada en la base de datos
                 if (password_verify($_POST['password'], $resultado['password'])) {
                     header("Location: ?url=dashboard");
+
                     exit();
                 } else {
-                    echo "<script>alert('Contraseña incorrecta');</script>";
+                    header("Location: ?url=login&status=incorrect&msg=Contraseña incorrecta");
+                    exit();
                 }
             } else {
-                echo "<script>alert('Por favor, complete los campos obligatorios para continuar');</script>";
+                header("Location: ?url=login&status=incorrect&msg=Por favor, complete los campos obligatorios para continuar");
+                exit();
             }
         }
         break;
