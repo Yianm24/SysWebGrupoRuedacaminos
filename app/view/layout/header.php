@@ -12,11 +12,12 @@
     <!-- Bootstrap Icons -->
     <link href="assets/icons/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
-<?php if ($_GET['url'] != 'login'): ?>
+<?php if(isset($_SESSION['usuario'])): ?>
 <body>
 
     <?php
-    $current_url = isset($_GET['url']) ? $_GET['url'] : 'dashboard';
+    //Obtener la URL actual para resaltar el enlace activo en el menú lateral
+    $current_url = (isset($_GET['url']) && !empty($_GET['url']))? $_GET['url'] : 'dashboard';
     ?>
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
@@ -156,7 +157,11 @@
                 <div class="container-fluid">
                     <button class="btn btn-light border" id="sidebarToggle"><i class="bi bi-list fs-5"></i></button>
                     <div class="ms-auto d-flex align-items-center">
-                        <a href="?url=login" class="btn btn-outline-primary" role="button">Cerrar Sesión <i class="bi bi-box-arrow-right"></i></a>
+                        <form action="?url=login" method="post">
+                            <button type="submit" class="btn btn-outline-primary" name="tipoSolicitud" value="cerrar">
+                                Cerrar Sesión <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </nav>
