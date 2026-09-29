@@ -146,14 +146,14 @@
                                                     <div class="btn-group w-100 mb-3" role="group">
                                                         <div class="d-flex gap-4">
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_natural" value="remitente_natural" checked>
-                                                                <label class="form-check-label" for="persona_natural">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_natural_remitente" value="remitente_natural" checked>
+                                                                <label class="form-check-label" for="persona_natural_remitente">
                                                                     Persona Natural
                                                                 </label>
                                                             </div>
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_juridica" value="remitente_juridico">
-                                                                <label class="form-check-label" for="persona_juridica">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_juridica_remitente" value="remitente_juridico">
+                                                                <label class="form-check-label" for="persona_juridica_remitente">
                                                                     Persona Jurídica
                                                                 </label>
                                                             </div>
@@ -161,7 +161,7 @@
                                                     </div>
 
                                                     <!-- Campos Persona Natural (Remitente) -->
-                                                    <div id="rem_campos_natural" class="d-none">
+                                                    <div id="rem_campos_natural">
                                                         <div class="row g-3">
                                                             <div class="col-md-5">
                                                                 <label for="rem_cedula" class="form-label small fw-semibold">Cédula</label>
@@ -184,7 +184,7 @@
                                                     </div>
 
                                                     <!-- Campos Persona Jurídica (Remitente) -->
-                                                    <div id="rem_campos_juridico">
+                                                    <div id="rem_campos_juridico" class="d-none">
                                                         <div class="row g-3">
                                                             <div class="col-md-5">
                                                                 <label for="rem_rif" class="form-label small fw-semibold">RIF</label>
@@ -230,14 +230,14 @@
                                                     <div class="btn-group w-100 mb-3" role="group">
                                                         <div class="d-flex gap-4">
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="tipo_persona_destinatario" id="persona_natural" value="destinatario_natural" checked>
-                                                                <label class="form-check-label" for="persona_natural">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_destinatario" id="persona_natural_destinatario" value="destinatario_natural" checked>
+                                                                <label class="form-check-label" for="persona_natural_destinatario">
                                                                     Persona Natural
                                                                 </label>
                                                             </div>
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="tipo_persona_destinatario" id="persona_juridica" value="destinatario_juridico">
-                                                                <label class="form-check-label" for="persona_juridica">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_destinatario" id="persona_juridica_destinatario" value="destinatario_juridico">
+                                                                <label class="form-check-label" for="persona_juridica_destinatario">
                                                                     Persona Jurídica
                                                                 </label>
                                                             </div>
@@ -245,45 +245,45 @@
                                                     </div>
 
                                                     <!-- Campos Persona Natural (Destinatario) -->
-                                                    <div id="des_campos_natural">
+                                                    <div id="dest_campos_natural">
                                                         <div class="row g-3">
                                                             <div class="col-md-5">
-                                                                <label for="des_cedula" class="form-label small fw-semibold">Cédula</label>
+                                                                <label for="dest_cedula" class="form-label small fw-semibold">Cédula</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="des_nacionalidad">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_nacionalidad">
                                                                         <option value="V">V-</option>
                                                                         <option value="E">E-</option>
                                                                     </select>
-                                                                    <input type="text" class="form-control" id="des_cedula" name="des_cedula" placeholder="12345678">
+                                                                    <input type="text" class="form-control" id="dest_cedula" name="dest_cedula" placeholder="12345678">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-7">
-                                                                <label for="des_nombre" class="form-label small fw-semibold">Nombre Completo</label>
+                                                                <label for="dest_nombre" class="form-label small fw-semibold">Nombre Completo</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" id="des_nombre" name="des_nombre" placeholder="Nombre">
-                                                                    <input type="text" class="form-control" id="des_apellido" name="des_apellido" placeholder="Apellido">
+                                                                    <input type="text" class="form-control" id="dest_nombre" name="dest_nombre" placeholder="Nombre">
+                                                                    <input type="text" class="form-control" id="dest_apellido" name="dest_apellido" placeholder="Apellido">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <!-- Campos Persona Jurídica (Destinatario) -->
-                                                    <div id="des_campos_juridico" class="d-none">
+                                                    <div id="dest_campos_juridico" class="d-none">
                                                         <div class="row g-3">
                                                             <div class="col-md-5">
-                                                                <label for="des_rif" class="form-label small fw-semibold">RIF</label>
+                                                                <label for="dest_rif" class="form-label small fw-semibold">RIF</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="des_tipo_rif">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_tipo_rif">
                                                                         <option value="J">J-</option>
                                                                         <option value="G">G-</option>
                                                                         <option value="V">V-</option>
                                                                     </select>
-                                                                    <input type="text" class="form-control" id="des_rif" name="des_rif" placeholder="12345678-0">
+                                                                    <input type="text" class="form-control" id="dest_rif" name="dest_rif" placeholder="12345678-0">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-7">
-                                                                <label for="des_razon_social" class="form-label small fw-semibold">Razón Social</label>
-                                                                <input type="text" class="form-control" id="des_razon_social" name="des_razon_social" placeholder="Nombre de la empresa">
+                                                                <label for="dest_razon_social" class="form-label small fw-semibold">Razón Social</label>
+                                                                <input type="text" class="form-control" id="dest_razon_social" name="dest_razon_social" placeholder="Nombre de la empresa">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -291,12 +291,12 @@
                                                     <!-- Contacto Destinatario -->
                                                     <div class="row g-3 mt-1">
                                                         <div class="col-md-6">
-                                                            <label for="des_telefono" class="form-label small fw-semibold">Teléfono</label>
-                                                            <input type="tel" class="form-control" id="des_telefono" name="des_telefono" placeholder="0414 1234567" required>
+                                                            <label for="dest_telefono" class="form-label small fw-semibold">Teléfono</label>
+                                                            <input type="tel" class="form-control" id="dest_telefono" name="dest_telefono" placeholder="0414 1234567" required>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="des_correo" class="form-label small fw-semibold">Correo Electrónico</label>
-                                                            <input type="email" class="form-control" id="des_correo" name="des_correo" placeholder="destinatario@correo.com" required>
+                                                            <label for="dest_correo" class="form-label small fw-semibold">Correo Electrónico</label>
+                                                            <input type="email" class="form-control" id="dest_correo" name="dest_correo" placeholder="destinatario@correo.com" required>
                                                         </div>
                                                     </div>
                                                 </div>
