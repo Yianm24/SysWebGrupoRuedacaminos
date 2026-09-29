@@ -3,7 +3,7 @@
         <div class="col-12 mb-4">
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-people-fill me-2"></i> Gestión de Clientes</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerCliente">
+                <button type="button" class="btn btn-primary" title="Registrar" data-bs-toggle="modal" data-bs-target="#modalCliente">
                     <i class="bi bi-person-plus"></i> Registrar
                 </button>
             </header>

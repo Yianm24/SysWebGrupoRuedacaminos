@@ -1,19 +1,15 @@
-<div class="modal fade" id="editClienteJuridico" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+<div class="modal fade" id="editClienteJuridico" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Editar Datos del Cliente</h1>
+                <h1 class="modal-title fs-5" id="modalLabel"><i class="bi bi-person-gear"></i> Edición de Cliente</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="?url=cliente" method="POST" id="formCliente">
+            <form action="#" method="POST" id="formCliente">
                 <div class="modal-body">
                     <input type="hidden" name="cod_cliente" id="cod_cliente">
-
-
-
-
-
+                    <input type="hidden" name="'tipo_persona_remitente'" value="remitente_juridico">
                     <fieldset id="remitente_juridico-fields">
                         <legend>Datos de Persona Jurídica</legend>
                         <div class="row mb-3">
@@ -40,11 +36,11 @@
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+58 414 1234567">
+                                <input type="text" class="form-control" id="telefono" name="telefono" placeholder="+58 414 1234567">
                             </div>
                             <div class="col-md-6">
                                 <label for="correo" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@correo.com">
+                                <input type="email" class="form-control" id="correo" name="email" placeholder="ejemplo@correo.com">
                             </div>
                         </div>
 
@@ -53,7 +49,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button name="tipoSolicitud" value="editarJuridico" type="submit" class="btn btn-primary"><i class="bi bi-save"></i>Editar</button>
+                    <button name="tipoSolicitud" value="editarJuridico" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Editar</button>
                 </footer>
             </form>
         </div>

@@ -79,9 +79,9 @@ switch ($solicitud) {
     case 'editarNatural':
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_cliente']) && !empty($_POST['cedula']) && !empty($_POST['razon_social']) && !empty($_POST['apellido']) && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
+            if (!empty($_POST['cod_cliente']) && !empty($_POST['cedula']) && !empty($_POST['nombre']) && !empty($_POST['apellido']) && !empty($_POST['telefono']) && !empty($_POST['email']) && !empty($_POST['tipo_doc_natural'])) {
 
-                $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['cedula'], $_POST['razon_social'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
+                $resultado = $cliente->editDatosCliente($_POST['cod_cliente'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['tipo_doc_natural']);
                 header("Location: ?url=cliente&status=updated");
                 exit();
             } else {

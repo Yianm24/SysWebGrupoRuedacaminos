@@ -1,20 +1,20 @@
-<div class="modal fade" id="registerCliente" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">          
+<div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">     
+        <div class="modal-content">
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-person-plus"></i> Registrar Cliente</h1>
+                <h1 class="modal-title fs-5" id="modalLabel"><i class="bi bi-person-plus"></i> Registrar Cliente</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
- 
+
             <form action="#" method="POST" id="formCliente">
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="cliente_id">
+                    <input type="hidden" name="cod_cliente" id="cod_cliente">
 
                     <fieldset class="mb-4">
                         <legend class="visually-hidden">Tipo de Persona</legend>
                         <div class="d-flex gap-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_natural" value="remitente_natural" checked >
+                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_natural" value="remitente_natural" checked>
                                 <label class="form-check-label" for="persona_natural">Persona Natural</label>
                             </div>
                             <div class="form-check">
@@ -48,7 +48,7 @@
                         </div>
                     </fieldset>
 
-                    <fieldset id="remitente_juridico-fields" style="display: none;">
+                    <fieldset id="remitente_juridico-fields" class="d-none">
                         <legend class="visually-hidden">Datos de Persona Jurídica</legend>
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3 mb-md-0">
@@ -82,13 +82,13 @@
                             </div>
                         </div>
 
-                       
+
                     </fieldset>
                 </div>
-                
+
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button name="tipoSolicitud" value="registrar" type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="submit" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

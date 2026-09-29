@@ -1,118 +1,167 @@
 document.addEventListener("DOMContentLoaded", function () {
-    
+
     console.log("Cliente.js cargado correctamente.");
+
     // Lógica para alternar campos de Persona Natural o Jurídica en el Módulo de Clientes
-    const tipoPersona_remitente = document.querySelectorAll('input[name="tipo_persona_remitente"]');
+    //const tipoPersona_remitente = document.querySelectorAll('input[name="tipo_persona_remitente"]');
+    const radioClienteNatural = document.querySelector('form #persona_natural');
+    const radioClienteJuridico = document.querySelector('form #persona_juridica');
     const remitente_natural = document.getElementById('remitente_natural-fields');
     const remitente_juridico = document.getElementById('remitente_juridico-fields');
 
-    if (tipoPersona_remitente.length > 0 && remitente_natural && remitente_juridico) {
-        tipoPersona_remitente.forEach(input => {
-            input.addEventListener('change', function () {
-                if (this.value === 'remitente_natural') {
-                    remitente_natural.style.display = 'block';
-                    remitente_juridico.style.display = 'none';
-                } else if (this.value === 'remitente_juridico') {
-                    remitente_natural.style.display = 'none';
-                    remitente_juridico.style.display = 'block';
-                }
-            });
-        });
+    function alternarCamposRemitente() {
+        // Evaluar la propiedad booleana .checked
+        if (radioClienteNatural.checked) {
+            remitente_natural.classList.remove('d-none');
+            remitente_juridico.classList.add('d-none');
+        } else if (radioClienteJuridico.checked) {
+            remitente_natural.classList.add('d-none');
+            remitente_juridico.classList.remove('d-none');
+        }
+
     }
 
-    const tipoPersona_destinatario = document.querySelectorAll('input[name="tipo_persona_destinatario"]');
-    const destinatario_natural = document.getElementById('destinatario_natural-fields');
-    const destinatario_juridico = document.getElementById('destinatario_juridico-fields');
+    //Logica relacionada a la funcion editar
+    const modalEditarNatural = document.getElementById('editClienteNatural');
 
-    if (tipoPersona_destinatario.length > 0 && destinatario_natural && destinatario_juridico) {
-        tipoPersona_destinatario.forEach(input => {
-            input.addEventListener('change', function () {
-                if (this.value === 'destinatario_natural') {
-                    destinatario_natural.style.display = 'block';
-                    destinatario_juridico.style.display = 'none';
-                } else if (this.value === 'destinatario_juridico') {
-                    destinatario_natural.style.display = 'none';
-                    destinatario_juridico.style.display = 'block';
-                }
-            });
-        });
-    }
-    const modalNatural = document.getElementById('editClienteNatural');
 
-    if (modalNatural) {
-        modalNatural.addEventListener('show.bs.modal', event => {
+    if (modalEditarNatural) {
+        modalEditarNatural.addEventListener('show.bs.modal', event => {
+
             // Obtener acceso al botón que disparó el modal
+            const botonNatural = event.relatedTarget;
+
+            //Obtener los datos del vehículo desde los atributos datos- del botón
+            const cod_clienteNatural = botonNatural.getAttribute('datos-cod-cliente');
+            const cedula = botonNatural.getAttribute('datos-doc-identidad');
+            const nombre = botonNatural.getAttribute('datos-razon-social');
+            const apellido = botonNatural.getAttribute('datos-apellido');
+            const telefonoNatural = botonNatural.getAttribute('datos-telefono');
+            const emailNatural = botonNatural.getAttribute('datos-email');
+            const tipo_documentoNatural = botonNatural.getAttribute('datos-tipo-documento');
+            const estadoNatural = botonNatural.getAttribute('datos-estado');
+
+            // Obtener referencias a los campos del formulario dentro del modal
+            const inputCodCliente = modalEditarNatural.querySelector('.modal-body #cod_cliente')
+            const inputCedula = modalEditarNatural.querySelector('.modal-body #cedula')
+            const inputNombre = modalEditarNatural.querySelector('.modal-body #nombre')
+            const inputApellido = modalEditarNatural.querySelector('.modal-body #apellido')
+            const inputTelefonoNatural = modalEditarNatural.querySelector('.modal-body #telefono')
+            const inputEmailNatural = modalEditarNatural.querySelector('.modal-body #correo')
+            const inputTipoDocumentoNatural = modalEditarNatural.querySelector('.modal-body #tipo_doc_natural')
+
+            if (botonNatural.title === "Editar") {
+
+                if (cod_clienteNatural != "" && estadoNatural == 1) {
+                    // Asignar los valores obtenidos a los campos del formulario
+                    inputCodCliente.value = cod_clienteNatural;
+                    inputCedula.value = cedula;
+                    inputNombre.value = nombre;
+                    inputApellido.value = apellido;
+                    inputTelefonoNatural.value = telefonoNatural;
+                    inputEmailNatural.value = emailNatural;
+                    inputTipoDocumentoNatural.value = tipo_documentoNatural;
+                } else {
+                    inputCodCliente.value = "Error: Registro inactivo";
+                    inputCedula.value = "Error: Registro inactivo";
+                    inputNombre.value = "Error: Registro inactivo";
+                    inputApellido.value = "Error: Registro inactivo";
+                    inputTelefonoNatural.value = "Error: Registro inactivo";
+                    inputEmailNatural.value = "Error: Registro inactivo";
+                    inputTipoDocumentoNatural.value = '';
+
+
+                }
+            }
+        });
+    }
+    const modalEditarJuridico = document.getElementById('editClienteJuridico');
+
+    if (modalEditarJuridico) {
+        modalEditarJuridico.addEventListener('show.bs.modal', event => {
+
             const boton = event.relatedTarget;
 
             //Obtener los datos del vehículo desde los atributos datos- del botón
-            const cod_cliente = boton.getAttribute('datos-cod-cliente');
+            const cod_clienteJuridico = boton.getAttribute('datos-cod-cliente');
             const doc_identidad = boton.getAttribute('datos-doc-identidad');
             const razon_social = boton.getAttribute('datos-razon-social');
             const apellido = boton.getAttribute('datos-apellido');
             const telefono = boton.getAttribute('datos-telefono');
             const email = boton.getAttribute('datos-email');
             const tipo_documento = boton.getAttribute('datos-tipo-documento');
+            const estado = boton.getAttribute('datos-estado');
 
             // Obtener referencias a los campos del formulario dentro del modal
-            const inputCodCliente = modalNatural.querySelector('.modal-body #cod_cliente')
-            const inputCedula = modalNatural.querySelector('.modal-body #cedula')
-            const inputRazonSocial = modalNatural.querySelector('.modal-body #razon_social')
-            const inputApellido = modalNatural.querySelector('.modal-body #apellido')
-            const inputTelefono = modalNatural.querySelector('.modal-body #telefono')
-            const inputEmail = modalNatural.querySelector('.modal-body #email')
-            const inputTipoDocumento = modalNatural.querySelector('.modal-body #tipo_doc_natural')
+            const inputCodCliente = modalEditarJuridico.querySelector('.modal-body #cod_cliente')
+            const inputRif = modalEditarJuridico.querySelector('.modal-body #rif')
+            const inputRazonSocial = modalEditarJuridico.querySelector('.modal-body #razon_social')
+            const inputTelefonoJuridico = modalEditarJuridico.querySelector('.modal-body #telefono')
+            const inputEmailJuridico = modalEditarJuridico.querySelector('.modal-body #correo')
+            const inputTipoDocumentoJuridico = modalEditarJuridico.querySelector('.modal-body #tipo_doc_juridico')
 
-            // Asignar los valores obtenidos a los campos del formulario
-            inputCodCliente.value = cod_cliente;
-            inputCedula.value = doc_identidad;
-            inputRazonSocial.value = razon_social;
-            inputApellido.value = apellido;
-            inputTelefono.value = telefono;
-            inputEmail.value = email;
-            inputTipoDocumento.value = tipo_documento;
+            if (boton.title === "Editar") {
 
-        })
+                if (cod_clienteJuridico != "" && estado == 1) {
+                    // Asignar los valores obtenidos a los campos del formulario
+                    inputCodCliente.value = cod_clienteJuridico;
+                    inputRif.value = doc_identidad;
+                    inputRazonSocial.value = razon_social;
+                    inputTelefonoJuridico.value = telefono;
+                    inputEmailJuridico.value = email;
+                    inputTipoDocumentoJuridico.value = tipo_documento;
+                } else {
+                    inputCodCliente.value = "Error: Registro inactivo";
+                    inputRif.value = "Error: Registro inactivo";
+                    inputRazonSocial.value = "Error: Registro inactivo";
+                   inputTelefonoJuridico.value = "Error: Registro inactivo";
+                    inputEmailJuridico.value = "Error: Registro inactivo";
+                    inputTipoDocumentoJuridico.value = '';
+
+
+                }
+            }
+
+        });
     }
 
+    radioClienteNatural.addEventListener('change', alternarCamposRemitente);
+    radioClienteJuridico.addEventListener('change', alternarCamposRemitente);
 
-    const modalJuridico = document.getElementById('editClienteJuridico');
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+    botonesEliminar.forEach(boton => {
+        boton.addEventListener('click', function (event) {
+            event.preventDefault();
+            let codcliente = this.getAttribute('datos-cod-cliente');
 
-    if (modalJuridico) {
-        modalJuridico.addEventListener('show.bs.modal', event => {
-            // Obtener acceso al botón que disparó el modal
-            const boton = event.relatedTarget;
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+                buttonsStyling: false
+            });
 
-            //Obtener los datos del vehículo desde los atributos datos- del botón
-            const cod_cliente = boton.getAttribute('datos-cod-cliente');
-            const doc_identidad = boton.getAttribute('datos-doc-identidad');
-            const razon_social = boton.getAttribute('datos-razon-social');
-
-            const telefono = boton.getAttribute('datos-telefono');
-            const email = boton.getAttribute('datos-email');
-            const tipo_documento = boton.getAttribute('datos-tipo-documento');
-
-            // Obtener referencias a los campos del formulario dentro del modal
-            const inputCodCliente = modalJuridico.querySelector('.modal-body #cod_cliente')
-            const inputRif = modalJuridico.querySelector('.modal-body #rif')
-            const inputRazonSocial = modalJuridico.querySelector('.modal-body #razon_social')
-
-            const inputTelefono = modalJuridico.querySelector('.modal-body #telefono')
-            const inputEmail = modalJuridico.querySelector('.modal-body #email')
-            const inputTipoDocumento = modalJuridico.querySelector('.modal-body #tipo_doc_juridico')
-
-            // Asignar los valores obtenidos a los campos del formulario
-            inputCodCliente.value = cod_cliente;
-
-            inputRif.value = doc_identidad;
-            inputRazonSocial.value = razon_social;
-
-            inputTelefono.value = telefono;
-            inputEmail.value = email;
-            inputTipoDocumento.value = tipo_documento;
-
-        })
-    }
-
+            swalWithBootstrapButtons.fire({
+                title: "¿Está seguro que desea eliminar este registro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '?url=cliente';
+                    form.innerHTML = `
+                        <input type="hidden" name="tipoSolicitud" value="eliminar">
+                        <input type="hidden" name="cod_cliente" value="${codcliente}">
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
 
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
@@ -154,4 +203,5 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, 100);
     }
+
 });

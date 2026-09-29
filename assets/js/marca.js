@@ -43,9 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
             inputNombre.value = "Error: Registro inactivo";
           }
           break
-      }
-    })
-  }
+      };
+    });
+  };
 
   const botonesEliminar = document.querySelectorAll('.btn-eliminar');
   botonesEliminar.forEach(boton => {
