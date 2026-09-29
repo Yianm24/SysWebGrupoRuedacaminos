@@ -14,7 +14,7 @@
                 </div>
     </header> 
 
-            <?php require 'componentes/modalCreate.php'; ?>
+           <!-- <?php //require 'componentes/modalCreate.php'; ?> -->
             <?php require 'componentes/modalCotizar.php'; ?>
             <?php require 'componentes/modalCreateCarousel.php'; ?>
 

@@ -25,7 +25,7 @@
 
               <button class="btn btn-outline-light btn-lg px-5 mb-2" value="acceder" name="tipoSolicitud" type="submit">Entrar</button>
               </form>
-              <a class="btn btn-outline-light btn-lg px-5" href="?url=dashboard">Dashboard</a>
+              <!-- <a class="btn btn-outline-light btn-lg px-5" href="?url=dashboard">Dashboard</a> -->
 
             </div>
 

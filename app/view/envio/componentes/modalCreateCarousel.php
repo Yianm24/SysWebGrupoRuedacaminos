@@ -16,7 +16,7 @@
                             </div>-->
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <fieldset class="mb-3">
+                                <!-- <fieldset class="mb-3">
                                     <legend>Datos de Clientes</legend>
                                     <div class="col">
                                         <div class="mb-4">
@@ -38,7 +38,7 @@
                                         </div>
 
                                         <!-- Campos de Persona Natural -->
-                                        <div id="remitente_natural-fields">
+                                <!-- <div id="remitente_natural-fields">
                                             <div class="row mb-3 ">
                                                 <div class="col-12 mb-3">
                                                     <label for="cedula" class="form-label">Cédula</label>
@@ -56,7 +56,7 @@
                                         </div>
 
                                         <!-- Campos de Persona Jurídica -->
-                                        <div id="remitente_juridico-fields" style="display: none;">
+                                <!-- <div id="remitente_juridico-fields" style="display: none;">
                                             <div class="row mb-3">
                                                 <div class="col-md-12">
                                                     <label for="razon_social" class="form-label">Razón Social</label>
@@ -103,10 +103,10 @@
                                                 </div>
 
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <!-- Campos de Persona Jurídica -->
-                                        <div id="destinatario_juridico-fields" style="display: none;">
+                                <!-- Campos de Persona Jurídica -->
+                                <!-- <div id="destinatario_juridico-fields" style="display: none;">
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <label for="razon_social" class="form-label">Razón Social</label>
@@ -129,56 +129,184 @@
                                             </div>
                                         </div>
                                     </div>
-                                </fieldset>
+                                </fieldset> -->
 
-                            </div>
-                            <div class="carousel-item">
-                                <fieldset class="mb-3">
-                                    <legend>Paqueteria</legend>
-                                    <div class="mb-3">
-                                        <label for="descripcion" class="form-label">Descripción del Contenido</label>
-                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
-                                    </div>
+                                <fieldset class="mb-4">
+                                    <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Datos de los Clientes</legend>
+                                    <div class="row g-4">
+                                        <!-- Panel Remitente -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="card h-100 shadow-sm border-0 bg-light-subtle">
+                                                <div class="card-body p-4">
+                                                    <h6 class="card-title fw-bold mb-3 d-flex align-items-center">
+                                                        Remitente
+                                                    </h6>
 
-                                    <div class="row mb-3">
+                                                    <!-- Selector de Tipo de Persona -->
+                                                    <div class="btn-group w-100 mb-3" role="group">
+                                                        <div class="d-flex gap-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_natural" value="remitente_natural" checked>
+                                                                <label class="form-check-label" for="persona_natural">
+                                                                    Persona Natural
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_remitente" id="persona_juridica" value="remitente_juridico">
+                                                                <label class="form-check-label" for="persona_juridica">
+                                                                    Persona Jurídica
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                        <div class="col-md-3">
-                                            <label for="alto" class="form-label">Alto Total (cm)</label>
-                                            <input type="number" step="0.01" class="form-control" id="alto" name="alto" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="ancho" class="form-label">Ancho Total(cm)</label>
-                                            <input type="number" step="0.01" class="form-control" id="ancho" name="ancho" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="largo" class="form-label">Largo Total(cm)</label>
-                                            <input type="number" step="0.01" class="form-control" id="largo" name="largo" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="alto" class="form-label">Peso</label>
-                                            <div class=" input-group">
-                                                <button class="btn btn-outline-secondary" type="button" id="button-addon1">Sumar</button>
-                                                <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                                    <!-- Campos Persona Natural (Remitente) -->
+                                                    <div id="rem_campos_natural" class="d-none">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-5">
+                                                                <label for="rem_cedula" class="form-label small fw-semibold">Cédula</label>
+                                                                <div class="input-group">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="rem_nacionalidad">
+                                                                        <option value="V">V-</option>
+                                                                        <option value="E">E-</option>
+                                                                    </select>
+                                                                    <input type="text" class="form-control" id="rem_cedula" name="rem_cedula" placeholder="12345678">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <label for="rem_nombre" class="form-label small fw-semibold">Nombre Completo</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" id="rem_nombre" name="rem_nombre" placeholder="Nombre">
+                                                                    <input type="text" class="form-control" id="rem_apellido" name="rem_apellido" placeholder="Apellido">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Campos Persona Jurídica (Remitente) -->
+                                                    <div id="rem_campos_juridico">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-5">
+                                                                <label for="rem_rif" class="form-label small fw-semibold">RIF</label>
+                                                                <div class="input-group">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="rem_tipo_rif">
+                                                                        <option value="J">J-</option>
+                                                                        <option value="G">G-</option>
+                                                                        <option value="V">V-</option>
+                                                                    </select>
+                                                                    <input type="text" class="form-control" id="rem_rif" name="rem_rif" placeholder="12345678-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <label for="rem_razon_social" class="form-label small fw-semibold">Razón Social</label>
+                                                                <input type="text" class="form-control" id="rem_razon_social" name="rem_razon_social" placeholder="Nombre de la empresa">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Contacto Remitente -->
+                                                    <div class="row g-3 mt-1">
+                                                        <div class="col-md-6">
+                                                            <label for="rem_telefono" class="form-label small fw-semibold">Teléfono</label>
+                                                            <input type="tel" class="form-control" id="rem_telefono" name="rem_telefono" placeholder="0414 1234567">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="rem_correo" class="form-label small fw-semibold">Correo Electrónico</label>
+                                                            <input type="email" class="form-control" id="rem_correo" name="rem_correo" placeholder="remitente@correo.com">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            </br>
-                                            <button class="btn btn-secondary" type="button" id="button-addon1">Reset</button>
-                                            <label class="form-label">Peso total aqui Kg</label>
-
-
                                         </div>
-                                    </div>
 
-                                    <div class="mb-4">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="articulos_fragil" name="articulos_fragil">
-                                            <label class="form-check-label text-danger fw-bold" for="articulos_fragil">¿Contiene Artículos Frágiles?</label>
+                                        <!-- Panel Destinatario -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="card h-100 shadow-sm border-0 bg-light-subtle">
+                                                <div class="card-body p-4">
+                                                    <h6 class="card-title fw-bold mb-3 d-flex align-items-center">
+                                                        Destinatario
+                                                    </h6>
+
+                                                    <div class="btn-group w-100 mb-3" role="group">
+                                                        <div class="d-flex gap-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_destinatario" id="persona_natural" value="destinatario_natural" checked>
+                                                                <label class="form-check-label" for="persona_natural">
+                                                                    Persona Natural
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="tipo_persona_destinatario" id="persona_juridica" value="destinatario_juridico">
+                                                                <label class="form-check-label" for="persona_juridica">
+                                                                    Persona Jurídica
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Campos Persona Natural (Destinatario) -->
+                                                    <div id="des_campos_natural">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-5">
+                                                                <label for="des_cedula" class="form-label small fw-semibold">Cédula</label>
+                                                                <div class="input-group">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="des_nacionalidad">
+                                                                        <option value="V">V-</option>
+                                                                        <option value="E">E-</option>
+                                                                    </select>
+                                                                    <input type="text" class="form-control" id="des_cedula" name="des_cedula" placeholder="12345678">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <label for="des_nombre" class="form-label small fw-semibold">Nombre Completo</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" id="des_nombre" name="des_nombre" placeholder="Nombre">
+                                                                    <input type="text" class="form-control" id="des_apellido" name="des_apellido" placeholder="Apellido">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Campos Persona Jurídica (Destinatario) -->
+                                                    <div id="des_campos_juridico" class="d-none">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-5">
+                                                                <label for="des_rif" class="form-label small fw-semibold">RIF</label>
+                                                                <div class="input-group">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="des_tipo_rif">
+                                                                        <option value="J">J-</option>
+                                                                        <option value="G">G-</option>
+                                                                        <option value="V">V-</option>
+                                                                    </select>
+                                                                    <input type="text" class="form-control" id="des_rif" name="des_rif" placeholder="12345678-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <label for="des_razon_social" class="form-label small fw-semibold">Razón Social</label>
+                                                                <input type="text" class="form-control" id="des_razon_social" name="des_razon_social" placeholder="Nombre de la empresa">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Contacto Destinatario -->
+                                                    <div class="row g-3 mt-1">
+                                                        <div class="col-md-6">
+                                                            <label for="des_telefono" class="form-label small fw-semibold">Teléfono</label>
+                                                            <input type="tel" class="form-control" id="des_telefono" name="des_telefono" placeholder="0414 1234567" required>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="des_correo" class="form-label small fw-semibold">Correo Electrónico</label>
+                                                            <input type="email" class="form-control" id="des_correo" name="des_correo" placeholder="destinatario@correo.com" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </fieldset>
-
                             </div>
                             <div class="carousel-item">
-                                <fieldset class="mb-3">
+                                <!-- <fieldset class="mb-3">
                                     <legend>Datos del Envio</legend>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
@@ -279,9 +407,58 @@
                                             </div>
 
                                         </div>
+                                </fieldset> -->
+                                <fieldset class="mb-3">
+                                    <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Datos del Envio</legend>
                                 </fieldset>
 
                             </div>
+                            <div class="carousel-item">
+                                <fieldset class="mb-3">
+                                    <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Paqueteria</legend>
+                                    <div class="mb-3">
+                                        <label for="descripcion" class="form-label">Descripción del Contenido</label>
+                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                                    </div>
+
+                                    <div class="row mb-3">
+
+                                        <div class="col-md-3">
+                                            <label for="alto" class="form-label">Alto Total (cm)</label>
+                                            <input type="number" step="0.01" class="form-control" id="alto" name="alto" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="ancho" class="form-label">Ancho Total(cm)</label>
+                                            <input type="number" step="0.01" class="form-control" id="ancho" name="ancho" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="largo" class="form-label">Largo Total(cm)</label>
+                                            <input type="number" step="0.01" class="form-control" id="largo" name="largo" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="alto" class="form-label">Peso</label>
+                                            <div class=" input-group">
+                                                <button class="btn btn-outline-secondary" type="button" id="button-addon1">Sumar</button>
+                                                <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                            </div>
+                                            </br>
+                                            <button class="btn btn-secondary" type="button" id="button-addon1">Reset</button>
+                                            <label class="form-label">Peso total aqui Kg</label>
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="articulos_fragil" name="articulos_fragil">
+                                            <label class="form-check-label text-danger fw-bold" for="articulos_fragil">¿Contiene Artículos Frágiles?</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                            </div>
+
                         </div>
                     </div>
 
@@ -299,46 +476,46 @@
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
+<script src="assets\js\envio.js">
+    // document.addEventListener("DOMContentLoaded", function() {
 
-        // Lógica para alternar campos de Persona Natural o Jurídica en el Módulo de Clientes
-        const tipoPersona_remitente = document.querySelectorAll('input[name="tipo_persona_remitente"]');
-        const remitente_natural = document.getElementById('remitente_natural-fields');
-        const remitente_juridico = document.getElementById('remitente_juridico-fields');
+    //     // Lógica para alternar campos de Persona Natural o Jurídica en el Módulo de Clientes
+    //     const tipoPersona_remitente = document.querySelectorAll('input[name="tipo_persona_remitente"]');
+    //     const remitente_natural = document.getElementById('remitente_natural-fields');
+    //     const remitente_juridico = document.getElementById('remitente_juridico-fields');
 
-        if (tipoPersona_remitente.length > 0 && remitente_natural && remitente_juridico) {
-            tipoPersona_remitente.forEach(input => {
-                input.addEventListener('change', function() {
-                    if (this.value === 'remitente_natural') {
-                        console.log('Remitente Natural seleccionado');
-                        remitente_natural.style.display = 'block';
-                        remitente_juridico.style.display = 'none';
-                    } else if (this.value === 'remitente_juridico') {
-                        console.log('Remitente Jurídico seleccionado');
-                        remitente_natural.style.display = 'none';
-                        remitente_juridico.style.display = 'block';
-                    }
-                });
-            });
-        }
+    //     if (tipoPersona_remitente.length > 0 && remitente_natural && remitente_juridico) {
+    //         tipoPersona_remitente.forEach(input => {
+    //             input.addEventListener('change', function() {
+    //                 if (this.value === 'remitente_natural') {
+    //                     console.log('Remitente Natural seleccionado');
+    //                     remitente_natural.style.display = 'block';
+    //                     remitente_juridico.style.display = 'none';
+    //                 } else if (this.value === 'remitente_juridico') {
+    //                     console.log('Remitente Jurídico seleccionado');
+    //                     remitente_natural.style.display = 'none';
+    //                     remitente_juridico.style.display = 'block';
+    //                 }
+    //             });
+    //         });
+    //     }
 
-        const tipoPersona_destinatario = document.querySelectorAll('input[name="tipo_persona_destinatario"]');
-        const destinatario_natural = document.getElementById('destinatario_natural-fields');
-        const destinatario_juridico = document.getElementById('destinatario_juridico-fields');
+    //     const tipoPersona_destinatario = document.querySelectorAll('input[name="tipo_persona_destinatario"]');
+    //     const destinatario_natural = document.getElementById('destinatario_natural-fields');
+    //     const destinatario_juridico = document.getElementById('destinatario_juridico-fields');
 
-        if (tipoPersona_destinatario.length > 0 && destinatario_natural && destinatario_juridico) {
-            tipoPersona_destinatario.forEach(input => {
-                input.addEventListener('change', function() {
-                    if (this.value === 'destinatario_natural') {
-                        destinatario_natural.style.display = 'block';
-                        destinatario_juridico.style.display = 'none';
-                    } else if (this.value === 'destinatario_juridico') {
-                        destinatario_natural.style.display = 'none';
-                        destinatario_juridico.style.display = 'block';
-                    }
-                });
-            });
-        }
-    });
+    //     if (tipoPersona_destinatario.length > 0 && destinatario_natural && destinatario_juridico) {
+    //         tipoPersona_destinatario.forEach(input => {
+    //             input.addEventListener('change', function() {
+    //                 if (this.value === 'destinatario_natural') {
+    //                     destinatario_natural.style.display = 'block';
+    //                     destinatario_juridico.style.display = 'none';
+    //                 } else if (this.value === 'destinatario_juridico') {
+    //                     destinatario_natural.style.display = 'none';
+    //                     destinatario_juridico.style.display = 'block';
+    //                 }
+    //             });
+    //         });
+    //     }
+    // });
 </script>
