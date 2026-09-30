@@ -1,13 +1,22 @@
-<div class="card-body p-0">
-    <div class="table-responsive">
+<div class="modal fade" id="modalMarca" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h1 class="modal-title fs-5" id="modalLabel"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </header>
+
+            
+                <div class="modal-body">
+                    <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light table-header-custom">
                 <tr>
-                    <th class="ps-4">FECHA DESPACHO</th>
-                    <th class="text-center">NUMERO DE ENVIOS</th>
+                    <th class="ps-4">DESTINATARIO</th>
+                    <th class="text-center">DESTINO</th>
                     <th class="text-center">CHOFER</th>
                     <th class="text-center">VEHICULO</th>
-                    <th class="text-center">ESTATUS</th>
+                    <th class="text-center">ASIGNAR FECHA</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
             </thead>
@@ -42,5 +51,15 @@
                 ?>
             </tbody>
         </table>
+    </div>
+                    
+                </div>
+
+                <footer class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" name="tipoSolicitud" value="" class="btn btn-primary"></button>
+                </footer>
+            
+        </div>
     </div>
 </div>
