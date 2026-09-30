@@ -9,11 +9,6 @@
             <form action="?url=cliente" method="POST" id="formCliente">
                 <div class="modal-body">
                     <div id="carouselExampleCaptions" class="carousel slide">
-                        <!--<div class="carousel-indicators" style="background-color:aqua;">
-                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                            </div>-->
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <fieldset class="mb-4">
@@ -191,54 +186,95 @@
                                 </fieldset>
                             </div>
                             <div class="carousel-item">
-                                <fieldset class="mb-3">
-                                    <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Datos del Envio</legend>
+                                <fieldset class="mb-4">
+                                    <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Datos del Envío</legend>
+
+                                    <div class="row">
+                                        <!-- Columna Izquierda: El Mapa y Precio -->
+                                        <!-- Usamos d-flex y flex-column para que el mapa empuje el precio hacia abajo de forma prolija -->
+                                        <section class="col-12 col-md-6 mb-4 mb-md-0 d-flex flex-column">
+
+                                            <!-- Contenedor del Mapa -->
+                                            <div class="flex-grow-1 bg-light border rounded d-flex align-items-center justify-content-center p-4">
+                                                <h3 class="text-muted">El mapa</h3>
+                                                <!-- <div id="map" class="w-100 h-100 rounded"></div> -->
+                                            </div>
+
+                                            <!-- Contenedor del Precio (Debajo del mapa) -->
+                                            <div class="alert alert-success text-center shadow-sm mt-3 mb-0" role="alert">
+                                                <span class="d-block small fw-bold text-uppercase mb-1 opacity-75">Costo Estimado del Envío</span>
+                                                <h3 class="mb-0 fw-bold">$<span id="precio_envio">0.00</span></h3>
+                                            </div>
+                                        </section>
+
+                                        <!-- Columna Derecha: Formularios -->
+                                        <section class="col-12 col-md-6">
+
+                                            <!-- Bloque 1: Origen -->
+                                            <div class="mb-3">
+                                                <label for="direccion_origen" class="form-label small fw-semibold">Dirección de Origen</label>
+
+                                                <div class="row mb-2">
+                                                    <div class="col-6">
+                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Estado">
+                                                            <option selected>Estado</option>
+                                                            <option value="lara">Lara</option>
+                                                            <option value="yaracuy">Yaracuy</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Municipio">
+                                                            <option selected>Municipio</option>
+                                                            <option value="iribarren">Iribarren</option>
+                                                            <option value="palavecino">Palavecino</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <textarea id="direccion_origen" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
+                                            </div>
+
+                                            <!-- Bloque 2: Destino -->
+                                            <div class="mb-3">
+                                                <label for="direccion_destino" class="form-label small fw-semibold">Dirección de Destino</label>
+
+                                                <div class="row mb-2">
+                                                    <div class="col-6">
+                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Estado Destino">
+                                                            <option selected>Estado</option>
+                                                            <option value="lara">Lara</option>
+                                                            <option value="portuguesa">Portuguesa</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
+                                                            <option selected>Municipio</option>
+                                                            <option value="araure">Araure</option>
+                                                            <option value="jimenez">Jiménez</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <textarea id="direccion_destino" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
+                                            </div>
+
+                                            <!-- Bloque 3: Kilometraje -->
+                                            <div class="mb-2">
+                                                <label for="kilometraje" class="form-label small fw-semibold">Distancia del Recorrido</label>
+
+                                                <!-- Aquí sí es ideal el input-group -->
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control text-end bg-white" id="kilometraje" placeholder="0.0" step="0.1" readonly>
+                                                    <span class="input-group-text fw-semibold text-secondary">km</span>
+                                                </div>
+                                            </div>
+
+                                        </section>
+                                    </div>
                                 </fieldset>
 
                             </div>
                             <div class="carousel-item">
-                                <!-- <fieldset class="mb-3">
-                                    <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Paqueteria</legend>
-                                    <div class="mb-3">
-                                        <label for="descripcion" class="form-label">Descripción del Contenido</label>
-                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
-                                    </div>
-
-                                    <div class="row mb-3">
-
-                                        <div class="col-md-3">
-                                            <label for="alto" class="form-label">Alto Total (cm)</label>
-                                            <input type="number" step="0.01" class="form-control" id="alto" name="alto" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="ancho" class="form-label">Ancho Total(cm)</label>
-                                            <input type="number" step="0.01" class="form-control" id="ancho" name="ancho" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="largo" class="form-label">Largo Total(cm)</label>
-                                            <input type="number" step="0.01" class="form-control" id="largo" name="largo" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="alto" class="form-label">Peso</label>
-                                            <div class=" input-group">
-                                                <button class="btn btn-outline-secondary" type="button" id="button-addon1">Sumar</button>
-                                                <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                                            </div>
-                                            </br>
-                                            <button class="btn btn-secondary" type="button" id="button-addon1">Reset</button>
-                                            <label class="form-label">Peso total aqui Kg</label>
-
-
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="articulos_fragil" name="articulos_fragil">
-                                            <label class="form-check-label text-danger fw-bold" for="articulos_fragil">¿Contiene Artículos Frágiles?</label>
-                                        </div>
-                                    </div>
-                                </fieldset> -->
                                 <fieldset class="mb-4">
                                     <!-- Usamos un Card para unificar el diseño con el resto del sistema -->
                                     <div class="card shadow-sm border-0 bg-light-subtle">
@@ -336,45 +372,4 @@
     </div>
 </div>
 <script src="assets\js\envio.js">
-    // document.addEventListener("DOMContentLoaded", function() {
-
-    //     // Lógica para alternar campos de Persona Natural o Jurídica en el Módulo de Clientes
-    //     const tipoPersona_remitente = document.querySelectorAll('input[name="tipo_persona_remitente"]');
-    //     const remitente_natural = document.getElementById('remitente_natural-fields');
-    //     const remitente_juridico = document.getElementById('remitente_juridico-fields');
-
-    //     if (tipoPersona_remitente.length > 0 && remitente_natural && remitente_juridico) {
-    //         tipoPersona_remitente.forEach(input => {
-    //             input.addEventListener('change', function() {
-    //                 if (this.value === 'remitente_natural') {
-    //                     console.log('Remitente Natural seleccionado');
-    //                     remitente_natural.style.display = 'block';
-    //                     remitente_juridico.style.display = 'none';
-    //                 } else if (this.value === 'remitente_juridico') {
-    //                     console.log('Remitente Jurídico seleccionado');
-    //                     remitente_natural.style.display = 'none';
-    //                     remitente_juridico.style.display = 'block';
-    //                 }
-    //             });
-    //         });
-    //     }
-
-    //     const tipoPersona_destinatario = document.querySelectorAll('input[name="tipo_persona_destinatario"]');
-    //     const destinatario_natural = document.getElementById('destinatario_natural-fields');
-    //     const destinatario_juridico = document.getElementById('destinatario_juridico-fields');
-
-    //     if (tipoPersona_destinatario.length > 0 && destinatario_natural && destinatario_juridico) {
-    //         tipoPersona_destinatario.forEach(input => {
-    //             input.addEventListener('change', function() {
-    //                 if (this.value === 'destinatario_natural') {
-    //                     destinatario_natural.style.display = 'block';
-    //                     destinatario_juridico.style.display = 'none';
-    //                 } else if (this.value === 'destinatario_juridico') {
-    //                     destinatario_natural.style.display = 'none';
-    //                     destinatario_juridico.style.display = 'block';
-    //                 }
-    //             });
-    //         });
-    //     }
-    // });
 </script>

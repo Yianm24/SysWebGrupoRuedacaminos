@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 break;
 
-                case "destinatario":
+            case "destinatario":
                 if (radioJuridicaDest.checked) {
                     // Si Jurídica está seleccionada, mostramos jurídico y ocultamos natural
                     camposJuridicoDest.classList.remove("d-none");
@@ -55,4 +55,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. Ejecutamos la función una vez al cargar la página para sincronizar la vista 
     // con el radio que venga 'checked' por defecto en el HTML
     actualizarFormulario();
+
+
+    const modal = document.getElementById('carouselEnvio');
+
+
+    if (modal) {
+        modal.addEventListener('show.bs.modal', event => {
+
+
+
+        });
+    };
+
+
 });

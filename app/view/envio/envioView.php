@@ -1,20 +1,21 @@
 <main class="container-fluid py-5 px-4">
-    
+
     <div class="row">
         <div class="col-12 mb-4">
-        <header class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-box-seam"></i> Gestion de Envíos</h2>
-        <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#carouselEnvio">
+            <header class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-box-seam"></i> Gestion de Envíos</h2>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" title="crear"class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#carouselEnvio">
                         <i class="bi bi-dropbox"></i> Crear
                     </button>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cotizarEnvio">
                         <i class="bi bi-currency-dollar"></i> Cotizar
                     </button>
                 </div>
-    </header> 
+            </header>
 
-           <!-- <?php //require 'componentes/modalCreate.php'; ?> -->
+            <!-- <?php //require 'componentes/modalCreate.php'; 
+                    ?> -->
             <?php require 'componentes/modalCotizar.php'; ?>
             <?php require 'componentes/modalCreateCarousel.php'; ?>
 
@@ -43,4 +44,6 @@
     </div>
 </main>
 
-<script src="assets/js/cliente.js"></script>
+<!-- <script src="assets/js/mapa.js"></script> -->
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
