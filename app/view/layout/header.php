@@ -59,113 +59,113 @@
                     <a href="?url=reporte" class="list-group-item list-group-item-action <?= $current_url == 'reporte' ? 'active' : '' ?>">
                         <i class="bi bi-file-earmark-bar-graph me-2"></i> Reporte
                     </a>
-                <?php if($_SESSION['usuario']['rol'] == '6'): ?>
-                    <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
-                        <i class="bi bi-person-fill me-2"></i> Empleado
-                    </a>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
+                        <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
+                            <i class="bi bi-person-fill me-2"></i> Empleado
+                        </a>
 
-                    <a href="?url=vehiculo" class="list-group-item list-group-item-action <?= $current_url == 'vehiculo' ? 'active' : '' ?>">
-                        <i class="bi bi-truck me-2"></i> Vehículo
-                    </a>
+                        <a href="?url=vehiculo" class="list-group-item list-group-item-action <?= $current_url == 'vehiculo' ? 'active' : '' ?>">
+                            <i class="bi bi-truck me-2"></i> Vehículo
+                        </a>
 
-                    <a href="?url=cambiomoneda" class="list-group-item list-group-item-action <?= $current_url == 'cambiomoneda' ? 'active' : '' ?>">
-                        <i class="bi bi-currency-exchange me-2"></i> Cambio Moneda
-                    </a>
+                        <a href="?url=cambiomoneda" class="list-group-item list-group-item-action <?= $current_url == 'cambiomoneda' ? 'active' : '' ?>">
+                            <i class="bi bi-currency-exchange me-2"></i> Cambio Moneda
+                        </a>
 
-                    <a href="?url=usuario" class="list-group-item list-group-item-action <?= $current_url == 'usuario' ? 'active' : '' ?>">
-                        <i class="bi bi-person-fill me-2"></i> Usuario
-                    </a>
+                        <a href="?url=usuario" class="list-group-item list-group-item-action <?= $current_url == 'usuario' ? 'active' : '' ?>">
+                            <i class="bi bi-person-fill me-2"></i> Usuario
+                        </a>
 
-                    
-                    <div class=" dropdown-center">
-                        <button type="button" class="btn list-group-item dropdown-toggle text-start w-100" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-gear-fill me-2"></i> Configuración
-                        </button>
 
-                        <ul class="dropdown-menu dropdown-menu-end w-100">
-                            <li>
-                                <a href="?url=kilometraje" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'kilometraje' ? 'active' : '' ?>">
-                                    <i class="bi bi-currency-dollar me-2"></i> Precio Kilometraje
-                                </a>
-                            </li>
-                            <li>
-                                <a href="?url=unidadesmedida" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'unidadesmedida' ? 'active' : '' ?>">
-                                    <i class="bi bi-rulers me-2"></i> Unidad de Medida
-                                </a>
-                            </li>
-                            <li>
-                                <a href="?url=estado" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'estado' ? 'active' : '' ?>">
-                                    <i class="bi bi-map me-2"></i> Estado
-                                </a>
-                            </li>
-                            <li>
-                                <a href="?url=municipio" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'municipio' ? 'active' : '' ?>">
-                                    <i class="bi bi-geo-alt me-2"></i> Municipio
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
+                        <div class=" dropdown-center">
+                            <button type="button" class="btn list-group-item dropdown-toggle text-start w-100" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-gear-fill me-2"></i> Configuración
+                            </button>
 
-                                <a href="?url=cargo" class="dropdown-item  ist-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
-                                    <i class="bi bi-person-vcard me-2"></i> Cargo
-                                </a>
-                            </li>
-                            <li>
-                                <a href="?url=rol" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'rol' ? 'active' : '' ?>">
-                                    <i class="bi bi-person-badge me-2"></i> Rol
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a href="?url=marca" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
-                                    <i class="bi bi-ev-front me-2"></i> Marca
-                                </a>
-                            </li>
-                            <li>
-                                <a href="?url=modelo" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'modelo' ? 'active' : '' ?>">
-                                    <i class="bi bi-car-front me-2"></i>Modelo
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a href="?url=metodopago" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'metodopago' ? 'active' : '' ?>">
-                                    <i class="bi bi-credit-card me-2"></i> Método de Pago
-                                </a>
-                            </li>
-                            <li>
-                                <a href="?url=moneda" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'moneda' ? 'active' : '' ?>">
-                                    <i class="bi bi-coin me-2"></i> Moneda
-                                </a>
-                            </li>
-                            <li>
+                            <ul class="dropdown-menu dropdown-menu-end w-100">
+                                <li>
+                                    <a href="?url=kilometraje" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'kilometraje' ? 'active' : '' ?>">
+                                        <i class="bi bi-currency-dollar me-2"></i> Precio Kilometraje
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="?url=unidadesmedida" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'unidadesmedida' ? 'active' : '' ?>">
+                                        <i class="bi bi-rulers me-2"></i> Unidad de Medida
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="?url=estado" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'estado' ? 'active' : '' ?>">
+                                        <i class="bi bi-map me-2"></i> Estado
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="?url=municipio" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'municipio' ? 'active' : '' ?>">
+                                        <i class="bi bi-geo-alt me-2"></i> Municipio
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
 
-                                <a href="?url=banco" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'banco' ? 'active' : '' ?>">
-                                    <i class="bi bi-bank me-2"></i> Banco
-                                </a>
-                            </li>
-                            <li>
-                                <a href="?url=cuenta" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'cuenta' ? 'active' : '' ?>">
-                                    <i class="bi bi-cash-coin me-2"></i> Cuenta
-                                </a>
-                            </li>
+                                    <a href="?url=cargo" class="dropdown-item  ist-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
+                                        <i class="bi bi-person-vcard me-2"></i> Cargo
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="?url=rol" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'rol' ? 'active' : '' ?>">
+                                        <i class="bi bi-person-badge me-2"></i> Rol
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a href="?url=marca" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'marca' ? 'active' : '' ?>">
+                                        <i class="bi bi-ev-front me-2"></i> Marca
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="?url=modelo" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'modelo' ? 'active' : '' ?>">
+                                        <i class="bi bi-car-front me-2"></i>Modelo
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a href="?url=metodopago" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'metodopago' ? 'active' : '' ?>">
+                                        <i class="bi bi-credit-card me-2"></i> Método de Pago
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="?url=moneda" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'moneda' ? 'active' : '' ?>">
+                                        <i class="bi bi-coin me-2"></i> Moneda
+                                    </a>
+                                </li>
+                                <li>
 
-                        </ul>
-                    </div>
+                                    <a href="?url=banco" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'banco' ? 'active' : '' ?>">
+                                        <i class="bi bi-bank me-2"></i> Banco
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="?url=cuenta" class="dropdown-item list-group-item list-group-item-action <?= $current_url == 'cuenta' ? 'active' : '' ?>">
+                                        <i class="bi bi-cash-coin me-2"></i> Cuenta
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
                     <?php else: ?>
-                    <a href="?url=cambiomoneda" class="list-group-item list-group-item-action <?= $current_url == 'cambiomoneda' ? 'active' : '' ?>">
-                        <i class="bi bi-currency-exchange me-2"></i> Cambio Moneda
-                    </a>
+                        <a href="?url=cambiomoneda" class="list-group-item list-group-item-action <?= $current_url == 'cambiomoneda' ? 'active' : '' ?>">
+                            <i class="bi bi-currency-exchange me-2"></i> Cambio Moneda
+                        </a>
                     <?php endif; ?>
                 </div>
             </div>
             <!-- /#sidebar-wrapper -->
-            
+
             <!-- Page Content -->
             <div id="page-content-wrapper" class="d-flex flex-column min-vh-100 w-100">
                 <nav class="navbar navbar-expand-lg navbar-light shadow-sm">
@@ -182,4 +182,4 @@
                 </nav>
 
                 <main class="container-fluid">
-<?php endif; ?>
+                <?php endif; ?>

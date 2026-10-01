@@ -10,6 +10,7 @@ class Rol extends Conexion
     private $cod_rol;
     private $estado;
     private $nombre;
+    private $permisos;
 
     public function __construct()
     {
@@ -36,11 +37,12 @@ class Rol extends Conexion
         $count->execute();
         return $count->fetchColumn() > 0;
     }
-    public function regDatosRol($nombre)
+    public function regDatosRol($nombre, $permisos)
     {
 
         $this->nombre = $this->formatearPalabra($nombre);
         $this->estado = 1;
+        $this->permisos = $permisos;
 
         return $this->registrarRol();
     }
@@ -49,12 +51,13 @@ class Rol extends Conexion
     private function registrarRol()
     {
         try {
-            $sentencia = "INSERT INTO rol (nombre, estado) VALUES (?, ?)";
+            $sentencia = "INSERT INTO rol (nombre, permisos , estado) VALUES (?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->estado);
+            $insert->bindValue(2, $this->permisos);
+            $insert->bindValue(3, $this->estado);
 
             $resultado = $insert->execute();
 

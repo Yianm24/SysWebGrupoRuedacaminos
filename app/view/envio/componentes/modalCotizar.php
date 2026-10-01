@@ -1,5 +1,5 @@
 <div class="modal fade" id="cotizarEnvio" tabindex="-1" aria-labelledby="cotizarModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="cotizarModalLabel"><i class="bi bi-currency-dollar"></i> Cotización</h1>
@@ -11,47 +11,89 @@
 
                     <fieldset class="row mb-3">
 
-                        <div class="col-md-12">
-                            <label for="categoria_vehiculo" class="form-label">Datos de Paqueteria</label>
-                            <div class="input-group ">
-                                <input type="number" step="0.01" class="form-control" id="alto" name="alto" placeholder="Alto:" required>
-                                <input type="number" step="0.01" class="form-control" id="largo" name="largo" placeholder="Largo:" required>
-                                <input type="number" step="0.01" class="form-control" id="ancho" name="ancho" placeholder="Ancho:" required>
-                                <input type="text" class="form-control" id="peso" name="peso" placeholder="Peso:" required>
-                            </div>
-                        </div>
-                    </fieldset>
+                        <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Datos de la Cotización</legend>
 
-                    <fieldset class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="row">
+                            <!-- Columna Izquierda: El Mapa y Precio -->
+                            <!-- Usamos d-flex y flex-column para que el mapa empuje el precio hacia abajo de forma prolija -->
+                            <section class="col-12 col-md-6 mb-4 mb-md-0 d-flex flex-column">
 
-                            <label for="categoria_vehiculo" class="form-label">Tipo Vehiculo a Utilizar</label>
-                            <select class="form-select" id="categoria_vehiculo" name="categoria_vehiculo" required>
-                                <option value="pequeño">Camioneta pequeña</option>
-                                <option value="grande">Camioneta grande</option>
-                                <option value="gigante">Camion</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
+                                <!-- Contenedor del Mapa -->
+                                <div class="flex-grow-1 bg-light border rounded d-flex align-items-center justify-content-center p-4">
+                                    <h3 class="text-muted">El mapa</h3>
+                                    <!-- <div id="map" class="w-100 h-100 rounded"></div> -->
+                                </div>
 
-                            <label for="tipo_punto" class="form-label">Ubicación destino</label>
-                            <select class="form-select" id="ubicacion" name="ubicacion_select" required>
-                                <option value="" selected disabled>Seleccionar Ubicación...</option>
-                                <option value="1">Caracas</option>
-                                <option value="2">Valencia</option>
-                                <option value="3">Maracaibo</option>
-                                <option value="4">Barquisimeto</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="ubicacion" class="form-label">Ubicación despacho</label>
-                            <select class="form-select" id="ubicacion" name="ubicacion_select" required>
-                                <option value="" selected disabled>Seleccionar Ubicación...</option>
-                                <option value="1">Caracas</option>
-                                <option value="2">Valencia</option>
-                                <option value="3">Maracaibo</option>
-                                <option value="4">Barquisimeto</option>
-                            </select>
+                                <!-- Contenedor del Precio (Debajo del mapa) -->
+                                <div class="alert alert-success text-center shadow-sm mt-3 mb-0" role="alert">
+                                    <span class="d-block small fw-bold text-uppercase mb-1 opacity-75">Costo Estimado del Envío</span>
+                                    <h3 class="mb-0 fw-bold">$<span id="precio_envio">0.00</span></h3>
+                                </div>
+                            </section>
+
+                            <!-- Columna Derecha: Formularios -->
+                            <section class="col-12 col-md-6">
+
+                                <!-- Bloque 1: Origen -->
+                                <div class="mb-3">
+                                    <label for="direccion_origen" class="form-label small fw-semibold">Dirección de Origen</label>
+
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            <select class="form-select form-select-sm" aria-label="Seleccionar Estado">
+                                                <option selected>Estado</option>
+                                                <option value="lara">Lara</option>
+                                                <option value="yaracuy">Yaracuy</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-select form-select-sm" aria-label="Seleccionar Municipio">
+                                                <option selected>Municipio</option>
+                                                <option value="iribarren">Iribarren</option>
+                                                <option value="palavecino">Palavecino</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <textarea id="direccion_origen" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
+                                </div>
+
+                                <!-- Bloque 2: Destino -->
+                                <div class="mb-3">
+                                    <label for="direccion_destino" class="form-label small fw-semibold">Dirección de Destino</label>
+
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            <select class="form-select form-select-sm" aria-label="Seleccionar Estado Destino">
+                                                <option selected>Estado</option>
+                                                <option value="lara">Lara</option>
+                                                <option value="portuguesa">Portuguesa</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
+                                                <option selected>Municipio</option>
+                                                <option value="araure">Araure</option>
+                                                <option value="jimenez">Jiménez</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <textarea id="direccion_destino" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
+                                </div>
+
+                                <!-- Bloque 3: Kilometraje -->
+                                <div class="mb-2">
+                                    <label for="kilometraje" class="form-label small fw-semibold">Distancia del Recorrido</label>
+
+                                    <!-- Aquí sí es ideal el input-group -->
+                                    <div class="input-group">
+                                        <input type="number" class="form-control text-end bg-white" id="kilometraje" placeholder="0.0" step="0.1" readonly>
+                                        <span class="input-group-text fw-semibold text-secondary">km</span>
+                                    </div>
+                                </div>
+
+                            </section>
                         </div>
                     </fieldset>
 
@@ -59,11 +101,6 @@
                 </div>
 
                 <footer class="modal-footer">
-                    <div class="row bg-white ">
-                        <div class="col align-self-center">
-                            <h5 class="mb-0">Precio de envio aqui</h5>
-                        </div>
-                    </div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary"><i class="bi bi-save"></i> Calcular</button>
                     <button type="button" class="btn btn-primary"><i class="bi bi-dropbox"></i> Crear</button>

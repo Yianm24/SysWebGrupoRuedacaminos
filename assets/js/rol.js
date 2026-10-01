@@ -2,6 +2,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const modal = document.getElementById('actualizarRol');
 
+    const checkConfiguracion = document.getElementById('checkConfiguracion');
+    // Selecciona todos los inputs que tengan la clase 'config-dependiente'
+    const submoldulos = document.querySelectorAll('.config-dependiente');
+
+    checkConfiguracion.addEventListener('change', function () {
+        const estaMarcado = this.checked;
+
+        submoldulos.forEach(function (checkbox) {
+            // Habilita o deshabilita según el estado del padre
+            checkbox.disabled = !estaMarcado;
+
+            // Opcional: Si se desmarca "Configuración", también quitamos el check de los submódulos
+            if (!estaMarcado) {
+                checkbox.checked = false;
+            }
+        });
+    });
 
     if (modal) {
         modal.addEventListener('show.bs.modal', event => {

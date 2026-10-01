@@ -12,11 +12,13 @@ switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['nombre'])) {
+                $permisos = $_POST['permisos'] ?? [];
+                $permisos = json_encode($permisos);
                 if ($rol->verificarRolExiste($_POST['nombre'])) {
                     header("Location: ?url=rol&status=exists");
                     exit();
                 }
-                $resultado = $rol->regDatosRol($_POST['nombre']);
+                $resultado = $rol->regDatosRol($_POST['nombre'], $permisos);
             var_dump($rol);
                 header("Location: ?url=rol&status=success");
                 exit();
