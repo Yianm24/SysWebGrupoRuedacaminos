@@ -22,12 +22,27 @@ class Cliente extends Conexion
         parent::__construct();
     }
 
-    public function verificarClienteExiste($doc_identidad) {
+    public function verificarClienteExiste($doc_identidad)
+    {
         $sentencia = "SELECT COUNT(*) FROM cliente WHERE doc_identidad = ? AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $doc_identidad);
         $count->execute();
         return $count->fetchColumn() > 0;
+    }
+
+    public function RetornarKeyCliente($doc_identidad)
+    {
+        try {
+            $sentencia = "SELECT cod_cliente FROM cliente WHERE doc_identidad = ? AND estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->bindValue(1, $doc_identidad);
+            $select->execute();
+            $resultado = $select->fetch(\PDO::FETCH_ASSOC);
+            return is_array($resultado) ? $resultado['cod_cliente'] : null;
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 
     public function regDatosCliente($doc_identidad, $razon_social, $apellido, $telefono, $email, $tipo_documento)
