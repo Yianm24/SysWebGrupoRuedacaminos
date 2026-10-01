@@ -84,4 +84,38 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Mostrar mensajes de alerta
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status) {
+        setTimeout(() => {
+            let title, text, icon;
+            switch (status) {
+                case 'success':
+                    title = "Registro exitoso!";
+                    text = "Registro de tasa de cambio exitoso";
+                    icon = "success";
+                    break;
+                case 'exists':
+                    title = "¡Tasa existente!";
+                    text = "La moneda ya posee una tasa registrada el día de hoy.";
+                    icon = "warning";
+                    break;
+                case 'updated':
+                    title = "Modificación exitosa!";
+                    text = "Modificación de los datos realizada exitosamente.";
+                    icon = "success";
+                    break;
+                case 'deleted':
+                    title = "¡Eliminado!";
+                    text = "Eliminación de la tasa realizada exitosamente.";
+                    icon = "success";
+                    break;
+            }
+            if (title && text && icon) {
+                Swal.fire({ title: title, text: text, icon: icon });
+            }
+        }, 100);
+    }
 });

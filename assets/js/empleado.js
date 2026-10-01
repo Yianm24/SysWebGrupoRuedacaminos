@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
         modalEditar.addEventListener('show.bs.modal', event => {
             const boton = event.relatedTarget;
             
-            //Capturamos los datos del empleado
             const id = boton.getAttribute('data-id');
             const cedula = boton.getAttribute('data-cedula');
             const nombre = boton.getAttribute('data-nombre');
@@ -93,4 +92,37 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status) {
+        setTimeout(() => {
+            let title, text, icon;
+            switch (status) {
+                case 'success':
+                    title = "Registro exitoso!";
+                    text = "Registro de empleado realizado exitosamente";
+                    icon = "success";
+                    break;
+                case 'exists':
+                    title = "¡Empleado existente!";
+                    text = "Ya existe un empleado registrado con la cédula ingresada";
+                    icon = "warning";
+                    break;
+                case 'updated':
+                    title = "Modificación exitosa!";
+                    text = "Modificación del empleado realizado exitosamente";
+                    icon = "success";
+                    break;
+                case 'deleted':
+                    title = "¡Eliminado!";
+                    text = "Eliminación del empleado realizado exitosamente";
+                    icon = "success";
+                    break;
+            }
+            if (title && text && icon) {
+                Swal.fire({ title: title, text: text, icon: icon });
+            }
+        }, 100);
+    }
 });
