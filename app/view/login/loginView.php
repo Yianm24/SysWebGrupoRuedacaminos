@@ -23,7 +23,7 @@
 
               <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Olvido su contraseña?</a></p>
 
-              <button class="btn btn-outline-light btn-lg px-5 mb-2" value="acceder" name="tipoSolicitud" type="submit">Entrar</button>
+              <button class="btn btn-outline-light btn-lg px-5 mb-2" value="acceder" name="Solicitud" type="submit">Entrar</button>
               </form>
               <!-- <a class="btn btn-outline-light btn-lg px-5" href="?url=dashboard">Dashboard</a> -->
 

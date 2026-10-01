@@ -59,7 +59,7 @@
                     <a href="?url=reporte" class="list-group-item list-group-item-action <?= $current_url == 'reporte' ? 'active' : '' ?>">
                         <i class="bi bi-file-earmark-bar-graph me-2"></i> Reporte
                     </a>
-
+                <?php if($_SESSION['usuario']['rol'] == '6'): ?>
                     <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
                         <i class="bi bi-person-fill me-2"></i> Empleado
                     </a>
@@ -76,6 +76,7 @@
                         <i class="bi bi-person-fill me-2"></i> Usuario
                     </a>
 
+                    
                     <div class=" dropdown-center">
                         <button type="button" class="btn list-group-item dropdown-toggle text-start w-100" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-gear-fill me-2"></i> Configuración
@@ -156,11 +157,15 @@
 
                         </ul>
                     </div>
-
+                    <?php else: ?>
+                    <a href="?url=cambiomoneda" class="list-group-item list-group-item-action <?= $current_url == 'cambiomoneda' ? 'active' : '' ?>">
+                        <i class="bi bi-currency-exchange me-2"></i> Cambio Moneda
+                    </a>
+                    <?php endif; ?>
                 </div>
             </div>
             <!-- /#sidebar-wrapper -->
-
+            
             <!-- Page Content -->
             <div id="page-content-wrapper" class="d-flex flex-column min-vh-100 w-100">
                 <nav class="navbar navbar-expand-lg navbar-light shadow-sm">
@@ -177,4 +182,4 @@
                 </nav>
 
                 <main class="container-fluid">
-                <?php endif; ?>
+<?php endif; ?>
