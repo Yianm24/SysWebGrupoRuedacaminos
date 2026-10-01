@@ -1,11 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    // Validación de Registro
+    const formRegistro = document.querySelector('#registerEmpleado form');
+    if (formRegistro) {
+        formRegistro.addEventListener('submit', function(event) {
+            const cedulaInput = document.getElementById('cedula').value.trim();
+            const nombreInput = document.getElementById('nombre').value.trim();
+            const apellidoInput = document.getElementById('apellido').value.trim();
+            
+            if (cedulaInput === "" || nombreInput === "" || apellidoInput === "") {
+                event.preventDefault(); 
+                Swal.fire({ title: "Error de validación", text: "Por favor, complete los campos obligatorios.", icon: "error" });
+            }
+        });
+    }
     
-    //Modal Editar
+    // Modal Editar.
     const modalEditar = document.getElementById('modalEditar');
     if (modalEditar) {
         modalEditar.addEventListener('show.bs.modal', event => {
             const boton = event.relatedTarget;
-            
             const id = boton.getAttribute('data-id');
             const cedula = boton.getAttribute('data-cedula');
             const nombre = boton.getAttribute('data-nombre');
@@ -22,42 +36,43 @@ document.addEventListener("DOMContentLoaded", function () {
             modalEditar.querySelector('#telefono_emergencia_editar').value = emergencia;
             modalEditar.querySelector('#cod_cargo_editar').value = cargo;
 
-            const form = document.getElementById('formEditarEmpleado');
-            form.setAttribute('data-orig-cedula', cedula);
-            form.setAttribute('data-orig-nombre', nombre);
-            form.setAttribute('data-orig-apellido', apellido);
-            form.setAttribute('data-orig-telefono', telefono);
-            form.setAttribute('data-orig-emergencia', emergencia);
-            form.setAttribute('data-orig-cargo', cargo);
+            const formEditar = document.getElementById('formEditarEmpleado');
+            formEditar.setAttribute('data-orig-cedula', cedula);
+            formEditar.setAttribute('data-orig-nombre', nombre);
+            formEditar.setAttribute('data-orig-apellido', apellido);
+            formEditar.setAttribute('data-orig-telefono', telefono);
+            formEditar.setAttribute('data-orig-emergencia', emergencia);
+            formEditar.setAttribute('data-orig-cargo', cargo);
         });
     }
 
-    //Validación al Editar
+    // Validación de Edición duplicada y vacía.
     const formEditar = document.getElementById('formEditarEmpleado');
     if (formEditar) {
         formEditar.addEventListener('submit', function(event) {
-            const oCed = this.getAttribute('data-orig-cedula');
-            const oNom = this.getAttribute('data-orig-nombre');
-            const oApe = this.getAttribute('data-orig-apellido');
-            const oTel = this.getAttribute('data-orig-telefono');
-            const oEme = this.getAttribute('data-orig-emergencia');
-            const oCar = this.getAttribute('data-orig-cargo');
+            const origCedula = this.getAttribute('data-orig-cedula');
+            const origNombre = this.getAttribute('data-orig-nombre');
+            const origApellido = this.getAttribute('data-orig-apellido');
+            const origTelefono = this.getAttribute('data-orig-telefono');
+            const origEmergencia = this.getAttribute('data-orig-emergencia');
+            const origCargo = this.getAttribute('data-orig-cargo');
 
-            const aCed = document.getElementById('cedula_editar').value;
-            const aNom = document.getElementById('nombre_editar').value;
-            const aApe = document.getElementById('apellido_editar').value;
-            const aTel = document.getElementById('telefono_editar').value;
-            const aEme = document.getElementById('telefono_emergencia_editar').value;
-            const aCar = document.getElementById('cod_cargo_editar').value;
+            const actCedula = document.getElementById('cedula_editar').value.trim();
+            const actNombre = document.getElementById('nombre_editar').value.trim();
+            const actApellido = document.getElementById('apellido_editar').value.trim();
+            const actTelefono = document.getElementById('telefono_editar').value.trim();
+            const actEmergencia = document.getElementById('telefono_emergencia_editar').value.trim();
+            const actCargo = document.getElementById('cod_cargo_editar').value;
 
-            if (oCed === aCed && oNom === aNom && oApe === aApe && oTel === aTel && oEme === aEme && oCar === aCar) {
+            if (origCedula === actCedula && origNombre === actNombre && origApellido === actApellido && origTelefono === actTelefono && origEmergencia === actEmergencia && origCargo === actCargo) {
                 event.preventDefault();
-                Swal.fire({ title: "Sin modificaciones", text: "Los datos ingresados son idénticos a los actuales. No se registraron cambios.", icon: "info" });
+                Swal.fire({ title: "Sin modificaciones", text: "Los datos ingresados son iguales a los actuales y no se registraron cambios.", icon: "info" });
+                return;
             }
         });
     }
 
-    //Modal Eliminar
+    // Modal Eliminar
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(boton => {
         boton.addEventListener('click', function(event) {
@@ -92,6 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Mensajes y alertas.
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
 
@@ -110,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     icon = "warning";
                     break;
                 case 'updated':
-                    title = "Modificación exitosa!";
+                    title = "Actualización exitosa!";
                     text = "Modificación del empleado realizado exitosamente";
                     icon = "success";
                     break;

@@ -13,26 +13,6 @@
                 require 'componentes/modalEditar.php'; 
             ?>
 
-            <!--Mensajes y alertas-->
-            <script src="assets/js/sweetalert2.all.min.js"></script>
-            <?php if (isset($_GET['status'])): ?>
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    setTimeout(function() {
-                        <?php if ($_GET['status'] == 'success'): ?>
-                            Swal.fire({ title: "Registro exitoso!", text: "Registro de precio de kilometraje realizado exitosamente", icon: "success" });
-                        <?php elseif ($_GET['status'] == 'exists'): ?>
-                            Swal.fire({ title: "¡Tarifa existente!", text: "Ya existe una tarifa registrada para el Kilometraje ingresado", icon: "warning" });
-                        <?php elseif ($_GET['status'] == 'updated'): ?>
-                            Swal.fire({ title: "Actualización exitosa!", text: "Actualización del Precio de kilometraje realizado exitosamente", icon: "success" });
-                        <?php elseif ($_GET['status'] == 'deleted'): ?>
-                            Swal.fire({ title: "¡Eliminado!", text: "Eliminación del Precio de Kilometraje realizado exitosamente", icon: "success" });
-                        <?php endif; ?>
-                    }, 100);
-                });
-            </script>
-            <?php endif; ?>
-
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold">Directorio de Precios</h4>
@@ -57,5 +37,7 @@
         </div>
     </div>
 </main>
+
+<script src="assets/js/sweetalert2.all.min.js"></script>
 <script src="assets/js/busqueda.js"></script>
 <script src="assets/js/kilometraje.js"></script>

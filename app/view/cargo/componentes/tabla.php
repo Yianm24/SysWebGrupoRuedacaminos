@@ -20,10 +20,8 @@
                             </button>
                             <form action="?url=cargo" method="POST" style="display: inline;">
                                 <fieldset style="display: inline;">
-                                    <!-- Elementos para eliminar un vehiculo -->
                                     <input type="hidden" name="cod_cargo" value="<?= $dato['cod_cargo'] ?>">
-                                    <button type="submit" name="tipoSolicitud" value="eliminar" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este cargo?');">
-                                        <i class="bi bi-trash"></i>
+                                    <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar" title="Eliminar" data-id="<?= $dato['cod_cargo']; ?>"><i class="bi bi-trash"></i>
                                     </button>
                                 </fieldset>
                             </form>

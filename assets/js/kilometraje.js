@@ -1,4 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    // Validación de Registro
+    const formRegistro = document.getElementById('formPrecioKilometraje');
+    if (formRegistro) {
+        formRegistro.addEventListener('submit', function(event) {
+            const kilometrajeInput = document.getElementById('kilometraje').value;
+            const precioInput = document.getElementById('precio_kilometraje').value;
+            
+            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
+                event.preventDefault(); 
+                Swal.fire({ title: "Error de validación", text: "Ingrese valores válidos mayores a 0.", icon: "error" });
+            }
+        });
+    }
     
     // Modal Editar.
     const modalEditar = document.getElementById('modalEditar');
@@ -40,20 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Validación de Registro
-    const formRegistro = document.getElementById('formPrecioKilometraje');
-    if (formRegistro) {
-        formRegistro.addEventListener('submit', function(event) {
-            const kilometrajeInput = document.getElementById('kilometraje').value;
-            const precioInput = document.getElementById('precio_kilometraje').value;
-            
-            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
-                event.preventDefault(); 
-                Swal.fire({ title: "Error de validación", text: "Ingrese valores válidos mayores a 0.", icon: "error" });
-            }
-        });
-    }
-
     // Modal Eliminar
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(boton => {
@@ -89,4 +89,38 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Mensajes y alertas.
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status) {
+        setTimeout(() => {
+            let title, text, icon;
+            switch (status) {
+                case 'success':
+                    title = "Registro exitoso!";
+                    text = "Registro de precio de kilometraje realizado exitosamente";
+                    icon = "success";
+                    break;
+                case 'exists':
+                    title = "¡Tarifa existente!";
+                    text = "Ya existe una tarifa registrada para el Kilometraje ingresado";
+                    icon = "warning";
+                    break;
+                case 'updated':
+                    title = "Actualización exitosa!";
+                    text = "Actualización del Precio de kilometraje realizado exitosamente";
+                    icon = "success";
+                    break;
+                case 'deleted':
+                    title = "¡Eliminado!";
+                    text = "Eliminación del Precio de Kilometraje realizado exitosamente";
+                    icon = "success";
+                    break;
+            }
+            if (title && text && icon) {
+                Swal.fire({ title: title, text: text, icon: icon });
+            }
+        }, 100);
+    }
 });

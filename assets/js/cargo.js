@@ -1,34 +1,88 @@
 document.addEventListener("DOMContentLoaded", function () {
-   
+
+
+    // Validación de Registro.
+    const formRegistrar = document.querySelector('#registerCargo form');
+    if (formRegistrar) {
+        formRegistrar.addEventListener('submit', function(event) {
+            const nombreInput = document.querySelector('#registerCargo input[name="nombre"]').value.trim();
+            if (nombreInput === "") {
+                event.preventDefault();
+                Swal.fire({ title: "Error de validación", text: "El nombre del cargo no puede estar vacío.", icon: "error" });
+            }
+        });
+    }
+    
+    // Modal Modificar Cargo.
     const modal = document.getElementById('modificarCargo');
-
-
     if (modal) {
         modal.addEventListener('show.bs.modal', event => {
-            // Obtener acceso al botón que disparó el modal
             const boton = event.relatedTarget;
-
-            //Obtener los datos del vehículo desde los atributos datos- del botón
             const cod_cargo = boton.getAttribute('datos-cod-cargo');
             const nombre = boton.getAttribute('datos-nombre');
-            // Obtener referencias a los campos del formulario dentro del modal
-            const inputCodCargo = modal.querySelector('.modal-body #cod-cargo')
-            const inputNombre = modal.querySelector('.modal-body #nombre')
-
-
-            // Asignar los valores obtenidos a los campos del formulario
+            const inputCodCargo = modal.querySelector('.modal-body #cod-cargo');
+            const inputNombre = modal.querySelector('.modal-body #nombre');
             inputCodCargo.value = cod_cargo;
             inputNombre.value = nombre;
-
-        })
+            const form = modal.querySelector('form');
+            form.setAttribute('data-orig-nombre', nombre);
+        });
     }
 
-    // Lógica para mostrar alertas de estado (éxito, error, etc.)
+    // Validación de Modificación duplicada y vacía.
+    const formModificar = document.querySelector('#modificarCargo form');
+    if (formModificar) {
+        formModificar.addEventListener('submit', function(event) {
+            const nombreOriginal = this.getAttribute('data-orig-nombre');
+            const nombreActual = document.getElementById('nombre').value.trim();
+
+            if (nombreOriginal === nombreActual) {
+                event.preventDefault();
+                Swal.fire({ title: "Sin modificaciones", text: "El nombre ingresado es igual al actual y no se registraron cambios.", icon: "info" });
+            }
+        });
+    }
+
+    // Modal Eliminar.
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+    botonesEliminar.forEach(boton => {
+        boton.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            let codCargo = this.getAttribute('data-id');
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: "¿Está seguro que desea eliminar este cargo?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '?url=cargo';
+                    form.innerHTML = `<input type="hidden" name="tipoSolicitud" value="eliminar"><input type="hidden" name="cod_cargo" value="${codCargo}">`;
+                    document.body.appendChild(form);
+                    form.submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({ title: "Cancelado", text: "Eliminación del cargo cancelada", icon: "error" });
+                }
+            });
+        });
+    });
+
+    // Mensajes y alertas.
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
 
     if (status) {
-        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
         setTimeout(() => {
             let title, text, icon;
 
@@ -44,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     icon = "success";
                     break;
                 case 'deleted':
-                    title = "Eliminación exitosa!";
+                    title = "¡Eliminado!";
                     text = "El cargo ha sido eliminado correctamente.";
                     icon = "success";
                     break;

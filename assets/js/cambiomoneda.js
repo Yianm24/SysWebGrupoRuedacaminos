@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Mostrar mensajes de alerta
+    // Mensajes y alertas.
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
 
