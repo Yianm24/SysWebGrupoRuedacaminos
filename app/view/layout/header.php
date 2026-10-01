@@ -168,7 +168,7 @@
                         <button class="btn btn-light border" id="sidebarToggle"><i class="bi bi-list fs-5"></i></button>
                         <div class="ms-auto d-flex align-items-center">
                             <form action="?url=login" method="post">
-                                <button type="submit" class="btn btn-outline-primary" name="tipoSolicitud" value="cerrar">
+                                <button type="submit" class="btn btn-outline-primary" name="Solicitud" value="cerrar">
                                     Cerrar Sesión <i class="bi bi-box-arrow-right"></i>
                                 </button>
                             </form>
