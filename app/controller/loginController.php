@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Model\Usuario;
 
 $usuario = new Usuario();
-$solicitud = $_POST['Solicitud'] ?? '';
+$solicitud = $_POST['Solicitud'] ?? $_POST['tipoSolicitud'];
 
 switch ($solicitud) {
     case 'acceder':
