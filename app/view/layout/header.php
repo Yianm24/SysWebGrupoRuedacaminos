@@ -108,7 +108,7 @@
                                 </li>
                                 <li>
 
-                                    <a href="?url=cargo" class="dropdown-item  ist-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
+                                    <a href="?url=cargo" class="dropdown-item  list-group-item list-group-item-action <?= $current_url == 'cargo' ? 'active' : '' ?>">
                                         <i class="bi bi-person-vcard me-2"></i> Cargo
                                     </a>
                                 </li>
