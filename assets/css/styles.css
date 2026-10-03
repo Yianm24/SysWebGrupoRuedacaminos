@@ -9,6 +9,7 @@ body {
   display: flex;
   transition: all 0.3s ease-in-out;
 }
+
 #sidebar-wrapper {
   min-height: 100vh;
   width: 250px;
@@ -16,6 +17,7 @@ body {
   border-right: 1px solid #eef0f3;
   transition: margin 0.25s ease-out;
 }
+
 #sidebar-wrapper .sidebar-heading {
   padding: 1.5rem 1.25rem;
   font-size: 1.5rem;
@@ -23,6 +25,7 @@ body {
   color: #0d6efd;
   border-bottom: 1px solid #eef0f3;
 }
+
 #sidebar-wrapper .list-group {
   width: 100%;
 }
@@ -43,6 +46,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
   #sidebar-wrapper {
     margin-left: -250px;
   }
+
   body.sb-sidenav-toggled #sidebar-wrapper {
     margin-left: 0;
   }
@@ -55,10 +59,12 @@ body.sb-sidenav-toggled #sidebar-wrapper {
   color: #495057;
   border-left: 4px solid transparent;
 }
+
 .list-group-item:hover {
   background-color: #f8f9fa;
   color: #0d6efd;
 }
+
 .list-group-item.active {
   background-color: #e9ecef;
   color: #0d6efd;
@@ -79,6 +85,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
   border-radius: 12px;
   margin-bottom: 1.5rem;
 }
+
 .card-header {
   background-color: #ffffff;
   border-bottom: 1px solid #eef0f3;
@@ -86,16 +93,19 @@ body.sb-sidenav-toggled #sidebar-wrapper {
   border-top-left-radius: 12px !important;
   border-top-right-radius: 12px !important;
 }
+
 .form-control,
 .form-select {
   border-radius: 8px;
   border-color: #ced4da;
 }
+
 .form-control:focus,
 .form-select:focus {
   border-color: #0d6efd;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+
 .btn-primary,
 .btn-success {
   border-radius: 8px;
@@ -103,10 +113,11 @@ body.sb-sidenav-toggled #sidebar-wrapper {
   font-weight: 600;
 }
 
-.table > :not(caption) > * > * {
+.table> :not(caption)>*>* {
   padding: 1rem 0.75rem;
   border-bottom-color: #f1f5f9;
 }
+
 .table-header-custom th {
   color: #6c757d;
   font-weight: 600;
@@ -115,7 +126,17 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 .anillo-foco:focus {
-  border-color: #5391b4; /* Color del borde al presionar (Azul) */
-  outline: 2px solid #0d6efd; /* Anillo de enfoque para mayor visibilidad */
+  border-color: #5391b4;
+  /* Color del borde al presionar (Azul) */
+  outline: 2px solid #0d6efd;
+  /* Anillo de enfoque para mayor visibilidad */
   outline-offset: 2px;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+  min-height: 300px;
+  border: 2px solid #495057;
+
 }

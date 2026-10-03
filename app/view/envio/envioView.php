@@ -5,7 +5,7 @@
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-box-seam"></i> Gestion de Envíos</h2>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" title="crear"class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#carouselEnvio">
+                    <button type="button" title="crear" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#carouselEnvio">
                         <i class="bi bi-dropbox"></i> Crear
                     </button>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cotizarEnvio">
@@ -47,3 +47,6 @@
 <!-- <script src="assets/js/mapa.js"></script> -->
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+<script src="assets\js\envio.js">
+</script>

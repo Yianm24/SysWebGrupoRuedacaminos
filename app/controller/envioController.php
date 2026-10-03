@@ -9,34 +9,47 @@ use App\Model\Cliente;
 $datosEstado = new Estado();
 $estados = $datosEstado->obt_RegistrosEstado();
 
-$datosMunicipio = new Municipio();
-$municipios = $datosMunicipio->obt_RegistrosMunicipio();
+// $datosMunicipio = new Municipio();
+// $municipios = $datosMunicipio->obt_RegistrosMunicipio();
 
-$datosCliente = new Cliente();
-$clientes = $datosCliente->obt_RegistrosClientes();
+// $datosCliente = new Cliente();
+// $clientes = $datosCliente->obt_RegistrosClientes();
+
+$datosForaneos = [
+
+    'cliente' => (new Cliente())->obt_RegistrosClientes(),
+    'municipio' => (new Municipio())->obt_RegistrosMunicipio()
+];
+
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'crear':
-        
-        if($_POST['tipo_persona_remitente'] === 'remitente_natural') {
-            $doc_identidad = $_POST['rem_cedula'];
-            $tipo_documento = $_POST['rem_documento_natural'];
-            $razon_social = $_POST['rem_nombre'];
-        } else {
-            $doc_identidad = $_POST['rem_rif'];
-            $tipo_documento = $_POST['rem_documento_juridico'];
-            $razon_social = $_POST['rem_razon_social'];
+
+
+
+        //Remitente
+
+        //Verifica si es remitete natural o juridico y asigna los valores correspondientes
+        switch ($_POST['tipo_persona_remitente']) {
+            case 'remitente_natural':
+                $doc_identidad = $_POST['rem_cedula'];
+                $tipo_documento = $_POST['rem_documento_natural'];
+                $razon_social = $_POST['rem_nombre'];
+                break;
+            case 'remitente_juridico':
+                $doc_identidad = $_POST['rem_rif'];
+                $tipo_documento = $_POST['rem_documento_juridico'];
+                $razon_social = $_POST['rem_razon_social'];
+                break;
         }
+
         if ($datosCliente->verificarClienteExiste($doc_identidad)) {
-            $keyCliente=$datosCliente->RetornarKeyCliente($doc_identidad);
+            $keyCliente = $datosCliente->RetornarKeyCliente($doc_identidad);
             echo $keyCliente;
             //header('Location: ?url=envio&status=success');
             //exit();
-        }
-        else{
-            
-
+        } else {
             $resultadoRemitente = $datosCliente->regDatosCliente(
                 $doc_identidad,
                 $razon_social,
@@ -45,29 +58,9 @@ switch ($solicitud) {
                 $_POST['rem_correo'],
                 $tipo_documento
             );
-           /*  $resultadoDestinatario = $datosCliente->regDatosCliente(
-                $_POST['dest_cedula'],
-                $_POST['dest_nombre'],
-                $_POST['dest_apellido'] ?? null,
-                $_POST['dest_telefono'],
-                $_POST['dest_correo'],
-                $_POST['dest_nacionalidad']
-            ); */
-            if ($resultadoRemitente) {
-                $keyCliente=$datosCliente->RetornarKeyCliente($doc_identidad);
-                echo $keyCliente;
-               /*  $keyCliente=$datosCliente->RetornarKeyCliente($_POST['dest_cedula']);
-                echo $keyCliente; */
-                //header('Location: ?url=envio&status=success');
-                //exit();
-            } else {
-                echo "<script>alert('Error al registrar el cliente');</script>";
-            }
+            $keyCliente = $datosCliente->RetornarKeyCliente($doc_identidad);
+            echo $keyCliente;
         }
-        $keyCliente=$datosCliente->RetornarKeyCliente($doc_identidad);
-        //     header('Location: ?url=envio&status=success');
-        //     exit();
-        // }
 
         break;
 }

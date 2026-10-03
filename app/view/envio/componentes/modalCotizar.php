@@ -20,8 +20,8 @@
 
                                 <!-- Contenedor del Mapa -->
                                 <div class="flex-grow-1 bg-light border rounded d-flex align-items-center justify-content-center p-4">
-                                    <h3 class="text-muted">El mapa</h3>
-                                    <!-- <div id="map" class="w-100 h-100 rounded"></div> -->
+                                    <!-- <h3 class="text-muted">El mapa</h3> -->
+                                    <div id="map" class="rounded"></div>
                                 </div>
 
                                 <!-- Contenedor del Precio (Debajo del mapa) -->

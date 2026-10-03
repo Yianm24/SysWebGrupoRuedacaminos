@@ -6,14 +6,14 @@
                 <small class="text-muted">Sistema para Empresa de Envíos - Creado por Seccion 2103, Grupo 2</small>
             </div>
         </footer>
-    </div>
-    <!-- /#page-content-wrapper -->
-</div>
-<!-- /#wrapper -->
+        </div>
+        <!-- /#page-content-wrapper -->
+        </div>
+        <!-- /#wrapper -->
 
-<!-- Bootstrap JS -->
-<script src="assets/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="assets/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/sidebar.js"></script>
+        </body>
 
-<script src="assets/js/sidebar.js"></script>
-</body>
-</html>
+        </html>
