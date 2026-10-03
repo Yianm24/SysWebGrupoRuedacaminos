@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let mapaInstancia = null;
+
     function CrearMapa() {
         const mapa = L.map('map', {
             // CORRECCIÓN: Faltaba el corchete "[" al inicio de las coordenadas
@@ -100,6 +101,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
     };
+
+    modal.addEventListener('hidden.bs.modal', event => {
+        if (mapaInstancia) {
+            mapaInstancia.remove(); // Destruye el mapa y limpia el contenedor HTML
+            mapaInstancia = null;   // Reinicia tu variable
+        }
+    });
 
 
 });
