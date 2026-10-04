@@ -133,7 +133,8 @@ body.sb-sidenav-toggled #sidebar-wrapper {
   outline-offset: 2px;
 }
 
-#map {
+#mapCotizar,
+#mapCrear {
   height: 100%;
   width: 100%;
   min-height: 300px;

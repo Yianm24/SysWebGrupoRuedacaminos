@@ -21,7 +21,7 @@
                                 <!-- Contenedor del Mapa -->
                                 <div class="flex-grow-1 bg-light border rounded d-flex align-items-center justify-content-center p-4">
                                     <!-- <h3 class="text-muted">El mapa</h3> -->
-                                    <div id="map" class="rounded"></div>
+                                    <div id="mapCotizar" class="rounded"></div>
                                 </div>
 
                                 <!-- Contenedor del Precio (Debajo del mapa) -->
@@ -41,16 +41,18 @@
                                     <div class="row mb-2">
                                         <div class="col-6">
                                             <select class="form-select form-select-sm" aria-label="Seleccionar Estado">
-                                                <option selected>Estado</option>
-                                                <option value="lara">Lara</option>
-                                                <option value="yaracuy">Yaracuy</option>
+                                                <?php
+                                                foreach ($datosForaneos['estado'] as $dato): ?>
+                                                    <option value="<?php echo $dato['cod_estado']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                         <div class="col-6">
-                                            <select class="form-select form-select-sm" aria-label="Seleccionar Municipio">
+                                            <select class="form-select form-select-sm" aria-label="Seleccionar Municipio" disabled>
                                                 <option selected>Municipio</option>
-                                                <option value="iribarren">Iribarren</option>
-                                                <option value="palavecino">Palavecino</option>
+                                                <?php foreach ($datosForaneos['municipio'] as $dato): ?>
+                                                    <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                     </div>
@@ -66,15 +68,17 @@
                                         <div class="col-6">
                                             <select class="form-select form-select-sm" aria-label="Seleccionar Estado Destino">
                                                 <option selected>Estado</option>
-                                                <option value="lara">Lara</option>
-                                                <option value="portuguesa">Portuguesa</option>
+                                                <?php foreach ($datosForaneos['estado'] as $dato): ?>
+                                                    <option value="<?php echo $dato['cod_estado']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                         <div class="col-6">
-                                            <select class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
+                                            <select class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino" disabled>
                                                 <option selected>Municipio</option>
-                                                <option value="araure">Araure</option>
-                                                <option value="jimenez">Jiménez</option>
+                                                <?php foreach ($datosForaneos['municipio'] as $dato): ?>
+                                                    <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                     </div>

@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let mapaInstancia = null;
 
-    function CrearMapa() {
-        const mapa = L.map('map', {
+    function CrearElementoMapa(id) {
+        const mapa = L.map(id, {
             // CORRECCIÓN: Faltaba el corchete "[" al inicio de las coordenadas
             center: [10.062907758626542, -69.36506133308706],
             zoom: 12
@@ -83,30 +83,53 @@ document.addEventListener("DOMContentLoaded", () => {
     actualizarFormulario();
 
 
-    const modal = document.getElementById('cotizarEnvio');
+    function CrearMapa(id) {  // Creamos el mapa solo si no existe
+        console.log("Creando mapa en el contenedor con ID:", id);
+        if (!mapaInstancia) {
+            mapaInstancia = CrearElementoMapa(id);
+        }
 
+        // Forzamos a recalcular el tamaño una vez que el modal está abierto
+        setTimeout(() => {
+            mapaInstancia.invalidateSize();
+        }, 500);
+    }
 
-    if (modal) {
-        modal.addEventListener('show.bs.modal', event => {
-
-            // Creamos el mapa solo si no existe
-            if (!mapaInstancia) {
-                mapaInstancia = CrearMapa();
-            }
-
-            // Forzamos a recalcular el tamaño una vez que el modal está abierto
-            setTimeout(() => {
-                mapaInstancia.invalidateSize();
-            }, 500);
-
-        });
-    };
-
-    modal.addEventListener('hidden.bs.modal', event => {
+    function DestruirMapa() {
         if (mapaInstancia) {
             mapaInstancia.remove(); // Destruye el mapa y limpia el contenedor HTML
             mapaInstancia = null;   // Reinicia tu variable
         }
+    }
+
+    // Escuchadores
+
+    // Modal de cotización
+    const modalCotizar = document.getElementById('cotizarEnvio');
+
+    if (modalCotizar) {
+        modalCotizar.addEventListener('show.bs.modal', event => {
+            CrearMapa('mapCotizar');
+        });
+    };
+
+    modalCotizar.addEventListener('hidden.bs.modal', event => {
+        DestruirMapa();
+    });
+
+
+    // modal crear envío
+    const modalEnvio = document.getElementById('carouselEnvio');
+
+
+    if (modalEnvio) {
+        modalEnvio.addEventListener('show.bs.modal', event => {
+            CrearMapa('mapCrear');
+        });
+    };
+
+    modalEnvio.addEventListener('hidden.bs.modal', event => {
+        DestruirMapa();
     });
 
 
