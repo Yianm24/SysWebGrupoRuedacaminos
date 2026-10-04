@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Capturamos los elementos del DOM
+    console.log("DOM completamente cargado y analizado");
     const coordenadasOrigen = {
         ccmetropoli: [10.062907758626542, -69.36506133308706],
         ccsambil: [10.07193188848613, -69.2929416674693],
@@ -132,5 +133,47 @@ document.addEventListener("DOMContentLoaded", () => {
         DestruirMapa();
     });
 
+
+
+   const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status) {
+        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+        setTimeout(() => {
+            let title, text, icon;
+
+            switch (status) {
+                case 'success':
+                    title = "Creación exitosa!";
+                    text = "El envio ha sido creado correctamente.";
+                    icon = "success";
+                    break;
+                case 'updated':
+                    title = "Modificación exitosa!";
+                    text = "El envio ha sido modificado correctamente.";
+                    icon = "success";
+                    break;
+                case 'deleted':
+                    title = "Eliminación exitosa!";
+                    text = "El envio ha sido eliminado correctamente.";
+                    icon = "success";
+                    break;
+                case 'exists':
+                    title = "Envio existente!";
+                    text = "El envio ingresado ya existe en la base de datos.";
+                    icon = "warning";
+                    break;
+            }
+
+            if (title && text && icon) {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon
+                });
+            }
+        }, 100);
+    }
 
 });

@@ -176,11 +176,11 @@
                                                     <!-- Contacto Remitente -->
                                                     <div class="row g-3 mt-1">
                                                         <div class="col-md-6">
-                                                            <label for="rem_telefono" class="form-label small fw-semibold">Teléfono</label>
+                                                            <label for="rem_telefono" class="form-label small fw-semibold" required>Teléfono</label>
                                                             <input type="tel" class="form-control" id="rem_telefono" name="rem_telefono" placeholder="0414 1234567">
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="rem_correo" class="form-label small fw-semibold">Correo Electrónico</label>
+                                                            <label for="rem_correo" class="form-label small fw-semibold" required>Correo Electrónico</label>
                                                             <input type="email" class="form-control" id="rem_correo" name="rem_correo" placeholder="remitente@correo.com">
                                                         </div>
                                                     </div>
@@ -219,7 +219,7 @@
                                                             <div class="col-md-5">
                                                                 <label for="dest_cedula" class="form-label small fw-semibold">Cédula</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_nacionalidad">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_documento_natural">
                                                                         <option value="V">V-</option>
                                                                         <option value="E">E-</option>
                                                                     </select>
@@ -242,7 +242,7 @@
                                                             <div class="col-md-5">
                                                                 <label for="dest_rif" class="form-label small fw-semibold">RIF</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_tipo_rif">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_documento_juridico">
                                                                         <option value="J">J-</option>
                                                                         <option value="G">G-</option>
                                                                         <option value="V">V-</option>
@@ -260,11 +260,11 @@
                                                     <!-- Contacto Destinatario -->
                                                     <div class="row g-3 mt-1">
                                                         <div class="col-md-6">
-                                                            <label for="dest_telefono" class="form-label small fw-semibold">Teléfono</label>
+                                                            <label for="dest_telefono" class="form-label small fw-semibold" required>Teléfono</label>
                                                             <input type="tel" class="form-control" id="dest_telefono" name="dest_telefono" placeholder="0414 1234567"  >
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="dest_correo" class="form-label small fw-semibold">Correo Electrónico</label>
+                                                            <label for="dest_correo" class="form-label small fw-semibold" required>Correo Electrónico</label>
                                                             <input type="email" class="form-control" id="dest_correo" name="dest_correo" placeholder="destinatario@correo.com"  >
                                                         </div>
                                                     </div>
@@ -285,7 +285,7 @@
                                             <!-- Descripción -->
                                             <div class="mb-4">
                                                 <label for="descripcion" class="form-label small fw-semibold">Descripción del Contenido</label>
-                                                <textarea class="form-control" id="descripcion" name="descripcion" rows="2" placeholder="Ej: Ropa, electrónicos, documentos..."  ></textarea>
+                                                <textarea class="form-control" id="descripcion" name="descripcion" rows="2" placeholder="Ej: Ropa, electrónicos, documentos..." required></textarea>
                                             </div>
 
                                             <!-- Dimensiones y Peso (Agregamos g-3 para separación vertical en móviles) -->
@@ -295,7 +295,7 @@
                                                 <div class="col-12 col-sm-6 col-md-3">
                                                     <label for="alto" class="form-label small fw-semibold">Alto</label>
                                                     <div class="input-group">
-                                                        <input type="number" step="0.01" class="form-control" id="alto" name="alto" placeholder="0.00"  >
+                                                        <input type="number" step="0.01" class="form-control" id="alto" name="alto" placeholder="0.00" required >
                                                         <span class="input-group-text text-muted">cm</span>
                                                     </div>
                                                 </div>
@@ -304,19 +304,11 @@
                                                 <div class="col-12 col-sm-6 col-md-3">
                                                     <label for="ancho" class="form-label small fw-semibold">Ancho</label>
                                                     <div class="input-group">
-                                                        <input type="number" step="0.01" class="form-control" id="ancho" name="ancho" placeholder="0.00"  >
+                                                        <input type="number" step="0.01" class="form-control" id="ancho" name="ancho" placeholder="0.00" required>
                                                         <span class="input-group-text text-muted">cm</span>
                                                     </div>
                                                 </div>
 
-                                                <!-- Largo -->
-                                                <div class="col-12 col-sm-6 col-md-3">
-                                                    <label for="largo" class="form-label small fw-semibold">Largo</label>
-                                                    <div class="input-group">
-                                                        <input type="number" step="0.01" class="form-control" id="largo" name="largo" placeholder="0.00"  >
-                                                        <span class="input-group-text text-muted">cm</span>
-                                                    </div>
-                                                </div>
 
                                                 <!-- Peso interactivo -->
                                                 <div class="col-12 col-sm-6 col-md-3">
@@ -344,7 +336,7 @@
                                             <!-- Switch de Frágil (En un contenedor con un poco de fondo para resaltar) -->
                                             <div class="p-3 bg-white rounded border border-danger-subtle d-inline-block w-100">
                                                 <div class="form-check form-switch d-flex align-items-center gap-2 m-0">
-                                                    <input class="form-check-input fs-5 m-0" type="checkbox" role="switch" id="articulos_fragil" name="articulos_fragil">
+                                                    <input class="form-check-input fs-5 m-0" type="checkbox" role="switch" id="articulos_fragil" name="articulos_fragil" value="fragil">
                                                     <label class="form-check-label text-danger fw-bold m-0" for="articulos_fragil">¿Contiene Artículos Frágiles?</label>
                                                 </div>
                                             </div>

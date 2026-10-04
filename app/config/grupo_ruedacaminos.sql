@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-09-2026 a las 00:11:16
+-- Tiempo de generación: 05-10-2026 a las 00:35:19
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -115,14 +115,10 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido`, `telefono`, `email`, `tipo_documento`, `estado`) VALUES
-(9, 12345678, 'María', 'Pérez', '04125452001', 'malau200104@gmail.com', 'V', 1),
-(13, 12345678, 'RUEDA', 'CAMINOS', '1231232', 'malsdasdl@fdsf', 'V', 0),
-(22, 7777, 'yuan', 'perereadasd', '312123', 'mamdasmdska@ANSDMSAD', 'E', 0),
-(23, 3333, 'Juana', 'pereira', '312123', 'mamdasmdska@ANSDMSAD', 'E', 0),
-(24, 30353577, 'Yancarlos', 'Camacaro', '04245188451', 'yancamacaro@gmail.com', 'V', 1),
-(25, 13267915, 'Laura', 'Oropeza', '04265541233', 'malaurpo@hotmail.com', 'V', 0),
-(26, 28375138, 'Anyerli', 'Moreno', '04147888016', 'anyerlimoreno@gmail.com', 'V', 1),
-(27, 302289990, 'INSUSERVI', NULL, '04125114443', 'insuservi@gmail.com', 'J', 1);
+(1, 30324703, 'Maria', 'Perez', '04125452001', 'malau200104@gmail.com', 'V', 1),
+(2, 30353577, 'Yancarlos', 'Camacaro', '04245188451', 'yancamacaro@gmail.com', 'V', 1),
+(3, 298061260, 'transnorte', '', '02518861594', 'malau200104@gmail.com', 'J', 1),
+(4, 888911, 'uptaeb', '', '05050', 'malau200104@gmail.com', 'G', 1);
 
 -- --------------------------------------------------------
 
@@ -235,18 +231,29 @@ INSERT INTO `empleado` (`cod_empleado`, `cedula`, `nombre`, `apellido`, `telefon
 
 CREATE TABLE `envio` (
   `cod_envio` int(11) NOT NULL,
-  `fecha` date NOT NULL,
-  `monto_total` decimal(8,2) NOT NULL,
+  `fecha` datetime NOT NULL,
+  `monto_total` decimal(8,2) DEFAULT NULL,
   `estado` tinyint(1) NOT NULL,
-  `cod_despacho` int(11) NOT NULL,
-  `peso_total` decimal(6,2) NOT NULL,
+  `cod_despacho` int(11) DEFAULT NULL,
+  `peso_total` decimal(6,2) DEFAULT NULL,
   `anchura` decimal(5,2) NOT NULL,
   `altura` decimal(5,2) NOT NULL,
   `descrip_contenido` varchar(50) NOT NULL,
-  `distancia_total` float(7,2) NOT NULL,
-  `cod_unidadmedida` int(1) NOT NULL,
-  `cod_preciokilometraje` int(11) NOT NULL
+  `distancia_total` float(7,2) DEFAULT NULL,
+  `cod_unidadmedida` int(1) DEFAULT NULL,
+  `cod_preciokilometraje` int(11) DEFAULT NULL,
+  `estatus_fragil` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `envio`
+--
+
+INSERT INTO `envio` (`cod_envio`, `fecha`, `monto_total`, `estado`, `cod_despacho`, `peso_total`, `anchura`, `altura`, `descrip_contenido`, `distancia_total`, `cod_unidadmedida`, `cod_preciokilometraje`, `estatus_fragil`) VALUES
+(1, '2026-10-04 18:16:14', NULL, 1, NULL, NULL, 100.00, 100.00, 'ropa', NULL, NULL, NULL, 0),
+(2, '2026-10-04 18:20:29', NULL, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
+(3, '2026-10-04 18:22:09', NULL, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
+(4, '2026-10-04 18:32:02', NULL, 1, NULL, NULL, 10.00, 50.00, 'cajas', NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -786,6 +793,20 @@ CREATE TABLE `participante_envio` (
   `rol_cliente` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `participante_envio`
+--
+
+INSERT INTO `participante_envio` (`cod_cliente`, `cod_envio`, `rol_cliente`) VALUES
+(1, 1, 'Remitente'),
+(2, 1, 'Destinatario'),
+(2, 2, 'Remitente'),
+(1, 2, 'Destinatario'),
+(2, 3, 'Remitente'),
+(1, 3, 'Destinatario'),
+(3, 4, 'Remitente'),
+(4, 4, 'Destinatario');
+
 -- --------------------------------------------------------
 
 --
@@ -1133,7 +1154,7 @@ ALTER TABLE `cargo`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `cod_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `cod_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `cuenta_banco`
@@ -1157,7 +1178,7 @@ ALTER TABLE `empleado`
 -- AUTO_INCREMENT de la tabla `envio`
 --
 ALTER TABLE `envio`
-  MODIFY `cod_envio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `cod_envio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`

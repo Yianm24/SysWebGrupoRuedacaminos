@@ -45,8 +45,9 @@
 </main>
 
 <!-- <script src="assets/js/mapa.js"></script> -->
+<script src="assets/js/sweetalert2.all.min.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-<script src="assets\js\envio.js">
+<script src="assets/js/envio.js">
 </script>
