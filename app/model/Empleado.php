@@ -26,6 +26,20 @@ class Empleado extends Conexion
         $select->execute();
         return $select->fetchAll(\PDO::FETCH_ASSOC);
     }
+    public function obt_EmpleadosCargo(int $rol){
+        try {
+            $sentencia = "SELECT cod_empleado, nombre, apellido FROM empleado WHERE cod_cargo = ? AND estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute([$rol]);
+            if ($select->rowCount() > 0) {
+                return $select->fetchAll(\PDO::FETCH_ASSOC);;
+            } else {
+                return [];
+            }
+        } catch (\PDOException $e) {
+            return "<script>alert('Error al obtener los registros de empleados del cargo especificado: " . $e->getMessage() . "');</script>";
+        }
+    }
 
     public function obt_RegistrosEmpleado()
     {

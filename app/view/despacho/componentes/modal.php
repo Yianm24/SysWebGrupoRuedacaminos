@@ -27,23 +27,32 @@
                                 <td>
                                     <span class="fw-medium"></span>
                                 </td>
-                                <td class="text-secondary">
-                                    <select class="form-select form-select-sm" aria-label="Seleccionar Estado">
-                                        <option selected>Estado</option>
-                                        <option value="lara">Lara</option>
-                                        <option value="yaracuy">Yaracuy</option>
-                                    </select>
-                                </td>
+                                <td class="text-center align-middle">
+                                        <select class="form-select form-select-sm" aria-label="Seleccionar Empleado" name="cod_empleado" required>
+                                            <option selected>Empleados</option>
+                                            <?php if (!empty($datosForaneos['empleado'])): ?>
+                                            <?php foreach ($datosForaneos['empleado'] as $empleado): ?>
+                                                <option value="<?= $empleado['cod_empleado']; ?>"><?php echo $empleado['nombre'] . ' ' . $empleado['apellido']; ?></option>
+                                            <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <option value="">No hay empleados con el cargo especificado</option>
+                                            <?php endif; ?>
+                                        </select>
+                                    </td>
 
-                                <td class="text-center">
-                                    <select class="form-select form-select-sm" aria-label="Seleccionar Estado">
-                                        <option selected>Estado</option>
-                                        <option value="lara">Lara</option>
-                                        <option value="yaracuy">Yaracuy</option>
-                                    </select>
-                                </td>
-                                <td class="text-center">
-                                    <input type="date" id="fecha" name="fecha">
+                                <td class="text-center align-middle">
+                                        <select class="form-select form-select-sm" aria-label="Seleccionar Vehiculo" name="cod_vehiculo" required>
+                                            <option selected>Vehiculos</option>
+                                            <?php foreach ($datosForaneos['vehiculo'] as $vehiculo): ?>
+                                                <option value="<?= $vehiculo['cod_vehiculo']; ?>"><?php echo $vehiculo['placa'] . ' ' . $vehiculo['nombremodelo']; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </td>
+                                <td class="text-center align-middle">
+                                    <div class="input-group d-inline-flex justify-content-center w-auto mx-auto">
+                                        <input type="date" id="fecha" name="fecha" class="form-control">
+                                        <input type="time" id="hora" name="hora_despacho" class="form-control" required>
+                                    </div>
                                 </td>
 
                             </tr>
