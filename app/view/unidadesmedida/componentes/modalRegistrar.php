@@ -9,18 +9,18 @@
             <form action="#" method="POST">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Nombre de la Unidad</label>
-                        <input type="text" class="form-control" name="nombre_unidad" placeholder="Ej: Kilogramos" required>
+                        <label class="form-label" for="nombre_unidad">Nombre de la Unidad</label>
+                        <input type="text" class="form-control" id="nombre_unidad" name="nombre_unidad" placeholder="Ej: Kilogramos" required>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Abreviatura</label>
-                            <input type="text" class="form-control" name="abreviatura" placeholder="Ej: KG" required>
+                            <label class="form-label" for="abreviatura">Abreviatura</label>
+                            <input type="text" class="form-control" id="abreviatura" name="abreviatura" placeholder="Ej: KG" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Tipo de Unidad</label>
-                            <select class="form-control" name="tipo_unidad" required>
+                            <label class="form-label" for="tipo_unidad">Tipo de Unidad</label>
+                            <select class="form-control" id="tipo_unidad" name="tipo_unidad" required>
                                 <option value="">Seleccione...</option>
                                 <option value="Longitud">Longitud</option>
                                 <option value="Masa">Masa</option>

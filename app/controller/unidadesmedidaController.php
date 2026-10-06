@@ -18,7 +18,8 @@ switch ($solicitud) {
                 header("Location: ?url=unidadesmedida&status=success");
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                header("Location: ?url=unidadesmedida&status=empty");
+                exit();
             }
         }
         break;
@@ -35,7 +36,8 @@ switch ($solicitud) {
                 header("Location: ?url=unidadesmedida&status=updated");
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                header("Location: ?url=unidadesmedida&status=empty");
+                exit();
             }
         }
         break;
@@ -47,7 +49,8 @@ switch ($solicitud) {
                 header("Location: ?url=unidadesmedida&status=deleted");
                 exit();
             } else {
-                echo "<script>alert('Falta el código de la unidad de medida');</script>";
+                header("Location: ?url=unidadesmedida&status=empty");
+                exit();
             }
         }
 }
