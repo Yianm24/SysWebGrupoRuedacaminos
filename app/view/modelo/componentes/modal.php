@@ -14,8 +14,8 @@
                         <input type="text" class="form-control" id="nombre_modelo" name="nombre_modelo" placeholder="Ej: Toyota" required>
                     </div>
                     <div class="mb-3">
-                        <select class="form-select" id="marca" name="marca">
-                            <option selected>Marca</option>
+                        <select class="form-select" id="marca" name="marca" required>
+                            <option value="0" selected>Marca</option>
                             <?php foreach ($marcasRegistros as $registro): ?>
                                 <option value=<?= $registro['cod_marca'] ?>><?= $registro['nombre'] ?></option>
                             <?php endforeach; ?>

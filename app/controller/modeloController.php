@@ -12,7 +12,7 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre_modelo']) && !empty($_POST['marca'])) {
+            if (!empty($_POST['nombre_modelo']) && !empty($_POST['marca']) && $_POST['marca'] != '0') {
                 if ($modelo->verificarModeloDuplicado($_POST['nombre_modelo'], $_POST['marca'],$_POST['cod_modelo'])) {
                     header("Location: ?url=modelo&status=exists");
                     exit();
@@ -22,13 +22,13 @@ switch ($solicitud) {
                 header("Location: ?url=modelo&status=success");
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                
             }
         }
         break;
     case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_modelo']) && !empty($_POST['nombre_modelo']) && !empty($_POST['marca'])) {
+            if (!empty($_POST['cod_modelo']) && !empty($_POST['nombre_modelo']) && !empty($_POST['marca']) && $_POST['marca'] != '0') {
                 if ($modelo->verificarModeloDuplicado($_POST['nombre_modelo'], $_POST['marca'],$_POST['cod_modelo'])) {
                     header("Location: ?url=modelo&status=exists");
                     exit();
@@ -39,7 +39,8 @@ switch ($solicitud) {
                 header("Location: ?url=modelo&status=updated");
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                header("Location: ?url=modelo&status=empty");
+                exit();
             }
         }
         break;
@@ -51,7 +52,8 @@ switch ($solicitud) {
                 header("Location: ?url=modelo&status=deleted");
                 exit();
             } else {
-                echo "<script>alert('Falta el código de la modelo');</script>";
+                header("Location: ?url=modelo&status=empty");
+                exit();
             }
         }
 }

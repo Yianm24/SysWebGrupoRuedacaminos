@@ -123,6 +123,11 @@ document.addEventListener("DOMContentLoaded", function () {
           text = "El Modelo ingresada ya existe en la base de datos.";
           icon = "warning";
           break;
+        case 'empty':
+          title = "Campos vacíos!";
+          text = "Uno o más campos están vacíos.";
+          icon = "warning";
+          break;
       }
 
       if (title && text && icon) {
