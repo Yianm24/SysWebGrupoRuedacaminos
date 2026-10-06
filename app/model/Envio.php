@@ -44,7 +44,24 @@ class Envio extends Conexion
     //     return $this->registrarEnvio();
     // }
 
+    public function obt_RegistrosEnvio()
+    {
+        try {
+            $sentencia = "SELECT participante_envio.*, cliente.*, envio.*
+            FROM participante_envio
+            INNER JOIN cliente
+            ON participante_envio.cod_cliente= cliente.cod_cliente
+            INNER JOIN envio 
+    		ON participante_envio.cod_envio = envio.cod_envio
+            WHERE cliente.estado=1 and envio.estado=1 and participante_envio.rol_cliente='Remitente';";
 
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
 
     public function creDatosEnvio($remitente, $destinatario, $ancho, $alto, $descripcion, $fecha, $estatus_fragil)
     {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-10-2026 a las 00:35:19
+-- Tiempo de generación: 06-10-2026 a las 03:22:55
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -923,7 +923,7 @@ INSERT INTO `usuario` (`cod_usuario`, `nombre`, `cedula`, `password`, `cod_rol`,
 (3, 'Pedra', 232323, '333', 2, 0),
 (6, 'Pedro', 22222, '878787878', 2, 0),
 (8, 'Yancarlos de jesus', 30353577, '$2y$10$eXfw9/DAW/3g2SmmM8n/zOKjyjWcQv99vXvypCh9C6w6fhrxKvwHe', 6, 1),
-(9, 'Maria laura', 30324703, '$2y$10$BP2anZf/f2j4HYrbbogbBOHUzb.ePeGJDx9/CzYTKac3Jqy0y5Nnu', 2, 1),
+(9, 'Maria laura', 30324703, '$2y$10$P0W3/VL0JknyaHuSIGz0H.RVB9i8VvrARx0Q0aeHdD5s9ZgydgeDS', 6, 1),
 (10, 'Jose fabrega', 30405439, '$2y$10$DJY.aZS3UCtfRMWX.7dwxu0GcR.6Q/gWdguKRmvIJyPY5mScWqrSK', 6, 1);
 
 -- --------------------------------------------------------

@@ -10,9 +10,6 @@ use App\Model\Envio;
 
 $envio = new Envio();
 
-$datosEstado = new Estado();
-$estados = $datosEstado->obt_RegistrosEstado();
-
 // $datosMunicipio = new Municipio();
 // $municipios = $datosMunicipio->obt_RegistrosMunicipio();
 
@@ -113,6 +110,8 @@ switch ($solicitud) {
 
         break;
 }
+
+$registros = $envio->obt_RegistrosEnvio();
 
 // app/controller/envioController.php
 include 'app/view/layout/header.php';

@@ -3,23 +3,30 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light table-header-custom">
                 <tr>
-                    <th class="ps-4">CODIGO</th>
+                    <!-- <th class="ps-4">CODIGO</th> -->
+                    <th>TIPO DOCUMENTO</th>
                     <th>REMITENTE</th>
                     <th>DESTINO</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>ANCHO</th>
+                    <th>ALTO</th>
+                    <th>PESO TOTAL</th>
                     <th>FECHA</th>
-                    <th class="text-center">VEHICULO ASIGNADO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- <?php //foreach ($result as $value): ?> -->
+                <?php foreach ($registros as $dato): ?>
                     <tr>
-                        <td class="ps-4 fw-medium"></td>
+                          <td class="text-center"><?= $dato['tipo_documento']; ?></td>
+                        <td class="ps-4 fw-medium"><?= $dato['razon_social']." ".$dato['apellido']; ?></td>
                         <td>
                             <span class="fw-medium"></span>
                         </td>
-                        <td class="text-secondary"></td>
-                        <td class="text-secondary"></td>
+                        <td class="text-secondary"><?= $dato['descrip_contenido']; ?></td>
+                        <td class="text-secondary"><?= $dato['anchura']; ?></td>
+                        <td class="text-secondary"><?= $dato['altura']; ?></td>
+                        <td class="text-secondary"><?= $dato['peso_total']; ?></td>
                         <td class="text-center">
                             <span class="badge">
                             </span>
@@ -32,7 +39,7 @@
                             <a href="?url=envio&type=delete&id=<?//= $value['id'] ?>" class="text-secondary text-decoration-none" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este envío?');"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
-                <?php //endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>
