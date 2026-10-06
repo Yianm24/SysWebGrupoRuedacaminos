@@ -97,12 +97,13 @@ switch ($solicitud) {
                 }
 
                 date_default_timezone_set('America/Caracas');
-                $resultado = $envio->creDatosEnvio($keyRemitente, $keyDestinatario, $_POST['ancho'], $_POST['alto'], $_POST['descripcion'], date('Y-m-d H:i:s'), $articulosFragil);
+                $resultado = $envio->creDatosEnvio($keyRemitente, $keyDestinatario, $_POST['ancho'], $_POST['alto'], $_POST['descripcion'], date('Y-m-d H:i:s'), $articulosFragil, $_POST['peso_total']);
                 echo $resultado;
                 header('Location: ?url=envio&status=success');
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                header('Location: ?url=envio&status=empty');
+                exit();
             }
         }
 

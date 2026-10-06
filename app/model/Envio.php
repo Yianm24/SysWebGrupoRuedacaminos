@@ -63,7 +63,7 @@ class Envio extends Conexion
         }
     }
 
-    public function creDatosEnvio($remitente, $destinatario, $ancho, $alto, $descripcion, $fecha, $estatus_fragil)
+    public function creDatosEnvio($remitente, $destinatario, $ancho, $alto, $descripcion, $fecha, $estatus_fragil,$peso_total)
     {
         $this->cod_remitente = $remitente;
         $this->cod_destinatario = $destinatario;
@@ -76,7 +76,7 @@ class Envio extends Conexion
         // $this->distancia_total = 500;
         $this->estado = 1;
         $this->estatus_fragil = $estatus_fragil;
-
+        $this->peso_total = $peso_total;
         return $this->crearEnvio();
     }
 
@@ -85,8 +85,8 @@ class Envio extends Conexion
         try {
             $this->conexion->beginTransaction();
 
-            $sqlEnvio = "INSERT INTO `envio`(`fecha`, `estatus_fragil`, `estado`, `descrip_contenido`, `anchura`, `altura`) 
-            VALUES (?, ?, ?, ?, ?, ?)";
+            $sqlEnvio = "INSERT INTO `envio`(`fecha`, `estatus_fragil`, `estado`, `descrip_contenido`, `anchura`, `altura`,`peso_total`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             $insertEnvio = $this->conexion->prepare($sqlEnvio);
             $insertEnvio->bindValue(1, $this->fecha);
@@ -95,6 +95,7 @@ class Envio extends Conexion
             $insertEnvio->bindValue(4, $this->descripcion_cont);
             $insertEnvio->bindValue(5, $this->ancho);
             $insertEnvio->bindValue(6, $this->alto);
+            $insertEnvio->bindValue(7, $this->peso_total);
             $insertEnvio->execute();
 
             $cod_envio = $this->conexion->lastInsertId();

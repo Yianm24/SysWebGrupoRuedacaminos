@@ -57,7 +57,7 @@
                                                     </div>
                                                 </div>
 
-                                                <textarea id="direccion_origen" class="form-control" rows="2" placeholder="Calle, número, ciudad..."  ></textarea>
+                                                <textarea id="direccion_origen" class="form-control" rows="2" placeholder="Calle, número, ciudad..."></textarea>
                                             </div>
 
                                             <!-- Bloque 2: Destino -->
@@ -81,7 +81,7 @@
                                                     </div>
                                                 </div>
 
-                                                <textarea id="direccion_destino" class="form-control" rows="2" placeholder="Calle, número, ciudad..."  ></textarea>
+                                                <textarea id="direccion_destino" class="form-control" rows="2" placeholder="Calle, número, ciudad..."></textarea>
                                             </div>
 
                                             <!-- Bloque 3: Kilometraje -->
@@ -261,11 +261,11 @@
                                                     <div class="row g-3 mt-1">
                                                         <div class="col-md-6">
                                                             <label for="dest_telefono" class="form-label small fw-semibold" required>Teléfono</label>
-                                                            <input type="tel" class="form-control" id="dest_telefono" name="dest_telefono" placeholder="0414 1234567"  >
+                                                            <input type="tel" class="form-control" id="dest_telefono" name="dest_telefono" placeholder="0414 1234567">
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="dest_correo" class="form-label small fw-semibold" required>Correo Electrónico</label>
-                                                            <input type="email" class="form-control" id="dest_correo" name="dest_correo" placeholder="destinatario@correo.com"  >
+                                                            <input type="email" class="form-control" id="dest_correo" name="dest_correo" placeholder="destinatario@correo.com">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -295,7 +295,7 @@
                                                 <div class="col-12 col-sm-6 col-md-3">
                                                     <label for="alto" class="form-label small fw-semibold">Alto</label>
                                                     <div class="input-group">
-                                                        <input type="number" step="0.01" class="form-control" id="alto" name="alto" placeholder="0.00" required >
+                                                        <input type="number" step="0.01" class="form-control" id="alto" name="alto" placeholder="0.00" required>
                                                         <span class="input-group-text text-muted">cm</span>
                                                     </div>
                                                 </div>
@@ -315,7 +315,7 @@
                                                     <label for="peso_input" class="form-label small fw-semibold">Peso a sumar</label>
                                                     <!-- Input group con el botón de sumar integrado -->
                                                     <div class="input-group mb-2">
-                                                        <input type="number" step="0.01" class="form-control" id="peso_input" name="peso_input" placeholder="0.00">
+                                                        <input type="number" step="0.01" class="form-control" id="peso_sumar" placeholder="0.00">
                                                         <span class="input-group-text text-muted">kg</span>
                                                         <button class="btn btn-secondary" type="button" id="btn_sumar_peso">
                                                             <!-- Icono opcional de suma, o solo texto "+" -->
@@ -325,10 +325,14 @@
 
                                                     <!-- Fila inferior del peso con el total y el reset -->
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="badge text-bg-primary fs-6 py-2 px-3">Total: <span id="peso_total_display">0.00</span> kg</span>
-                                                        <button class="btn btn-sm btn-outline-danger" type="button" id="btn_reset_peso">Reset</button>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="visible-addon">Total:</span>
+                                                            <input type="text" name="peso_total" id="peso_total" class="form-control" placeholder="00.00" aria-label="Username" aria-describedby="visible-addon" style="width: 100px;" readonly>
+
+                                                        <button class="btn btn-sm btn-outline-danger" type="button" id="btn_reset_pesoTotal">Reset</button>
                                                         <!-- Input oculto para enviar el peso total real en el form -->
-                                                        <input type="hidden" name="peso_total" id="peso_total_hidden" value="0">
+                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>

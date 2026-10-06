@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Capturamos los elementos del DOM
-    console.log("DOM completamente cargado y analizado");
+    /* const textareaUbiDestino = document.getElementById('direccion_destino'),
+        inputKilometro = document.getElementById('kilometraje'); */
     const coordenadasOrigen = {
         ccmetropoli: [10.062907758626542, -69.36506133308706],
         ccsambil: [10.07193188848613, -69.2929416674693],
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function CrearElementoMapa(id) {
         const mapa = L.map(id, {
             // CORRECCIÓN: Faltaba el corchete "[" al inicio de las coordenadas
-            center: [10.062907758626542, -69.36506133308706],
+            center: coordenadasOrigen.ccmetropoli, // Coordenadas de la ubicación inicial
             zoom: 12
         });
 
@@ -23,6 +23,27 @@ document.addEventListener("DOMContentLoaded", () => {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(mapa);
         L.marker(coordenadasOrigen.ccmetropoli).addTo(mapa);
+
+
+        //Instancia del objeto Rounting control 
+        enrutadorObj = L.Routing.control({
+            waypoints: [
+                L.latLng(coordenadasOrigen.ccmetropoli),
+                L.latLng()
+            ],
+            language: 'es'
+        }).addTo(mapa),
+
+            geocoderObj = L.Control.geocoder({
+                defaultMarkGeocode: false
+            });
+
+        //Oyente que permite agregar el marcador destino a traves del buscador del mapa 
+        geocoderObj.on('markgeocode', function (evento) {
+            enrutadorObj.spliceWaypoints(enrutadorObj.getWaypoints().length - 1, 1, evento.geocode.center);
+            ImprimirDatos(evento.geocode.center.lat, evento.geocode.center.lng, null, textareaUbiDestino);
+
+        }).addTo(mapa);
 
         return mapa
     }
@@ -110,7 +131,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (modalCotizar) {
         modalCotizar.addEventListener('show.bs.modal', event => {
-            CrearMapa('mapCotizar');
+            const mapa = CrearMapa('mapCotizar');
+
+            function crearBoton(texto, contenedor) {
+
+                //Crea un objeto dom que puede ser utilizado dentro del mapa
+                let botonParaPopup = L.DomUtil.create('button', 'btn btn-outline-secondary', contenedor);
+                botonParaPopup.setAttribute('type', 'button');
+                botonParaPopup.innerHTML = `<strong>${texto}</strong>`;
+                return botonParaPopup;
+            }
+
         });
     };
 
@@ -134,8 +165,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
+    const pesoSumarInput = document.getElementById('peso_sumar');
+    const pesoTotalInput = document.getElementById('peso_total');
+    const btnSumarPeso = document.getElementById('btn_sumar_peso');
+    const btnResetPesoTotal = document.getElementById('btn_reset_pesoTotal');
 
-   const urlParams = new URLSearchParams(window.location.search);
+    pesoTotalInput.value = 0; // Inicializamos el valor del peso total a 0
+
+    btnSumarPeso.addEventListener('click', () => {
+
+        if (pesoSumarInput.value.trim() >= 0) {
+            let pesoSumar = parseFloat(pesoSumarInput.value);
+            let pesoTotal = parseFloat(pesoTotalInput.value);
+            pesoTotal += pesoSumar;
+            pesoTotalInput.value = pesoTotal.toFixed(2); // Actualizamos el valor del input con dos decimales
+            pesoSumarInput.value = 0; // Limpiamos el input de peso a sumar
+        } else {
+            alert("Por favor, ingrese un número válido para el peso.");
+        }
+
+    });
+
+
+    btnResetPesoTotal.addEventListener('click', () => {
+        pesoTotalInput.value = 0; // Reiniciamos el valor del peso total a 0
+    });
+
+
+
+
+    const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
 
     if (status) {
@@ -162,6 +221,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 case 'exists':
                     title = "Envio existente!";
                     text = "El envio ingresado ya existe en la base de datos.";
+                    icon = "warning";
+                    break;
+                case 'empty':
+                    title = "Campos vacíos!";
+                    text = "Uno o más campos están vacíos.";
                     icon = "warning";
                     break;
             }
