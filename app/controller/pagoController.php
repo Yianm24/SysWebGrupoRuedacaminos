@@ -78,6 +78,7 @@ switch ($solicitud) {
 }
 
 $registros = $pago->obt_RegistrosPago();
+$tasasJSON = json_encode($pago->obt_TasasDelDia());
 
 include 'app/view/layout/header.php';
 include 'app/view/pago/pagoView.php';

@@ -14,8 +14,9 @@
             </thead>
             <tbody>
                 <?php if (!empty($registros)): ?>
-                    <?php foreach ($registros as $value): 
-                        $montoRestante = $value['monto_total'] - $value['monto_abonado'];
+                    <?php foreach ($registros as $value):
+                        $montoTotal = $value['monto_total'] ?? 0;
+                        $montoRestante = $montoTotal - $value['monto_abonado'];
                     ?>
                         <tr>
                             <td class="ps-4 fw-medium"><?= $value['cod_envio']; ?></td>
@@ -24,14 +25,15 @@
                                     <?= ($value['estado_pago'] == 1) ? 'Completado' : 'Pendiente'; ?>
                                 </span>
                             </td>
-                            <td class="text-secondary">$<?= number_format($value['monto_total'], 2); ?></td>
+                            <td class="text-secondary">$<?= number_format($montoTotal, 2); ?></td>
                             <td class="text-secondary">$<?= number_format($value['monto_abonado'], 2); ?></td>
                             <td class="text-secondary">$<?= number_format(max(0, $montoRestante), 2); ?></td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#registerPago"
-                                    data-envio="<?= $value['cod_envio']; ?>">
+                                    data-envio="<?= $value['cod_envio']; ?>"
+                                    data-montorestante="<?= max(0, $montoRestante); ?>">
                                     <i class="bi bi-wallet2 me-1"></i> Registrar
                                 </button>
                             </td>
@@ -44,7 +46,8 @@
                                     data-estatus="<?= $value['estado_pago']; ?>"
                                     data-metodo="<?= $value['cod_metodopago'] ?? ''; ?>"
                                     data-banco="<?= $value['cod_banco'] ?? ''; ?>"
-                                    data-detalle="<?= $value['cod_detallepago']; ?>">
+                                    data-detalle="<?= $value['cod_detallepago']; ?>"
+                                    data-montototal="<?= $montoTotal; ?>">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <a href="#" class="text-secondary text-decoration-none btn-eliminar" title="Eliminar"

@@ -41,6 +41,30 @@ class Pago extends Conexion
         }
     }
 
+    // Obtener tasas del día.
+    public function obt_TasasDelDia()
+    {
+        try {
+            $sentencia = "SELECT m.abreviatura, c.tasa 
+                        FROM cambio_moneda c 
+                        INNER JOIN moneda m ON c.cod_moneda = m.cod_moneda 
+                        WHERE c.estado = 1 
+                        ORDER BY c.fecha ASC";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+        
+            $tasas = ['VES' => 1]; 
+            
+            while($row = $select->fetch(\PDO::FETCH_ASSOC)) {
+                $tasas[$row['abreviatura']] = (float)$row['tasa'];
+            }
+            
+            return $tasas;
+        } catch (\PDOException $e) {
+            return ['VES' => 1, 'USD' => 1];
+        }
+    }
+
     //validaciones de pago.
     public function verificarPagoCompletado($cod_envio)
     {
