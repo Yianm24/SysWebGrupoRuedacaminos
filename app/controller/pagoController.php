@@ -30,7 +30,7 @@ switch ($solicitud) {
                 $_POST['estatus_pago'],
                 $_POST['cod_envio'],
                 $_POST['metodos'],
-                $_POST['Chofer']
+                $_POST['cuentas']
             );
 
             header("Location: ?url=pago&status=success");
@@ -55,7 +55,7 @@ switch ($solicitud) {
                 $_POST['estatus_pago'],
                 $_POST['cod_detallepago'],
                 $_POST['metodos'],
-                $_POST['Chofer']
+                $_POST['cuentas']
             );
 
             header("Location: ?url=pago&status=updated");
@@ -79,6 +79,8 @@ switch ($solicitud) {
 
 $registros = $pago->obt_RegistrosPago();
 $tasasJSON = json_encode($pago->obt_TasasDelDia());
+$bancos = $pago->obt_BancosActivos();
+$metodosPago = $pago->obt_MetodosPagoActivos();
 
 include 'app/view/layout/header.php';
 include 'app/view/pago/pagoView.php';

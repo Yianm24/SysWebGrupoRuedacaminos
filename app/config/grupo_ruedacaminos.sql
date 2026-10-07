@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-10-2026 a las 03:22:55
+-- Tiempo de generación: 07-10-2026 a las 21:30:34
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -41,7 +41,8 @@ INSERT INTO `banco` (`cod_banco`, `nombre`, `estado`) VALUES
 (1, 'BNC', 1),
 (2, 'Banplus', 1),
 (3, 'Banesco', 1),
-(4, 'Bancamiga', 1);
+(4, 'Bancamiga', 1),
+(5, 'Caja', 1);
 
 -- --------------------------------------------------------
 
@@ -190,8 +191,16 @@ CREATE TABLE `detalle_pago` (
 --
 
 INSERT INTO `detalle_pago` (`cod_detallepago`, `referencia`, `cod_metodopago`, `cod_banco`, `monto`) VALUES
-(1, 30232, 1, 3, 10000.00),
-(2, 772791, 2, 1, 13892.50);
+(1, 123456, 3, 2, 90.00),
+(2, 772791, 2, 1, 13892.50),
+(3, 123456, 1, 3, 50.00),
+(4, 1111, 1, 1, 0.03),
+(5, 11113, 1, 1, 16.66),
+(6, 44444, 1, 1, 10.49),
+(7, 2020, 3, 5, 10.00),
+(8, 0, 3, 5, 30.00),
+(9, 1002, 2, 3, 25.00),
+(10, 1000, 2, 3, 650.00);
 
 -- --------------------------------------------------------
 
@@ -250,10 +259,10 @@ CREATE TABLE `envio` (
 --
 
 INSERT INTO `envio` (`cod_envio`, `fecha`, `monto_total`, `estado`, `cod_despacho`, `peso_total`, `anchura`, `altura`, `descrip_contenido`, `distancia_total`, `cod_unidadmedida`, `cod_preciokilometraje`, `estatus_fragil`) VALUES
-(1, '2026-10-04 18:16:14', NULL, 1, NULL, NULL, 100.00, 100.00, 'ropa', NULL, NULL, NULL, 0),
-(2, '2026-10-04 18:20:29', NULL, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
-(3, '2026-10-04 18:22:09', NULL, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
-(4, '2026-10-04 18:32:02', NULL, 1, NULL, NULL, 10.00, 50.00, 'cajas', NULL, NULL, NULL, 1);
+(1, '2026-10-04 18:16:14', 100.00, 1, NULL, NULL, 100.00, 100.00, 'ropa', NULL, NULL, NULL, 0),
+(2, '2026-10-04 18:20:29', 30.00, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
+(3, '2026-10-04 18:22:09', 25.00, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
+(4, '2026-10-04 18:32:02', 650.00, 1, NULL, NULL, 10.00, 50.00, 'cajas', NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -781,6 +790,17 @@ CREATE TABLE `pago` (
   `cod_detallepago` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `pago`
+--
+
+INSERT INTO `pago` (`cod_pago`, `fecha`, `hora`, `monto`, `referencia`, `estado_pago`, `cod_envio`, `estado`, `cod_detallepago`) VALUES
+(3, '2026-10-07', '0000-00-00 00:00:00', 90.00, '123456', 0, 1, 1, 1),
+(7, '2026-10-07', '0000-00-00 00:00:00', 10.00, 'EFECTIVO', 1, 1, 1, 7),
+(8, '2026-10-07', '0000-00-00 00:00:00', 30.00, 'EFECTIVO', 1, 2, 1, 8),
+(9, '2026-10-07', '0000-00-00 00:00:00', 25.00, '1002', 1, 3, 1, 9),
+(10, '2026-10-07', '0000-00-00 00:00:00', 650.00, '1000', 1, 4, 1, 10);
+
 -- --------------------------------------------------------
 
 --
@@ -1166,7 +1186,7 @@ ALTER TABLE `cuenta_banco`
 -- AUTO_INCREMENT de la tabla `detalle_pago`
 --
 ALTER TABLE `detalle_pago`
-  MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`
@@ -1226,7 +1246,7 @@ ALTER TABLE `municipio`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `cod_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `cod_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`

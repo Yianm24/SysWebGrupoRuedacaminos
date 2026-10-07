@@ -23,16 +23,11 @@ class Pago extends Conexion
         parent::__construct();
     }
 
-    // Consultar Registros.
+    // Consultar Registros de Pago y Envío.
     public function obt_RegistrosPago()
     {
         try {
-            $sentencia = "SELECT p.*, e.monto_total, d.referencia as ref_detalle, d.monto as monto_abonado, m.nombre as metodo_pago, b.nombre as banco_nombre FROM pago p
-                        INNER JOIN envio e ON p.cod_envio = e.cod_envio
-                        INNER JOIN detalle_pago d ON p.cod_detallepago = d.cod_detallepago
-                        INNER JOIN metodo_pago m ON d.cod_metodopago = m.cod_metodo
-                        INNER JOIN banco b ON d.cod_banco = b.cod_banco
-                        WHERE p.estado = 1";
+            $sentencia = "SELECT e.cod_envio, e.monto_total, e.estado as estado_envio, p.cod_pago, p.fecha, p.hora, p.referencia, p.estado_pago, d.cod_detallepago, d.referencia as ref_detalle, d.monto as monto_abonado, m.nombre as metodo_pago, b.nombre as banco_nombre, d.cod_metodopago, d.cod_banco, (SELECT SUM(dp2.monto) FROM pago p2 INNER JOIN detalle_pago dp2 ON p2.cod_detallepago = dp2.cod_detallepago WHERE p2.cod_envio = e.cod_envio AND p2.estado = 1) as total_abonado_envio FROM envio e LEFT JOIN pago p ON e.cod_envio = p.cod_envio AND p.estado = 1 LEFT JOIN detalle_pago d ON p.cod_detallepago = d.cod_detallepago LEFT JOIN metodo_pago m ON d.cod_metodopago = m.cod_metodo LEFT JOIN banco b ON d.cod_banco = b.cod_banco WHERE e.estado = 1 ORDER BY e.cod_envio DESC, p.cod_pago DESC";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
             return $select->fetchAll(\PDO::FETCH_ASSOC);
@@ -41,15 +36,11 @@ class Pago extends Conexion
         }
     }
 
-    // Obtener tasas del día.
+    // Obtener registros de otras tablas.
     public function obt_TasasDelDia()
     {
         try {
-            $sentencia = "SELECT m.abreviatura, c.tasa 
-                        FROM cambio_moneda c 
-                        INNER JOIN moneda m ON c.cod_moneda = m.cod_moneda 
-                        WHERE c.estado = 1 
-                        ORDER BY c.fecha ASC";
+            $sentencia = "SELECT m.abreviatura, c.tasa FROM cambio_moneda c INNER JOIN moneda m ON c.cod_moneda = m.cod_moneda WHERE c.estado = 1 ORDER BY c.fecha ASC";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
         
@@ -62,6 +53,30 @@ class Pago extends Conexion
             return $tasas;
         } catch (\PDOException $e) {
             return ['VES' => 1, 'USD' => 1];
+        }
+    }
+
+    public function obt_BancosActivos()
+    {
+        try {
+            $sentencia = "SELECT * FROM banco WHERE estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
+    public function obt_MetodosPagoActivos()
+    {
+        try {
+            $sentencia = "SELECT mp.*, m.abreviatura FROM metodo_pago mp INNER JOIN moneda m ON mp.cod_moneda = m.cod_moneda WHERE mp.estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
         }
     }
 
@@ -86,15 +101,17 @@ class Pago extends Conexion
 
     public function verificarReferenciaDuplicada($referencia, $cod_pago_actual = null)
     {
+        if (strtoupper(trim($referencia)) === 'EFECTIVO' || strtoupper(trim($referencia)) === 'S/N') {
+            return false;
+        }
+
         if ($cod_pago_actual) {
-            $sentencia = "SELECT COUNT(*) FROM detalle_pago d 
-                        INNER JOIN pago p ON p.cod_detallepago = d.cod_detallepago 
-                        WHERE d.referencia = ? AND p.cod_pago != ? AND p.estado = 1";
+            $sentencia = "SELECT COUNT(*) FROM pago WHERE referencia = ? AND cod_pago != ? AND estado = 1";
             $count = $this->conexion->prepare($sentencia);
             $count->bindValue(1, $referencia);
             $count->bindValue(2, $cod_pago_actual);
         } else {
-            $sentencia = "SELECT COUNT(*) FROM detalle_pago WHERE referencia = ?";
+            $sentencia = "SELECT COUNT(*) FROM pago WHERE referencia = ? AND estado = 1";
             $count = $this->conexion->prepare($sentencia);
             $count->bindValue(1, $referencia);
         }
@@ -164,7 +181,6 @@ class Pago extends Conexion
     {
         try {
             $this->conexion->beginTransaction();
-
             $sqlDetalle = "UPDATE detalle_pago SET referencia = ?, cod_metodopago = ?, cod_banco = ?, monto = ? WHERE cod_detallepago = ?";
             $updateDetalle = $this->conexion->prepare($sqlDetalle);
             $updateDetalle->execute([$this->referencia, $this->cod_metodopago, $this->cod_banco, $this->monto, $this->cod_detallepago]);

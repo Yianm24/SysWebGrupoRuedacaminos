@@ -47,17 +47,20 @@
                             <label for="metodos" class="form-label">Método de Pago</label>
                             <select class="form-select select-metodo-pago" id="metodos" name="metodos" required>
                                 <option value="" selected disabled data-moneda="USD">Seleccionar...</option>
-                                <option value="1" data-moneda="VES">Pago Movil (Bs)</option>
-                                <option value="2" data-moneda="VES">Transferencia (Bs)</option>
-                                <option value="3" data-moneda="USD">Divisa Efectivo ($)</option>
+                                <?php foreach ($metodosPago as $metodo): ?>
+                                    <option value="<?= $metodo['cod_metodo'] ?>" data-moneda="<?= $metodo['abreviatura'] ?>">
+                                        <?= $metodo['nombre'] ?> (<?= $metodo['abreviatura'] ?>)
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label for="Chofer" class="form-label">Cuenta Destino</label>
-                            <select class="form-select" id="Chofer" name="Chofer" required>
+                            <select class="form-select select-banco" id="cuentas_registrar" name="cuentas" required>
                                 <option value="" selected disabled>Seleccionar banco...</option>
-                                <option value="1">Banesco</option>
-                                <option value="2">Venezuela</option>
+                                <?php foreach ($bancos as $banco): ?>
+                                    <option value="<?= $banco['cod_banco'] ?>"><?= $banco['nombre'] ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-4">
