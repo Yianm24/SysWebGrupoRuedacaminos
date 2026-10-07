@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function CrearElementoMapa(id) {
         const mapa = L.map(id, {
             // CORRECCIÓN: Faltaba el corchete "[" al inicio de las coordenadas
-            center: coordenadasOrigen.ccmetropoli, // Coordenadas de la ubicación inicial
+            center: [10.062907758626542, -69.36506133308706], // Coordenadas de la ubicación inicial
             zoom: 12
         });
 
@@ -22,32 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
             //Se trata del copiright de la "capa" osea del diseño del mapa
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(mapa);
-        L.marker(coordenadasOrigen.ccmetropoli).addTo(mapa);
-
-
-        //Instancia del objeto Rounting control 
-        enrutadorObj = L.Routing.control({
-            waypoints: [
-                L.latLng(coordenadasOrigen.ccmetropoli),
-                L.latLng()
-            ],
-            language: 'es'
-        }).addTo(mapa),
-
-            geocoderObj = L.Control.geocoder({
-                defaultMarkGeocode: false
-            });
-
-        //Oyente que permite agregar el marcador destino a traves del buscador del mapa 
-        geocoderObj.on('markgeocode', function (evento) {
-            enrutadorObj.spliceWaypoints(enrutadorObj.getWaypoints().length - 1, 1, evento.geocode.center);
-            ImprimirDatos(evento.geocode.center.lat, evento.geocode.center.lng, null, textareaUbiDestino);
-
-        }).addTo(mapa);
+        //L.marker(coordenadasOrigen.ccmetropoli).addTo(mapa);
 
         return mapa
     }
-
+    mapaInstancia = CrearElementoMapa('mapCotizar');
+    console.log("Mapa de cotización creado:", mapaInstancia);
 
     //Variables para el remitente
     const radioNaturalRem = document.getElementById("persona_natural_remitente");
@@ -109,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Creando mapa en el contenedor con ID:", id);
         if (!mapaInstancia) {
             mapaInstancia = CrearElementoMapa(id);
+
         }
 
         // Forzamos a recalcular el tamaño una vez que el modal está abierto
@@ -124,45 +105,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Escuchadores
-
     // Modal de cotización
     const modalCotizar = document.getElementById('cotizarEnvio');
 
     if (modalCotizar) {
         modalCotizar.addEventListener('show.bs.modal', event => {
-            const mapa = CrearMapa('mapCotizar');
-
-            function crearBoton(texto, contenedor) {
-
-                //Crea un objeto dom que puede ser utilizado dentro del mapa
-                let botonParaPopup = L.DomUtil.create('button', 'btn btn-outline-secondary', contenedor);
-                botonParaPopup.setAttribute('type', 'button');
-                botonParaPopup.innerHTML = `<strong>${texto}</strong>`;
-                return botonParaPopup;
-            }
-
-        });
-    };
+            CrearMapa('mapCotizar');
+        }) }
 
     modalCotizar.addEventListener('hidden.bs.modal', event => {
         DestruirMapa();
     });
 
 
-    // modal crear envío
     const modalEnvio = document.getElementById('carouselEnvio');
 
-
     if (modalEnvio) {
-        modalEnvio.addEventListener('show.bs.modal', event => {
-            CrearMapa('mapCrear');
-        });
-    };
+        modalEnvio.addEventListener('show.bs.modal', event =>
+            CrearMapa('mapCrear')
+        );
+    }
+
 
     modalEnvio.addEventListener('hidden.bs.modal', event => {
         DestruirMapa();
     });
+
 
 
     const pesoSumarInput = document.getElementById('peso_sumar');
@@ -172,8 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     pesoTotalInput.value = 0; // Inicializamos el valor del peso total a 0
 
-    btnSumarPeso.addEventListener('click', () => {
-
+    function sumarPesoTotal() {
         if (pesoSumarInput.value.trim() >= 0) {
             let pesoSumar = parseFloat(pesoSumarInput.value);
             let pesoTotal = parseFloat(pesoTotalInput.value);
@@ -183,9 +150,15 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             alert("Por favor, ingrese un número válido para el peso.");
         }
+    }
 
+    btnSumarPeso.addEventListener('click', sumarPesoTotal);
+    pesoSumarInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            sumarPesoTotal();
+        }
     });
-
 
     btnResetPesoTotal.addEventListener('click', () => {
         pesoTotalInput.value = 0; // Reiniciamos el valor del peso total a 0

@@ -90,7 +90,7 @@
 
                                                 <!-- Aquí sí es ideal el input-group -->
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control text-end bg-white" name="kilometraje" id="kilometraje" placeholder="0.0" step="0.1" readonly>
+                                                    <input type="number" class="form-control text-end bg-white" name="kilometraje" id="kilometraje" placeholder="0.0" step="0.1">
                                                     <span class="input-group-text fw-semibold text-secondary">km</span>
                                                 </div>
                                             </div>
