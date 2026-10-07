@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Model\Empleado;
 use App\Model\Vehiculo;
+use App\Model\Envio;
 
 $datosForaneos = [
     'empleado' => (new Empleado())->obt_EmpleadosCargo(4),
-    'vehiculo' => (new Vehiculo())->obt_RegistrosVehiculos()
+    'vehiculo' => (new Vehiculo())->obt_RegistrosVehiculos(),
+    'envio' => (new Envio())->obt_DestinatariosEnvio()
 ];
 
 include 'app/view/layout/header.php';

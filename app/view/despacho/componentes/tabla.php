@@ -12,10 +12,10 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <?php //foreach ($result as $value): 
-                        ?> -->
+                <!--<?php //foreach ($datosForaneos['envio'] as $envio):?>-->
                 <tr>
-                    <td class="ps-4 fw-medium"></td>
+                    <td class="ps-4 fw-medium">
+                    </td>
                     <td>
                         <span class="fw-medium"></span>
                     </td>
@@ -38,8 +38,7 @@
                             </a>
                         </td>
                 </tr>
-                <?php //endforeach; 
-                ?>
+                <!--<?php //endforeach; ?>-->
             </tbody>
         </table>
     </div>
