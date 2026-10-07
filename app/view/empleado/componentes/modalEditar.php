@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">     
             <header class="modal-header">
-                <h1 class="modal-title fs-5" id="editarModalLabel"><i class="bi bi-pencil-square"></i> Editar Empleado</h1>
+                <h1 class="modal-title fs-5" id="editarModalLabel"><i class="bi bi-pencil-square"></i> Modificar Empleado</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
  
@@ -51,7 +51,7 @@
                 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Modificar</button>
                 </footer>
             </form>
         </div>

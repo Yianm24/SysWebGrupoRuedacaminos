@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     icon = "warning";
                     break;
                 case 'updated':
-                    title = "Actualización exitosa!";
+                    title = "Modificación exitosa!";
                     text = "Modificación del empleado realizado exitosamente";
                     icon = "success";
                     break;
