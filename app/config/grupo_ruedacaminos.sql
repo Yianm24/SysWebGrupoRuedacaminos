@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-10-2026 a las 21:30:34
+-- Tiempo de generación: 08-10-2026 a las 03:52:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -262,7 +262,10 @@ INSERT INTO `envio` (`cod_envio`, `fecha`, `monto_total`, `estado`, `cod_despach
 (1, '2026-10-04 18:16:14', 100.00, 1, NULL, NULL, 100.00, 100.00, 'ropa', NULL, NULL, NULL, 0),
 (2, '2026-10-04 18:20:29', 30.00, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
 (3, '2026-10-04 18:22:09', 25.00, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
-(4, '2026-10-04 18:32:02', 650.00, 1, NULL, NULL, 10.00, 50.00, 'cajas', NULL, NULL, NULL, 1);
+(4, '2026-10-04 18:32:02', 650.00, 1, NULL, NULL, 10.00, 50.00, 'cajas', NULL, NULL, NULL, 1),
+(11, '2026-10-07 21:42:19', NULL, 0, NULL, 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
+(12, '2026-10-07 21:42:49', NULL, 0, NULL, 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
+(13, '2026-10-07 21:49:28', NULL, 1, NULL, 5555.00, 999.99, 999.99, 'fdfff', 99999.99, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -825,7 +828,13 @@ INSERT INTO `participante_envio` (`cod_cliente`, `cod_envio`, `rol_cliente`) VAL
 (2, 3, 'Remitente'),
 (1, 3, 'Destinatario'),
 (3, 4, 'Remitente'),
-(4, 4, 'Destinatario');
+(4, 4, 'Destinatario'),
+(1, 11, 'Remitente'),
+(2, 11, 'Destinatario'),
+(1, 12, 'Remitente'),
+(2, 12, 'Destinatario'),
+(2, 13, 'Remitente'),
+(2, 13, 'Destinatario');
 
 -- --------------------------------------------------------
 
@@ -883,6 +892,20 @@ CREATE TABLE `ubicacion` (
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `ubicacion`
+--
+
+INSERT INTO `ubicacion` (`cod_ubicacion`, `descripcion`, `cod_municipio`, `estado`) VALUES
+(7, 'una calle', 65, 1),
+(8, 'av semeruco', 1, 1),
+(9, 'dddd', 3, 1),
+(10, 'qqq', 11, 1),
+(11, 'fg', 2, 1),
+(12, 'sada', 9, 1),
+(13, 'ddd', 4, 1),
+(14, 'cdcd', 11, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -892,8 +915,20 @@ CREATE TABLE `ubicacion` (
 CREATE TABLE `ubicaciones_envio` (
   `cod_ubicacion` int(11) NOT NULL,
   `cod_envio` int(11) NOT NULL,
-  `tipo_ubicacion` enum('DespachoEspecifico','Destino') NOT NULL
+  `tipo_ubicacion` enum('Despacho','Destino') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ubicaciones_envio`
+--
+
+INSERT INTO `ubicaciones_envio` (`cod_ubicacion`, `cod_envio`, `tipo_ubicacion`) VALUES
+(7, 11, NULL),
+(8, 11, NULL),
+(7, 12, NULL),
+(8, 12, NULL),
+(13, 13, 'Despacho'),
+(14, 13, 'Destino');
 
 -- --------------------------------------------------------
 
@@ -1124,7 +1159,6 @@ ALTER TABLE `ubicacion`
 -- Indices de la tabla `ubicaciones_envio`
 --
 ALTER TABLE `ubicaciones_envio`
-  ADD PRIMARY KEY (`cod_ubicacion`,`cod_envio`),
   ADD KEY `cod_ubicacion` (`cod_ubicacion`),
   ADD KEY `cod_envio` (`cod_envio`);
 
@@ -1198,7 +1232,7 @@ ALTER TABLE `empleado`
 -- AUTO_INCREMENT de la tabla `envio`
 --
 ALTER TABLE `envio`
-  MODIFY `cod_envio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cod_envio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -1264,7 +1298,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `ubicacion`
 --
 ALTER TABLE `ubicacion`
-  MODIFY `cod_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `cod_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `unidad_medida`

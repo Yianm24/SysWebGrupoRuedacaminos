@@ -22,7 +22,7 @@
                                             <!-- Contenedor del Mapa -->
                                             <div class="flex-grow-1 bg-light border rounded d-flex align-items-center justify-content-center p-4">
                                                 <!-- <h3 class="text-muted">El mapa</h3> -->
-                                                <div id="mapCrear" class="map rounded"></div>
+                                                <div id="mapCrear" class="rounded"></div>
                                             </div>
 
                                             <!-- Contenedor del Precio (Debajo del mapa) -->
@@ -42,22 +42,16 @@
 
                                                 <div class="row mb-2">
                                                     <div class="col-6">
-                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Estado">
-                                                            <option selected>Estado</option>
-                                                            <option value="lara">Lara</option>
-                                                            <option value="yaracuy">Yaracuy</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Municipio">
+                                                        <select name="municipio_origen" class="form-select form-select-sm" aria-label="Seleccionar Municipio">
                                                             <option selected>Municipio</option>
-                                                            <option value="iribarren">Iribarren</option>
-                                                            <option value="palavecino">Palavecino</option>
+                                                            <?php foreach ($datosForaneos['municipio'] as $dato): ?>
+                                                                <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                            <?php endforeach; ?>
                                                         </select>
                                                     </div>
                                                 </div>
 
-                                                <textarea id="direccion_origen" class="form-control" rows="2" placeholder="Calle, número, ciudad..."></textarea>
+                                                <textarea id="direccion_origen" name="direccion_origen" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
                                             </div>
 
                                             <!-- Bloque 2: Destino -->
@@ -66,22 +60,16 @@
 
                                                 <div class="row mb-2">
                                                     <div class="col-6">
-                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Estado Destino">
-                                                            <option selected>Estado</option>
-                                                            <option value="lara">Lara</option>
-                                                            <option value="portuguesa">Portuguesa</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <select class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
+                                                        <select name="municipio_destino" class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
                                                             <option selected>Municipio</option>
-                                                            <option value="araure">Araure</option>
-                                                            <option value="jimenez">Jiménez</option>
+                                                            <?php foreach ($datosForaneos['municipio'] as $dato): ?>
+                                                                <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                            <?php endforeach; ?>
                                                         </select>
                                                     </div>
                                                 </div>
 
-                                                <textarea id="direccion_destino" class="form-control" rows="2" placeholder="Calle, número, ciudad..."></textarea>
+                                                <textarea id="direccion_destino" name="direccion_destino" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
                                             </div>
 
                                             <!-- Bloque 3: Kilometraje -->
@@ -329,10 +317,10 @@
                                                             <span class="input-group-text" id="visible-addon">Total:</span>
                                                             <input type="text" name="peso_total" id="peso_total" class="form-control" placeholder="00.00" aria-label="Username" aria-describedby="visible-addon" style="width: 100px;" readonly>
 
-                                                        <button class="btn btn-sm btn-outline-danger" type="button" id="btn_reset_pesoTotal">Reset</button>
-                                                        <!-- Input oculto para enviar el peso total real en el form -->
+                                                            <button class="btn btn-sm btn-outline-danger" type="button" id="btn_reset_pesoTotal">Reset</button>
+                                                            <!-- Input oculto para enviar el peso total real en el form -->
                                                         </div>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>

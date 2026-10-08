@@ -96,8 +96,14 @@ switch ($solicitud) {
                     $keyDestinatario = $instanciaForaneas['cliente']->RetornarKeyCliente($doc_identidad2);
                 }
 
+                        $keyUBicacionDespacho = $envio->registrarUbicacion($_POST['direccion_origen'], $_POST['municipio_origen']);
+                        $keyUBicacionDestino = $envio->registrarUbicacion($_POST['direccion_destino'], $_POST['municipio_destino']);
+
+                        // echo $keyUBicacionDespacho;
+                        // echo $keyUBicacionDestino;
+
                 date_default_timezone_set('America/Caracas');
-                $resultado = $envio->creDatosEnvio($keyRemitente, $keyDestinatario, $_POST['ancho'], $_POST['alto'], $_POST['descripcion'], date('Y-m-d H:i:s'), $articulosFragil, $_POST['peso_total'],$_POST['kilometraje']);
+                $resultado = $envio->creDatosEnvio($keyRemitente, $keyDestinatario, $_POST['ancho'], $_POST['alto'], $_POST['descripcion'], date('Y-m-d H:i:s'), $articulosFragil, $_POST['peso_total'],$_POST['kilometraje'],$keyUBicacionDespacho, $keyUBicacionDestino);
                 echo $resultado;
                 header('Location: ?url=envio&status=success');
                 exit();

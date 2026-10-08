@@ -26,8 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return mapa
     }
-    mapaInstancia = CrearElementoMapa('mapCotizar');
-    console.log("Mapa de cotización creado:", mapaInstancia);
 
     //Variables para el remitente
     const radioNaturalRem = document.getElementById("persona_natural_remitente");
@@ -125,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
             CrearMapa('mapCrear')
         );
     }
-
 
     modalEnvio.addEventListener('hidden.bs.modal', event => {
         DestruirMapa();

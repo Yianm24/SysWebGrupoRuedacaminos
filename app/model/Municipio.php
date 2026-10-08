@@ -19,22 +19,6 @@ class Municipio extends Conexion
         parent::__construct();
     }
 
-    // public function verificarMunicipioDuplicado($nombre, $estado_ubi, $cod_municipio = null)
-    // {
-    //     $this->formatearPalabra($nombre);
-    //     if ($cod_municipio === null) {
-    //         $sentencia = "SELECT COUNT(*) FROM municipio WHERE nombre = ? AND cod_estado = ?";
-    //     } else {
-    //         $sentencia = "SELECT COUNT(*) FROM municipio WHERE nombre = ? AND cod_estado = ? AND cod_municipio != ? AND estado = 1";
-    //     }
-    //     $count = $this->conexion->prepare($sentencia);
-    //     $count->bindValue(1, $nombre);
-    //     $count->bindValue(2, $estado_ubi);
-    //     $count->bindValue(3, $cod_municipio);
-    //     $count->execute();
-    //     return $count->fetchColumn() > 0;
-    // }
-
     public function verificarMunicipioDuplicado($nombre, $cod_estado, $cod_municipio = null)
     {
         $this->formatearPalabra($nombre);
