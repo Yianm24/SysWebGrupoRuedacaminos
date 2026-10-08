@@ -45,6 +45,15 @@ class Cargo extends Conexion
         return $this->registrarCargo();
     }
 
+    public function verificarCargoDuplicado($nombre, $id_actual)
+    {
+        $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND cod_cargo != ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $nombre);
+        $count->bindValue(2, $id_actual);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
 
     private function registrarCargo()
     {

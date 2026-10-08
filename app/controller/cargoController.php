@@ -22,23 +22,28 @@ switch ($solicitud) {
         }
         break;
 
-    case 'eliminar':
-        if (isset($_POST['cod_cargo'])) {
-            $resultado = $cargo->elmDatosCargo($_POST['cod_cargo']);
-            header("Location: ?url=cargo&status=deleted");
-            exit();
-        }
-        break;
-
     case 'modificar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-cargo'])) {
             if (!empty($_POST['nombre'])) {
+                if ($cargo->verificarCargoDuplicado($_POST['nombre'], $_POST['cod-cargo'])) {
+                    header("Location: ?url=cargo&status=exists");
+                    exit();
+                }
+
                 $resultado = $cargo->modDatosCargo($_POST['cod-cargo'], $_POST['nombre']);
                 header("Location: ?url=cargo&status=updated");
                 exit();
             } else {
                 echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
             }
+        }
+        break;
+
+    case 'eliminar':
+        if (isset($_POST['cod_cargo'])) {
+            $resultado = $cargo->elmDatosCargo($_POST['cod_cargo']);
+            header("Location: ?url=cargo&status=deleted");
+            exit();
         }
         break;
 }
