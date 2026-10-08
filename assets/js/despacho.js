@@ -22,16 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
         filasTablaVehiculoFecha.forEach(fila => {
           // CAMBIO: Capturamos el código desde el input oculto en lugar del texto
           const cod_envio = fila.querySelector('input[name="cod_envio"]').value;
-
-          const vehiculo = fila.querySelector('select[name="select_vehiculo"]').value;
+          //const texto_vehiculo = fila.querySelector('input[name="cod_vehiculo"]');
+          const cod_vehiculo= fila.querySelector('select[name="select_vehiculo"]').value;
           const fecha = fila.querySelector('input[name="fecha"]').value;
 
           // Omitir si la fila no tiene vehículo o fecha asignada
-          if (!vehiculo || !fecha) return;
+          if (!cod_vehiculo || !fecha) return;
 
           // Buscamos si ya existe esta combinación (vehículo + fecha) en nuestro array
           let grupoDespachos = arrayDespachos.find(
-            grupo => grupo.vehiculo === vehiculo && grupo.fecha === fecha
+            grupo => grupo.vehiculo === cod_vehiculo && grupo.fecha === fecha
           );
 
           if (grupoDespachos) {
@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
           } else {
             // Si no existe, creamos un nuevo objeto en el array
             arrayDespachos.push({
-              vehiculo: vehiculo, // Guardamos tanto el nombre como el código del vehículo
+              vehiculo: cod_vehiculo, // Guardamos tanto el nombre como el código del vehículo
+              //placamarca:texto_vehiculo,
               fecha: fecha,
               codigos: [cod_envio] // Iniciamos el array con el primer código
             });
@@ -52,12 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
           filasDespacho.innerHTML = `
               <td class="ps-4 fw-medium">
-                      <select class="form-select" disabled>
-                          <option ${grupo.vehiculo ? 'selected' : ''}>${grupo.vehiculo}</option>
+                      <select class="form-select" name="vehiculo_asignado" disabled>
+                          <option ${grupo.vehiculo ? 'selected' : ''} value="${grupo.vehiculo}">${grupo.vehiculo}</option>
                       </select>
                       </td>
                   <td class="text-center align-middle">
-                      <input type="date" class="form-control" value="${grupo.fecha}" disabled>
+                      <input type="date" class="form-control" name="fecha_establecida" value="${grupo.fecha}" disabled>
                   </td>
                   <td class="text-center align-middle">
                   <select class="form-select form-select-sm" aria-label="Seleccionar Empleado" name="cod_empleado" required>
@@ -95,5 +96,53 @@ document.addEventListener("DOMContentLoaded", function () {
       };
     });
   };
+
+// Lógica para mostrar alertas de estado (éxito, error, etc.)
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+  const msg = urlParams.get('msg');
+
+  if (status) {
+    // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+    setTimeout(() => {
+      let title, text, icon;
+
+      switch (status) {
+        case 'success':
+          title = "Registro exitoso!";
+          text = "El Despacho ha sido registrado correctamente.";
+          icon = "success";
+          break;
+        case 'updated':
+          title = "Actualización exitosa!";
+          text = "El Despacho ha sido actualizado correctamente.";
+          icon = "success";
+          break;
+        case 'deleted':
+          title = "Eliminación exitosa!";
+          text = "El Despacho ha sido eliminado correctamente.";
+          icon = "success";
+          break;
+        case 'exists':
+          title = "Despacho existente!";
+          text = "El Despacho ya existe en la base de datos.";
+          icon = "warning";
+          break;
+        case 'bdError':
+          title = "Despacho existente!";
+          text = `Error en la base de datos.${msg}`;
+          icon = "error";
+          break;
+      }
+
+      if (title && text && icon) {
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: icon
+        });
+      }
+    }, 100);
+  }
 
 });

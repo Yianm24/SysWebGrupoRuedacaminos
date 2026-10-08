@@ -36,14 +36,14 @@
                                                         <select class="form-select form-select-sm" aria-label="Seleccionar Vehiculo" name="select_vehiculo" required>
                                                             <option selected>Vehiculos</option>
                                                             <?php foreach ($datosForaneos['vehiculo'] as $vehiculo): ?>
-                                                                <option value="<?php echo $vehiculo['placa'] . ' ' . $vehiculo['nombremodelo']; ?>"><?php echo $vehiculo['placa'] . ' ' . $vehiculo['nombremodelo']; ?></option>
+                                                                <option value="<?php echo $vehiculo['cod_vehiculo']?>"><?php echo $vehiculo['placa'] . ' ' . $vehiculo['nombremodelo']; ?></option>
                                                             <?php endforeach; ?>
                                                         </select>
                                                     </td>
                                                     <td class="text-center align-middle">
                                                         <div class="input-group d-inline-flex justify-content-center w-auto mx-auto">
-                                                            <input type="date" name="fecha" class="form-control">
-                                                            <input type="time" name="hora" class="form-control" required>
+                                                            <input type="date" name="fecha" class="form-control" >
+                                                            <input type="time" name="hora" class="form-control" >
                                                         </div>
                                                     </td>
 
