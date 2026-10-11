@@ -53,25 +53,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
           filasDespacho.innerHTML = `
               <td class="ps-4 fw-medium">
-                      <select class="form-select" name="vehiculo_asignado" disabled>
-                          <option ${grupo.vehiculo ? 'selected' : ''} value="${grupo.vehiculo}">${grupo.vehiculo}</option>
-                      </select>
+                          <input ${grupo.vehiculo ? `value="${grupo.vehiculo}"` : 'VACIO'} name="vehiculo_asignado[]" 
+                          readonly></input>
                       </td>
                   <td class="text-center align-middle">
-                      <input type="date" class="form-control" name="fecha_establecida" value="${grupo.fecha}" disabled>
+                      <input type="date" class="form-control" name="fecha_establecida" value="${grupo.fecha}" readonly>
                   </td>
                   <td class="text-center align-middle">
-                  <select class="form-select form-select-sm" aria-label="Seleccionar Empleado" name="cod_empleado" required>
-                      <option selected>Empleados</option>
-                      <?php if (!empty($datosForaneos['empleado'])): ?>
-                          <?php foreach ($datosForaneos['empleado'] as $empleado): ?>
-                              <option value="<?= $empleado['cod_empleado']; ?>"><?php echo $empleado['nombre'] . ' ' . $empleado['apellido']; ?></option>
-                          <?php endforeach; ?>
-                      <?php else: ?>
-                          <option value="">No hay empleados con el cargo especificado</option>
-                      <?php endif; ?>
-                  </select>
+                      <select class="form-select form-select-sm" aria-label="Seleccionar Empleado" name="cod_empleado" required>
+                          <option selected>Empleados</option>
+                          <?php if (!empty($datosForaneos['empleado'])): ?>
+                              <?php foreach ($datosForaneos['empleado'] as $empleado): ?>
+                                  <option value="<?= $empleado['cod_empleado']; ?>"><?php echo $empleado['nombre'] . ' ' . $empleado['apellido']; ?></option>
+                              <?php endforeach; ?>
+                          <?php else: ?>
+                              <option value="">No hay empleados con el cargo especificado</option>
+                          <?php endif; ?>
+                      </select>
                   </td>
+                 
           `;
 
           tbodyDespachos.appendChild(filasDespacho);
