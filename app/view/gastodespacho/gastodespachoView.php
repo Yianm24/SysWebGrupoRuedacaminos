@@ -5,6 +5,7 @@
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-boxes me-2"></i> Gestión Gastos de Despacho</h2>
             <section class="card shadow-sm border-0 h-100">
             </header>
+            <?php require 'componentes/modal.php'; ?>
             <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold">Historial</h4>
             </div>
