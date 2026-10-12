@@ -22,7 +22,8 @@ switch ($solicitud) {
                 header("Location: ?url=modelo&status=success");
                 exit();
             } else {
-                
+                header("Location: ?url=modelo&status=empty");
+                exit();
             }
         }
         break;
