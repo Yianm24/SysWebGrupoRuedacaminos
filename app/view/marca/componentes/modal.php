@@ -11,14 +11,15 @@
                     <input type="hidden" id="cod-marca" name="cod_marca">
                     <div class="mb-3">
                         <label class="form-label">Nombre de la Marca</label>
-                        <input type="text" class="form-control" id="nombre_marca" name="nombre_marca" placeholder="Ej: Toyota" required>
+                        <input type="text" class="form-control solo-letras input-evaluar" id="nombre_marca" name="nombre_marca" placeholder="Ej: Toyota" required>
+                        <span class="mensaje-error"></span>
                     </div>
                     
                 </div>
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="" class="btn btn-primary"></button>
+                    <button type="submit" name="tipoSolicitud" value="" class="btn btn-primary" disabled></button>
                 </footer>
             </form>
         </div>
