@@ -8,6 +8,11 @@ $(document).ready(function () {
 
         },
         {
+            id: "formato-placa",
+            expresion: /^[a-zA-Z\d]+$/,
+            mensaje: "Solo ingresar letras mayus y numeros"
+        },
+        {
             id: "solo-numeros",
             expresion: /^\d+$/,
             mensaje: "Solo ingresar numeros"
