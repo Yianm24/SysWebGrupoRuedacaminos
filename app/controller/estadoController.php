@@ -15,7 +15,7 @@ switch ($solicitud) {
             exit();
         }
 
-        $resultado = $estado->regDatosEstado($_POST['nombre_estado'], ['nombre_estado']);
+        $resultado = $estado->regDatosEstado(['nombre_estado']);
         header("Location: ?url=estado&status={$resultado}");
 
         break;

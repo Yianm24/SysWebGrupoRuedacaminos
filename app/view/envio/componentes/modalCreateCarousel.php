@@ -158,7 +158,7 @@
                                                             </div>
                                                             <div class="col-md-7">
                                                                 <label for="rem_razon_social" class="form-label small fw-semibold">Razón Social</label>
-                                                                <input type="text" class="form-control input-evaluar formato-placa" id="rem_razon_social" name="rem_razon_social" placeholder="Nombre de la empresa">
+                                                                <input type="text" class="form-control input-evaluar letra-num-ce" id="rem_razon_social" name="rem_razon_social" placeholder="Nombre de la empresa">
                                                                 <span class="mensaje-error"></span>
                                                             </div>
                                                         </div>
@@ -241,12 +241,14 @@
                                                                         <option value="G">G-</option>
                                                                         <option value="V">V-</option>
                                                                     </select>
-                                                                    <input type="text" class="form-control" id="dest_rif" name="dest_rif" placeholder="12345678-0">
+                                                                    <input type="text" class="form-control input-evaluar solo-numeros" id="dest_rif" name="dest_rif" placeholder="12345678-0">
+                                                                    <span class="mensaje-error"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-7">
                                                                 <label for="dest_razon_social" class="form-label small fw-semibold">Razón Social</label>
-                                                                <input type="text" class="form-control input-evaluar formato-placa" id="dest_razon_social" name="dest_razon_social" placeholder="Nombre de la empresa">
+                                                                <input type="text" class="form-control input-evaluar letra-num-ce" id="dest_razon_social" name="dest_razon_social" placeholder="Nombre de la empresa">
+                                                                <span class="mensaje-error"></span>
                                                             </div>
                                                         </div>
                                                     </div>

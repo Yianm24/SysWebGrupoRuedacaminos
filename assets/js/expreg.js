@@ -21,6 +21,12 @@ $(document).ready(function () {
             id: "correo-electronico",
             expresion: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
             mensaje: "Ingresar Correo valido ej:juan123@gmail.com"
+        },
+        {
+
+            id: "letra-num-ceb",
+            expresion: /^[a-zA-Z0-9\s!-\/:-?\[-`{-~]+$/,
+            mensaje:"Solo ingrese letras, numeros o caracteres especiales"
         }
     ];
 

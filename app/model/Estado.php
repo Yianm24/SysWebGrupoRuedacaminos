@@ -33,14 +33,16 @@ class Estado extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosEstado($nombre, array $campos)
+    public function regDatosEstado(array $campos)
     {
-        if ($this->validarPost($campos)) {
-
-            $this->nombre = $nombre;
+        if (is_array($this->validarPost($campos))) {
+            
+            $array=$this->validarPost($campos);
+            $this->nombre = $array['nombre_estado'];
             $this->estado = 1;
-        }else {
-        return exit();
+            
+        } else {
+            return exit();
         }
 
         return $this->registrarEstado();
