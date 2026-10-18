@@ -1,0 +1,36 @@
+<?php
+namespace App\Traits;
+
+trait ValidadorTrait {
+
+    // 1. Verifica que la petición sea POST y que los campos requeridos no estén vacíos
+    public function validarPost(array $camposRequeridos, string $mensajeError = 'empty'): bool {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return false;
+        }
+
+        foreach ($camposRequeridos as $campo) {
+            if (!isset($_POST[$campo]) || empty(trim($_POST[$campo]))) {
+                $this->mostrarAlerta($mensajeError);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 2. Centraliza las redirecciones para no repetir header() y exit()
+    // public function redirigir(string $modulo, string $status): void {
+    //     header("Location: ?url={$modulo}&status={$status}");
+    //     exit();
+    // }
+
+    // 3. Centraliza las alertas JS
+    public function mostrarAlerta(string $mensaje): void {
+        header("Location: ?url=estado&status={$mensaje}");
+    }
+
+    // 4. Obtiene el dato limpio del POST
+    public function input(string $campo, $default = null) {
+        return isset($_POST[$campo]) ? htmlspecialchars(trim($_POST[$campo])) : $default;
+    }
+}

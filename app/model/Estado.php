@@ -1,34 +1,47 @@
 <?php
-namespace App\Model;
-use App\Config\Conexion;
 
-class Estado extends Conexion{
-    
+namespace App\Model;
+
+use App\Config\Conexion;
+use App\Traits\ValidadorTrait;
+
+class Estado extends Conexion
+{
+    use ValidadorTrait;
+
+
     private $cod_estado;
     private $nombre;
     private $estado;
 
-    function __construct(){
+    function __construct()
+    {
         parent::__construct();
     }
 
-    public function verificarEstadoDuplicada($nombre,$cod_estado=null) {
+    public function verificarEstadoDuplicada($nombre, $cod_estado = null)
+    {
         if ($cod_estado === null) {
             $sentencia = "SELECT COUNT(*) FROM Estado WHERE nombre = ? AND estado = 1;";
-        }else{
+        } else {
             $sentencia = "SELECT COUNT(*) FROM Estado WHERE nombre = ? AND cod_estado != ? AND estado = 1;";
         }
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
-        $count->bindValue(2,$cod_estado);
+        $count->bindValue(2, $cod_estado);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
 
-     public function regDatosEstado($nombre)
+    public function regDatosEstado($nombre, array $campos)
     {
-        $this->nombre = $nombre;
-        $this->estado = 1;
+        if ($this->validarPost($campos)) {
+
+            $this->nombre = $nombre;
+            $this->estado = 1;
+        }else {
+        return exit();
+        }
 
         return $this->registrarEstado();
     }
@@ -42,17 +55,17 @@ class Estado extends Conexion{
 
             $insert->bindValue(1, $this->nombre);
             $insert->bindValue(2, $this->estado);
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
-
+            return 'success';
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar la Estado: " . $e->getMessage() . "');</script>";
         }
     }
 
-    public function obt_RegistrosEstado(){
-        
+    public function obt_RegistrosEstado()
+    {
+
         try {
             $sentencia = "SELECT * FROM Estado WHERE estado = 1";
             $consulta = $this->conexion->prepare($sentencia);
@@ -64,14 +77,14 @@ class Estado extends Conexion{
         }
     }
 
-    public function actEstado($cod_estado,$nombre)
+    public function actEstado($cod_estado, $nombre)
     {
         $this->cod_estado = $cod_estado;
         $this->nombre = $nombre;
 
         return $this->actualizarEstado();
     }
-   
+
     private function actualizarEstado()
     {
         try {
@@ -82,7 +95,6 @@ class Estado extends Conexion{
             $update->bindValue(2, $this->cod_estado);
 
             $update->execute();
-
         } catch (\PDOException $e) {
             return "Error al actualizar el registro de la Estado: " . $e->getMessage();
         }
@@ -109,8 +121,4 @@ class Estado extends Conexion{
             return "Error al eliminar la Estado: " . $e->getMessage();
         }
     }
-
 }
-
-
-?>

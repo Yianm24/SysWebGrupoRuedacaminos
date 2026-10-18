@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Model\Estado;
@@ -8,21 +9,15 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre_estado'])) {
-                
-                if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
-                    header("Location: ?url=estado&status=exists");
-                    exit();
-                }
 
-                $resultado = $estado->regDatosEstado($_POST['nombre_estado']);
-                header("Location: ?url=estado&status=success");
-                exit();
-            } else {
-                echo "<script>alert('No fue ingresado el nombre de la estado');</script>";
-            }
+        if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
+            header("Location: ?url=estado&status=exists");
+            exit();
         }
+
+        $resultado = $estado->regDatosEstado($_POST['nombre_estado'], ['nombre_estado']);
+        header("Location: ?url=estado&status={$resultado}");
+
         break;
     case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -57,8 +52,7 @@ switch ($solicitud) {
 
 $registros = $estado->obt_RegistrosEstado();
 
-    // app/controller/unidadesmedidaController.php
-    include 'app/view/layout/header.php';
-    include 'app/view/estado/estadoView.php';
-    include 'app/view/layout/footer.php';
-?>
+// app/controller/unidadesmedidaController.php
+include 'app/view/layout/header.php';
+include 'app/view/estado/estadoView.php';
+include 'app/view/layout/footer.php';

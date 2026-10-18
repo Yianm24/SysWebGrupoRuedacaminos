@@ -112,6 +112,17 @@ document.addEventListener("DOMContentLoaded", function () {
           text = "La Estado ingresada ya existe en la base de datos.";
           icon = "warning";
           break;
+        case 'empty':
+          title = "Campos vacíos!";
+          text = "Uno o más campos están vacíos.";
+          icon = "warning";
+          break;
+
+          case 'error':
+          title = "Ha ocurrido un error!";
+          text = "error manifestado en el sistema.";
+          icon = "warning";
+          break;
       }
 
       if (title && text && icon) {

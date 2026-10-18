@@ -31,7 +31,6 @@ $(document).ready(function () {
     function evaluarInput(input) {
         const valor = input.val().trim();
         const mensajeError = input.siblings('.mensaje-error');
-        
 
         // Si está vacío, se resetea el estado del campo
         if (valor === '') {
@@ -83,5 +82,19 @@ $(document).ready(function () {
         evaluarInput($(this));
         verificarFormulario();
     });
+
+    // $('.btn-close').click(() => {
+
+    //     // 
+    //     // removeClass('is-invalid');
+
+    //     inputs.each(() => {
+    //         $(this).removeClass('is-valid');
+    //         $(this).removeClass('is-invalid');
+    //     });
+    //     // btnEnviar.attr('disabled' = true);
+
+
+    // })
 
 });

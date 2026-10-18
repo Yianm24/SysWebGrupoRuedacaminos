@@ -69,7 +69,7 @@
                                                     </div>
                                                 </div>
 
-                                                <textarea id="direccion_destino" name="direccion_destino" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
+                                                <textarea id="direccion_destino" name="direccion_destino" class="form-control " rows="2" placeholder="Calle, número, ciudad..." required></textarea>
                                             </div>
 
                                             <!-- Bloque 3: Kilometraje -->
@@ -127,14 +127,15 @@
                                                                         <option value="V">V-</option>
                                                                         <option value="E">E-</option>
                                                                     </select>
-                                                                    <input type="text" class="form-control" id="rem_cedula" name="rem_cedula" placeholder="12345678">
+                                                                    <input type="text" class="form-control input-evaluar solo-numeros" id="rem_cedula" name="rem_cedula" placeholder="12345678">
+                                                                    <span class="mensaje-error"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-7">
                                                                 <label for="rem_nombre" class="form-label small fw-semibold">Nombre Completo</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" id="rem_nombre" name="rem_nombre" placeholder="Nombre">
-                                                                    <input type="text" class="form-control" id="rem_apellido" name="rem_apellido" placeholder="Apellido">
+                                                                    <input type="text" class="form-control input-evaluar solo-letras" id="rem_nombre" name="rem_nombre" placeholder="Nombre">
+                                                                    <input type="text" class="form-control input-evaluar solo-letras" id="rem_apellido" name="rem_apellido" placeholder="Apellido">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -151,12 +152,14 @@
                                                                         <option value="G">G-</option>
                                                                         <option value="V">V-</option>
                                                                     </select>
-                                                                    <input type="text" class="form-control" id="rem_rif" name="rem_rif" placeholder="12345678-0">
+                                                                    <input type="text" class="form-control input-evaluar solo-numeros" id="rem_rif" name="rem_rif" placeholder="12345678-0">
+                                                                    <span class="mensaje-error"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-7">
                                                                 <label for="rem_razon_social" class="form-label small fw-semibold">Razón Social</label>
-                                                                <input type="text" class="form-control" id="rem_razon_social" name="rem_razon_social" placeholder="Nombre de la empresa">
+                                                                <input type="text" class="form-control input-evaluar formato-placa" id="rem_razon_social" name="rem_razon_social" placeholder="Nombre de la empresa">
+                                                                <span class="mensaje-error"></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -165,11 +168,13 @@
                                                     <div class="row g-3 mt-1">
                                                         <div class="col-md-6">
                                                             <label for="rem_telefono" class="form-label small fw-semibold" required>Teléfono</label>
-                                                            <input type="tel" class="form-control" id="rem_telefono" name="rem_telefono" placeholder="0414 1234567">
+                                                            <input type="tel" class="form-control input-evaluar solo-numeros" id="rem_telefono" name="rem_telefono" placeholder="0414 1234567">
+                                                            <span class="mensaje-error"></span>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="rem_correo" class="form-label small fw-semibold" required>Correo Electrónico</label>
-                                                            <input type="email" class="form-control" id="rem_correo" name="rem_correo" placeholder="remitente@correo.com">
+                                                            <input type="email" class="form-control input-evaluar correo-electronico" id="rem_correo" name="rem_correo" placeholder="remitente@correo.com">
+                                                            <span class="mensaje-error"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -211,14 +216,15 @@
                                                                         <option value="V">V-</option>
                                                                         <option value="E">E-</option>
                                                                     </select>
-                                                                    <input type="text" class="form-control" id="dest_cedula" name="dest_cedula" placeholder="12345678">
+                                                                    <input type="text" class="form-control input-evaluar solo-numeros" id="dest_cedula" name="dest_cedula" placeholder="12345678">
+                                                                    <span class="mensaje-error"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-7">
                                                                 <label for="dest_nombre" class="form-label small fw-semibold">Nombre Completo</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" id="dest_nombre" name="dest_nombre" placeholder="Nombre">
-                                                                    <input type="text" class="form-control" id="dest_apellido" name="dest_apellido" placeholder="Apellido">
+                                                                    <input type="text" class="form-control input-evaluar solo-letras" id="dest_nombre" name="dest_nombre" placeholder="Nombre">
+                                                                    <input type="text" class="form-control input-evaluar solo-letras" id="dest_apellido" name="dest_apellido" placeholder="Apellido">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -240,7 +246,7 @@
                                                             </div>
                                                             <div class="col-md-7">
                                                                 <label for="dest_razon_social" class="form-label small fw-semibold">Razón Social</label>
-                                                                <input type="text" class="form-control" id="dest_razon_social" name="dest_razon_social" placeholder="Nombre de la empresa">
+                                                                <input type="text" class="form-control input-evaluar formato-placa" id="dest_razon_social" name="dest_razon_social" placeholder="Nombre de la empresa">
                                                             </div>
                                                         </div>
                                                     </div>

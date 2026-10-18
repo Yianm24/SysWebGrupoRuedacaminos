@@ -11,7 +11,8 @@
                     <input type="hidden" id="cod-municipio" name="cod_municipio">
                     <div class="mb-3">
                         <label class="form-label">Nombre de la Municipio</label>
-                        <input type="text" class="form-control" id="nombre_municipio" name="nombre_municipio" placeholder="Ej: Iribarren" required>
+                        <input type="text" class="form-control input-evaluar solo-letras" id="nombre_municipio" name="nombre_municipio" placeholder="Ej: Iribarren" required>
+                        <span class="mensaje-error"></span>
                     </div>
                     <div class="mb-3">
                         <select class="form-select" id="cod-estado" name="cod_estado">
@@ -26,7 +27,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="" class="btn btn-primary"></button>
+                    <button type="submit" name="tipoSolicitud" value="" class="btn btn-primary" disabled></button>
                 </footer>
             </form>
         </div>
