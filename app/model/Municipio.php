@@ -3,9 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTrait;
 
 class Municipio extends Conexion
 {
+
+    use ValidadorTrait;
 
     private $cod_municipio;
     private $nombre;
@@ -35,13 +38,17 @@ class Municipio extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosMunicipio($nombre, $cod_estado)
+    public function regDatosMunicipio(array $campos)
     {
-        // $this->nombre =strtoupper($nombre);
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->cod_estado = $cod_estado;
-        $this->estado = 1;
+        if (is_array($this->validarPost($campos))) {
 
+            $array = $this->validarPost($campos);
+            $this->nombre = $this->formatearPalabra($array['nombre_municipio']);
+            $this->cod_estado =intval($array['cod_estado']) ;
+            $this->estado = 1;
+        } else {
+            return exit();
+        }
         return $this->registrarMunicipio();
     }
 
@@ -56,9 +63,9 @@ class Municipio extends Conexion
             $insert->bindValue(2, $this->cod_estado);
             $insert->bindValue(3, $this->estado);
 
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
+            return 'success';
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el municipio: " . $e->getMessage() . "');</script>";
         }

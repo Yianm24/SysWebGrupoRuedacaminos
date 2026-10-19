@@ -12,18 +12,18 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre_municipio']) && !empty($_POST['cod_estado'])) {
-                if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
-                    header("Location: ?url=municipio&status=exists");
-                    exit();
-                }
 
-                $resultado = $municipio->regDatosMunicipio($_POST['nombre_municipio'], $_POST['cod_estado']);
-                header("Location: ?url=municipio&status=success");
+            if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
+                header("Location: ?url=municipio&status=exists");
                 exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
             }
+            echo $_POST['nombre_municipio'];
+            // $resultado = $municipio->regDatosMunicipio($_POST['nombre_municipio'], $_POST['cod_estado']);
+            // header("Location: ?url=municipio&status=success");
+            // exit();
+            $resultado = $municipio->regDatosMunicipio(['nombre_municipio', 'cod_estado']);
+
+            header("Location: ?url=municipio&status={$resultado}");
         }
         break;
     case 'actualizar':
@@ -39,7 +39,7 @@ switch ($solicitud) {
                 header("Location: ?url=municipio&status=updated");
                 exit();
             } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
+                echo "<script>alert('Falta uno o varios datos por ingresar');</>";
             }
         }
         break;

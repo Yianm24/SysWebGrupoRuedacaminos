@@ -24,11 +24,6 @@ trait ValidadorTrait
         return $array;
     }
 
-    // 2. Centraliza las redirecciones para no repetir header() y exit()
-    // public function redirigir(string $modulo, string $status): void {
-    //     header("Location: ?url={$modulo}&status={$status}");
-    //     exit();
-    // }
 
     // 3. Centraliza las alertas JS
     public function mostrarAlerta(string $mensaje): void
