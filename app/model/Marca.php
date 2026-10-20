@@ -3,10 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTrait;
 
 class Marca extends Conexion
 {
 
+use ValidadorTrait;
     private $cod_marca;
     private $nombre;
     private $estado;
@@ -30,28 +32,32 @@ class Marca extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosMarca($nombre)
+    public function regDatosMarca(array $campos)
     {
-        $this->nombre = strtoupper($nombre);
+        if(is_array($this->validarPost($campos))){
+        $datos = $this->validarPost($campos);
+        $this->nombre = strtoupper($datos['nombre_marca']);
         $this->estado = 1;
-
+        }else{
+            return 'error&msg=Registrar';
+        }
         return $this->registrarMarca();
     }
 
     private function registrarMarca()
     {
         try {
-            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?, ?)";
+            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?,?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
             $insert->bindValue(2, $this->estado);
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
+            return 'success';
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar la Marca: " . $e->getMessage() . "');</script>";
+            return  "exception&msg=".urlencode($e->getMessage());
         }
     }
 

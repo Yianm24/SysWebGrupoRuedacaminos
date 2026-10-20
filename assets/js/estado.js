@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Lógica para mostrar alertas de estado (éxito, error, etc.)
   const urlParams = new URLSearchParams(window.location.search);
   const status = urlParams.get('status');
+  const mensaje = urlParams.get('msg');
 
   if (status) {
     // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
@@ -117,11 +118,15 @@ document.addEventListener("DOMContentLoaded", function () {
           text = "Uno o más campos están vacíos.";
           icon = "warning";
           break;
-
-          case 'error':
-          title = "Ha ocurrido un error!";
-          text = "error manifestado en el sistema.";
-          icon = "warning";
+        case 'error':
+          title = "Error!";
+          text = `Se produjo un error en el processo de ${mensaje}`;
+          icon = "error";
+          break;
+        case 'exception':
+          title = "Exception Retornada!";
+          text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+          icon = "error";
           break;
       }
 

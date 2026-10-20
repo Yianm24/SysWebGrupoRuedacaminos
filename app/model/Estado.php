@@ -33,37 +33,6 @@ class Estado extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosEstado(array $campos)
-    {
-        if (is_array($this->validarPost($campos))) {
-            
-            $array=$this->validarPost($campos);
-            $this->nombre = $array['nombre_estado'];
-            $this->estado = 1;
-            
-        } else {
-            return exit();
-        }
-
-        return $this->registrarEstado();
-    }
-
-    private function registrarEstado()
-    {
-        try {
-            $sentencia = "INSERT INTO Estado (nombre,estado) VALUES (?, ?)";
-
-            $insert = $this->conexion->prepare($sentencia);
-
-            $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->estado);
-            $insert->execute();
-
-            return 'success';
-        } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar la Estado: " . $e->getMessage() . "');</script>";
-        }
-    }
 
     public function obt_RegistrosEstado()
     {
@@ -79,10 +48,51 @@ class Estado extends Conexion
         }
     }
 
-    public function actEstado($cod_estado, $nombre)
+    public function regDatosEstado(array $campos)
     {
-        $this->cod_estado = $cod_estado;
-        $this->nombre = $nombre;
+        if (is_array($this->validarPost($campos))) {
+
+            $array = $this->validarPost($campos);
+            $this->nombre = $array['nombre_estado'];
+            $this->estado = 1;
+        } else {
+            return 'error&msg=Registrar';
+        }
+
+        return $this->registrarEstado();
+    }
+
+    private function registrarEstado()
+    {
+        try {
+            $sentencia = "INSERT INTO Estado (nombre,estado) VALUES (?,?)";
+
+            $insert = $this->conexion->prepare($sentencia);
+
+            $insert->bindValue(1, $this->nombre);
+            $insert->bindValue(2, $this->estado);
+            $insert->execute();
+
+            return 'success';
+        } catch (\PDOException $e) {
+            return "exception&msg=".urlencode($e->getMessage());
+        }
+    }
+
+    public function actEstado(array $campos)
+    {
+
+        if (is_array($this->validarPost($campos))) {
+
+            $array = $this->validarPost($campos);
+            $this->nombre = $array['cod_estado'];
+            $this->nombre = $array['nombre_estado'];
+            $this->estado = 1;
+        } else {
+            return exit();
+        }
+        // $this->cod_estado = $cod_estado;
+        // $this->nombre = $nombre;
 
         return $this->actualizarEstado();
     }
@@ -97,6 +107,7 @@ class Estado extends Conexion
             $update->bindValue(2, $this->cod_estado);
 
             $update->execute();
+
         } catch (\PDOException $e) {
             return "Error al actualizar el registro de la Estado: " . $e->getMessage();
         }
