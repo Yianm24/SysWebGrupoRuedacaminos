@@ -75,7 +75,7 @@ class Estado extends Conexion
 
             return 'success';
         } catch (\PDOException $e) {
-            return "exception&msg=".urlencode($e->getMessage());
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
@@ -85,14 +85,12 @@ class Estado extends Conexion
         if (is_array($this->validarPost($campos))) {
 
             $array = $this->validarPost($campos);
-            $this->nombre = $array['cod_estado'];
+            $this->cod_estado = $array['cod_estado'];
             $this->nombre = $array['nombre_estado'];
             $this->estado = 1;
         } else {
-            return exit();
+            return 'error&msg=Actualizar';
         }
-        // $this->cod_estado = $cod_estado;
-        // $this->nombre = $nombre;
 
         return $this->actualizarEstado();
     }
@@ -108,8 +106,9 @@ class Estado extends Conexion
 
             $update->execute();
 
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al actualizar el registro de la Estado: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 

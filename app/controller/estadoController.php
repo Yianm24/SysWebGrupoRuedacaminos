@@ -20,21 +20,17 @@ switch ($solicitud) {
 
         break;
     case 'actualizar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_estado']) && !empty($_POST['nombre_estado'])) {
 
-                if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
-                    header("Location: ?url=estado&status=exists");
-                    exit();
-                }
 
-                $resultado = $estado->actEstado($_POST['cod_estado'], $_POST['nombre_estado']);
-                header("Location: ?url=estado&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
+        if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
+            header("Location: ?url=estado&status=exists");
+            exit();
         }
+
+        $resultado = $estado->actEstado(['cod_estado', 'nombre_estado']);
+        header("Location: ?url=estado&status={$resultado}");
+
+
         break;
     case 'eliminar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
