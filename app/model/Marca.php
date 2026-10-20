@@ -51,9 +51,9 @@ use ValidadorTrait;
 
             $insert = $this->conexion->prepare($sentencia);
 
-            $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->estado);
-            $insert->execute();
+           /*  $insert->bindValue(1, $this->nombre);
+            $insert->bindValue(2, $this->estado); */
+            $insert->execute([$this->nombre,$this->estado]);
 
             return 'success';
         } catch (\PDOException $e) {
@@ -75,10 +75,16 @@ use ValidadorTrait;
         }
     }
 
-    public function actMarca($cod_marca, $nombre)
+    public function actMarca(array $campos)
     {
-        $this->cod_marca = $cod_marca;
-        $this->nombre = strtoupper($nombre);
+        if(is_array($this->validarPost($campos))){
+            $datos = $this->validarPost($campos);
+            $this->cod_marca = $datos['cod_marca'] ;
+            $this->nombre = strtoupper($datos['nombre_marca']);
+        }else{
+             return 'error&msg=Registrar'; 
+        }
+        
         return $this->actualizarMarca();
     }
 
@@ -87,20 +93,21 @@ use ValidadorTrait;
         try {
             $sentencia = "UPDATE `marca` SET nombre = ? WHERE cod_marca = ?";
             $update = $this->conexion->prepare($sentencia);
-
-            $update->bindValue(1, $this->nombre);
-            $update->bindValue(2, $this->cod_marca);
-
-            $update->execute();
+            $update->execute([$this->nombre,$this->cod_marca]);
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al actualizar el registro de la marca: " . $e->getMessage();
+            return  "exception&msg=".urlencode($e->getMessage());
         }
     }
 
-    public function elmDatosMarca(int $cod_marca)
+    public function elmDatosMarca(array $campos)
     {
-        $this->cod_marca = $cod_marca;
-
+        if(is_array($this->validarPost($campos))){
+            $datos = $this->validarPost($campos);
+            $this->cod_marca = $datos['cod_marca'];
+        }else{
+           return 'error&msg=Registrar'; 
+        }
         return $this->eliminarMarca();
     }
 
@@ -109,13 +116,10 @@ use ValidadorTrait;
         try {
             $sentencia = "UPDATE `marca` SET estado = 0 WHERE cod_marca = ?";
             $delete = $this->conexion->prepare($sentencia);
-
-            $delete->bindValue(1, $this->cod_marca);
-            $delete->execute();
-
-            return "Marca de vehiculo eliminada exitosamente";
+            $delete->execute([$this->cod_marca]);
+            return 'deleted';
         } catch (\PDOException $e) {
-            return "Error al eliminar la Marca: " . $e->getMessage();
+            return  "exception&msg=".urlencode($e->getMessage());
         }
     }
 }

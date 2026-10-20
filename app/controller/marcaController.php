@@ -18,37 +18,23 @@ switch ($solicitud) {
         $resultado = $marca->regDatosMarca(['nombre_marca']);
         header("Location: ?url=marca&status={$resultado}");
 
-        break;
+    break;
     case 'actualizar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_marca']) && !empty($_POST['nombre_marca'])) {
-
-                if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
-                    header("Location: ?url=marca&status=exists");
-                    exit();
-                }
-
-                $resultado = $marca->actMarca($_POST['cod_marca'], $_POST['nombre_marca']);
-                header("Location: ?url=marca&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
+     
+        if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
+            header("Location: ?url=marca&status=exists");
+            exit();
         }
-        break;
-    case 'eliminar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_marca'])) {
-                $resultado = $marca->elmDatosMarca($_POST['cod_marca']);
-                //echo $resultado;
-                header("Location: ?url=marca&status=deleted");
-                exit();
-            } else {
-                echo "<script>alert('Falta el código de la Marca');</script>";
-            }
-        }
+
+        $resultado = $marca->actMarca(['cod_marca','nombre_marca']);
+        header("Location: ?url=marca&status={$resultado}");
+          
+    break;
+    case 'eliminar':     
+        $resultado = $marca->elmDatosMarca(['cod_marca']);
+        header("Location: ?url=marca&status={$resultado}");
+    break;
 }
-
 $registros = $marca->obt_RegistrosMarca();
 //$marca->buscarId();
 // app/controller/unidadesmedidaController.php
