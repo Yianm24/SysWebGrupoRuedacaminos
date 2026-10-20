@@ -50,9 +50,6 @@ use ValidadorTrait;
             $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?,?)";
 
             $insert = $this->conexion->prepare($sentencia);
-
-           /*  $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->estado); */
             $insert->execute([$this->nombre,$this->estado]);
 
             return 'success';

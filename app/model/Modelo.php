@@ -3,10 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTrait;
 
 class Modelo extends Conexion
 {
-
+use ValidadorTrait;
     private $cod_modelo;
     private $nombre;
     private $marca;
@@ -35,13 +36,17 @@ class Modelo extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosModelo($nombre, $marca)
+    public function regDatosModelo(array $campos)
     {
-        $this->nombre =strtoupper($nombre);
-        // $this->nombre = $this->formatearPalabra($nombre);
-        $this->marca = $marca;
-        $this->estado = 1;
+        if(is_array($this->validarPost($campos))){
 
+        $datos = $this->validarPost($campos);
+        $this->nombre =strtoupper($datos['nombre_modelo']);
+        $this->marca = $datos['marca'];
+        $this->estado = 1;
+        }else{
+            return 'error&msg=Registrar';
+        }
         return $this->registrarModelo();
     }
 
@@ -51,16 +56,11 @@ class Modelo extends Conexion
             $sentencia = "INSERT INTO modelo (nombre,cod_marca,estado) VALUES (?, ?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
+            $insert->execute([$this->nombre,$this->marca,$this->estado]);
 
-            $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->marca);
-            $insert->bindValue(3, $this->estado);
-
-            $resultado = $insert->execute();
-
-            return $resultado;
+            return 'success';
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el modelo: " . $e->getMessage() . "');</script>";
+            return  "exception&msg=".urlencode($e->getMessage());
         }
     }
 
@@ -78,15 +78,21 @@ class Modelo extends Conexion
             $select->execute();
             return $select->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
+            echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
             return [];
         }
     }
 
-    public function actDatosModelo($cod_modelo, $nombre, $marca)
+    public function actDatosModelo(array $campos)
     {
-        $this->cod_modelo = $cod_modelo;
-        $this->nombre =strtoupper($nombre);
-        $this->marca = $marca;
+        if(is_array($this->validarPost($campos))){
+            $datos = $this->validarPost($campos);    
+            $this->cod_modelo = $datos['cod_modelo'];
+            $this->nombre =strtoupper($datos['nombre_modelo']);
+            $this->marca = $datos['marca'];
+        }else{
+            return 'error&msg=Registrar';
+        }
 
         return $this->actualizarModelo();
     }
@@ -96,22 +102,25 @@ class Modelo extends Conexion
     {
         try {
             $sentencia = "UPDATE `modelo` SET nombre = ?, cod_marca = ? WHERE cod_modelo = ?";
+
             $update = $this->conexion->prepare($sentencia);
+            $update->execute([$this->nombre,$this->marca,$this->cod_modelo]);
 
-            $update->bindValue(1, $this->nombre);
-            $update->bindValue(2, $this->marca);
-            $update->bindValue(3, $this->cod_modelo);
-
-            $update->execute();
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al actualizar el modelo: " . $e->getMessage();
+            return "exception&msg=".urlencode($e->getMessage());
         }
     }
 
 
-    public function elmDatosModelo(int $cod_modelo)
+    public function elmDatosModelo(array $campos)
     {
-        $this->cod_modelo = $cod_modelo;
+        if(is_array($this->validarPost($campos))){
+            $datos = $this->validarPost($campos);
+            $this->cod_modelo = $datos['cod_modelo'];
+        }else{
+            return 'error&msg=Registrar';
+        }
 
         return $this->eliminarModelo();
     }
@@ -120,14 +129,13 @@ class Modelo extends Conexion
     {
         try {
             $sentencia = "UPDATE `modelo` SET estado = 0 WHERE cod_modelo = ?";
+            
             $delete = $this->conexion->prepare($sentencia);
+            $delete->execute([$this->cod_modelo]);
 
-            $delete->bindValue(1, $this->cod_modelo);
-            $delete->execute();
-
-            return "Modelo de vehiculo eliminado exitosamente";
+            return 'deleted';
         } catch (\PDOException $e) {
-            return "Error al eliminar el Modelo de vehiculo: " . $e->getMessage();
+            return "exception&msg=".urlencode($e->getMessage());
         }
     }
 }
