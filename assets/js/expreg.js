@@ -18,6 +18,11 @@ $(document).ready(function () {
             mensaje: "Solo ingresar numeros"
         },
         {
+            id: "numeros-decimales",
+            expresion: /^\d+(\.\d{1,2})?$/,
+            mensaje: "Solo ingresar números, puede incluir hasta 2 decimales luego del punto"
+        },
+        {
             id: "correo-electronico",
             expresion: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
             mensaje: "Ingresar Correo valido ej:juan123@gmail.com"
