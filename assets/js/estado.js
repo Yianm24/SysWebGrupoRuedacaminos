@@ -95,22 +95,22 @@ document.addEventListener("DOMContentLoaded", function () {
       switch (status) {
         case 'success':
           title = "Registro exitoso!";
-          text = "La Estado ha sido registrada correctamente.";
+          text = "El Estado ha sido registrado correctamente.";
           icon = "success";
           break;
         case 'updated':
           title = "Actualización exitosa!";
-          text = "La Estado ha sido actualizada correctamente.";
+          text = "El Estado ha sido actualizado correctamente.";
           icon = "success";
           break;
         case 'deleted':
           title = "Eliminación exitosa!";
-          text = "La Estado ha sido eliminada correctamente.";
+          text = "El Estado ha sido eliminado correctamente.";
           icon = "success";
           break;
         case 'exists':
           title = "Estado existente!";
-          text = "La Estado ingresada ya existe en la base de datos.";
+          text = "El Estado ingresado ya existe en la base de datos.";
           icon = "warning";
           break;
         case 'empty':
