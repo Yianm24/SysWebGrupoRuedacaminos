@@ -8,18 +8,19 @@
 
             <form action="?url=cambiomoneda" method="POST" id="formEditarCambio">
                 <div class="modal-body">
-                    <input type="hidden" name="tipoSolicitud" value="actualizar">
+                    <!-- <input type="hidden" name="tipoSolicitud" value="actualizar">-->
                     <input type="hidden" name="id_cambio_editar" id="id_cambio_editar" value="">
                     <input type="hidden" name="moneda_editar" id="moneda_editar" value="">
                     
                     <div class="mb-3">
                         <label for="tasa_editar" class="form-label">Valor Tasa (VES)</label>
-                        <input type="number" step="0.01" class="form-control" id="tasa_editar" name="tasa_editar" required>
+                        <input type="text" class="form-control numeros-decimales input-evaluar" id="tasa_editar" name="tasa_editar" required>
+                        <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                     </div>
                 </div>
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                    <button type="submit" name="tipoSolicitud" value="actualizar" class="btn btn-primary" disabled><i class="bi bi-save"></i> Guardar</button>
                 </footer>
             </form>
         </div>
