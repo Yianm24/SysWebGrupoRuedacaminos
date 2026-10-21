@@ -13,7 +13,7 @@
                         <td class="ps-4 fw-medium text-secondary"><?php echo $dato['nombre']; ?></td>
                         <td class="text-end pe-4">
                             <input type="hidden" class="codigo_cargo">
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modificarCargo"
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modalCargo"
                                 datos-cod-cargo="<?php echo $dato['cod_cargo']; ?>"
                                 datos-nombre="<?php echo $dato['nombre']; ?>">
                                 <i class="bi bi-pencil"></i>

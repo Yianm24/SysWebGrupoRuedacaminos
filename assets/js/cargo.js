@@ -1,44 +1,61 @@
 document.addEventListener("DOMContentLoaded", function () {
 
 
-    // Validación de Registro.
-    const formRegistrar = document.querySelector('#registerCargo form');
-    if (formRegistrar) {
-        formRegistrar.addEventListener('submit', function(event) {
-            const nombreInput = document.querySelector('#registerCargo input[name="nombre"]').value.trim();
-            if (nombreInput === "") {
-                event.preventDefault();
-                Swal.fire({ title: "Error de validación", text: "El nombre del cargo no puede estar vacío.", icon: "error" });
+    // Validación de Registro y Modificación.
+    const modalCargo = document.getElementById('modalCargo');
+    if (modalCargo) {
+        modalCargo.addEventListener('show.bs.modal', event => {
+            const botonTrig = event.relatedTarget;
+            const tituloModal = modalCargo.querySelector('#modalLabel');
+            const btnSubmit = modalCargo.querySelector('#btnSubmitModal');
+            
+            const inputId = modalCargo.querySelector('#cod_cargo');
+            const inputNombre = modalCargo.querySelector('#nombre');
+
+            $(inputNombre).removeClass('is-valid is-invalid');$(inputNombre).siblings('.mensaje-error').hide().text('');
+            
+            if (botonTrig.title === "Registrar" || botonTrig.getAttribute('title') === 'Registrar') {
+                tituloModal.innerHTML = '<i class="bi bi-person-badge"></i> Registrar Nuevo Cargo';
+                btnSubmit.value = "registrar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Registrar';
+                inputId.name = ""; 
+                inputNombre.name = "nombre";
+                inputId.value = "";
+                inputNombre.value = "";
+
+                $(inputNombre).trigger('input');
+                
+            } else if (botonTrig.title === "Modificar" || botonTrig.getAttribute('title') === 'Modificar') {
+                tituloModal.innerHTML = '<i class="bi bi-pencil-square"></i> Modificar Cargo';
+                btnSubmit.value = "modificar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Guardar';
+                inputId.name = "cod-cargo";
+                inputNombre.name = "nombre";
+                inputId.value = botonTrig.getAttribute('datos-cod-cargo');
+                inputNombre.value = botonTrig.getAttribute('datos-nombre');
+
+                document.getElementById('formCargo').setAttribute('data-nombre-original', inputNombre.value);
+                
+                $(inputNombre).trigger('input');
+                btnSubmit.disabled = true;
             }
         });
     }
-    
-    // Modal Modificar Cargo.
-    const modal = document.getElementById('modificarCargo');
-    if (modal) {
-        modal.addEventListener('show.bs.modal', event => {
-            const boton = event.relatedTarget;
-            const cod_cargo = boton.getAttribute('datos-cod-cargo');
-            const nombre = boton.getAttribute('datos-nombre');
-            const inputCodCargo = modal.querySelector('.modal-body #cod-cargo');
-            const inputNombre = modal.querySelector('.modal-body #nombre');
-            inputCodCargo.value = cod_cargo;
-            inputNombre.value = nombre;
-            const form = modal.querySelector('form');
-            form.setAttribute('data-orig-nombre', nombre);
-        });
-    }
 
-    // Validación de Modificación duplicada y vacía.
-    const formModificar = document.querySelector('#modificarCargo form');
-    if (formModificar) {
-        formModificar.addEventListener('submit', function(event) {
-            const nombreOriginal = this.getAttribute('data-orig-nombre');
-            const nombreActual = document.getElementById('nombre').value.trim();
-
-            if (nombreOriginal === nombreActual) {
-                event.preventDefault();
-                Swal.fire({ title: "Sin modificaciones", text: "El nombre ingresado es igual al actual y no se registraron cambios.", icon: "info" });
+    //validar edición de cargo sin cambios
+    const formCargo = document.getElementById('formCargo');
+    if (formCargo) {
+        formCargo.addEventListener('submit', function(event) {
+            const btnSubmit = modalCargo.querySelector('#btnSubmitModal');
+            
+            if (btnSubmit.value === "modificar") {
+                const nombreOriginal = this.getAttribute('data-nombre-original');
+                const nombreActual = document.getElementById('nombre').value;
+                
+                if (nombreOriginal === nombreActual) {
+                    event.preventDefault();
+                    Swal.fire({ title: "Sin modificaciones", text: "El nombre ingresado es igual al actual y no se registraron cambios.", icon: "info" });
+                }
             }
         });
     }
