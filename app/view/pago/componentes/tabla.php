@@ -40,7 +40,7 @@
                                     data-bs-toggle="modal" data-bs-target="#modalPago"
                                     data-envio="<?= $value['cod_envio']; ?>"
                                     data-montorestante="<?= max(0, $montoRestante); ?>">
-                                    <i class="bi bi-wallet2 me-1"></i> Registrar
+                                    <i class="bi bi-wallet2 me-1"></i> Añadir
                                 </button>
                             </td>
                             <td class="pe-4 text-center">
