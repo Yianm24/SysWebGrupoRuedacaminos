@@ -15,7 +15,7 @@
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/sidebar.js"></script>
         <!--Logica de expresiones regulares del sistema-->
-        <script src="assets/js/expreg.js"></script>
+        <script src="assets/js/expreg.js?v=2"></script>
         </body>
 
         </html>

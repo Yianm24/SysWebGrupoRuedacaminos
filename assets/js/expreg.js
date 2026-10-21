@@ -47,6 +47,10 @@ $(document).ready(function () {
         if (valor === '') {
             input.removeClass('is-valid is-invalid');
             mensajeError.hide().text('');
+
+            if (input.hasClass('opcional')) {
+                return true;
+            }
             return false;
         }
 

@@ -22,7 +22,7 @@
                             <td class="text-secondary"><?= ucfirst($fila['nombre_cargo']) ?></td>
                             <td class="pe-4 text-center">
                                 <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline me-3 btn-editar" title="Editar"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditar" 
+                                    data-bs-toggle="modal" data-bs-target="#modalEmpleado" 
                                     data-id="<?= $fila['cod_empleado'] ?>" 
                                     data-cedula="<?= $fila['cedula'] ?>"
                                     data-nombre="<?= $fila['nombre'] ?>"

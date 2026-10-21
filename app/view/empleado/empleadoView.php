@@ -4,16 +4,13 @@
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-person-fill me-2"></i> Gestión de Empleados</h2>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#registerEmpleado">
+                    <button type="button" class="btn btn-primary" title="Registrar" data-bs-toggle="modal" data-bs-target="#modalEmpleado">
                         <i class="bi bi-person-plus"></i> Registrar
                     </button>
                 </div>
             </header>
             
-            <?php 
-            require 'componentes/modalRegistrar.php'; 
-            require 'componentes/modalEditar.php';
-            ?>
+            <?php require 'componentes/modalEmpleado.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">

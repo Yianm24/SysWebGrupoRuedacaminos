@@ -40,9 +40,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 inputId.value = botonTrig.getAttribute('data-id');
                 selectMoneda.value = botonTrig.getAttribute('data-moneda');
                 inputTasa.value = botonTrig.getAttribute('data-tasa');
+
                 document.getElementById('formCambio').setAttribute('data-tasa-original', inputTasa.value);
-                
                 $(inputTasa).trigger('input');
+                btnSubmit.disabled = true;
+                selectMoneda.addEventListener('change', function() {
+                    btnSubmit.disabled = false;
+                });
+
             }
         });
     }
