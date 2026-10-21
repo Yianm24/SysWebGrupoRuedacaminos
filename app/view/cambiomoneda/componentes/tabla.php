@@ -51,7 +51,7 @@
                         </td>
                         <td class="pe-4 text-center">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline me-3 btn-editar" title="Editar"
-                            data-bs-toggle="modal" data-bs-target="#modalEditarCambio" 
+                            data-bs-toggle="modal" data-bs-target="#modalCambio" 
                             data-id="<?= $fila['cod_cambio'] ?>" 
                             data-tasa="<?= $fila['tasa'] ?>"
                             data-moneda="<?= $fila['cod_moneda'] ?>">

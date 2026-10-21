@@ -1,50 +1,66 @@
 document.addEventListener("DOMContentLoaded", function () {
     
-    // Modal Editar
-    const modalEditar = document.getElementById('modalEditarCambio');
-    if (modalEditar) {
-        modalEditar.addEventListener('show.bs.modal', event => {
-            const boton = event.relatedTarget;
-            const id = boton.getAttribute('data-id');
-            const tasa = boton.getAttribute('data-tasa');
-            const moneda = boton.getAttribute('data-moneda');
-
-            modalEditar.querySelector('#id_cambio_editar').value = id;
-            modalEditar.querySelector('#tasa_editar').value = tasa;
-            modalEditar.querySelector('#moneda_editar').value = moneda;
-
-            document.getElementById('formEditarCambio').setAttribute('data-tasa-original', tasa);
-        });
-    } 
-
-    // Validación de Edición
-    const formEditar = document.getElementById('formEditarCambio');
-    if (formEditar) {
-        formEditar.addEventListener('submit', function(event) {
-            const tasaOriginal = this.getAttribute('data-tasa-original');
-            const tasaActual = document.getElementById('tasa_editar').value;
+    //Modal Formularios para Registrar y Editar.
+    const modalCambio = document.getElementById('modalCambio');
+    if (modalCambio) {
+        modalCambio.addEventListener('show.bs.modal', event => {
+            const botonTrig = event.relatedTarget;
+            const tituloModal = modalCambio.querySelector('#modalLabel');
+            const btnSubmit = modalCambio.querySelector('#btnSubmitModal');
             
-            if (Number(tasaOriginal) === Number(tasaActual)) {
-                event.preventDefault();
-                Swal.fire({ title: "Sin modificaciones", text: "El valor ingresado es igual al actual y no se registraron cambios.", icon: "info" });
-                return;
-            }
+            const inputId = modalCambio.querySelector('#id_cambio');
+            const selectMoneda = modalCambio.querySelector('#moneda');
+            const inputTasa = modalCambio.querySelector('#tasa');
 
-            if (tasaActual === "" || isNaN(tasaActual) || Number(tasaActual) <= 0) {
-                event.preventDefault();
-                Swal.fire({ title: "Error de validación", text: "Ingrese una tasa válida mayor a 0.", icon: "error" });
+            $(inputTasa).removeClass('is-valid is-invalid');$(inputTasa).siblings('.mensaje-error').hide().text('');
+            if (botonTrig.title === "Registrar" || botonTrig.getAttribute('title') === 'Registrar') {
+                tituloModal.innerHTML = '<i class="bi bi-currency-exchange"></i> Registrar Cambio Moneda';
+                btnSubmit.value = "registrar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Registrar';
+                
+                inputId.name = ""; 
+                selectMoneda.name = "moneda";
+                inputTasa.name = "tasa";
+                
+                inputId.value = "";
+                selectMoneda.value = "";
+                inputTasa.value = "";
+                
+                $(inputTasa).trigger('input');
+                
+            } else if (botonTrig.title === "Editar" || botonTrig.getAttribute('title') === 'Editar') {
+                tituloModal.innerHTML = '<i class="bi bi-pencil-square"></i> Editar Tasa de Cambio';
+                btnSubmit.value = "actualizar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Actualizar';
+
+                inputId.name = "id_cambio_editar";
+                selectMoneda.name = "moneda_editar";
+                inputTasa.name = "tasa_editar";
+
+                inputId.value = botonTrig.getAttribute('data-id');
+                selectMoneda.value = botonTrig.getAttribute('data-moneda');
+                inputTasa.value = botonTrig.getAttribute('data-tasa');
+                document.getElementById('formCambio').setAttribute('data-tasa-original', inputTasa.value);
+                
+                $(inputTasa).trigger('input');
             }
         });
     }
 
-    // Validación de Registro
-    const formRegistro = document.getElementById('formCambioMoneda');
-    if (formRegistro) {
-        formRegistro.addEventListener('submit', function(event) {
-            const tasaInput = document.getElementById('tasa').value;
-            if (tasaInput === "" || isNaN(tasaInput) || Number(tasaInput) <= 0) {
-                event.preventDefault();
-                Swal.fire({ title: "Error de validación", text: "Ingrese una tasa válida mayor a 0.", icon: "error" });
+    // Validación para formulario editar
+    const formCambio = document.getElementById('formCambio');
+    if (formCambio) {
+        formCambio.addEventListener('submit', function(event) {
+            const btnSubmit = modalCambio.querySelector('#btnSubmitModal');
+            
+            if (btnSubmit.value === "actualizar") {
+                const tasaOriginal = this.getAttribute('data-tasa-original');
+                const tasaActual = document.getElementById('tasa').value;
+                
+                if (Number(tasaOriginal) === Number(tasaActual)) {
+                    event.preventDefault();
+                    Swal.fire({ title: "Sin modificaciones", text: "El valor ingresado es igual al actual y no se registraron cambios.", icon: "info" });
+                }
             }
         });
     }
