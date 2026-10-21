@@ -1,55 +1,77 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Validación de Registro
-    const formRegistro = document.getElementById('formPrecioKilometraje');
-    if (formRegistro) {
-        formRegistro.addEventListener('submit', function(event) {
-            const kilometrajeInput = document.getElementById('kilometraje').value;
-            const precioInput = document.getElementById('precio_kilometraje').value;
+    // Validación de Registro y Edición
+    const modalKilometraje = document.getElementById('modalKilometraje');
+    if (modalKilometraje) {
+        modalKilometraje.addEventListener('show.bs.modal', event => {
+            const botonTrig = event.relatedTarget;
+            const tituloModal = modalKilometraje.querySelector('#modalLabel');
+            const btnSubmit = modalKilometraje.querySelector('#btnSubmitModal');
             
-            if (kilometrajeInput === "" || isNaN(kilometrajeInput) || Number(kilometrajeInput) <= 0 || precioInput === "" || isNaN(precioInput) || Number(precioInput) <= 0) {
-                event.preventDefault(); 
-                Swal.fire({ title: "Error de validación", text: "Ingrese valores válidos mayores a 0.", icon: "error" });
+            const inputId = modalKilometraje.querySelector('#id_tarifa');
+            const inputKm = modalKilometraje.querySelector('#kilometraje_input');
+            const inputPrecio = modalKilometraje.querySelector('#precio_kilometraje');
+            
+            const inputsEvaluar = modalKilometraje.querySelectorAll('.input-evaluar');
+            inputsEvaluar.forEach(input => {
+                $(input).removeClass('is-valid is-invalid');$(input).siblings('.mensaje-error').hide().text('');
+            });
+
+            if (botonTrig.title === "Registrar" || botonTrig.getAttribute('title') === 'Registrar') {
+                tituloModal.innerHTML = '<i class="bi bi-currency-dollar"></i> Registrar Precio de Kilometraje';
+                btnSubmit.value = "registrar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Registrar';
+                
+                inputId.name = ""; 
+                inputKm.name = "kilometraje";
+                inputPrecio.name = "precio_kilometraje";
+                
+                inputId.value = "";
+                inputKm.value = "";
+                inputPrecio.value = "";
+                $(inputKm).trigger('input');
+                
+            } else if (botonTrig.title === "Editar" || botonTrig.getAttribute('title') === 'Editar') {
+                tituloModal.innerHTML = '<i class="bi bi-pencil-square"></i> Editar Precio de Kilometraje';
+                btnSubmit.value = "actualizar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Guardar';
+
+                inputId.name = "id_tarifa_editar";
+                inputKm.name = "kilometraje_editar";
+                inputPrecio.name = "precio_kilometraje_editar";
+
+                inputId.value = botonTrig.getAttribute('data-id');
+                inputKm.value = botonTrig.getAttribute('data-kilometraje');
+                inputPrecio.value = botonTrig.getAttribute('data-precio');
+                
+                const datosOriginales = {
+                    km: inputKm.value,
+                    precio: inputPrecio.value
+                };
+                document.getElementById('formKilometraje').setAttribute('data-originales', JSON.stringify(datosOriginales));
+                inputsEvaluar.forEach(input => $(input).trigger('input'));
+                btnSubmit.disabled = true;
             }
         });
     }
-    
-    // Modal Editar.
-    const modalEditar = document.getElementById('modalEditar');
-    if (modalEditar) {
-        modalEditar.addEventListener('show.bs.modal', event => {
-            const boton = event.relatedTarget;
-            const id = boton.getAttribute('data-id');
-            const kilometraje = boton.getAttribute('data-kilometraje'); 
-            const precio = boton.getAttribute('data-precio');
 
-            modalEditar.querySelector('#id_tarifa_editar').value = id;
-            modalEditar.querySelector('#kilometraje_editar').value = kilometraje;
-            modalEditar.querySelector('#precio_kilometraje_editar').value = precio;
-
-            document.getElementById('formEditarPrecio').setAttribute('data-km-original', kilometraje);
-            document.getElementById('formEditarPrecio').setAttribute('data-precio-original', precio);
-        });
-    }
-
-    // Validación de Edición.
-    const formEditar = document.getElementById('formEditarPrecio');
-    if (formEditar) {
-        formEditar.addEventListener('submit', function(event) {
-            const kmOrig = this.getAttribute('data-km-original');
-            const preOrig = this.getAttribute('data-precio-original');
-            const kmActual = document.getElementById('kilometraje_editar').value;
-            const preActual = document.getElementById('precio_kilometraje_editar').value;
-
-            if (Number(kmOrig) === Number(kmActual) && Number(preOrig) === Number(preActual)) {
-                event.preventDefault();
-                Swal.fire({ title: "Sin modificaciones", text: "Los valores ingresados son iguales a los actuales y no se registraron cambios.", icon: "info" });
-                return;
-            }
-
-            if (kmActual === "" || isNaN(kmActual) || Number(kmActual) <= 0 || preActual === "" || isNaN(preActual) || Number(preActual) <= 0) {
-                event.preventDefault(); 
-                Swal.fire({ title: "Error de validación", text: "Ingrese valores válidos mayores a 0.", icon: "error" });
+    //Validar Edición sin cambios
+    const formKilometraje = document.getElementById('formKilometraje');
+    if (formKilometraje) {
+        formKilometraje.addEventListener('submit', function(event) {
+            const btnSubmit = modalKilometraje.querySelector('#btnSubmitModal');
+            
+            if (btnSubmit.value === "actualizar") {
+                const originales = JSON.parse(this.getAttribute('data-originales'));
+                const actuales = {
+                    km: document.getElementById('kilometraje_input').value,
+                    precio: document.getElementById('precio_kilometraje').value
+                };
+                
+                if (Number(originales.km) === Number(actuales.km) && Number(originales.precio) === Number(actuales.precio)) {
+                    event.preventDefault();
+                    Swal.fire({ title: "Sin modificaciones", text: "Los valores ingresados son iguales a los actuales y no se registraron cambios.", icon: "info" });
+                }
             }
         });
     }
