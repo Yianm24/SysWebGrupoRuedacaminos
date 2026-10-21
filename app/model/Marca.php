@@ -8,7 +8,7 @@ use App\Traits\ValidadorTrait;
 class Marca extends Conexion
 {
 
-use ValidadorTrait;
+    use ValidadorTrait;
     private $cod_marca;
     private $nombre;
     private $estado;
@@ -34,11 +34,11 @@ use ValidadorTrait;
 
     public function regDatosMarca(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
-        $datos = $this->validarPost($campos);
-        $this->nombre = strtoupper($datos['nombre_marca']);
-        $this->estado = 1;
-        }else{
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->nombre = strtoupper($datos['nombre_marca']);
+            $this->estado = 1;
+        } else {
             return 'error&msg=Registrar';
         }
         return $this->registrarMarca();
@@ -54,7 +54,7 @@ use ValidadorTrait;
 
             return 'success';
         } catch (\PDOException $e) {
-            return  "exception&msg=".urlencode($e->getMessage());
+            return  "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
@@ -74,14 +74,14 @@ use ValidadorTrait;
 
     public function actMarca(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
+        if (is_array($this->validarPost($campos))) {
             $datos = $this->validarPost($campos);
-            $this->cod_marca = $datos['cod_marca'] ;
+            $this->cod_marca = $datos['cod_marca'];
             $this->nombre = strtoupper($datos['nombre_marca']);
         }else{
             return 'error&msg=Actualizar'; 
         }
-        
+
         return $this->actualizarMarca();
     }
 
@@ -90,16 +90,16 @@ use ValidadorTrait;
         try {
             $sentencia = "UPDATE `marca` SET nombre = ? WHERE cod_marca = ?";
             $update = $this->conexion->prepare($sentencia);
-            $update->execute([$this->nombre,$this->cod_marca]);
+            $update->execute([$this->nombre, $this->cod_marca]);
             return 'updated';
         } catch (\PDOException $e) {
-            return  "exception&msg=".urlencode($e->getMessage());
+            return  "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
     public function elmDatosMarca(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
+        if (is_array($this->validarPost($campos))) {
             $datos = $this->validarPost($campos);
             $this->cod_marca = $datos['cod_marca'];
         }else{
@@ -116,7 +116,7 @@ use ValidadorTrait;
             $delete->execute([$this->cod_marca]);
             return 'deleted';
         } catch (\PDOException $e) {
-            return  "exception&msg=".urlencode($e->getMessage());
+            return  "exception&msg=" . urlencode($e->getMessage());
         }
     }
 }

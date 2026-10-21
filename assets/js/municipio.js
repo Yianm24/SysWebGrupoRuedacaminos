@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Lógica para mostrar alertas de estado (éxito, error, etc.)
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
+    const mensaje = urlParams.get('msg');
 
     if (status) {
         // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
@@ -123,6 +124,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     title = "Municipio existente!";
                     text = "El Municipio ingresado ya existe en la base de datos.";
                     icon = "warning";
+                    break;
+
+                case 'empty':
+                    title = "Campos vacíos!";
+                    text = "Uno o más campos están vacíos.";
+                    icon = "warning";
+                    break;
+                case 'error':
+                    title = "Error!";
+                    text = `Se produjo un error en el processo de ${mensaje}`;
+                    icon = "error";
+                    break;
+                case 'exception':
+                    title = "Exception Retornada!";
+                    text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+                    icon = "error";
                     break;
             }
 

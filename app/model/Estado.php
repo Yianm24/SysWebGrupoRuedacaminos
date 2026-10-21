@@ -53,12 +53,11 @@ class Estado extends Conexion
         if (is_array($this->validarPost($campos))) {
 
             $array = $this->validarPost($campos);
-            $this->nombre = $array['nombre_estado'];
+            $this->nombre = $this->formatearPalabra($array['nombre_estado']);
             $this->estado = 1;
         } else {
             return 'error&msg=Registrar';
         }
-
         return $this->registrarEstado();
     }
 
@@ -79,19 +78,17 @@ class Estado extends Conexion
         }
     }
 
-    public function actEstado(array $campos)
+    public function actDatosEstado(array $campos)
     {
 
         if (is_array($this->validarPost($campos))) {
 
             $array = $this->validarPost($campos);
             $this->cod_estado = $array['cod_estado'];
-            $this->nombre = $array['nombre_estado'];
-            $this->estado = 1;
+            $this->nombre = $this->formatearPalabra($array['nombre_estado']);
         } else {
             return 'error&msg=Actualizar';
         }
-
         return $this->actualizarEstado();
     }
 

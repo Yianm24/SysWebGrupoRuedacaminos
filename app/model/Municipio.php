@@ -38,16 +38,34 @@ class Municipio extends Conexion
         return $count->fetchColumn() > 0;
     }
 
+    public function obt_RegistrosMunicipio()
+    {
+        try {
+            $sentencia = "SELECT municipio.*, estado.nombre AS nombre_estado, 
+            estado.cod_estado
+            FROM municipio
+            INNER JOIN estado 
+            ON municipio.cod_estado= estado.cod_estado
+            WHERE municipio.estado=1";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
     public function regDatosMunicipio(array $campos)
     {
         if (is_array($this->validarPost($campos))) {
 
             $array = $this->validarPost($campos);
-            $this->nombre = $this->formatearPalabra($array['nombre_municipio']);
-            $this->cod_estado =intval($array['cod_estado']) ;
+            $this->nombre = $array['nombre_municipio'];
+            $this->cod_estado = intval($array['cod_estado']);
             $this->estado = 1;
         } else {
-            return exit();
+            return 'error&msg=Registrar';
         }
         return $this->registrarMunicipio();
     }
@@ -67,34 +85,22 @@ class Municipio extends Conexion
 
             return 'success';
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el municipio: " . $e->getMessage() . "');</script>";
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
-    public function obt_RegistrosMunicipio()
+    public function modDatosMunicipio(array $campos)
     {
-        try {
-            $sentencia = "SELECT municipio.*, estado.nombre AS nombre_estado, 
-            estado.cod_estado
-            FROM municipio
-            INNER JOIN estado 
-            ON municipio.cod_estado= estado.cod_estado
-            WHERE municipio.estado=1";
 
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
+        if (is_array($this->validarPost($campos))) {
+
+            $array = $this->validarPost($campos);
+            $this->cod_municipio = $array['cod_municipio'];
+            $this->nombre= $array['nombre_municipio'];
+            $this->cod_estado = $array['cod_estado'];
+        } else {
+            return 'error&msg=Actualizar';
         }
-    }
-
-    public function modDatosMunicipio($cod_municipio, $nombre, $cod_estado)
-    {
-        $this->cod_municipio = $cod_municipio;
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->cod_estado = $cod_estado;
-
         return $this->modificarMunicipio();
     }
 
@@ -110,8 +116,9 @@ class Municipio extends Conexion
             $update->bindValue(3, $this->cod_municipio);
 
             $update->execute();
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al actualizar el modelo: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 

@@ -27,7 +27,7 @@ switch ($solicitud) {
             exit();
         }
 
-        $resultado = $estado->actEstado(['cod_estado', 'nombre_estado']);
+        $resultado = $estado->actDatosEstado(['cod_estado', 'nombre_estado']);
         header("Location: ?url=estado&status={$resultado}");
 
 

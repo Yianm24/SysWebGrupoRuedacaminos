@@ -11,37 +11,28 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
-                header("Location: ?url=municipio&status=exists");
-                exit();
-            }
-            echo $_POST['nombre_municipio'];
-            // $resultado = $municipio->regDatosMunicipio($_POST['nombre_municipio'], $_POST['cod_estado']);
-            // header("Location: ?url=municipio&status=success");
-            // exit();
-            $resultado = $municipio->regDatosMunicipio(['nombre_municipio', 'cod_estado']);
-
-            header("Location: ?url=municipio&status={$resultado}");
+        
+        if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
+            header("Location: ?url=municipio&status=exists");
+            exit();
         }
+
+        $resultado = $municipio->regDatosMunicipio(['nombre_municipio', 'cod_estado']);
+        header("Location: ?url=municipio&status={$resultado}");
+
         break;
     case 'actualizar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_municipio']) && !empty($_POST['nombre_municipio']) && !empty($_POST['cod_estado'])) {
+        
                 if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
                     header("Location: ?url=municipio&status=exists");
                     exit();
                 }
 
 
-                $resultado = $municipio->modDatosMunicipio($_POST['cod_municipio'], $_POST['nombre_municipio'], $_POST['cod_estado']);
+                $resultado = $municipio->modDatosMunicipio(['cod_municipio','nombre_municipio','cod_estado']);
                 header("Location: ?url=municipio&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</>";
-            }
-        }
+            
+        
         break;
     case 'eliminar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
