@@ -1,67 +1,54 @@
 document.addEventListener("DOMContentLoaded", function () {
     
-    let montoTotalEnvioActual = 0; 
-    let montoTotalEnvioEditar = 0;
+    let montoBaseCalculo = 0; 
     let inputTasasJson = document.getElementById('tasas_backend_json');
     let tasasDelDia = { "VES": 1, "USD": 1 };
     
     if (inputTasasJson && inputTasasJson.value) {
-        try {
-            tasasDelDia = JSON.parse(inputTasasJson.value);
-        } catch (error) {
-            console.error("Error leyendo las tasas:", error);
-        }
+        try { tasasDelDia = JSON.parse(inputTasasJson.value); } catch (error) { console.error("Error leyendo las tasas", error); }
     }
-    
     let tasaDolar = tasasDelDia['USD'] || 1;
 
-    function filtrarBancos(modo) {
-        const isRegistro = modo === 'registrar';
-        const selectMetodo = document.getElementById(isRegistro ? 'metodos' : 'metodo_editar');
-        const selectBanco = document.getElementById(isRegistro ? 'cuentas_registrar' : 'cuentas_editar');
-        const inputRef = document.getElementById(isRegistro ? 'referencia' : 'referencia_editar');
+    //validar selects de banco y autocompletar en caso de USD en efectivo
+    function filtrarBancos() {
+        const selectMetodo = document.getElementById('metodos');
+        const selectBanco = document.getElementById('cuentas');
+        const inputRef = document.getElementById('referencia');
 
         if (!selectMetodo || !selectBanco || selectMetodo.selectedIndex <= 0) return;
 
         let opcionMetodo = selectMetodo.options[selectMetodo.selectedIndex];
         let nombreMetodo = opcionMetodo.text.toLowerCase();
 
-        // Control de Referencia para Efectivo
         if (inputRef) {
             if (nombreMetodo.includes('efectivo')) {
                 inputRef.value = "EFECTIVO";
                 inputRef.setAttribute('readonly', true);
                 inputRef.classList.add('bg-light');
+                $(inputRef).trigger('input');
             } else {
                 inputRef.removeAttribute('readonly');
                 inputRef.classList.remove('bg-light');
                 if (inputRef.value === "EFECTIVO") {
                     inputRef.value = "";
+                    $(inputRef).trigger('input');
                 }
             }
         }
 
-        // Control de Bancos
         for (let i = 0; i < selectBanco.options.length; i++) {
             let optBanco = selectBanco.options[i];
             if (optBanco.value === "") continue; 
-
             let nombreBanco = optBanco.text.toLowerCase();
 
             if (nombreMetodo.includes('efectivo')) {
                 if (nombreBanco.includes('caja')) {
                     optBanco.disabled = false;
                     selectBanco.value = optBanco.value; 
-                } else {
-                    optBanco.disabled = true; 
-                }
+                } else { optBanco.disabled = true; }
             } else {
-                if (nombreBanco.includes('caja')) {
-                    optBanco.disabled = true; 
-                } else {
-                    optBanco.disabled = false; 
-                }
-                
+                if (nombreBanco.includes('caja')) { optBanco.disabled = true; } 
+                else { optBanco.disabled = false; }
                 if (selectBanco.options[selectBanco.selectedIndex] && selectBanco.options[selectBanco.selectedIndex].disabled) {
                     selectBanco.value = "";
                 }
@@ -69,18 +56,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Calculo de monto restante y status
-    function calcularRestante(modo) {
-        const isRegistro = modo === 'registrar';
-        const inputMonto = document.getElementById(isRegistro ? 'monto_abonado_input' : 'monto_editar');
-        const select = document.getElementById(isRegistro ? 'metodos' : 'metodo_editar');
-        const spanSimb = document.getElementById(isRegistro ? 'simbolo_moneda_dinamico' : 'simbolo_moneda_editar_dinamico');
-        const inputOculto = document.getElementById(isRegistro ? 'monto_dolares_oculto' : 'monto_dolares_oculto_editar');
-        const spanRest = document.getElementById(isRegistro ? 'monto_restante_dinamico' : 'monto_restante_editar_dinamico');
-        const spanRestBs = document.getElementById(isRegistro ? 'monto_restante_bs_dinamico' : 'monto_restante_bs_editar_dinamico');
-        const estatusSelect = document.getElementById(isRegistro ? 'estatus_pago' : 'estatus_pago_editar');
+    function calcularRestante() {
+        const inputMonto = document.getElementById('monto_ingresado');
+        const select = document.getElementById('metodos');
+        const spanSimb = document.getElementById('simbolo_moneda_dinamico');
+        const inputOculto = document.getElementById('monto_dolares_oculto');
+        const spanRest = document.getElementById('monto_restante_dinamico');
+        const spanRestBs = document.getElementById('monto_restante_bs_dinamico');
+        const divAlerta = document.getElementById('alerta_visual');
         
-        const montoBaseCalculo = isRegistro ? montoTotalEnvioActual : montoTotalEnvioEditar;
+        const inputEstatus = document.getElementById('estatus_pago'); 
+        const divEstatusVisual = document.getElementById('estatus_pago_visual'); 
+        const tarjetaEstatus = document.getElementById('tarjeta_estatus'); 
         
         let abonadoIngresado = inputMonto ? (parseFloat(inputMonto.value) || 0) : 0;
         let monedaSeleccionada = 'USD';
@@ -90,9 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (opcion) monedaSeleccionada = opcion.getAttribute('data-moneda') || 'USD';
         }
 
-        let tasaMonedaOrigen = tasasDelDia[monedaSeleccionada] || 1;
-        let abonadoEnBs = abonadoIngresado * tasaMonedaOrigen;
-        let abonadoEnDolares = abonadoEnBs / tasaDolar;
+        let abonadoEnDolares = (monedaSeleccionada === 'USD') ? abonadoIngresado : (abonadoIngresado / tasaDolar);
 
         if (spanSimb) {
             if (monedaSeleccionada === 'VES') spanSimb.innerHTML = 'Bs';
@@ -102,59 +87,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (inputOculto) inputOculto.value = abonadoEnDolares.toFixed(2);
         
-        let restanteMatematicoUSD = montoBaseCalculo - abonadoEnDolares;
+        let restanteMatematicoUSD = Math.round((montoBaseCalculo - abonadoEnDolares) * 100) / 100;
         let restanteParaMostrar = Math.max(0, restanteMatematicoUSD);
         
         if (spanRest) spanRest.textContent = restanteParaMostrar.toFixed(2);
         if (spanRestBs) spanRestBs.textContent = (restanteParaMostrar * tasaDolar).toFixed(2);
 
-        let inputGroup = inputMonto ? inputMonto.closest('.col-md-6') : null;
-        let divAlerta = document.getElementById(isRegistro ? 'alerta_visual_reg' : 'alerta_visual_edit');
-        
-        if (inputGroup && !divAlerta) {
-            divAlerta = document.createElement('div');
-            divAlerta.id = isRegistro ? 'alerta_visual_reg' : 'alerta_visual_edit';
-            divAlerta.className = 'mt-2 small';
-            inputGroup.appendChild(divAlerta);
-        }
-
         if (spanRest) spanRest.classList.remove('text-danger', 'text-success');
         if (spanRestBs) spanRestBs.classList.remove('text-danger', 'text-success');
 
-        if (estatusSelect && divAlerta) {
-            let optCompletado = estatusSelect.querySelector('option[value="1"]');
+        if (inputEstatus && divEstatusVisual && divAlerta && tarjetaEstatus) {
             
-            if (restanteMatematicoUSD < -0.05) {
+            if (restanteMatematicoUSD < 0) {
                 divAlerta.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> ¡Atención! Se superó el monto total de la deuda.';
                 divAlerta.className = 'mt-2 small text-danger fw-bold alerta-exceso';
                 if (spanRest) spanRest.classList.add('text-danger');
                 if (spanRestBs) spanRestBs.classList.add('text-danger');
-                if (optCompletado) optCompletado.disabled = true;
-                estatusSelect.value = "0"; 
+                
+                inputEstatus.value = "0"; 
+                divEstatusVisual.textContent = "Excedido";
+                tarjetaEstatus.className = "alert alert-danger text-center shadow-sm mb-0 p-2 text-dark";
 
-            } else if (Math.abs(restanteMatematicoUSD) <= 0.05) {
+            } else if (restanteMatematicoUSD === 0) {
                 divAlerta.innerHTML = '<i class="bi bi-check-circle-fill"></i> ¡Excelente! Pago total del envío cubierto.';
                 divAlerta.className = 'mt-2 small text-success fw-bold alerta-exceso';
                 if (spanRest) spanRest.classList.add('text-success');
                 if (spanRestBs) spanRestBs.classList.add('text-success');
-                if (optCompletado) optCompletado.disabled = false;
-                estatusSelect.value = "1"; 
+                
+                inputEstatus.value = "1"; 
+                divEstatusVisual.textContent = "Completado";
+                tarjetaEstatus.className = "alert alert-success text-center shadow-sm mb-0 p-2 text-dark";
 
             } else {
                 divAlerta.innerHTML = '';
                 divAlerta.className = 'mt-2 small alerta-exceso';
-                if (optCompletado) optCompletado.disabled = true;
-                estatusSelect.value = "0"; 
+                
+                inputEstatus.value = "0"; 
+                divEstatusVisual.textContent = "Pendiente";
+                tarjetaEstatus.className = "alert alert-warning text-center shadow-sm mb-0 p-2 text-dark";
             }
         }
     }
 
-    // Función de autocompletar con botón "Añadir"
-    function autocompletarMonto(modo) {
-        const isRegistro = modo === 'registrar';
-        const inputMonto = document.getElementById(isRegistro ? 'monto_abonado_input' : 'monto_editar');
-        const select = document.getElementById(isRegistro ? 'metodos' : 'metodo_editar');
-        const montoBaseCalculo = isRegistro ? montoTotalEnvioActual : montoTotalEnvioEditar;
+    //fjunciión del botón añádir.
+    function autocompletarMonto() {
+        const inputMonto = document.getElementById('monto_ingresado');
+        const select = document.getElementById('metodos');
         
         let monedaSeleccionada = 'USD';
         if (select && select.selectedIndex >= 0) {
@@ -162,187 +140,171 @@ document.addEventListener("DOMContentLoaded", function () {
             if (opcion) monedaSeleccionada = opcion.getAttribute('data-moneda') || 'USD';
         }
 
-        let tasaMonedaDestino = tasasDelDia[monedaSeleccionada] || 1;
-        let valorAutocompletado = (montoBaseCalculo * tasaDolar) / tasaMonedaDestino;
+        let valorAutocompletado = (monedaSeleccionada === 'USD') ? montoBaseCalculo : (montoBaseCalculo * tasaDolar);
 
         if (inputMonto) {
             inputMonto.value = valorAutocompletado.toFixed(2);
-            calcularRestante(modo);
+            $(inputMonto).trigger('input');
+            calcularRestante();
         }
     }
 
-    const btnAddRegistrar = document.getElementById('button-addon1');
-    if (btnAddRegistrar) btnAddRegistrar.addEventListener('click', () => autocompletarMonto('registrar'));
+    const btnAutocompletar = document.getElementById('btn_autocompletar');
+    if (btnAutocompletar) btnAutocompletar.addEventListener('click', autocompletarMonto);
 
-    const btnAddEditar = document.getElementById('btn_añadir_editar');
-    if (btnAddEditar) btnAddEditar.addEventListener('click', () => autocompletarMonto('editar'));
-
-    // Delegación de Eventos
     document.body.addEventListener('input', function(e) {
-        if (e.target && e.target.id === 'monto_abonado_input') calcularRestante('registrar');
-        if (e.target && e.target.id === 'monto_editar') calcularRestante('editar');
+        if (e.target && e.target.id === 'monto_ingresado') calcularRestante();
     });
 
     document.body.addEventListener('change', function(e) {
         if (e.target && e.target.id === 'metodos') {
-            calcularRestante('registrar');
-            filtrarBancos('registrar');
-        } else if (e.target && e.target.id === 'metodo_editar') {
-            calcularRestante('editar');
-            filtrarBancos('editar');
+            filtrarBancos();
+            calcularRestante();
+            $('#monto_ingresado').trigger('input');
+        }
+        
+        const btnSubmit = document.getElementById('btnSubmitModal');
+        if (btnSubmit && btnSubmit.value === 'actualizar' && (e.target.tagName === 'SELECT' || e.target.type === 'date')) {
+            $('#monto_ingresado').trigger('input'); 
         }
     });
 
-    // Modal Registrar
-    const modalRegistrar = document.getElementById('registerPago');
-    if (modalRegistrar) {
-        modalRegistrar.addEventListener('show.bs.modal', function(event) {
-            const boton = event.relatedTarget;
-            const codEnvio = boton.getAttribute('data-envio');
-            
-            montoTotalEnvioActual = parseFloat(boton.getAttribute('data-montorestante')) || 0;
+    //modal para Registrar y Editar.
+    const modalPago = document.getElementById('modalPago');
+    if (modalPago) {
+        modalPago.addEventListener('show.bs.modal', function(event) {
+            const botonTrig = event.relatedTarget;
+            const tituloModal = modalPago.querySelector('#modalLabel');
+            const btnSubmit = modalPago.querySelector('#btnSubmitModal');
+            const divCodigo = modalPago.querySelector('#div_codigo_envio');
+            const codMostrar = modalPago.querySelector('#codigo_envio_mostrar');
+            const divAlerta = modalPago.querySelector('#alerta_visual');
+            const inputs = {
+                cod_pago: modalPago.querySelector('#cod_pago'),
+                cod_envio: modalPago.querySelector('#cod_envio'),
+                cod_detalle: modalPago.querySelector('#cod_detallepago'),
+                monto: modalPago.querySelector('#monto_ingresado'),
+                fecha: modalPago.querySelector('#fecha_pago'),
+                metodo: modalPago.querySelector('#metodos'),
+                banco: modalPago.querySelector('#cuentas'),
+                referencia: modalPago.querySelector('#referencia'),
+                estatus: modalPago.querySelector('#estatus_pago')
+            };
 
-            const codEnvioInput = document.getElementById('cod_envio_input');
-            const codEnvioMostrar = document.getElementById('codigo_envio_mostrar');
-            const inputMonto = document.getElementById('monto_abonado_input');
-            const selectMetodo = document.getElementById('metodos');
-            const selectBanco = document.getElementById('cuentas_registrar');
+            const inputsEvaluar = modalPago.querySelectorAll('.input-evaluar');
+            inputsEvaluar.forEach(input => {
+                $(input).removeClass('is-valid is-invalid');$(input).siblings('.mensaje-error').hide().text('');
+            });
 
-            if(codEnvioInput) codEnvioInput.value = codEnvio;
-            if(codEnvioMostrar) codEnvioMostrar.textContent = codEnvio;
-            if(inputMonto) inputMonto.value = '';
-            
-            if(selectMetodo) selectMetodo.selectedIndex = 0; 
-            if(selectBanco) {
-                Array.from(selectBanco.options).forEach(opt => opt.disabled = false);
-                selectBanco.selectedIndex = 0; 
+            if (botonTrig.title === "Registrar" || botonTrig.getAttribute('title') === 'Registrar') {
+                tituloModal.innerHTML = '<i class="bi bi-wallet2"></i> Registro de Pago';
+                divCodigo.style.display = 'block';
+                codMostrar.textContent = botonTrig.getAttribute('data-envio');
+                btnSubmit.value = "registrar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Registrar';
+                
+                montoBaseCalculo = parseFloat(botonTrig.getAttribute('data-montorestante')) || 0;
+                
+                inputs.cod_pago.value = "";
+                inputs.cod_envio.value = botonTrig.getAttribute('data-envio');
+                inputs.cod_detalle.value = "";
+                inputs.monto.value = "";
+                inputs.referencia.value = "";
+                inputs.metodo.selectedIndex = 0;
+                Array.from(inputs.banco.options).forEach(opt => opt.disabled = false);
+                inputs.banco.selectedIndex = 0;
+                
+                if (divAlerta) divAlerta.innerHTML = '';
+                
+                filtrarBancos();
+                calcularRestante();
+                $(inputs.monto).trigger('input');
+                
+            } else if (botonTrig.title === "Editar" || botonTrig.getAttribute('title') === 'Editar') {
+                tituloModal.innerHTML = '<i class="bi bi-pencil-square"></i> Editar Pago';
+                divCodigo.style.display = 'none';
+                btnSubmit.value = "actualizar";
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Actualizar';
+
+                montoBaseCalculo = parseFloat(botonTrig.getAttribute('data-montobaseeditar')) || 0;
+
+                inputs.cod_pago.value = botonTrig.getAttribute('data-id');
+                inputs.cod_envio.value = botonTrig.getAttribute('data-envio');
+                inputs.cod_detalle.value = botonTrig.getAttribute('data-detalle');
+                inputs.fecha.value = botonTrig.getAttribute('data-fecha');
+                
+                let metodoGuardado = String(botonTrig.getAttribute('data-metodo') || '');
+                inputs.metodo.value = metodoGuardado;
+                
+                if (inputs.metodo.value !== metodoGuardado && inputs.metodo.options.length > 0) {
+                    inputs.metodo.selectedIndex = 0;
+                }
+
+                let monedaSeleccionada = 'USD';
+                if (inputs.metodo.selectedIndex >= 0) {
+                    let opcion = inputs.metodo.options[inputs.metodo.selectedIndex];
+                    if (opcion) monedaSeleccionada = opcion.getAttribute('data-moneda') || 'USD';
+                }
+
+                let montoDolaresBD = parseFloat(botonTrig.getAttribute('data-monto')) || 0;
+                let montoEnMonedaOriginal = (monedaSeleccionada === 'USD') ? montoDolaresBD : (montoDolaresBD * tasaDolar);
+                
+                inputs.monto.value = (Math.round(montoEnMonedaOriginal * 100) / 100).toFixed(2);
+                inputs.referencia.value = botonTrig.getAttribute('data-referencia');
+                
+                filtrarBancos();
+                calcularRestante(); 
+
+                inputs.banco.value = String(botonTrig.getAttribute('data-banco') || '');
+
+                const originales = {
+                    monto: inputs.monto.value,
+                    referencia: inputs.referencia.value,
+                    estatus: String(botonTrig.getAttribute('data-estatus')),
+                    metodo: inputs.metodo.value,
+                    banco: inputs.banco.value,
+                    fecha: inputs.fecha.value
+                };
+                document.getElementById('formPago').setAttribute('data-originales', JSON.stringify(originales));
+                
+                inputsEvaluar.forEach(input => $(input).trigger('input'));
+                btnSubmit.disabled = true;
             }
-
-            let divAlerta = document.getElementById('alerta_visual_reg');
-            if(divAlerta) divAlerta.innerHTML = '';
-
-            calcularRestante('registrar');
         });
     }
 
-    // Modal Editar
-    const modalEditar = document.getElementById('modalEditarPago');
-    if (modalEditar) {
-        modalEditar.addEventListener('show.bs.modal', function(event) {
-            const boton = event.relatedTarget;
-            const id = boton.getAttribute('data-id');
-            const codEnvio = boton.getAttribute('data-envio');
-            const detalle = boton.getAttribute('data-detalle'); 
-            const monto = boton.getAttribute('data-monto');
-            const referencia = boton.getAttribute('data-referencia');
-            const estatus = boton.getAttribute('data-estatus');
-            const metodo = boton.getAttribute('data-metodo');
-            const banco = boton.getAttribute('data-banco');
-            
-            montoTotalEnvioEditar = parseFloat(boton.getAttribute('data-montobaseeditar')) || 0;
-
-            let codPagoEditar = document.getElementById('cod_pago_editar');
-            let codEnvioEditar = document.getElementById('cod_envio_editar');
-            let codDetalleEditar = document.getElementById('cod_detallepago_editar'); 
-            let inputMontoEditar = document.getElementById('monto_editar');
-            let refEditar = document.getElementById('referencia_editar');
-            let estatusEditar = document.getElementById('estatus_pago_editar');
-            let selectMetodoEditar = document.getElementById('metodo_editar'); 
-            let bancoEditar = document.getElementById('cuentas_editar');
-
-            if(codPagoEditar) codPagoEditar.value = id;
-            if(codEnvioEditar) codEnvioEditar.value = codEnvio;
-            if(codDetalleEditar) codDetalleEditar.value = detalle; 
-            if(inputMontoEditar) inputMontoEditar.value = monto;  
-            if(refEditar) refEditar.value = referencia;
-            if(selectMetodoEditar) selectMetodoEditar.value = metodo;
-            filtrarBancos('editar');
-            if(bancoEditar) bancoEditar.value = banco;
-            if(estatusEditar) {
-                let optCompletado = estatusEditar.querySelector('option[value="1"]');
-                if (optCompletado) optCompletado.disabled = false;
-                estatusEditar.value = estatus; 
-            }
-
-            const form = document.getElementById('formEditarPago');
-            if (form) {
-                form.setAttribute('data-orig-monto', monto);
-                form.setAttribute('data-orig-referencia', referencia);
-                form.setAttribute('data-orig-estatus', estatus);
-                form.setAttribute('data-orig-metodo', metodo);
-                form.setAttribute('data-orig-banco', banco);
-            }
-            
-            calcularRestante('editar');
-        });
-    }
-
-    // Formulario Registrar
     const formPago = document.getElementById('formPago');
     if (formPago) {
         formPago.addEventListener('submit', function(event) {
-            const inputMonto = document.getElementById('monto_abonado_input');
-            const monto = inputMonto ? inputMonto.value.trim() : '';
-            const refInput = document.getElementById('referencia');
-            const referencia = refInput ? refInput.value.trim() : '';
-            const alerta = document.getElementById('alerta_visual_reg');
-
-            if (monto === "" || referencia === "") {
-                event.preventDefault();
-                Swal.fire({ title: "Error de validación", text: "Por favor, complete los campos obligatorios.", icon: "error" });
-                return;
-            }
+            const btnSubmit = document.getElementById('btnSubmitModal');
+            const alerta = document.getElementById('alerta_visual');
 
             if (alerta && alerta.classList.contains('text-danger')) {
                 event.preventDefault();
-                Swal.fire({ title: "Monto Excedido", text: "No puedes registrar un pago que supere el monto restante de la deuda.", icon: "error" });
+                Swal.fire({ title: "Monto Excedido", text: "No puedes registrar un pago que supere el monto total de la deuda.", icon: "error" });
                 return;
+            }
+
+            if (btnSubmit.value === "actualizar") {
+                const originales = JSON.parse(this.getAttribute('data-originales'));
+                const actuales = {
+                    monto: document.getElementById('monto_ingresado').value,
+                    referencia: document.getElementById('referencia').value,
+                    estatus: document.getElementById('estatus_pago').value,
+                    metodo: document.getElementById('metodos').value,
+                    banco: document.getElementById('cuentas').value,
+                    fecha: document.getElementById('fecha_pago').value
+                };
+
+                if (JSON.stringify(originales) === JSON.stringify(actuales)) {
+                    event.preventDefault();
+                    Swal.fire({ title: "Sin modificaciones", text: "Los datos ingresados son idénticos a los actuales. No se registraron cambios.", icon: "info" });
+                }
             }
         });
     }
 
-    // Formulario Editar
-    const formEditar = document.getElementById('formEditarPago');
-    if (formEditar) {
-        formEditar.addEventListener('submit', function(event) {
-            const origMonto = this.getAttribute('data-orig-monto');
-            const origRef = this.getAttribute('data-orig-referencia');
-            const origEstatus = this.getAttribute('data-orig-estatus');
-            const origMetodo = this.getAttribute('data-orig-metodo') || '';
-            const origBanco = this.getAttribute('data-orig-banco') || '';
-            
-            const inputOculto = document.getElementById('monto_dolares_oculto_editar');
-            const inputVisible = document.getElementById('monto_editar');
-            const actMonto = inputOculto ? inputOculto.value.trim() : (inputVisible ? inputVisible.value.trim() : '');
-            
-            const refInput = document.getElementById('referencia_editar');
-            const actRef = refInput ? refInput.value.trim() : '';
-            
-            const estatusInput = document.getElementById('estatus_pago_editar');
-            const actEstatus = estatusInput ? estatusInput.value : '';
-            
-            const metodoInput = document.getElementById('metodo_editar');
-            const actMetodo = metodoInput ? metodoInput.value : '';
-            
-            const bancoInput = document.getElementById('cuentas_editar');
-            const actBanco = bancoInput ? bancoInput.value : '';
-
-            const alerta = document.getElementById('alerta_visual_edit');
-
-            if (alerta && alerta.classList.contains('text-danger')) {
-                event.preventDefault();
-                Swal.fire({ title: "Monto Excedido", text: "La modificación supera el límite del pago total del envío.", icon: "error" });
-                return;
-            }
-
-            if (origMonto === actMonto && origRef === actRef && origEstatus === actEstatus && origMetodo === actMetodo && origBanco === actBanco) {
-                event.preventDefault();
-                Swal.fire({ title: "Sin modificaciones", text: "Los datos ingresados son idénticos a los actuales. No se registraron cambios.", icon: "info" });
-            }
-        });
-    }
-
-    // Modal eliminar
+    //confirmacion de eliminar
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(boton => {
         boton.addEventListener('click', function(event) {
@@ -370,12 +332,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     form.innerHTML = `<input type="hidden" name="tipoSolicitud" value="eliminar"><input type="hidden" name="cod_pago" value="${idPago}">`;
                     document.body.appendChild(form);
                     form.submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({ title: "Cancelado", text: "Eliminación del pago cancelada", icon: "error" });
                 }
             });
         });
     });
 
-    // Mensajes de alerta
+    //mensajes de alerta
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
 

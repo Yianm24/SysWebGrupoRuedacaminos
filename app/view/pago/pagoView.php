@@ -5,10 +5,7 @@
                 <h2 class="mb-0 text-primary fw-bold"><i class="bi bi-wallet2 me-2"></i> Gestión de Pagos</h2>
             </header>
 
-            <?php 
-            require 'componentes/modalRegistrar.php'; 
-            require 'componentes/modalEditar.php';
-            ?>
+            <?php require 'componentes/modalPago.php'; ?>
 
             <section class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">

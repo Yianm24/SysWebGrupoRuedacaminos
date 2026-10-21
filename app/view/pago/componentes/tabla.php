@@ -36,9 +36,8 @@
                             <td class="text-secondary">$<?= number_format($value['monto_abonado'] ?? 0, 2); ?></td>
                             <td class="text-secondary">$<?= number_format(max(0, $montoRestante), 2); ?></td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#registerPago"
+                                <button type="button" class="btn btn-outline-secondary btn-sm" title="Registrar"
+                                    data-bs-toggle="modal" data-bs-target="#modalPago"
                                     data-envio="<?= $value['cod_envio']; ?>"
                                     data-montorestante="<?= max(0, $montoRestante); ?>">
                                     <i class="bi bi-wallet2 me-1"></i> Registrar
@@ -47,10 +46,11 @@
                             <td class="pe-4 text-center">
                                 <?php if ($tienePago): ?>
                                     <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                        data-bs-toggle="modal" data-bs-target="#modalEditarPago"
+                                        data-bs-toggle="modal" data-bs-target="#modalPago"
                                         data-id="<?= $value['cod_pago']; ?>"
                                         data-envio="<?= $value['cod_envio']; ?>"
                                         data-monto="<?= $value['monto_abonado']; ?>"
+                                        data-fecha="<?= $value['fecha']; ?>"
                                         data-referencia="<?= $value['referencia']; ?>"
                                         data-estatus="<?= $value['estado_pago']; ?>"
                                         data-metodo="<?= $value['cod_metodopago'] ?? ''; ?>"
