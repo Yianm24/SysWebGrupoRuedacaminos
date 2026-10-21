@@ -91,7 +91,7 @@ use ValidadorTrait;
             $this->nombre =strtoupper($datos['nombre_modelo']);
             $this->marca = $datos['marca'];
         }else{
-            return 'error&msg=Registrar';
+            return 'error&msg=Actualizar';
         }
 
         return $this->actualizarModelo();
@@ -119,7 +119,7 @@ use ValidadorTrait;
             $datos = $this->validarPost($campos);
             $this->cod_modelo = $datos['cod_modelo'];
         }else{
-            return 'error&msg=Registrar';
+            return 'error&msg=Eliminar';
         }
 
         return $this->eliminarModelo();

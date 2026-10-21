@@ -3,9 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTrait;
 
 class Vehiculo extends Conexion
 {
+use ValidadorTrait;    
     private $cod_vehiculo;
     private $placa;
     private $color;
@@ -42,16 +44,21 @@ class Vehiculo extends Conexion
         }
     }
 
-    public function regDatosVehiculo($placa, $color, $anio, $anchura, $altura, $peso_max, $cod_modelo)
+    public function regDatosVehiculo(array $campos)
     {
-        $this->placa = strtoupper($placa);
-        $this->color = $this->formatearPalabra($color);
-        $this->anchura = $anchura;
-        $this->altura = $altura;
-        $this->peso_max = $peso_max;
-        $this->cod_modelo = $cod_modelo;
-        $this->anio = $anio;
-        $this->estado = 1;
+        if(is_array($this->validarPost($campos))){
+            $datos = $this->validarPost($campos);
+            $this->placa = strtoupper($datos['placa']);
+            $this->color = $this->formatearPalabra($datos['color']);
+            $this->anio = $datos['anio'];
+            $this->anchura = $datos['anchura'];
+            $this->altura = $datos['altura'];
+            $this->peso_max = $datos['peso_max'];
+            $this->cod_modelo = $datos['modelo'];
+            $this->estado = 1;
+        }else{
+            return 'error&msg=Registrar';
+        }
 
         return $this->registrarVehiculo();
     }
@@ -72,11 +79,11 @@ class Vehiculo extends Conexion
             $insert->bindValue(7, $this->cod_modelo);
             $insert->bindValue(8, $this->estado);
 
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
+            return 'success';
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
+            return  "exception&msg=".urlencode($e->getMessage());
         }
     }
 
@@ -95,16 +102,22 @@ class Vehiculo extends Conexion
             return [];
         }
     }
-    public function actDatosVehiculo($cod_vehiculo, $placa, $color, $anio, $anchura, $altura, $peso_max, $cod_modelo)
+    public function actDatosVehiculo(array $campos)
     {
-        $this->cod_vehiculo = $cod_vehiculo;
-        $this->placa = strtoupper($placa);
-        $this->color = $this->formatearPalabra($color);
-        $this->anio = $anio;
-        $this->anchura = $anchura;
-        $this->altura = $altura;
-        $this->peso_max = $peso_max;
-        $this->cod_modelo = $cod_modelo;
+        if(is_array($this->validarPost($campos))){
+
+            $datos = $this->validarPost($campos);
+            $this->cod_vehiculo = $datos['cod_vehiculo'];
+            $this->placa = strtoupper($datos['placa']);
+            $this->color = $this->formatearPalabra($datos['color']);
+            $this->anio = $datos['anio'];
+            $this->anchura = $datos['anchura'];
+            $this->altura = $datos['altura'];
+            $this->peso_max = $datos['peso_max'];
+            $this->cod_modelo = $datos['modelo'];
+        }else{
+            return 'error&msg=Actualizar'; 
+        }
 
         return $this->actualizarVehiculo();
     }
@@ -125,15 +138,20 @@ class Vehiculo extends Conexion
             $update->bindValue(8, $this->cod_vehiculo);
 
             $update->execute();
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al actualizar el vehículo: " . $e->getMessage();
+            return  "exception&msg=".urlencode($e->getMessage());
         }
     }
 
-    public function elmDatosVehiculo(int $cod_vehiculo)
+    public function elmDatosVehiculo(array $campos)
     {
-        $this->cod_vehiculo = $cod_vehiculo;
-
+        if(is_array($this->validarPost($campos))){
+            $datos = $this->validarPost($campos);
+            $this->cod_vehiculo = $datos['cod_vehiculo'];
+        }else{
+            return 'error&msg=Eliminar'; 
+        }
         return $this->eliminarVehiculo();
     }
 
@@ -143,12 +161,11 @@ class Vehiculo extends Conexion
             $sentencia = "UPDATE `vehiculo` SET estado = 0 WHERE cod_vehiculo = ?";
             $delete = $this->conexion->prepare($sentencia);
 
-            $delete->bindValue(1, $this->cod_vehiculo);
-            $delete->execute();
+            $delete->execute([$this->cod_vehiculo]);
 
-            return "Vehículo eliminado exitosamente";
+            return 'deleted';
         } catch (\PDOException $e) {
-            return "Error al eliminar el vehículo: " . $e->getMessage();
+            return  "exception&msg=".urlencode($e->getMessage());
         }
     }
 }

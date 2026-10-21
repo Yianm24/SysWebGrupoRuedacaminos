@@ -12,48 +12,33 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['placa']) && !empty($_POST['modelo']) && !empty($_POST['color']) && !empty($_POST['anio']) && !empty($_POST['anchura']) && !empty($_POST['altura']) && !empty($_POST['peso_max'])) {
-                
-               if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], null)) {
-                    header("Location: ?url=vehiculo&status=exists");
-                    exit();
-                }
-
-                $resultado = $vehiculo->regDatosVehiculo($_POST['placa'], $_POST['color'], $_POST['anio'],$_POST['anchura'],$_POST['altura'], $_POST['peso_max'], $_POST['modelo']);
-
-                header("Location: ?url=vehiculo&status=success");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
-        }
-        break;
-    case 'actualizar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod_vehiculo'])) {
-            if (!empty($_POST['placa']) && !empty($_POST['color']) && !empty($_POST['anio']) && !empty($_POST['anchura']) && !empty($_POST['altura']) && !empty($_POST['peso_max']) && !empty($_POST['modelo'])) {
-
-                if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod_vehiculo'])) {
-                    header("Location: ?url=vehiculo&status=exists");
-                    exit();
-                }
-
-                $resultado = $vehiculo->actDatosVehiculo($_POST['cod_vehiculo'], $_POST['placa'], $_POST['color'], $_POST['anio'],$_POST['anchura'],$_POST['altura'], $_POST['peso_max'], $_POST['modelo']);
-
-                header("Location: ?url=vehiculo&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
-        }
-        break;
-    case 'eliminar':
-        if (isset($_POST['cod_vehiculo'])) {
-            $resultado = $vehiculo->elmDatosVehiculo($_POST['cod_vehiculo']);
-            header("Location: ?url=vehiculo&status=deleted");
+       
+        if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], null)) {
+            header("Location: ?url=vehiculo&status=exists");
             exit();
         }
-        break;
+
+        $resultado = $vehiculo->regDatosVehiculo(['placa','color','anio','anchura','altura','peso_max','modelo']);
+        header("Location: ?url=vehiculo&status={$resultado}");
+                
+    break;
+    case 'actualizar':
+   
+        if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod_vehiculo'])) {
+            header("Location: ?url=vehiculo&status=exists");
+            exit();
+        }
+
+        $resultado = $vehiculo->actDatosVehiculo(['cod_vehiculo','placa','color','anio','anchura','altura','peso_max','modelo']);
+        header("Location: ?url=vehiculo&status={$resultado}");
+                
+    break;
+    case 'eliminar':
+        
+            $resultado = $vehiculo->elmDatosVehiculo(['cod_vehiculo']);
+            header("Location: ?url=vehiculo&status={$resultado}");
+          
+    break;
 }
 $registros = $vehiculo->obt_RegistrosVehiculos();
 $modelosRegistros = $modelo->obt_RegistrosModelo();
