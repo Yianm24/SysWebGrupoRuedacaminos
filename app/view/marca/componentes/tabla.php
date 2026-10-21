@@ -12,7 +12,6 @@
                 <tr>
                     <td class="ps-4 text-center fw-bold text-secondary"><?= $dato['nombre'] ?></td>
                     <td class="text-start pe-4">
-                          
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMarca"
                                 datos-cod-marca="<?= $dato['cod_marca'] ?>"
                                 datos-nombre="<?= $dato['nombre'] ?>"

@@ -1,8 +1,10 @@
 <td class="pe-4 text-center">
+    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
     <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
         data-bs-toggle="modal" data-bs-target="#registerdespacho">
         <i class="bi bi-pencil"></i>
     </a>
+    <?php endif; ?>
     <a href="#" class="text-secondary me-2 text-decoration-none" title="Detalles"
         data-bs-toggle="modal" data-bs-target="#registerdespacho">
         <i class="bi bi-eye-fill"></i>

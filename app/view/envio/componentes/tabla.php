@@ -11,7 +11,9 @@
                     <th>ALTO</th>
                     <th>PESO TOTAL</th>
                     <th>FECHA</th>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                     <th class="pe-4 text-center">ACCIONES</th>
+                    <?php endif;?>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +32,7 @@
                         <td class="text-secondary py-3">
                             <?= $dato['fecha']; ?>
                         </td>
+                        <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                         <td class="pe-4 text-center py-3">
                             <a href="#" class="btn btn-sm btn-outline-primary me-2 shadow-sm" title="Modificar"
                                 data-bs-toggle="modal" data-bs-target="#carouselEnvio">
@@ -43,6 +46,7 @@
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
+                        <?php endif;?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

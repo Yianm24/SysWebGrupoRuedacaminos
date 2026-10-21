@@ -9,7 +9,9 @@
                     <th>ÚLTIMO ABONO</th>
                     <th>MONTO RESTANTE</th>
                     <th class="text-center">AÑADIR PAGO</th>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                     <th class="pe-4 text-center">ACCIONES</th>
+                    <?php endif;?>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +45,7 @@
                                     <i class="bi bi-wallet2 me-1"></i> Añadir
                                 </button>
                             </td>
+                            <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                             <td class="pe-4 text-center">
                                 <?php if ($tienePago): ?>
                                     <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
@@ -67,6 +70,7 @@
                                     <span class="text-muted small">N/A</span>
                                 <?php endif; ?>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>

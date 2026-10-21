@@ -8,7 +8,9 @@
                     <th>CONTACTO</th>
                     <th>CORREO ELECTRÓNICO</th>
                     <th class="text-center">TIPO DOCUMENTO</th>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                     <th class="pe-4 text-center">ACCIONES</th>
+                    <?php endif;?>
                 </tr>
             </thead>
             <tbody>
@@ -21,6 +23,7 @@
                         <td class="text-secondary"><?= $dato['telefono'] ?></td>
                         <td class="text-secondary"><?= $dato['email'] ?></td>
                         <td class="text-center"><?= $dato['tipo_documento'] ?></td>
+                        <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                         <td class="pe-4 text-center">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Editar" data-bs-toggle="modal" <?= ($dato['tipo_documento'] == 'V' || $dato['tipo_documento'] == 'E') ? 'data-bs-target="#editClienteNatural"' : 'data-bs-target="#editClienteJuridico"' ?>
                                 
@@ -39,6 +42,7 @@
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
+                        <?php endif;?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

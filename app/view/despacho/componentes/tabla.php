@@ -8,7 +8,9 @@
                     <th class="text-center">CHOFER</th>
                     <th class="text-center">VEHICULO</th>
                     <th class="text-center">ESTATUS</th>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                     <th class="pe-4 text-center">ACCIONES</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +29,7 @@
                     <td class="text-center">
                         <div class="input-group">
                     </td>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                     <td class="pe-4 text-center">
                             <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
                                 data-bs-toggle="modal" data-bs-target="#registerdespacho">
@@ -37,6 +40,7 @@
                                 <i class="bi bi-eye-fill"></i></i>
                             </a>
                         </td>
+                    <?php endif; ?>
                 </tr>
                 <!--<?php //endforeach; ?>-->
             </tbody>

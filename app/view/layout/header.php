@@ -65,11 +65,11 @@
                     <a href="?url=gastodespacho" class="list-group-item list-group-item-action <?= $current_url == 'gastodespacho' ? 'active' : '' ?>">
                         <i class="bi bi-coin me-2"></i> Gasto Despacho
                     </a>
-
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                     <a href="?url=reporte" class="list-group-item list-group-item-action <?= $current_url == 'reporte' ? 'active' : '' ?>">
                         <i class="bi bi-file-earmark-bar-graph me-2"></i> Reporte
                     </a>
-                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
+                    
                         <a href="?url=empleado" class="list-group-item list-group-item-action <?= $current_url == 'empleado' ? 'active' : '' ?>">
                             <i class="bi bi-person-fill me-2"></i> Empleado
                         </a>

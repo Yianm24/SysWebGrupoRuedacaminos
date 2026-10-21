@@ -7,7 +7,9 @@
                     <th>HORA</th>
                     <th>MONEDA</th>
                     <th>TASA</th>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                     <th class="pe-4 text-center">ACCIONES</th>
+                    <?php endif;?>
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +51,7 @@
                                 <small class="<?= $color ?> ms-1"><i class="bi <?= $icono ?>"></i></small>
                             <?php endif; ?>
                         </td>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                         <td class="pe-4 text-center">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline me-3 btn-editar" title="Editar"
                             data-bs-toggle="modal" data-bs-target="#modalCambio" 
@@ -63,6 +66,7 @@
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
+                    <?php endif;?>
                     </tr>
                 <?php endforeach; 
                 else: echo "<tr><td colspan='5' class='text-center'>No hay registros.</td></tr>"; 
