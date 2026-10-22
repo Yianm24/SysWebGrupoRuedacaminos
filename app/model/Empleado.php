@@ -3,9 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\EmpleadoTrait;
 
 class Empleado extends Conexion
 {
+    use EmpleadoTrait;
+
     private $cod_empleado;
     private $cedula;
     private $nombre;
@@ -55,37 +58,35 @@ class Empleado extends Conexion
             return [];
         }
     }
-    
-    public function verificarEmpleadoExiste($cedula)
+
+    public function verificarEmpleadoDuplicado($cedula, $id_actual = null)
     {
-        $sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND estado = 1";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $cedula);
+        if ($id_actual === null) {$sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND estado = 1";
+            $count = $this->conexion->prepare($sentencia);
+            $count->bindValue(1,$cedula);
+        } else {
+            $sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND cod_empleado != ? AND estado = 1";
+            $count = $this->conexion->prepare($sentencia);
+            $count->bindValue(1,$cedula);
+            $count->bindValue(2,$id_actual);
+        }
         $count->execute();
         return $count->fetchColumn() > 0;
     }
 
-    public function verificarEmpleadoDuplicado($cedula, $id_actual)
+    public function regDatosEmpleado(array $campos)
     {
-        $sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND cod_empleado != ? AND estado = 1";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $cedula);
-        $count->bindValue(2, $id_actual);
-        $count->execute();
-        return $count->fetchColumn() > 0;
-    }
-
-    public function regDatosEmpleado($nombre, $apellido, $cedula, $telefono, $telefono_emergencia, $cod_cargo)
-    {
-
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->apellido = $this->formatearPalabra($apellido);
-        $this->cedula = $cedula;
-        $this->telefono = $telefono;
-        $this->telefono_emergencia = $telefono_emergencia;
-        $this->cod_cargo = $cod_cargo;
+        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+        $this->nombre = $this->formatearPalabra($datos['nombre']);
+        $this->apellido = $this->formatearPalabra($datos['apellido']);
+        $this->cedula = $datos['cedula'];
+        $this->telefono = $datos['telefono'];
+        $this->telefono_emergencia = $_POST['telefono_emergencia'] ?? '';
+        $this->cod_cargo = $datos['cod_cargo'];
         $this->estado = 1;
-
+        } else {
+            return 'error&msg=Registrar';
+        }
         return $this->registrarEmpleado();
     }
 
@@ -94,9 +95,7 @@ class Empleado extends Conexion
     {
         try {
             $sentencia = "INSERT INTO empleado (nombre, apellido, cedula, telefono, telefono_emergencia, cod_cargo, estado) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
             $insert = $this->conexion->prepare($sentencia);
-
             $insert->bindValue(1, $this->nombre);
             $insert->bindValue(2, $this->apellido);
             $insert->bindValue(3, $this->cedula);
@@ -104,26 +103,28 @@ class Empleado extends Conexion
             $insert->bindValue(5, $this->telefono_emergencia);
             $insert->bindValue(6, $this->cod_cargo);
             $insert->bindValue(7, $this->estado);
-
-            $resultado = $insert->execute();
-
-            return $resultado;
+            $insert->execute();
+            return 'success';
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el empleado: " . $e->getMessage() . "');</script>";
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
 
-    public function modDatosEmpleado($cod_empleado, $nombre, $apellido, $cedula, $telefono, $telefono_emergencia, $cod_cargo)
+    public function modDatosEmpleado(array $campos)
     {
-        $this->cod_empleado = $cod_empleado;
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->apellido = $this->formatearPalabra($apellido);
-        $this->cedula = $cedula;
-        $this->telefono = $telefono;
-        $this->telefono_emergencia = $telefono_emergencia;
-        $this->cod_cargo = $cod_cargo;
+        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+        $this->cod_empleado = $datos['id_empleado_editar'];
+        $this->nombre = $this->formatearPalabra($datos['nombre_editar']);
+        $this->apellido = $this->formatearPalabra($datos['apellido_editar']);
+        $this->cedula = $datos['cedula_editar'];
+        $this->telefono = $datos['telefono_editar'];
+        $this->telefono_emergencia = $_POST['telefono_emergencia_editar'] ?? '';
+        $this->cod_cargo = $datos['cod_cargo_editar'];
 
+        } else {
+            return 'error&msg=Actualizar';
+        }
         return $this->modificarEmpleado();
     }
 
@@ -132,7 +133,6 @@ class Empleado extends Conexion
         try {
             $sentencia = "UPDATE `empleado` SET cedula = ?, nombre = ?, apellido = ?, telefono = ?, telefono_emergencia = ?, cod_cargo = ? WHERE cod_empleado = ?";
             $update = $this->conexion->prepare($sentencia);
-
             $update->bindValue(1, $this->cedula);
             $update->bindValue(2, $this->nombre);
             $update->bindValue(3, $this->apellido);
@@ -140,17 +140,20 @@ class Empleado extends Conexion
             $update->bindValue(5, $this->telefono_emergencia);
             $update->bindValue(6, $this->cod_cargo);
             $update->bindValue(7, $this->cod_empleado);
-
             $update->execute();
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al modificar el empleado: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
-    public function elmDatosEmpleado(int $cod_empleado)
+    public function elmDatosEmpleado(array $campos)
     {
-        $this->cod_empleado = $cod_empleado;
-
+        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+        $this->cod_empleado = $datos['id_empleado'];
+        } else {
+            return 'error&msg=Eliminar';
+        }
         return $this->eliminarEmpleado();
     }
 
@@ -159,13 +162,11 @@ class Empleado extends Conexion
         try {
             $sentencia = "UPDATE `empleado` SET estado = 0 WHERE cod_empleado = ?";
             $delete = $this->conexion->prepare($sentencia);
-
             $delete->bindValue(1, $this->cod_empleado);
             $delete->execute();
-
-            return "Empleado eliminado exitosamente";
+            return 'deleted';
         } catch (\PDOException $e) {
-            return "Error al eliminar el empleado: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 }

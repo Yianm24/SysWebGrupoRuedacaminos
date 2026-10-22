@@ -3,9 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\CargoTrait;
 
 class Cargo extends Conexion
 {
+    use CargoTrait;
 
     private $cod_cargo;
     private $estado;
@@ -27,58 +29,55 @@ class Cargo extends Conexion
             return [];
         }
     }
-    
-    public function verificarCargoExiste($nombre)
+
+    public function verificarCargoDuplicado($nombre, $cod_cargo = null)
     {
-        $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ?  AND estado = 1";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
+        if ($cod_cargo === null) {$sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND estado = 1";
+            $count = $this->conexion->prepare($sentencia);
+            $count->bindValue(1,$nombre);
+        } else {
+            $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND cod_cargo != ? AND estado = 1";
+            $count = $this->conexion->prepare($sentencia);
+            $count->bindValue(1,$nombre);
+            $count->bindValue(2,$cod_cargo);
+        }
         $count->execute();
         return $count->fetchColumn() > 0;
     }
-    public function regDatosCargo($nombre)
-    {
 
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->estado = 1;
+    public function regDatosCargo(array $campos)
+    {
+        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+            $this->nombre =$this->formatearPalabra($datos['nombre']);
+            $this->estado = 1;
+        } else {
+            return 'error&msg=Registrar';
+        }
 
         return $this->registrarCargo();
-    }
-
-    public function verificarCargoDuplicado($nombre, $id_actual)
-    {
-        $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND cod_cargo != ? AND estado = 1";
-        $count = $this->conexion->prepare($sentencia);
-        $count->bindValue(1, $nombre);
-        $count->bindValue(2, $id_actual);
-        $count->execute();
-        return $count->fetchColumn() > 0;
     }
 
     private function registrarCargo()
     {
         try {
             $sentencia = "INSERT INTO cargo (nombre, estado) VALUES (?, ?)";
-
             $insert = $this->conexion->prepare($sentencia);
-
-            $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->estado);
-
-            $resultado = $insert->execute();
-
-            return $resultado;
+            $insert->execute([$this->nombre,$this->estado]);
+            return 'success';
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el cargo: " . $e->getMessage() . "');</script>";
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
 
-    public function modDatosCargo($cod_cargo, $nombre)
+    public function modDatosCargo(array $campos)
     {
-        $this->cod_cargo = $cod_cargo;
-        $this->nombre = $this->formatearPalabra($nombre);
-
+        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+            $this->cod_cargo = $datos['cod-cargo'];
+            $this->nombre = $this->formatearPalabra($datos['nombre']);
+        } else {
+            return 'error&msg=Actualizar';
+        }
         return $this->modificarCargo();
     }
 
@@ -87,20 +86,20 @@ class Cargo extends Conexion
         try {
             $sentencia = "UPDATE `cargo` SET nombre = ? WHERE cod_cargo = ?";
             $update = $this->conexion->prepare($sentencia);
-
-            $update->bindValue(1, $this->nombre);
-            $update->bindValue(2, $this->cod_cargo);
-
-            $update->execute();
+            $update->execute([$this->nombre,$this->cod_cargo]);
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al modificar el cargo: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
-    public function elmDatosCargo(int $cod_cargo)
+    public function elmDatosCargo(array $campos)
     {
-        $this->cod_cargo = $cod_cargo;
-
+        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+            $this->cod_cargo = $datos['cod_cargo'];
+        } else {
+            return 'error&msg=Eliminar';
+        }
         return $this->eliminarCargo();
     }
 
@@ -110,13 +109,10 @@ class Cargo extends Conexion
         try {
             $sentencia = "UPDATE `cargo` SET estado = 0 WHERE cod_cargo = ?";
             $delete = $this->conexion->prepare($sentencia);
-
-            $delete->bindValue(1, $this->cod_cargo);
-            $delete->execute();
-
-            return "Cargo eliminado exitosamente";
+            $delete->execute([$this->cod_cargo]);
+            return 'deleted';
         } catch (\PDOException $e) {
-            return "Error al eliminar el cargo: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 }

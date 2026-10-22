@@ -1,5 +1,15 @@
 <?php
 namespace App\Controller;
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] != 6) {
+    header("Location: ?url=dashboard&status=unauthorized");
+    exit(); 
+}
+
 use App\Model\Cargo;
 
 $cargo = new Cargo();
@@ -7,44 +17,28 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre'])) {
-                if ($cargo->verificarCargoExiste($_POST['nombre'])) {
-                    header("Location: ?url=cargo&status=exists");
-                    exit();
-                }
-                $resultado = $cargo->regDatosCargo($_POST['nombre']);
-                header("Location: ?url=cargo&status=success");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
+        if ($cargo->verificarCargoDuplicado($_POST['nombre'])) {
+            header("Location: ?url=cargo&status=exists");
+            exit();
         }
+
+        $resultado = $cargo->regDatosCargo(['nombre']);
+        header("Location: ?url=cargo&status={$resultado}");
         break;
 
     case 'modificar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-cargo'])) {
-            if (!empty($_POST['nombre'])) {
-                if ($cargo->verificarCargoDuplicado($_POST['nombre'], $_POST['cod-cargo'])) {
-                    header("Location: ?url=cargo&status=exists");
-                    exit();
-                }
-
-                $resultado = $cargo->modDatosCargo($_POST['cod-cargo'], $_POST['nombre']);
-                header("Location: ?url=cargo&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
+        if ($cargo->verificarCargoDuplicado($_POST['nombre'], $_POST['cod-cargo'])) {
+            header("Location: ?url=cargo&status=exists");
+            exit();
         }
+
+        $resultado = $cargo->modDatosCargo(['cod-cargo', 'nombre']);
+        header("Location: ?url=cargo&status={$resultado}");
         break;
 
     case 'eliminar':
-        if (isset($_POST['cod_cargo'])) {
-            $resultado = $cargo->elmDatosCargo($_POST['cod_cargo']);
-            header("Location: ?url=cargo&status=deleted");
-            exit();
-        }
+        $resultado = $cargo->elmDatosCargo(['cod_cargo']);
+        header("Location: ?url=cargo&status={$resultado}");
         break;
 }
 
