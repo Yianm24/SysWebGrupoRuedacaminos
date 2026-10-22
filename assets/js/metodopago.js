@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
+    const mensaje = urlParams.get('msg');
 
     if (status) {
         // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
@@ -123,6 +124,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     title = "Método de pago existente!";
                     text = "El método de pago ya se encuentra registrado.";
                     icon = "warning";
+                    break;
+
+                case 'empty':
+                    title = "Campos vacíos!";
+                    text = "Uno o más campos están vacíos.";
+                    icon = "warning";
+                    break;
+                case 'error':
+                    title = "Error!";
+                    text = `Se produjo un error en el processo de ${mensaje}`;
+                    icon = "error";
+                    break;
+                case 'exception':
+                    title = "Exception Retornada!";
+                    text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+                    icon = "error";
                     break;
             }
 

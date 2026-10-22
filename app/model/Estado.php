@@ -9,7 +9,6 @@ class Estado extends Conexion
 {
     use ValidadorTrait;
 
-
     private $cod_estado;
     private $nombre;
     private $estado;

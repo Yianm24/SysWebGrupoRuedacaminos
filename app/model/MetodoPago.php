@@ -3,9 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTrait;
+
 
 class MetodoPago extends Conexion
 {
+    use ValidadorTrait;
 
     private $cod_metodo;
     private $nombre;
@@ -28,34 +31,6 @@ class MetodoPago extends Conexion
         $count->execute();
         return $count->fetchColumn() > 0;
     }
-    public function regDatosMetodoPago($nombre, $moneda)
-    {
-        // $this->nombre =strtoupper($nombre);
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->moneda = $moneda;
-        $this->estado = 1;
-
-        return $this->registrarMetodoPago();
-    }
-
-    private function registrarMetodoPago()
-    {
-        try {
-            $sentencia = "INSERT INTO metodo_pago (nombre,cod_moneda,estado) VALUES (?, ?, ?)";
-
-            $insert = $this->conexion->prepare($sentencia);
-
-            $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->moneda);
-            $insert->bindValue(3, $this->estado);
-
-            $resultado = $insert->execute();
-
-            return $resultado;
-        } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el metodo de pago: " . $e->getMessage() . "');</script>";
-        }
-    }
 
     public function obt_RegistrosMetodoPago()
     {
@@ -75,12 +50,55 @@ class MetodoPago extends Conexion
         }
     }
 
-
-    public function actDatosMetodoPago($cod_metodo, $nombre, $moneda)
+    public function regDatosMetodoPago(array $campos)
     {
-        $this->cod_metodo = $cod_metodo;
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->moneda = $moneda;
+        if (is_array($this->validarPost($campos))) {
+
+            $array = $this->validarPost($campos);
+
+            $this->nombre = $this->formatearPalabra($array['nombre']);
+            $this->moneda = $array['moneda'];
+            $this->estado = 1;
+        } else {
+
+            return 'error&msg=Registrar';
+        }
+
+
+        return $this->registrarMetodoPago();
+    }
+
+    private function registrarMetodoPago()
+    {
+        try {
+            $sentencia = "INSERT INTO metodo_pago (nombre,cod_moneda,estado) VALUES (?, ?, ?)";
+
+            $insert = $this->conexion->prepare($sentencia);
+
+            $insert->bindValue(1, $this->nombre);
+            $insert->bindValue(2, $this->moneda);
+            $insert->bindValue(3, $this->estado);
+
+            $insert->execute();
+
+            return 'success';
+        } catch (\PDOException $e) {
+            return "exception&msg=" . urlencode($e->getMessage());
+        }
+    }
+
+    public function actDatosMetodoPago(array $campos)
+    {
+        if (is_array($this->validarPost($campos))) {
+
+            $array = $this->validarPost($campos);
+            $this->cod_metodo = $array['cod_metodo'];
+            $this->nombre = $this->formatearPalabra($array['nombre']);
+            $this->moneda = $array['moneda'];
+        } else {
+            return 'error&msg=Actualizar';
+        }
+
 
         return $this->actualizarMetodoPago();
     }
@@ -97,8 +115,9 @@ class MetodoPago extends Conexion
             $update->bindValue(3, $this->cod_metodo);
 
             $update->execute();
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al actualizar el método de pago: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 

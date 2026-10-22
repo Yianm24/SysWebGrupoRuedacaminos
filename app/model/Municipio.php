@@ -62,7 +62,7 @@ class Municipio extends Conexion
 
             $array = $this->validarPost($campos);
             $this->nombre = $array['nombre_municipio'];
-            $this->cod_estado = intval($array['cod_estado']);
+            $this->cod_estado = $array['cod_estado'];
             $this->estado = 1;
         } else {
             return 'error&msg=Registrar';
