@@ -17,7 +17,8 @@
                                 <option value="<?php echo $dato['cod_moneda']; ?>"><?php echo $dato['abreviatura']; ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="ej: Pago Movil">
+                        <input type="text" class="form-control input-evaluar solo-letras" id="nombre" name="nombre" placeholder="ej: Pago Movil">
+                        <!-- <span class="mensaje-error"></span> -->
                     </div>
                 </div>
 
