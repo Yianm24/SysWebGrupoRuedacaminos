@@ -3,9 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\PagoTrait;
 
 class Pago extends Conexion
 {
+    use PagoTrait;
+
     private $cod_pago;
     private $fecha;
     private $hora;
@@ -123,20 +126,25 @@ class Pago extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    // Registrar otros Pagos
-    public function regDatosPago($fecha, $hora, $monto_usd, $monto_original, $referencia, $estado_pago, $cod_envio, $cod_metodopago, $cod_banco)
+    // Registrar/Añadir otros Pagos
+    public function regDatosPago(array $campos, $hora, $estatus_calculado)
     {
-        $this->fecha = $fecha;
-        $this->hora = $hora;
-        $this->monto = $monto_usd;
-        $this->monto_original = $monto_original;
-        $this->referencia = $referencia;
-        $this->estado_pago = $estado_pago;
-        $this->cod_envio = $cod_envio;
-        $this->cod_metodopago = $cod_metodopago;
-        $this->cod_banco = $cod_banco;
-        $this->estado = 1;
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->fecha = $datos['fecha_pago'];
+            $this->hora = $hora;
+            $this->monto = $datos['monto'];
+            $this->monto_original = $datos['monto_ingresado'];
+            $this->referencia = $datos['referencia'];
+            $this->estado_pago = $estatus_calculado;
+            $this->cod_envio = $datos['cod_envio'];
+            $this->cod_metodopago = $datos['metodos'];
+            $this->cod_banco = $datos['cuentas'];
+            $this->estado = 1;
 
+        } else {
+            return 'error';
+        }
         return $this->registrarPago();
     }
 
@@ -156,29 +164,33 @@ class Pago extends Conexion
             $insertPago->execute([$this->fecha, $this->hora, $this->monto, $this->referencia, $this->estado_pago, $this->cod_envio, $this->estado, $this->cod_detallepago]);
 
             $this->conexion->commit();
-            return true;
+            return 'success';
         } catch (\PDOException $e) {
             if ($this->conexion->inTransaction()) {
                 $this->conexion->rollBack();
             }
-            return false;
+            return 'error';
         }
     }
 
     // actualizar Pago.
-    public function actDatosPago($cod_pago, $fecha, $hora, $monto_usd, $monto_original, $referencia, $estado_pago, $cod_detallepago, $cod_metodopago, $cod_banco)
+    public function actDatosPago(array $campos, $hora, $estatus_calculado)
     {
-        $this->cod_pago = $cod_pago;
-        $this->fecha = $fecha;
-        $this->hora = $hora;
-        $this->monto = $monto_usd;
-        $this->monto_original = $monto_original;
-        $this->referencia = $referencia;
-        $this->estado_pago = $estado_pago;
-        $this->cod_detallepago = $cod_detallepago;
-        $this->cod_metodopago = $cod_metodopago;
-        $this->cod_banco = $cod_banco;
-
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->cod_pago = $datos['cod_pago'];
+            $this->fecha = $datos['fecha_pago'];
+            $this->hora = $hora;
+            $this->monto = $datos['monto'];
+            $this->monto_original = $datos['monto_ingresado'];
+            $this->referencia = $datos['referencia'];
+            $this->estado_pago = $estatus_calculado;
+            $this->cod_detallepago = $datos['cod_detallepago'];
+            $this->cod_metodopago = $datos['metodos'];
+            $this->cod_banco = $datos['cuentas'];
+        } else {
+            return 'error';
+        }
         return $this->actualizarPago();
     }
 
@@ -196,35 +208,37 @@ class Pago extends Conexion
             $updatePago->execute([$this->fecha, $this->hora, $this->monto, $this->referencia, $this->estado_pago, $this->cod_pago]);
 
             $this->conexion->commit();
-            return true;
+            return 'updated';
         } catch (\PDOException $e) {
             if ($this->conexion->inTransaction()) {
                 $this->conexion->rollBack();
             }
-            return false;
+            return 'error';
         }
     }
 
     // Eliminar Pago.
-    public function elmDatosPago(int $cod_pago)
+    public function elmDatosPago(array $campos)
     {
-        $this->cod_pago = $cod_pago;
-        $this->estado = 0;
-
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->cod_pago = $datos['cod_pago'];
+        } else {
+            return 'error';
+        }
         return $this->eliminarPago();
     }
 
     private function eliminarPago()
     {
         try {
-            $sentencia = "UPDATE pago SET estado = ? WHERE cod_pago = ?";
+            $sentencia = "UPDATE pago SET estado = 0 WHERE cod_pago = ?";
             $delete = $this->conexion->prepare($sentencia);
-            $delete->bindValue(1, $this->estado);
-            $delete->bindValue(2, $this->cod_pago);
+            $delete->bindValue(1, $this->cod_pago);
             $delete->execute();
-            return true;
+            return 'deleted';
         } catch (\PDOException $e) {
-            return false;
+            return 'error';
         }
     }
 
