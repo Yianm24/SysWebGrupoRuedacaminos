@@ -1,9 +1,12 @@
 <?php
 namespace App\Model;
 use App\Config\Conexion;
+use App\Traits\CambioMonedaTrait;
 
 class CambioMoneda extends Conexion
 {
+    use CambioMonedaTrait;
+
     private $cod_cambio;
     private $tasa;
     private $fecha;
@@ -21,43 +24,51 @@ class CambioMoneda extends Conexion
         return $select->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function verificarTasaExiste($cod_moneda, $fecha) {
-        $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND estado = 1";
-        $stmt = $this->conexion->prepare($sentencia);
-        $stmt->bindValue(1, $cod_moneda);
-        $stmt->bindValue(2, $fecha);
+    public function verificarTasaDuplicada($cod_moneda, $fecha, $id_actual = null) {
+        if ($id_actual === null) {
+            $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND estado = 1";
+            $stmt = $this->conexion->prepare($sentencia);
+            $stmt->bindValue(1, $cod_moneda);
+            $stmt->bindValue(2, $fecha);
+        } else {
+            $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND cod_cambio != ? AND estado = 1";
+            $stmt = $this->conexion->prepare($sentencia);
+            $stmt->bindValue(1, $cod_moneda);
+            $stmt->bindValue(2, $fecha);
+            $stmt->bindValue(3, $id_actual);
+        }
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
 
-    public function verificarTasaDuplicada($cod_moneda, $fecha, $id_actual) {
-        $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND cod_cambio != ? AND estado = 1";
-        $stmt = $this->conexion->prepare($sentencia);
-        $stmt->bindValue(1, $cod_moneda);
-        $stmt->bindValue(2, $fecha);
-        $stmt->bindValue(3, $id_actual);
-        $stmt->execute();
-        return $stmt->fetchColumn() > 0;
-    }
-
-    public function regDatosCambio($tasa, $cod_moneda) {
-        date_default_timezone_set('America/Caracas');
+    public function regDatosCambio(array $campos) {
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            date_default_timezone_set('America/Caracas');
         
-        $this->tasa = $tasa;
-        $this->cod_moneda = $cod_moneda;
-        $this->fecha = date('Y-m-d H:i:s');
-        $this->estado = 1;
+            $this->tasa = $datos['tasa'];
+            $this->cod_moneda = $datos['moneda'];
+            $this->fecha = date('Y-m-d H:i:s');
+            $this->estado = 1;
+        } else {
+            return 'error&msg=Registrar';
+        }
         return $this->registrarCambio();
     }
 
     private function registrarCambio() {
-        $sentencia = "INSERT INTO cambio_moneda (tasa, fecha, cod_moneda, estado) VALUES (?, ?, ?, ?)";
-        $insert = $this->conexion->prepare($sentencia);
-        $insert->bindValue(1, $this->tasa);
-        $insert->bindValue(2, $this->fecha);
-        $insert->bindValue(3, $this->cod_moneda);
-        $insert->bindValue(4, $this->estado);
-        return $insert->execute();
+        try {
+            $sentencia = "INSERT INTO cambio_moneda (tasa, fecha, cod_moneda, estado) VALUES (?, ?, ?, ?)";
+            $insert = $this->conexion->prepare($sentencia);
+            $insert->bindValue(1, $this->tasa);
+            $insert->bindValue(2, $this->fecha);
+            $insert->bindValue(3, $this->cod_moneda);
+            $insert->bindValue(4, $this->estado);
+            $insert->execute();
+            return 'success';
+        } catch (\PDOException $e) {
+            return "exception&msg=" . urlencode($e->getMessage());
+        }
     }
 
     public function obt_RegistrosCambios() {
@@ -72,31 +83,51 @@ class CambioMoneda extends Conexion
         return $select->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function actDatosCambio($id, $tasa) {
-        $this->cod_cambio = $id;
-        $this->tasa = $tasa;
+    public function actDatosCambio(array $campos) {
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->cod_cambio = $datos['id_cambio_editar'];
+            $this->tasa = $datos['tasa_editar'];
+            $this->cod_moneda = $datos['moneda_editar'];
+        } else {
+            return 'error&msg=Actualizar';
+        }
         return $this->actualizarCambio();
     }
 
     private function actualizarCambio() {
-        $sentencia = "UPDATE cambio_moneda SET tasa = ? WHERE cod_cambio = ?";
-        $update = $this->conexion->prepare($sentencia);
-        $update->bindValue(1, $this->tasa);
-        $update->bindValue(2, $this->cod_cambio);
-        return $update->execute();
+        try {
+            $sentencia = "UPDATE cambio_moneda SET tasa = ?, cod_moneda = ? WHERE cod_cambio = ?";
+            $update = $this->conexion->prepare($sentencia);
+            $update->bindValue(1, $this->tasa);
+            $update->bindValue(2, $this->cod_moneda);
+            $update->bindValue(3, $this->cod_cambio);
+            $update->execute();
+            return 'updated';
+        } catch (\PDOException $e) {
+            return "exception&msg=" . urlencode($e->getMessage());
+        }
     }
 
-    public function elmDatosCambio($id) {
-        $this->cod_cambio = $id;
-        $this->estado = 0;
+    public function elmDatosCambio(array $campos) {
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->cod_cambio = $datos['id_cambio'];
+        } else {
+            return 'error&msg=Eliminar';
+        }
         return $this->eliminarCambio();
     }
 
     private function eliminarCambio() {
-        $sentencia = "UPDATE cambio_moneda SET estado = ? WHERE cod_cambio = ?";
-        $delete = $this->conexion->prepare($sentencia);
-        $delete->bindValue(1, $this->estado);
-        $delete->bindValue(2, $this->cod_cambio);
-        return $delete->execute();
+        try {
+            $sentencia = "UPDATE cambio_moneda SET estado = 0 WHERE cod_cambio = ?";
+            $delete = $this->conexion->prepare($sentencia);
+            $delete->bindValue(1, $this->cod_cambio);
+            $delete->execute();
+            return 'deleted';
+        } catch (\PDOException $e) {
+            return "exception&msg=" . urlencode($e->getMessage());
+        }
     }
 } ?>

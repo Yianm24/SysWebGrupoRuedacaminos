@@ -1,48 +1,54 @@
 <?php
 namespace App\Controller;
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['usuario'])) {
+    header("Location: ?url=login");
+    exit(); 
+}
+
 use App\Model\CambioMoneda;
 
 $cambio = new CambioMoneda();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
+$rol_usuario = $_SESSION['usuario']['rol'];
+
+//Permiso para actualizar y eliminar exclusivo para Administradores
+if (in_array($solicitud, ['actualizar', 'eliminar']) && $rol_usuario != 6) {
+    header("Location: ?url=cambiomoneda&status=unauthorized");
+    exit();
+}
 
 switch ($solicitud) {
     case 'registrar':
-        if (!empty($_POST['tasa']) && !empty($_POST['moneda'])) {
-            $fecha_actual = date('Y-m-d');
-            
-            if ($cambio->verificarTasaExiste($_POST['moneda'], $fecha_actual)) {
-                header("Location: ?url=cambiomoneda&status=exists");
-                exit();
-            }
-
-            $cambio->regDatosCambio($_POST['tasa'], $_POST['moneda']);
-            header("Location: ?url=cambiomoneda&status=success");
+        $fecha_actual = date('Y-m-d');
+        if ($cambio->verificarTasaDuplicada($_POST['moneda'], $fecha_actual)) {
+            header("Location: ?url=cambiomoneda&status=exists");
             exit();
         }
-        break;
+
+        $resultado = $cambio->regDatosCambio(['tasa', 'moneda']);
+        header("Location: ?url=cambiomoneda&status={$resultado}");
+        exit();
 
     case 'actualizar':
-        if (!empty($_POST['id_cambio_editar']) && !empty($_POST['tasa_editar']) && !empty($_POST['moneda_editar'])) {
-            $fecha_actual = date('Y-m-d');
-            
-            if ($cambio->verificarTasaDuplicada($_POST['moneda_editar'], $fecha_actual, $_POST['id_cambio_editar'])) {
-                header("Location: ?url=cambiomoneda&status=exists");
-                exit();
+        $fecha_actual = date('Y-m-d');
+        if ($cambio->verificarTasaDuplicada($_POST['moneda_editar'], $fecha_actual, $_POST['id_cambio_editar'])) {
+            header("Location: ?url=cambiomoneda&status=exists");
+            exit();
             }
             
-            $cambio->actDatosCambio($_POST['id_cambio_editar'], $_POST['tasa_editar']);
-            header("Location: ?url=cambiomoneda&status=updated");
-            exit();
-        }
-        break;
+        $resultado = $cambio->actDatosCambio(['id_cambio_editar', 'tasa_editar', 'moneda_editar']);
+        header("Location: ?url=cambiomoneda&status={$resultado}");
+        exit();
         
     case 'eliminar':
-        if (isset($_POST['id_cambio'])) {
-            $cambio->elmDatosCambio($_POST['id_cambio']);
-            header("Location: ?url=cambiomoneda&status=deleted");
-            exit();
-        }
-        break;
+        $resultado = $cambio->elmDatosCambio(['id_cambio']);
+        header("Location: ?url=cambiomoneda&status={$resultado}");
+        exit();
 }
 
 $listaMonedas = $cambio->obt_TodasLasMonedas();

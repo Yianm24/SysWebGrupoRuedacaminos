@@ -1,5 +1,15 @@
 <?php
 namespace App\Controller;
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] != 6) {
+    header("Location: ?url=dashboard&status=unauthorized");
+    exit(); 
+}
+
 use App\Model\Kilometraje;
 
 $kilometraje = new Kilometraje();
@@ -7,42 +17,29 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if (!empty($_POST['kilometraje']) && !empty($_POST['precio_kilometraje'])) {
-            
-            // Verificar si ya existe una tarifa para el mismo kilometraje
-            if ($kilometraje->verificarTarifaExiste($_POST['kilometraje'])) {
-                header("Location: ?url=kilometraje&status=exists");
-                exit();
-            }
-
-            $kilometraje->regDatosKilometraje($_POST['kilometraje'], $_POST['precio_kilometraje']);
-            header("Location: ?url=kilometraje&status=success");
+        if ($kilometraje->verificarTarifaDuplicada($_POST['kilometraje'])) {
+            header("Location: ?url=kilometraje&status=exists");
             exit();
         }
+        $resultado = $kilometraje->regDatosKilometraje(['kilometraje', 'precio_kilometraje']);
+        header("Location: ?url=kilometraje&status={$resultado}");
         break;
 
     case 'actualizar':
-        if (!empty($_POST['id_tarifa_editar']) && !empty($_POST['kilometraje_editar']) && !empty($_POST['precio_kilometraje_editar'])) {
-            
-            if ($kilometraje->verificarTarifaDuplicada($_POST['kilometraje_editar'], $_POST['id_tarifa_editar'])) {
-                header("Location: ?url=kilometraje&status=exists");
-                exit();
+        if ($kilometraje->verificarTarifaDuplicada($_POST['kilometraje_editar'], $_POST['id_tarifa_editar'])) {
+            header("Location: ?url=kilometraje&status=exists");
+            exit();
             }
             
-            $kilometraje->actDatosKilometraje($_POST['id_tarifa_editar'], $_POST['kilometraje_editar'], $_POST['precio_kilometraje_editar']);
-            header("Location: ?url=kilometraje&status=updated");
-            exit();
-        }
+        $resultado = $kilometraje->actDatosKilometraje(['id_tarifa_editar', 'kilometraje_editar', 'precio_kilometraje_editar']);
+        header("Location: ?url=kilometraje&status={$resultado}");
         break;
 
     case 'eliminar':
-        if (isset($_POST['id_tarifa'])) {
-            $kilometraje->elmDatosKilometraje($_POST['id_tarifa']);
-            header("Location: ?url=kilometraje&status=deleted");
-            exit();
-        }
-        break;
-}
+            $resultado = $kilometraje->elmDatosKilometraje(['id_tarifa']);
+            header("Location: ?url=kilometraje&status={$resultado}");
+            break;
+    }
 
 $registros = $kilometraje->obt_RegistrosKilometraje();
 

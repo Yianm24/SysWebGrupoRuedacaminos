@@ -41,7 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 selectMoneda.value = botonTrig.getAttribute('data-moneda');
                 inputTasa.value = botonTrig.getAttribute('data-tasa');
 
-                document.getElementById('formCambio').setAttribute('data-tasa-original', inputTasa.value);
+                const datosOriginales = {
+                    tasa: inputTasa.value,
+                    moneda: selectMoneda.value
+                };
+                document.getElementById('formCambio').setAttribute('data-originales', JSON.stringify(datosOriginales));
                 $(inputTasa).trigger('input');
                 btnSubmit.disabled = true;
                 selectMoneda.addEventListener('change', function() {
@@ -59,12 +63,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const btnSubmit = modalCambio.querySelector('#btnSubmitModal');
             
             if (btnSubmit.value === "actualizar") {
-                const tasaOriginal = this.getAttribute('data-tasa-original');
+                const originales = JSON.parse(this.getAttribute('data-originales'));
                 const tasaActual = document.getElementById('tasa').value;
+                const monedaActual = document.getElementById('moneda').value;
                 
-                if (Number(tasaOriginal) === Number(tasaActual)) {
+                if (Number(originales.tasa) === Number(tasaActual) && originales.moneda === monedaActual) {
                     event.preventDefault();
-                    Swal.fire({ title: "Sin modificaciones", text: "El valor ingresado es igual al actual y no se registraron cambios.", icon: "info" });
+                    Swal.fire({ title: "Sin modificaciones", text: "Los valores ingresados son iguales a los actuales y no se registraron cambios.", icon: "info" });
                 }
             }
         });
