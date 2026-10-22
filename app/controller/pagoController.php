@@ -21,13 +21,15 @@ switch ($solicitud) {
             date_default_timezone_set('America/Caracas');
             $fecha = $_POST['fecha_pago'] ?? date('Y-m-d');
             $hora = date('H:i:s');
+            $estatus_calculado = $pago->determinarEstatusPago($_POST['cod_envio'], $_POST['monto']);
 
             $pago->regDatosPago(
                 $fecha,
                 $hora,
                 $_POST['monto'],
+                $_POST['monto_ingresado'],
                 $_POST['referencia'],
-                $_POST['estatus_pago'],
+                $estatus_calculado,
                 $_POST['cod_envio'],
                 $_POST['metodos'],
                 $_POST['cuentas']
@@ -46,13 +48,15 @@ switch ($solicitud) {
                 exit();
             }
 
+            $estatus_calculado = $pago->determinarEstatusPago($_POST['cod_envio'], $_POST['monto'], $_POST['cod_pago']);
             $pago->actDatosPago(
                 $_POST['cod_pago'],
                 $_POST['fecha_pago'],
                 $_POST['hora'] ?? date('H:i:s'),
                 $_POST['monto'],
+                $_POST['monto_ingresado'],
                 $_POST['referencia'],
-                $_POST['estatus_pago'],
+                $estatus_calculado,
                 $_POST['cod_detallepago'],
                 $_POST['metodos'],
                 $_POST['cuentas']

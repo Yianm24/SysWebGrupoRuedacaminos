@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let tasaDolar = tasasDelDia['USD'] || 1;
 
-    //validar selects de banco y autocompletar en caso de USD en efectivo
     function filtrarBancos() {
         const selectMetodo = document.getElementById('metodos');
         const selectBanco = document.getElementById('cuentas');
@@ -58,61 +57,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function calcularRestante() {
         const inputMonto = document.getElementById('monto_ingresado');
-        const select = document.getElementById('metodos');
+        const selectMetodo = document.getElementById('metodos');
         const spanSimb = document.getElementById('simbolo_moneda_dinamico');
         const inputOculto = document.getElementById('monto_dolares_oculto');
-        const spanRest = document.getElementById('monto_restante_dinamico');
-        const spanRestBs = document.getElementById('monto_restante_bs_dinamico');
+        const spanRestUSD = document.getElementById('monto_restante_dinamico');
+        const spanRestBS = document.getElementById('monto_restante_bs_dinamico');
         const divAlerta = document.getElementById('alerta_visual');
-        
         const inputEstatus = document.getElementById('estatus_pago'); 
         const divEstatusVisual = document.getElementById('estatus_pago_visual'); 
         const tarjetaEstatus = document.getElementById('tarjeta_estatus'); 
+
+        let montoIngresado = inputMonto && inputMonto.value ? parseFloat(inputMonto.value) : 0;
+        let moneda = 'USD';
         
-        let abonadoIngresado = inputMonto ? (parseFloat(inputMonto.value) || 0) : 0;
-        let monedaSeleccionada = 'USD';
-        
-        if (select && select.selectedIndex >= 0) {
-            let opcion = select.options[select.selectedIndex];
-            if (opcion) monedaSeleccionada = opcion.getAttribute('data-moneda') || 'USD';
+        if (selectMetodo && selectMetodo.selectedIndex >= 0) {
+            let opcion = selectMetodo.options[selectMetodo.selectedIndex];
+            if (opcion) moneda = opcion.getAttribute('data-moneda') || 'USD';
         }
 
-        let abonadoEnDolares = (monedaSeleccionada === 'USD') ? abonadoIngresado : (abonadoIngresado / tasaDolar);
+        // Conversión a Dólares
+        let dolaresCalculados = (moneda === 'USD') ? montoIngresado : (montoIngresado / tasaDolar);
+        let abonadoUSD = Number(dolaresCalculados.toFixed(2));
+        let deudaUSD = Number(montoBaseCalculo.toFixed(2));
 
         if (spanSimb) {
-            if (monedaSeleccionada === 'VES') spanSimb.innerHTML = 'Bs';
-            else if (monedaSeleccionada === 'EUR') spanSimb.innerHTML = '€';
+            if (moneda === 'VES') spanSimb.innerHTML = 'Bs';
+            else if (moneda === 'EUR') spanSimb.innerHTML = '€';
             else spanSimb.innerHTML = '$';
         }
 
-        if (inputOculto) inputOculto.value = abonadoEnDolares.toFixed(2);
+        if (inputOculto) inputOculto.value = abonadoUSD.toFixed(2);
         
-        let restanteMatematicoUSD = Math.round((montoBaseCalculo - abonadoEnDolares) * 100) / 100;
-        let restanteParaMostrar = Math.max(0, restanteMatematicoUSD);
+        let restanteUSD = Number((deudaUSD - abonadoUSD).toFixed(2));
+        let mostrarRestanteUSD = Math.max(0, restanteUSD);
         
-        if (spanRest) spanRest.textContent = restanteParaMostrar.toFixed(2);
-        if (spanRestBs) spanRestBs.textContent = (restanteParaMostrar * tasaDolar).toFixed(2);
+        if (spanRestUSD) spanRestUSD.textContent = mostrarRestanteUSD.toFixed(2);
+        if (spanRestBS) spanRestBS.textContent = (mostrarRestanteUSD * tasaDolar).toFixed(2);
 
-        if (spanRest) spanRest.classList.remove('text-danger', 'text-success');
-        if (spanRestBs) spanRestBs.classList.remove('text-danger', 'text-success');
+        if (spanRestUSD) spanRestUSD.classList.remove('text-danger', 'text-success');
+        if (spanRestBS) spanRestBS.classList.remove('text-danger', 'text-success');
 
         if (inputEstatus && divEstatusVisual && divAlerta && tarjetaEstatus) {
             
-            if (restanteMatematicoUSD < 0) {
+            //Validación para evitar montos nulos por conversión
+            if (montoIngresado > 0 && abonadoUSD === 0) {
+                divAlerta.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> El monto es muy bajo (equivale a $0.00).';
+                divAlerta.className = 'mt-2 small text-danger fw-bold';
+                inputEstatus.value = "0"; 
+                divEstatusVisual.textContent = "Inválido";
+                tarjetaEstatus.className = "alert alert-danger text-center shadow-sm mb-0 p-2 text-white";
+                return;
+            }
+
+            // Validación de valor con 2 decimales.
+            if (restanteUSD < 0) {
                 divAlerta.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> ¡Atención! Se superó el monto total de la deuda.';
                 divAlerta.className = 'mt-2 small text-danger fw-bold alerta-exceso';
-                if (spanRest) spanRest.classList.add('text-danger');
-                if (spanRestBs) spanRestBs.classList.add('text-danger');
+                if (spanRestUSD) spanRestUSD.classList.add('text-danger');
+                if (spanRestBS) spanRestBS.classList.add('text-danger');
                 
                 inputEstatus.value = "0"; 
                 divEstatusVisual.textContent = "Excedido";
-                tarjetaEstatus.className = "alert alert-danger text-center shadow-sm mb-0 p-2 text-dark";
+                tarjetaEstatus.className = "alert alert-danger text-center shadow-sm mb-0 p-2 text-white";
 
-            } else if (restanteMatematicoUSD === 0) {
+            } else if (restanteUSD === 0) {
                 divAlerta.innerHTML = '<i class="bi bi-check-circle-fill"></i> ¡Excelente! Pago total del envío cubierto.';
                 divAlerta.className = 'mt-2 small text-success fw-bold alerta-exceso';
-                if (spanRest) spanRest.classList.add('text-success');
-                if (spanRestBs) spanRestBs.classList.add('text-success');
+                if (spanRestUSD) spanRestUSD.classList.add('text-success');
+                if (spanRestBS) spanRestBS.classList.add('text-success');
                 
                 inputEstatus.value = "1"; 
                 divEstatusVisual.textContent = "Completado";
@@ -129,18 +141,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    //fjunciión del botón añádir.
     function autocompletarMonto() {
         const inputMonto = document.getElementById('monto_ingresado');
-        const select = document.getElementById('metodos');
+        const selectMetodo = document.getElementById('metodos');
         
-        let monedaSeleccionada = 'USD';
-        if (select && select.selectedIndex >= 0) {
-            let opcion = select.options[select.selectedIndex];
-            if (opcion) monedaSeleccionada = opcion.getAttribute('data-moneda') || 'USD';
+        let moneda = 'USD';
+        if (selectMetodo && selectMetodo.selectedIndex >= 0) {
+            let opcion = selectMetodo.options[selectMetodo.selectedIndex];
+            if (opcion) moneda = opcion.getAttribute('data-moneda') || 'USD';
         }
 
-        let valorAutocompletado = (monedaSeleccionada === 'USD') ? montoBaseCalculo : (montoBaseCalculo * tasaDolar);
+        let valorAutocompletado = (moneda === 'USD') ? montoBaseCalculo : (montoBaseCalculo * tasaDolar);
 
         if (inputMonto) {
             inputMonto.value = valorAutocompletado.toFixed(2);
@@ -169,7 +180,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    //modal para Registrar y Editar.
     const modalPago = document.getElementById('modalPago');
     if (modalPago) {
         modalPago.addEventListener('show.bs.modal', function(event) {
@@ -240,16 +250,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     inputs.metodo.selectedIndex = 0;
                 }
 
-                let monedaSeleccionada = 'USD';
+                let moneda = 'USD';
                 if (inputs.metodo.selectedIndex >= 0) {
                     let opcion = inputs.metodo.options[inputs.metodo.selectedIndex];
-                    if (opcion) monedaSeleccionada = opcion.getAttribute('data-moneda') || 'USD';
+                    if (opcion) moneda = opcion.getAttribute('data-moneda') || 'USD';
                 }
 
-                let montoDolaresBD = parseFloat(botonTrig.getAttribute('data-monto')) || 0;
-                let montoEnMonedaOriginal = (monedaSeleccionada === 'USD') ? montoDolaresBD : (montoDolaresBD * tasaDolar);
+                let montoIngresadoBD = parseFloat(botonTrig.getAttribute('data-monto-original')) || 0;
+                inputs.monto.value = montoIngresadoBD.toFixed(2);
                 
-                inputs.monto.value = (Math.round(montoEnMonedaOriginal * 100) / 100).toFixed(2);
                 inputs.referencia.value = botonTrig.getAttribute('data-referencia');
                 
                 filtrarBancos();

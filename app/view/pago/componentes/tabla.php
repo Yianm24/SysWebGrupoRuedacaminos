@@ -20,7 +20,7 @@
                         $montoTotal = $value['monto_total'] ?? 0;
                         $totalAbonadoEnvio = $value['total_abonado_envio'] ?? 0;
                         $montoRestante = $montoTotal - $totalAbonadoEnvio;
-                        $montoBaseEditar = $montoRestante + ($value['monto_abonado'] ?? 0);
+                        $montoBaseEditar = $montoRestante + ($value['monto_abonado_usd'] ?? 0);
                         $tienePago = !empty($value['cod_pago']);
                     ?>
                         <tr>
@@ -35,7 +35,7 @@
                                 <?php endif; ?>
                             </td>
                             <td class="text-secondary">$<?= number_format($montoTotal, 2); ?></td>
-                            <td class="text-secondary">$<?= number_format($value['monto_abonado'] ?? 0, 2); ?></td>
+                            <td class="text-secondary">$<?= number_format($value['monto_abonado_usd'] ?? 0, 2); ?></td>
                             <td class="text-secondary">$<?= number_format(max(0, $montoRestante), 2); ?></td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" title="Registrar"
@@ -52,7 +52,8 @@
                                         data-bs-toggle="modal" data-bs-target="#modalPago"
                                         data-id="<?= $value['cod_pago']; ?>"
                                         data-envio="<?= $value['cod_envio']; ?>"
-                                        data-monto="<?= $value['monto_abonado']; ?>"
+                                        data-monto="<?= $value['monto_abonado_usd']; ?>"
+                                        data-monto-original="<?= $value['monto_ingresado_original']; ?>"
                                         data-fecha="<?= $value['fecha']; ?>"
                                         data-referencia="<?= $value['referencia']; ?>"
                                         data-estatus="<?= $value['estado_pago']; ?>"
