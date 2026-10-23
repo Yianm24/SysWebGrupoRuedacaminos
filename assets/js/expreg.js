@@ -98,6 +98,8 @@ $(document).ready(function () {
         verificarFormulario();
     });
 
+    
+
     // $('.btn-close').click(() => {
 
     //     // 

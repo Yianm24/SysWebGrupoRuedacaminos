@@ -3,9 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTrait;
 
 class Moneda extends Conexion
 {
+    use ValidadorTrait;
 
     private $cod_moneda;
     private $estado;
@@ -26,13 +28,30 @@ class Moneda extends Conexion
         $count->execute();
         return $count->fetchColumn() > 0;
     }
-    public function regDatosMoneda($nombre, $abreviatura)
+
+    public function obt_RegistrosMoneda()
     {
+        try {
+            $sentencia = "SELECT * FROM moneda WHERE estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
 
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->abreviatura = strtoupper($abreviatura);
-        $this->estado = 1;
+    public function regDatosMoneda(array $campos)
+    {
+        if (is_array($this->validarPost($campos, "moneda"))) {
 
+            $array = $this->validarPost($campos, "moneda");
+            $this->nombre = $this->formatearPalabra($array['nombre']);
+            $this->abreviatura = strtoupper($array['abreviatura']);
+            $this->estado = 1;
+        } else {
+            return 'error&msg=Registrar';
+        }
         return $this->registrarMoneda();
     }
 
@@ -48,31 +67,23 @@ class Moneda extends Conexion
             $insert->bindValue(2, $this->abreviatura);
             $insert->bindValue(3, $this->estado);
 
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
+            return 'success';
         } catch (\PDOException $e) {
             return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
         }
     }
-    public function obt_RegistrosMoneda()
+
+    public function modDatosMoneda(array $campos)
     {
-        try {
-            $sentencia = "SELECT * FROM moneda WHERE estado = 1";
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
+        if (is_array($this->validarPost($campos, "moneda"))) {
+
+            $array = $this->validarPost($campos, "moneda");
+            $this->cod_moneda = $array['cod_moneda'];
+            $this->nombre = $this->formatearPalabra($array['nombre']);
+            $this->abreviatura = strtoupper($array['abreviatura']);
         }
-    }
-
-    public function modDatosMoneda($cod_moneda, $nombre, $abreviatura)
-    {
-        $this->cod_moneda = $cod_moneda;
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->abreviatura = strtoupper($abreviatura);
-
         return $this->modificarMoneda();
     }
 
@@ -87,8 +98,9 @@ class Moneda extends Conexion
             $update->bindValue(3, $this->cod_moneda);
 
             $update->execute();
+            return 'updated';
         } catch (\PDOException $e) {
-            return "Error al actualizar la moneda: " . $e->getMessage();
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 

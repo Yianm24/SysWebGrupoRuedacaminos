@@ -6,7 +6,7 @@ trait ValidadorTrait
 {
 
     // 1. Verifica que la petición sea POST y que los campos requeridos no estén vacíos
-    public function validarPost(array $camposRequeridos)
+    public function validarPost(array $camposRequeridos, string $modulo)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return false;
@@ -14,10 +14,9 @@ trait ValidadorTrait
 
         $array = [];
         
-
         foreach ($camposRequeridos as $campo) {
             if (!isset($_POST[$campo]) || empty(trim($_POST[$campo]))) {
-                header("Location: ?url=estado&status=empty");
+                header("Location: ?url={$modulo}&status=empty");
                 return false;
             }
             $array["{$campo}"] = $this->input($campo, null);

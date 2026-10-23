@@ -52,9 +52,9 @@ class MetodoPago extends Conexion
 
     public function regDatosMetodoPago(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
+        if (is_array($this->validarPost($campos,"metodopago"))) {
 
-            $array = $this->validarPost($campos);
+            $array = $this->validarPost($campos,"metodopago");
 
             $this->nombre = $this->formatearPalabra($array['nombre']);
             $this->moneda = $array['moneda'];
@@ -89,9 +89,9 @@ class MetodoPago extends Conexion
 
     public function actDatosMetodoPago(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
+        if (is_array($this->validarPost($campos,"metodopago"))) {
 
-            $array = $this->validarPost($campos);
+            $array = $this->validarPost($campos,"metodopago");
             $this->cod_metodo = $array['cod_metodo'];
             $this->nombre = $this->formatearPalabra($array['nombre']);
             $this->moneda = $array['moneda'];

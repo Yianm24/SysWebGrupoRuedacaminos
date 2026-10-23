@@ -58,9 +58,9 @@ class Municipio extends Conexion
 
     public function regDatosMunicipio(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
+        if (is_array($this->validarPost($campos,"municipio"))) {
 
-            $array = $this->validarPost($campos);
+            $array = $this->validarPost($campos,"municipio");
             $this->nombre = $array['nombre_municipio'];
             $this->cod_estado = $array['cod_estado'];
             $this->estado = 1;
@@ -92,9 +92,9 @@ class Municipio extends Conexion
     public function modDatosMunicipio(array $campos)
     {
 
-        if (is_array($this->validarPost($campos))) {
+        if (is_array($this->validarPost($campos,"municipio"))) {
 
-            $array = $this->validarPost($campos);
+            $array = $this->validarPost($campos,"municipio");
             $this->cod_municipio = $array['cod_municipio'];
             $this->nombre= $array['nombre_municipio'];
             $this->cod_estado = $array['cod_estado'];

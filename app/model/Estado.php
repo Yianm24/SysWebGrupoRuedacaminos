@@ -49,9 +49,9 @@ class Estado extends Conexion
 
     public function regDatosEstado(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
+        if (is_array($this->validarPost($campos,"estado"))) {
 
-            $array = $this->validarPost($campos);
+            $array = $this->validarPost($campos,"estado");
             $this->nombre = $this->formatearPalabra($array['nombre_estado']);
             $this->estado = 1;
         } else {
@@ -80,9 +80,9 @@ class Estado extends Conexion
     public function actDatosEstado(array $campos)
     {
 
-        if (is_array($this->validarPost($campos))) {
+        if (is_array($this->validarPost($campos,"estado"))) {
 
-            $array = $this->validarPost($campos);
+            $array = $this->validarPost($campos,"estado");
             $this->cod_estado = $array['cod_estado'];
             $this->nombre = $this->formatearPalabra($array['nombre_estado']);
         } else {
