@@ -58,9 +58,9 @@ class Municipio extends Conexion
 
     public function regDatosMunicipio(array $campos)
     {
-        if (is_array($this->validarPost($campos,"municipio"))) {
+        if (is_array($this->validarPost($campos, "municipio"))) {
 
-            $array = $this->validarPost($campos,"municipio");
+            $array = $this->validarPost($campos, "municipio");
             $this->nombre = $array['nombre_municipio'];
             $this->cod_estado = $array['cod_estado'];
             $this->estado = 1;
@@ -92,11 +92,11 @@ class Municipio extends Conexion
     public function modDatosMunicipio(array $campos)
     {
 
-        if (is_array($this->validarPost($campos,"municipio"))) {
+        if (is_array($this->validarPost($campos, "municipio"))) {
 
-            $array = $this->validarPost($campos,"municipio");
+            $array = $this->validarPost($campos, "municipio");
             $this->cod_municipio = $array['cod_municipio'];
-            $this->nombre= $array['nombre_municipio'];
+            $this->nombre = $array['nombre_municipio'];
             $this->cod_estado = $array['cod_estado'];
         } else {
             return 'error&msg=Actualizar';
@@ -123,9 +123,14 @@ class Municipio extends Conexion
     }
 
 
-    public function elmDatosMunicipio(int $cod_municipio)
+    public function elmDatosMunicipio(array $campos)
     {
-        $this->cod_municipio = $cod_municipio;
+        if (is_array($this->validarPost($campos, "municipio"))) {
+            $array = $this->validarPost($campos, "municipio");
+            $this->cod_municipio = $array['cod_municipio'];
+        } else {
+            return 'error&msg=Eliminar';
+        }
 
         return $this->eliminarMunicipio();
     }
@@ -139,9 +144,9 @@ class Municipio extends Conexion
             $delete->bindValue(1, $this->cod_municipio);
             $delete->execute();
 
-            return "Modelo de vehiculo eliminado exitosamente";
+            return "deleted";
         } catch (\PDOException $e) {
-            return "Error al eliminar el Modelo de vehiculo: " . $e->getMessage();
+            return  "exception&msg=" . urlencode($e->getMessage());
         }
     }
 }

@@ -33,16 +33,11 @@ switch ($solicitud) {
 
         break;
     case 'eliminar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_estado'])) {
-                $resultado = $estado->elmDatosEstado($_POST['cod_estado']);
-                //echo $resultado;
-                header("Location: ?url=estado&status=deleted");
-                exit();
-            } else {
-                echo "<script>alert('Falta el código de la estado');</script>";
-            }
-        }
+
+        $resultado = $estado->elmDatosEstado(['cod_estado']);
+        
+        header("Location: ?url=estado&status={$resultado}");
+        break;
 }
 
 

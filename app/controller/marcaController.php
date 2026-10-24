@@ -18,22 +18,22 @@ switch ($solicitud) {
         $resultado = $marca->regDatosMarca(['nombre_marca']);
         header("Location: ?url=marca&status={$resultado}");
 
-    break;
+        break;
     case 'actualizar':
-     
+
         if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
             header("Location: ?url=marca&status=exists");
             exit();
         }
 
-        $resultado = $marca->actMarca(['cod_marca','nombre_marca']);
+        $resultado = $marca->actMarca(['cod_marca', 'nombre_marca']);
         header("Location: ?url=marca&status={$resultado}");
-          
-    break;
-    case 'eliminar':     
+
+        break;
+    case 'eliminar':
         $resultado = $marca->elmDatosMarca(['cod_marca']);
         header("Location: ?url=marca&status={$resultado}");
-    break;
+        break;
 }
 $registros = $marca->obt_RegistrosMarca();
 //$marca->buscarId();

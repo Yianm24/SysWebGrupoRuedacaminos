@@ -11,7 +11,7 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        
+
         if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
             header("Location: ?url=municipio&status=exists");
             exit();
@@ -22,29 +22,23 @@ switch ($solicitud) {
 
         break;
     case 'actualizar':
-        
-                if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
-                    header("Location: ?url=municipio&status=exists");
-                    exit();
-                }
+
+        if ($municipio->verificarMunicipioDuplicado($_POST['nombre_municipio'], $_POST['cod_estado'], $_POST['cod_municipio'])) {
+            header("Location: ?url=municipio&status=exists");
+            exit();
+        }
 
 
-                $resultado = $municipio->modDatosMunicipio(['cod_municipio','nombre_municipio','cod_estado']);
-                header("Location: ?url=municipio&status=updated");
-            
-        
+        $resultado = $municipio->modDatosMunicipio(['cod_municipio', 'nombre_municipio', 'cod_estado']);
+        header("Location: ?url=municipio&status=updated");
+
+
         break;
     case 'eliminar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_municipio'])) {
-                $resultado = $municipio->elmDatosMunicipio($_POST['cod_municipio']);
-                //echo $resultado;
-                header("Location: ?url=municipio&status=deleted");
-                exit();
-            } else {
-                echo "<script>alert('Falta el código del municipio');</script>";
-            }
-        }
+
+        $resultado = $municipio->elmDatosMunicipio(['cod_municipio']);
+        header("Location: ?url=municipio&status={$resultado}");
+        break;
 }
 
 

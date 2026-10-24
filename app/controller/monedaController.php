@@ -10,44 +10,34 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre']) && !empty($_POST['abreviatura'])) {
-                if ($moneda->verificarMonedaExiste($_POST['nombre'],$_POST['abreviatura'])) {
-                    header("Location: ?url=moneda&status=exists");
-                    exit();
-                }
-                $resultado = $moneda->regDatosMoneda($_POST['nombre'], $_POST['abreviatura']);
 
-                header("Location: ?url=moneda&status=success");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
-            break;
-        }
-
-    case 'eliminar':
-        if (isset($_POST['cod_moneda'])) {
-            $resultado = $moneda->elmDatosMoneda($_POST['cod_moneda']);
-            header("Location: ?url=moneda&status=deleted");
+        if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
+            header("Location: ?url=moneda&status=exists");
             exit();
         }
+        $resultado = $moneda->regDatosMoneda(['nombre', 'abreviatura']);
+
+        header("Location: ?url=moneda&status={$resultado}");
+
+        break;
+
+
+    case 'eliminar':
+
+        $resultado = $moneda->elmDatosMoneda('cod_moneda');
+        header("Location: ?url=moneda&status={$resultado}");
+
         break;
 
     case 'modificar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-moneda'])) {
-            if (!empty($_POST['nombre']) && !empty($_POST['abreviatura'])) {
-
-                $resultado = $moneda->modDatosMoneda($_POST['cod-moneda'], $_POST['nombre'], $_POST['abreviatura']);
-
-                //echo "<script>alert('Actualización de datos de la moneda realizada exitosamente');</script>";
-                //echo $resultado;
-                header("Location: ?url=moneda&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
+        if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
+            header("Location: ?url=moneda&status=exists");
+            exit();
         }
+
+        $resultado = $moneda->modDatosMoneda(['cod-moneda', 'nombre', 'abreviatura']);
+        header("Location: ?url=moneda&status={$resultado}");
+
         break;
 }
 
