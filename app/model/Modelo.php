@@ -38,9 +38,9 @@ use ValidadorTrait;
 
     public function regDatosModelo(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
+        if(is_array($this->validarPost($campos,"modelo"))){
 
-        $datos = $this->validarPost($campos);
+        $datos = $this->validarPost($campos,"modelo");
         $this->nombre =strtoupper($datos['nombre_modelo']);
         $this->marca = $datos['marca'];
         $this->estado = 1;
@@ -85,8 +85,8 @@ use ValidadorTrait;
 
     public function actDatosModelo(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
-            $datos = $this->validarPost($campos);    
+        if(is_array($this->validarPost($campos,"modelo"))){
+            $datos = $this->validarPost($campos,"modelo");    
             $this->cod_modelo = $datos['cod_modelo'];
             $this->nombre =strtoupper($datos['nombre_modelo']);
             $this->marca = $datos['marca'];

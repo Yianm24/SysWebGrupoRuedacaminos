@@ -34,8 +34,8 @@ class Marca extends Conexion
 
     public function regDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, "marca"))) {
+            $datos = $this->validarPost($campos, "marca");
             $this->nombre = strtoupper($datos['nombre_marca']);
             $this->estado = 1;
         } else {
@@ -50,7 +50,7 @@ class Marca extends Conexion
             $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?,?)";
 
             $insert = $this->conexion->prepare($sentencia);
-            $insert->execute([$this->nombre,$this->estado]);
+            $insert->execute([$this->nombre, $this->estado]);
 
             return 'success';
         } catch (\PDOException $e) {
@@ -74,12 +74,12 @@ class Marca extends Conexion
 
     public function actMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, "marca"))) {
+            $datos = $this->validarPost($campos, "marca");
             $this->cod_marca = $datos['cod_marca'];
             $this->nombre = strtoupper($datos['nombre_marca']);
-        }else{
-            return 'error&msg=Actualizar'; 
+        } else {
+            return 'error&msg=Actualizar';
         }
 
         return $this->actualizarMarca();
@@ -99,11 +99,11 @@ class Marca extends Conexion
 
     public function elmDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, "marca"))) {
+            $datos = $this->validarPost($campos, "marca");
             $this->cod_marca = $datos['cod_marca'];
-        }else{
-           return 'error&msg=Eliminar'; 
+        } else {
+            return 'error&msg=Eliminar';
         }
         return $this->eliminarMarca();
     }

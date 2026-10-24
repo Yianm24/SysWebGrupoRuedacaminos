@@ -46,8 +46,8 @@ use ValidadorTrait;
 
     public function regDatosVehiculo(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
-            $datos = $this->validarPost($campos);
+        if(is_array($this->validarPost($campos,"vehiculo"))){
+            $datos = $this->validarPost($campos,"vehiculo");
             $this->placa = strtoupper($datos['placa']);
             $this->color = $this->formatearPalabra($datos['color']);
             $this->anio = $datos['anio'];
@@ -104,9 +104,9 @@ use ValidadorTrait;
     }
     public function actDatosVehiculo(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
+        if(is_array($this->validarPost($campos,"vehiculo"))){
 
-            $datos = $this->validarPost($campos);
+            $datos = $this->validarPost($campos,"vehiculo");
             $this->cod_vehiculo = $datos['cod_vehiculo'];
             $this->placa = strtoupper($datos['placa']);
             $this->color = $this->formatearPalabra($datos['color']);
@@ -146,8 +146,8 @@ use ValidadorTrait;
 
     public function elmDatosVehiculo(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
-            $datos = $this->validarPost($campos);
+        if(is_array($this->validarPost($campos,"vehiculo"))){
+            $datos = $this->validarPost($campos,"vehiculo");
             $this->cod_vehiculo = $datos['cod_vehiculo'];
         }else{
             return 'error&msg=Eliminar'; 

@@ -49,9 +49,9 @@ class Estado extends Conexion
 
     public function regDatosEstado(array $campos)
     {
-        if (is_array($this->validarPost($campos,"estado"))) {
+        if (is_array($this->validarPost($campos, "estado"))) {
 
-            $array = $this->validarPost($campos,"estado");
+            $array = $this->validarPost($campos, "estado");
             $this->nombre = $this->formatearPalabra($array['nombre_estado']);
             $this->estado = 1;
         } else {
@@ -80,9 +80,9 @@ class Estado extends Conexion
     public function actDatosEstado(array $campos)
     {
 
-        if (is_array($this->validarPost($campos,"estado"))) {
+        if (is_array($this->validarPost($campos, "estado"))) {
 
-            $array = $this->validarPost($campos,"estado");
+            $array = $this->validarPost($campos, "estado");
             $this->cod_estado = $array['cod_estado'];
             $this->nombre = $this->formatearPalabra($array['nombre_estado']);
         } else {
@@ -108,9 +108,15 @@ class Estado extends Conexion
         }
     }
 
-    public function elmDatosEstado(int $cod_estado)
+    public function elmDatosEstado(array $campos)
     {
-        $this->cod_estado = $cod_estado;
+
+        if (is_array($this->validarPost($campos, "estado"))) {
+            $array = $this->validarPost($campos, "estado");
+            $this->cod_estado = $array['cod_estado'];
+        } else {
+            return 'error&msg=Eliminar';
+        }
 
         return $this->eliminarEstado();
     }
@@ -124,9 +130,9 @@ class Estado extends Conexion
             $delete->bindValue(1, $this->cod_estado);
             $delete->execute();
 
-            return "Estado de vehiculo eliminada exitosamente";
+            return "deleted";
         } catch (\PDOException $e) {
-            return "Error al eliminar la Estado: " . $e->getMessage();
+            return  "exception&msg=" . urlencode($e->getMessage());
         }
     }
 }

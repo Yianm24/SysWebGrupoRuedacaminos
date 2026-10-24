@@ -80,7 +80,7 @@ class Moneda extends Conexion
         if (is_array($this->validarPost($campos, "moneda"))) {
 
             $array = $this->validarPost($campos, "moneda");
-            $this->cod_moneda = $array['cod_moneda'];
+            $this->cod_moneda = $array['cod-moneda'];
             $this->nombre = $this->formatearPalabra($array['nombre']);
             $this->abreviatura = strtoupper($array['abreviatura']);
         }
@@ -104,9 +104,14 @@ class Moneda extends Conexion
         }
     }
 
-    public function elmDatosMoneda(int $cod_moneda)
+    public function elmDatosMoneda(array $campos)
     {
-        $this->cod_moneda = $cod_moneda;
+        if (is_array($this->validarPost($campos, "moneda"))) {
+            $array = $this->validarPost($campos, "moneda");
+            $this->cod_moneda = $array['cod_moneda'];
+        } else {
+            return 'error&msg=Eliminar';
+        }
 
         return $this->eliminarMoneda();
     }
@@ -121,9 +126,9 @@ class Moneda extends Conexion
             $delete->bindValue(1, $this->cod_moneda);
             $delete->execute();
 
-            return "Moneda eliminada exitosamente";
+            return "deleted";
         } catch (\PDOException $e) {
-            return "Error al eliminar la moneda: " . $e->getMessage();
+            return  "exception&msg=" . urlencode($e->getMessage());
         }
     }
 }

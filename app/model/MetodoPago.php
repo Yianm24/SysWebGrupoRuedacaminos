@@ -52,9 +52,9 @@ class MetodoPago extends Conexion
 
     public function regDatosMetodoPago(array $campos)
     {
-        if (is_array($this->validarPost($campos,"metodopago"))) {
+        if (is_array($this->validarPost($campos, "metodopago"))) {
 
-            $array = $this->validarPost($campos,"metodopago");
+            $array = $this->validarPost($campos, "metodopago");
 
             $this->nombre = $this->formatearPalabra($array['nombre']);
             $this->moneda = $array['moneda'];
@@ -89,9 +89,9 @@ class MetodoPago extends Conexion
 
     public function actDatosMetodoPago(array $campos)
     {
-        if (is_array($this->validarPost($campos,"metodopago"))) {
+        if (is_array($this->validarPost($campos, "metodopago"))) {
 
-            $array = $this->validarPost($campos,"metodopago");
+            $array = $this->validarPost($campos, "metodopago");
             $this->cod_metodo = $array['cod_metodo'];
             $this->nombre = $this->formatearPalabra($array['nombre']);
             $this->moneda = $array['moneda'];
@@ -122,9 +122,13 @@ class MetodoPago extends Conexion
     }
 
 
-    public function elmDatosMetodoPago(int $cod_metodo)
+    public function elmDatosMetodoPago(array $campos)
     {
-        $this->cod_metodo = $cod_metodo;
+        if (is_array($this->validarPost($campos, "metodopago"))) {
+
+            $array = $this->validarPost($campos, "metodopago");
+            $this->cod_metodo = $array['cod_metodo'];
+        }
 
         return $this->eliminarMetodoPago();
     }
@@ -138,9 +142,9 @@ class MetodoPago extends Conexion
             $delete->bindValue(1, $this->cod_metodo);
             $delete->execute();
 
-            return "Método de pago eliminado exitosamente";
+            return "deleted";
         } catch (\PDOException $e) {
-            return "Error al eliminar el método de pago: " . $e->getMessage();
+            return  "exception&msg=" . urlencode($e->getMessage());
         }
     }
 }
