@@ -3,9 +3,13 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\EnvioTrait;
 
 class Envio extends Conexion
 {
+
+
+    use EnvioTrait;
 
     private $cod_remitente, $cod_destinatario;
     private $cod_envio;
@@ -61,10 +65,13 @@ class Envio extends Conexion
         }
     }
 
-    public function creDatosEnvio($remitente, $destinatario, $ancho, $alto, $descripcion, $fecha, $estatus_fragil, $peso_total, $distancia_total, $ubicacion_despacho, $ubicacion_destino)
+    public function creDatosEnvio(array $tipo_cliente, $ancho, $alto, $descripcion, $fecha, $estatus_fragil, $peso_total, $distancia_total, $ubicacion_despacho, $ubicacion_destino)
     {
-        $this->cod_remitente = $remitente;
-        $this->cod_destinatario = $destinatario;
+
+        $this->cod_remitente = $this->extraerDatosParticipante($tipo_cliente[0], "remitente", "rem");
+        $this->cod_destinatario = $this->extraerDatosParticipante($tipo_cliente[1], "destinatario", "dest");
+
+
         $this->fecha = $fecha;
         $this->ancho = $ancho;
         $this->alto = $alto;
