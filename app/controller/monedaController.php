@@ -24,7 +24,7 @@ switch ($solicitud) {
 
     case 'eliminar':
 
-        $resultado = $moneda->elmDatosMoneda('cod_moneda');
+        $resultado = $moneda->elmDatosMoneda(['cod_moneda']);
         header("Location: ?url=moneda&status={$resultado}");
 
         break;
