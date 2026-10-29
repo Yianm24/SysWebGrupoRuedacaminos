@@ -163,6 +163,8 @@ class Pago extends Conexion
             $insertPago = $this->conexion->prepare($sqlPago);
             $insertPago->execute([$this->fecha, $this->hora, $this->monto, $this->referencia, $this->estado_pago, $this->cod_envio, $this->estado, $this->cod_detallepago]);
 
+            $this->sincronizarEstatusPagosEnvio($this->cod_envio);
+
             $this->conexion->commit();
             return 'success';
         } catch (\PDOException $e) {
@@ -207,6 +209,8 @@ class Pago extends Conexion
             $updatePago = $this->conexion->prepare($sqlPago);
             $updatePago->execute([$this->fecha, $this->hora, $this->monto, $this->referencia, $this->estado_pago, $this->cod_pago]);
 
+            $this->sincronizarEstatusPagosEnvio($this->cod_envio);
+
             $this->conexion->commit();
             return 'updated';
         } catch (\PDOException $e) {
@@ -232,14 +236,39 @@ class Pago extends Conexion
     private function eliminarPago()
     {
         try {
+            $this->conexion->beginTransaction();
+            $stmt = $this->conexion->prepare("SELECT cod_envio FROM pago WHERE cod_pago = ?");
+            $stmt->execute([$this->cod_pago]);
+            $cod_envio_afectado = $stmt->fetchColumn();
             $sentencia = "UPDATE pago SET estado = 0 WHERE cod_pago = ?";
             $delete = $this->conexion->prepare($sentencia);
             $delete->bindValue(1, $this->cod_pago);
             $delete->execute();
+
+            if ($cod_envio_afectado) {
+                $this->sincronizarEstatusPagosEnvio($cod_envio_afectado);
+            }
+
+            $this->conexion->commit();
             return 'deleted';
         } catch (\PDOException $e) {
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
             return 'error';
         }
+    }
+
+    public function sincronizarEstatusPagosEnvio($cod_envio) {
+        $stmtEnvio = $this->conexion->prepare("SELECT monto_total FROM envio WHERE cod_envio = ?");
+        $stmtEnvio->execute([$cod_envio]);
+        $monto_total = (float) $stmtEnvio->fetchColumn();
+        $stmtPagos = $this->conexion->prepare("SELECT SUM(monto) FROM pago WHERE cod_envio = ? AND estado = 1");
+        $stmtPagos->execute([$cod_envio]);
+        $total_abonado = (float) $stmtPagos->fetchColumn();
+        $nuevo_estatus = (round($total_abonado, 2) >= round($monto_total, 2)) ? 1 : 0;
+        $update = $this->conexion->prepare("UPDATE pago SET estado_pago = ? WHERE cod_envio = ? AND estado = 1");
+        $update->execute([$nuevo_estatus, $cod_envio]);
     }
 
     public function determinarEstatusPago($cod_envio, $monto_nuevo, $cod_pago_actual = null)

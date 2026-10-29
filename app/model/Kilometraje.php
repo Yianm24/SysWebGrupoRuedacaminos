@@ -1,11 +1,11 @@
 <?php
 namespace App\Model;
 use App\Config\Conexion;
-use App\Traits\KilometrajeTrait;
+use App\Traits\ValidadorTrait;
 
 class Kilometraje extends Conexion
 {
-    use KilometrajeTrait;
+    use ValidadorTrait;
 
     private $cod_preciokilometraje;
     private $kilometraje;
@@ -39,8 +39,8 @@ class Kilometraje extends Conexion
     }
 
     public function regDatosKilometraje(array $campos) {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'kilometraje'))) {
+            $datos = $this->validarPost($campos, 'kilometraje');
             $this->kilometraje = $datos['kilometraje'];
             $this->monto_tarifa =$datos['precio_kilometraje'];
             $this->estado = 1;
@@ -65,8 +65,8 @@ class Kilometraje extends Conexion
     }
 
     public function actDatosKilometraje(array $campos) {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'kilometraje'))) {
+            $datos = $this->validarPost($campos, 'kilometraje');
             $this->cod_preciokilometraje = $datos['id_tarifa_editar'];
             $this->kilometraje = $datos['kilometraje_editar'];
             $this->monto_tarifa = $datos['precio_kilometraje_editar'];
@@ -91,8 +91,8 @@ class Kilometraje extends Conexion
     }
 
     public function elmDatosKilometraje(array $campos) {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'kilometraje'))) {
+            $datos = $this->validarPost($campos, 'kilometraje');
             $this->cod_preciokilometraje = $datos['id_tarifa'];
         } else {
             return 'error&msg=Eliminar';

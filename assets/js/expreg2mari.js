@@ -21,9 +21,8 @@ $(document).ready(function () {
         },
         {
             id: "numeros-decimales",
-            expresion: /^\d+(\.\d{1,2})?$/,
-            permitir: /^[\d.]$/, // Permite teclear números y el punto
-            mensaje: "Solo ingresar números, puede incluir hasta 2 decimales luego del punto"
+            expresion: /^[0-9]+([.,][0-9]+)*$/,
+            mensaje: "Solo ingresar números, puede incluir separadores de miles y decimales"
         },
         {
             id: "correo-electronico",
@@ -86,6 +85,7 @@ $(document).ready(function () {
         const reglaCoincidente = reglasRegex.find(regla => input.hasClass(regla.id));
 
         if (reglaCoincidente) {
+            
             const esValido = reglaCoincidente.expresion.test(valor);
 
             if (esValido) {
