@@ -179,4 +179,32 @@ class Envio extends Conexion
             return null; // O manejar el error según necesites
         }
     }
+
+    public function elmDatosEnvio(array $campos)
+    {
+
+        if (is_array($this->validarPost($campos, "envio"))) {
+            $array = $this->validarPost($campos, "envio");
+            $this->cod_envio = $array['cod_envio'];
+        } else {
+            return 'error&msg=Eliminar';
+        }
+        return $this->eliminarEnvio();
+    }
+
+    private function eliminarEnvio()
+    {
+
+        try {
+            $sentencia = "UPDATE `Envio` SET estado = 0 WHERE cod_envio = ?";
+            $delete = $this->conexion->prepare($sentencia);
+
+            $delete->bindValue(1, $this->cod_envio);
+            $delete->execute();
+
+            return "deleted";
+        } catch (\PDOException $e) {
+            return  "exception&msg=" . urlencode($e->getMessage());
+        }
+    }
 }

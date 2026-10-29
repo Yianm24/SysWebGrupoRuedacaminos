@@ -12,8 +12,8 @@
                     <th>PESO TOTAL</th>
                     <th>FECHA</th>
                     <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
-                    <th class="pe-4 text-center">ACCIONES</th>
-                    <?php endif;?>
+                        <th class="pe-4 text-center">ACCIONES</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -33,20 +33,18 @@
                             <?= $dato['fecha']; ?>
                         </td>
                         <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
-                        <td class="pe-4 text-center py-3">
-                            <a href="#" class="btn btn-sm btn-outline-primary me-2 shadow-sm" title="Modificar"
-                                data-bs-toggle="modal" data-bs-target="#carouselEnvio">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="?url=envio&type=delete&id=<? //= $value['id'] 
-                                                                ?>"
-                                class="btn btn-sm btn-outline-danger shadow-sm"
-                                title="Eliminar"
-                                onclick="return confirm('¿Está seguro de eliminar este envío?');">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                        <?php endif;?>
+                            <td class="text-start pe-4">
+
+                                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado">
+
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <a href="#" class="text-secondary btn-eliminar"
+                                    datos-cod-envio="<?= $dato['cod_envio'] ?>">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

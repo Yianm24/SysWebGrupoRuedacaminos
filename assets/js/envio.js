@@ -1,31 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
     /* const textareaUbiDestino = document.getElementById('direccion_destino'),
         inputKilometro = document.getElementById('kilometraje'); */
-    const coordenadasOrigen = {
-        ccmetropoli: [10.062907758626542, -69.36506133308706],
-        ccsambil: [10.07193188848613, -69.2929416674693],
-        ccbabilon: [10.076775653967122, -69.34135927947186]
-    }
+    // const coordenadasOrigen = {
+    //     ccmetropoli: [10.062907758626542, -69.36506133308706],
+    //     ccsambil: [10.07193188848613, -69.2929416674693],
+    //     ccbabilon: [10.076775653967122, -69.34135927947186]
+    // }
 
-    let mapaInstancia = null;
+    // let mapaInstancia = null;
 
-    function CrearElementoMapa(id) {
-        const mapa = L.map(id, {
-            // CORRECCIÓN: Faltaba el corchete "[" al inicio de las coordenadas
-            center: [10.062907758626542, -69.36506133308706], // Coordenadas de la ubicación inicial
-            zoom: 12
-        });
+    // function CrearElementoMapa(id) {
+    //     const mapa = L.map(id, {
+    //         // CORRECCIÓN: Faltaba el corchete "[" al inicio de las coordenadas
+    //         center: [10.062907758626542, -69.36506133308706], // Coordenadas de la ubicación inicial
+    //         zoom: 12
+    //     });
 
-        //Aca se hace el llamado a la plantilla del mapa, es decir su diseño
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            //Se trata del copiright de la "capa" osea del diseño del mapa
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(mapa);
-        //L.marker(coordenadasOrigen.ccmetropoli).addTo(mapa);
+    //     //Aca se hace el llamado a la plantilla del mapa, es decir su diseño
+    //     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //         maxZoom: 19,
+    //         //Se trata del copiright de la "capa" osea del diseño del mapa
+    //         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    //     }).addTo(mapa);
+    //     //L.marker(coordenadasOrigen.ccmetropoli).addTo(mapa);
 
-        return mapa
-    }
+    //     return mapa
+    // }
 
     //Variables para el remitente
     const radioNaturalRem = document.getElementById("persona_natural_remitente");
@@ -83,50 +83,50 @@ document.addEventListener("DOMContentLoaded", () => {
     actualizarFormulario();
 
 
-    function CrearMapa(id) {  // Creamos el mapa solo si no existe
-        console.log("Creando mapa en el contenedor con ID:", id);
-        if (!mapaInstancia) {
-            mapaInstancia = CrearElementoMapa(id);
+    // function CrearMapa(id) {  // Creamos el mapa solo si no existe
+    //     console.log("Creando mapa en el contenedor con ID:", id);
+    //     if (!mapaInstancia) {
+    //         mapaInstancia = CrearElementoMapa(id);
 
-        }
+    //     }
 
-        // Forzamos a recalcular el tamaño una vez que el modal está abierto
-        setTimeout(() => {
-            mapaInstancia.invalidateSize();
-        }, 500);
-    }
+    //     // Forzamos a recalcular el tamaño una vez que el modal está abierto
+    //     setTimeout(() => {
+    //         mapaInstancia.invalidateSize();
+    //     }, 500);
+    // }
 
-    function DestruirMapa() {
-        if (mapaInstancia) {
-            mapaInstancia.remove(); // Destruye el mapa y limpia el contenedor HTML
-            mapaInstancia = null;   // Reinicia tu variable
-        }
-    }
+    // function DestruirMapa() {
+    //     if (mapaInstancia) {
+    //         mapaInstancia.remove(); // Destruye el mapa y limpia el contenedor HTML
+    //         mapaInstancia = null;   // Reinicia tu variable
+    //     }
+    // }
 
     // Modal de cotización
-    const modalCotizar = document.getElementById('cotizarEnvio');
+    // const modalCotizar = document.getElementById('cotizarEnvio');
 
-    if (modalCotizar) {
-        modalCotizar.addEventListener('show.bs.modal', event => {
-            CrearMapa('mapCotizar');
-        }) }
+    // if (modalCotizar) {
+    //     modalCotizar.addEventListener('show.bs.modal', event => {
+    //         CrearMapa('mapCotizar');
+    //     }) }
 
-    modalCotizar.addEventListener('hidden.bs.modal', event => {
-        DestruirMapa();
-    });
+    // modalCotizar.addEventListener('hidden.bs.modal', event => {
+    //     DestruirMapa();
+    // });
 
 
-    const modalEnvio = document.getElementById('carouselEnvio');
+    // const modalEnvio = document.getElementById('carouselEnvio');
 
-    if (modalEnvio) {
-        modalEnvio.addEventListener('show.bs.modal', event =>
-            CrearMapa('mapCrear')
-        );
-    }
+    // if (modalEnvio) {
+    //     modalEnvio.addEventListener('show.bs.modal', event =>
+    //         CrearMapa('mapCrear')
+    //     );
+    // }
 
-    modalEnvio.addEventListener('hidden.bs.modal', event => {
-        DestruirMapa();
-    });
+    // modalEnvio.addEventListener('hidden.bs.modal', event => {
+    //     DestruirMapa();
+    // });
 
 
 
@@ -209,5 +209,40 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }, 100);
     }
+
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+    botonesEliminar.forEach(boton => {
+        boton.addEventListener('click', function (event) {
+            event.preventDefault();
+            let codenvio = this.getAttribute('datos-cod-envio');
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: "¿Está seguro que desea eliminar este registro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '?url=envio';
+                    form.innerHTML = `
+                        <input type="hidden" name="tipoSolicitud" value="eliminar">
+                        <input type="hidden" name="cod_envio" value="${codenvio}">
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
 
 });

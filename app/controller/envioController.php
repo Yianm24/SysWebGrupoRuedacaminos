@@ -45,10 +45,14 @@ switch ($solicitud) {
 
         break;
 
-    case 'modificar':
+    case 'eliminar':
 
 
+         $resultado = $envio->elmDatosEnvio(['cod_envio']);
 
+        header("Location: ?url=envio&status={$resultado}");
+
+        echo $resultado;
 
         break;
 }
