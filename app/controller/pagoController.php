@@ -68,11 +68,6 @@ switch ($solicitud) {
         exit();
 
     case 'eliminar':
-        if ($pago->verificarPagoPendiente($_POST['cod_pago'])) {
-            header("Location: ?url=pago&status=pending_error");
-            exit();
-            }
-
             $resultado = $pago->elmDatosPago(['cod_pago']);
             header("Location: ?url=pago&status={$resultado}");
             exit();

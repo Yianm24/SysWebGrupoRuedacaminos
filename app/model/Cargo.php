@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\CargoTrait;
+use App\Traits\ValidadorTrait;
 
 class Cargo extends Conexion
 {
-    use CargoTrait;
+    use ValidadorTrait;
 
     private $cod_cargo;
     private $estado;
@@ -47,7 +47,8 @@ class Cargo extends Conexion
 
     public function regDatosCargo(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'cargo'))) {
+            $datos = $this->validarPost($campos);
             $this->nombre =$this->formatearPalabra($datos['nombre']);
             $this->estado = 1;
         } else {
@@ -72,7 +73,8 @@ class Cargo extends Conexion
 
     public function modDatosCargo(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'cargo'))) {
+            $datos = $this->validarPost($campos);
             $this->cod_cargo = $datos['cod-cargo'];
             $this->nombre = $this->formatearPalabra($datos['nombre']);
         } else {
@@ -95,7 +97,8 @@ class Cargo extends Conexion
 
     public function elmDatosCargo(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'cargo'))) {
+            $datos = $this->validarPost($campos);
             $this->cod_cargo = $datos['cod_cargo'];
         } else {
             return 'error&msg=Eliminar';

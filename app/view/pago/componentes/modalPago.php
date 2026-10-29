@@ -21,13 +21,13 @@
                     <fieldset class="row mb-3">
                         <div class="col-md-6">
                             <label for="monto_ingresado" class="form-label">Monto Abonado:</label>
-                            <div class="input-group mb-2">
+                            <div class="input-group position-relative mb-4">
                                 <span class="input-group-text fw-bold text-primary" id="simbolo_moneda_dinamico">$</span>
                                 <input type="text" class="form-control numeros-decimales input-evaluar" id="monto_ingresado" name="monto_ingresado" placeholder="0.00" required>
                                 <input type="hidden" name="monto" id="monto_dolares_oculto">
                                 <button class="btn btn-outline-secondary" type="button" id="btn_autocompletar">Añadir</button>
+                                <span class="mensaje-error text-danger font-monospace small position-absolute start-0" style="display:none; top: 100%; margin-top: 4px; z-index: 10;"></span>
                             </div>
-                            <span class="mensaje-error text-danger font-monospace small" style="display:none; margin-top:-5px; margin-bottom:10px;"></span>
 
                             <div class="input-group col-12">
                                 <span class="input-group-text">Restante:</span>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="referencia" class="form-label">Referencia Bancaria</label>
-                            <input type="text" class="form-control formato-placa input-evaluar" id="referencia" name="referencia" placeholder="Ej: 123456789" required>
+                            <input type="text" class="form-control solo-numeros input-evaluar" id="referencia" name="referencia" placeholder="Ej: 123456789" required>
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                         <div class="col-md-4 mt-3">

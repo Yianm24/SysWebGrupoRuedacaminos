@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\EmpleadoTrait;
+use App\Traits\ValidadorTrait;
 
 class Empleado extends Conexion
 {
-    use EmpleadoTrait;
+    use ValidadorTrait;
 
     private $cod_empleado;
     private $cedula;
@@ -76,15 +76,16 @@ class Empleado extends Conexion
 
     public function regDatosEmpleado(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
-        $this->nombre = $this->formatearPalabra($datos['nombre']);
-        $this->apellido = $this->formatearPalabra($datos['apellido']);
-        $this->cedula = $datos['cedula'];
-        $this->telefono = $datos['telefono'];
-        $this->telefono_emergencia = $_POST['telefono_emergencia'] ?? '';
-        $this->cod_cargo = $datos['cod_cargo'];
-        $this->estado = 1;
-        } else {
+        if (is_array($this->validarPost($campos, 'empleado'))) {
+            $datos = $this->validarPost($campos, 'empleado');
+            $this->nombre = $this->formatearPalabra($datos['nombre']);
+            $this->apellido = $this->formatearPalabra($datos['apellido']);
+            $this->cedula = $datos['cedula'];
+            $this->telefono = $datos['telefono'];
+            $this->telefono_emergencia = $_POST['telefono_emergencia'] ?? '';
+            $this->cod_cargo = $datos['cod_cargo'];
+            $this->estado = 1;
+            } else {
             return 'error&msg=Registrar';
         }
         return $this->registrarEmpleado();
@@ -113,15 +114,15 @@ class Empleado extends Conexion
 
     public function modDatosEmpleado(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
-        $this->cod_empleado = $datos['id_empleado_editar'];
-        $this->nombre = $this->formatearPalabra($datos['nombre_editar']);
-        $this->apellido = $this->formatearPalabra($datos['apellido_editar']);
-        $this->cedula = $datos['cedula_editar'];
-        $this->telefono = $datos['telefono_editar'];
-        $this->telefono_emergencia = $_POST['telefono_emergencia_editar'] ?? '';
-        $this->cod_cargo = $datos['cod_cargo_editar'];
-
+        if (is_array($this->validarPost($campos, 'empleado'))) {
+            $datos = $this->validarPost($campos, 'empleado');
+            $this->cod_empleado = $datos['id_empleado_editar'];
+            $this->nombre = $this->formatearPalabra($datos['nombre_editar']);
+            $this->apellido = $this->formatearPalabra($datos['apellido_editar']);
+            $this->cedula = $datos['cedula_editar'];
+            $this->telefono = $datos['telefono_editar'];
+            $this->telefono_emergencia = $_POST['telefono_emergencia_editar'] ?? '';
+            $this->cod_cargo = $datos['cod_cargo_editar'];
         } else {
             return 'error&msg=Actualizar';
         }
@@ -149,8 +150,9 @@ class Empleado extends Conexion
 
     public function elmDatosEmpleado(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {$datos = $this->validarPost($campos);
-        $this->cod_empleado = $datos['id_empleado'];
+        if (is_array($this->validarPost($campos, 'empleado'))) {
+            $datos = $this->validarPost($campos, 'empleado');
+            $this->cod_empleado = $datos['id_empleado'];
         } else {
             return 'error&msg=Eliminar';
         }

@@ -1,11 +1,11 @@
 <?php
 namespace App\Model;
 use App\Config\Conexion;
-use App\Traits\CambioMonedaTrait;
+use App\Traits\ValidadorTrait;
 
 class CambioMoneda extends Conexion
 {
-    use CambioMonedaTrait;
+    use ValidadorTrait;
 
     private $cod_cambio;
     private $tasa;
@@ -42,8 +42,8 @@ class CambioMoneda extends Conexion
     }
 
     public function regDatosCambio(array $campos) {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'cambiomoneda'))) {
+            $datos = $this->validarPost($campos, 'cambiomoneda');
             date_default_timezone_set('America/Caracas');
         
             $this->tasa = $datos['tasa'];
@@ -84,8 +84,8 @@ class CambioMoneda extends Conexion
     }
 
     public function actDatosCambio(array $campos) {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'cambiomoneda'))) {
+            $datos = $this->validarPost($campos, 'cambiomoneda');
             $this->cod_cambio = $datos['id_cambio_editar'];
             $this->tasa = $datos['tasa_editar'];
             $this->cod_moneda = $datos['moneda_editar'];
@@ -110,8 +110,8 @@ class CambioMoneda extends Conexion
     }
 
     public function elmDatosCambio(array $campos) {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
+        if (is_array($this->validarPost($campos, 'cambiomoneda'))) {
+            $datos = $this->validarPost($campos, 'cambiomoneda');
             $this->cod_cambio = $datos['id_cambio'];
         } else {
             return 'error&msg=Eliminar';

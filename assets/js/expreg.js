@@ -19,8 +19,8 @@ $(document).ready(function () {
         },
         {
             id: "numeros-decimales",
-            expresion: /^\d+(\.\d{1,2})?$/,
-            mensaje: "Solo ingresar números, puede incluir hasta 2 decimales luego del punto"
+            expresion: /^[0-9]+([.,][0-9]+)*$/,
+            mensaje: "Solo ingresar números, puede incluir separadores de miles y decimales"
         },
         {
             id: "correo-electronico",
