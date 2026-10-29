@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-10-2026 a las 03:52:23
+-- Tiempo de generación: 29-10-2026 a las 02:40:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -197,10 +197,20 @@ INSERT INTO `detalle_pago` (`cod_detallepago`, `referencia`, `cod_metodopago`, `
 (4, 1111, 1, 1, 0.03),
 (5, 11113, 1, 1, 16.66),
 (6, 44444, 1, 1, 10.49),
-(7, 2020, 3, 5, 10.00),
+(7, 0, 3, 5, 4.00),
 (8, 0, 3, 5, 30.00),
-(9, 1002, 2, 3, 25.00),
-(10, 1000, 2, 3, 650.00);
+(9, 1002, 2, 3, 16676.25),
+(10, 1000, 2, 3, 433582.50),
+(11, 0, 3, 5, 5.00),
+(12, 1001, 1, 2, 60034.50),
+(13, 0, 3, 5, 1.00),
+(14, 1, 1, 3, 22000.00),
+(15, 0, 3, 5, 40.00),
+(16, 2, 2, 4, 10000.00),
+(17, 3, 1, 3, 2881.66),
+(18, 4, 4, 4, 6.88),
+(19, 5, 1, 1, 40000.00),
+(20, 6, 5, 4, 0.54);
 
 -- --------------------------------------------------------
 
@@ -241,7 +251,7 @@ INSERT INTO `empleado` (`cod_empleado`, `cedula`, `nombre`, `apellido`, `telefon
 CREATE TABLE `envio` (
   `cod_envio` int(11) NOT NULL,
   `fecha` datetime NOT NULL,
-  `monto_total` decimal(8,2) DEFAULT NULL,
+  `monto_total` decimal(8,2) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `cod_despacho` int(11) DEFAULT NULL,
   `peso_total` decimal(6,2) DEFAULT NULL,
@@ -263,9 +273,9 @@ INSERT INTO `envio` (`cod_envio`, `fecha`, `monto_total`, `estado`, `cod_despach
 (2, '2026-10-04 18:20:29', 30.00, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
 (3, '2026-10-04 18:22:09', 25.00, 1, NULL, NULL, 700.00, 500.00, 'plancha de pelo', NULL, NULL, NULL, 1),
 (4, '2026-10-04 18:32:02', 650.00, 1, NULL, NULL, 10.00, 50.00, 'cajas', NULL, NULL, NULL, 1),
-(11, '2026-10-07 21:42:19', NULL, 0, NULL, 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
-(12, '2026-10-07 21:42:49', NULL, 0, NULL, 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
-(13, '2026-10-07 21:49:28', NULL, 1, NULL, 5555.00, 999.99, 999.99, 'fdfff', 99999.99, NULL, NULL, 1);
+(11, '2026-10-07 21:42:19', 37.30, 1, NULL, 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
+(12, '2026-10-07 21:42:49', 46.88, 1, NULL, 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
+(13, '2026-10-07 21:49:28', 75.50, 1, NULL, 5555.00, 999.99, 999.99, 'fdfff', 99999.99, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -798,11 +808,21 @@ CREATE TABLE `pago` (
 --
 
 INSERT INTO `pago` (`cod_pago`, `fecha`, `hora`, `monto`, `referencia`, `estado_pago`, `cod_envio`, `estado`, `cod_detallepago`) VALUES
-(3, '2026-10-07', '0000-00-00 00:00:00', 90.00, '123456', 0, 1, 1, 1),
-(7, '2026-10-07', '0000-00-00 00:00:00', 10.00, 'EFECTIVO', 1, 1, 1, 7),
+(3, '2026-10-07', '0000-00-00 00:00:00', 90.00, '123456', 1, 1, 0, 1),
+(7, '2026-10-07', '0000-00-00 00:00:00', 4.00, 'EFECTIVO', 1, 1, 1, 7),
 (8, '2026-10-07', '0000-00-00 00:00:00', 30.00, 'EFECTIVO', 1, 2, 1, 8),
-(9, '2026-10-07', '0000-00-00 00:00:00', 25.00, '1002', 1, 3, 1, 9),
-(10, '2026-10-07', '0000-00-00 00:00:00', 650.00, '1000', 1, 4, 1, 10);
+(9, '2026-10-07', '2021-05-26 00:00:00', 25.00, '1002', 1, 3, 1, 9),
+(10, '2026-10-07', '2021-05-18 00:00:00', 650.00, '1000', 1, 4, 1, 10),
+(11, '2026-10-28', '0000-00-00 00:00:00', 5.00, 'EFECTIVO', 1, 1, 1, 11),
+(12, '2026-10-28', '2021-07-18 00:00:00', 90.00, '1001', 1, 1, 1, 12),
+(13, '2026-10-28', '2021-08-20 00:00:00', 1.00, 'EFECTIVO', 1, 1, 1, 13),
+(14, '2026-10-28', '2021-12-27 00:00:00', 32.98, '0001', 1, 11, 1, 14),
+(15, '2026-10-28', '0000-00-00 00:00:00', 40.00, 'EFECTIVO', 1, 12, 1, 15),
+(16, '2026-10-28', '0000-00-00 00:00:00', 14.99, '0002', 1, 13, 1, 16),
+(17, '2026-10-28', '0000-00-00 00:00:00', 4.32, '0003', 1, 11, 1, 17),
+(18, '2026-10-28', '0000-00-00 00:00:00', 6.88, '0004', 1, 12, 1, 18),
+(19, '2026-10-28', '0000-00-00 00:00:00', 59.97, '0005', 1, 13, 1, 19),
+(20, '2026-10-28', '0000-00-00 00:00:00', 0.54, '0006', 1, 13, 1, 20);
 
 -- --------------------------------------------------------
 
@@ -1202,7 +1222,7 @@ ALTER TABLE `cambio_moneda`
 -- AUTO_INCREMENT de la tabla `cargo`
 --
 ALTER TABLE `cargo`
-  MODIFY `cod_cargo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `cod_cargo` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
@@ -1220,7 +1240,7 @@ ALTER TABLE `cuenta_banco`
 -- AUTO_INCREMENT de la tabla `detalle_pago`
 --
 ALTER TABLE `detalle_pago`
-  MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`
@@ -1280,7 +1300,7 @@ ALTER TABLE `municipio`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `cod_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `cod_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`
