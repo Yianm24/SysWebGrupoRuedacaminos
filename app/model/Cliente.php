@@ -23,6 +23,15 @@ class Cliente extends Conexion
     }
 
 
+    public function verificarClienteExiste($doc_identidad)
+    {
+        $sentencia = "SELECT COUNT(*) FROM cliente WHERE doc_identidad = ? AND estado = 1";
+        $count = $this->conexion->prepare($sentencia);
+        $count->bindValue(1, $doc_identidad);
+        $count->execute();
+        return $count->fetchColumn() > 0;
+    }
+
     public function regDatosCliente($doc_identidad, $razon_social, $apellido, $telefono, $email, $tipo_documento)
     {
 

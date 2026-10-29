@@ -4,11 +4,12 @@ namespace App\Model;
 
 use App\Config\Conexion;
 use App\Traits\EnvioTrait;
+use App\Traits\ValidadorTrait;
 
 class Envio extends Conexion
 {
 
-
+    use ValidadorTrait;
     use EnvioTrait;
 
     private $cod_remitente, $cod_destinatario;
@@ -65,24 +66,30 @@ class Envio extends Conexion
         }
     }
 
-    public function creDatosEnvio(array $tipo_cliente, $ancho, $alto, $descripcion, $fecha, $estatus_fragil, $peso_total, $distancia_total, $ubicacion_despacho, $ubicacion_destino)
+    public function creDatosEnvio(array $tipo_cliente, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
     {
 
         $this->cod_remitente = $this->extraerDatosParticipante($tipo_cliente[0], "remitente", "rem");
         $this->cod_destinatario = $this->extraerDatosParticipante($tipo_cliente[1], "destinatario", "dest");
 
+        if (is_array($this->validarPost($campos, "envio"))) {
 
-        $this->fecha = $fecha;
-        $this->ancho = $ancho;
-        $this->alto = $alto;
-        $this->descripcion_cont = $descripcion;
-        // $this->monto_total = 1000.5;
-        $this->distancia_total = $distancia_total;
-        $this->estado = 1;
-        $this->estatus_fragil = $estatus_fragil;
-        $this->peso_total = $peso_total;
-        $this->ubicacion_despacho = $ubicacion_despacho;
-        $this->ubicacion_destino = $ubicacion_destino;
+            $array = $this->validarPost($campos, "estado");
+            $this->fecha = $fecha;
+            $this->ancho = $array['ancho'];
+            $this->alto = $array['alto'];
+            $this->descripcion_cont = $array['descripcion'];
+            // $this->monto_total = 1000.5;
+            $this->distancia_total = $array['kilometraje'];
+            $this->estado = 1;
+            $this->estatus_fragil = $estatus_fragil;
+            $this->peso_total = $array['peso_total'];
+            $this->ubicacion_despacho = $ubicacion_despacho;
+            $this->ubicacion_destino = $ubicacion_destino;
+        } else {
+
+            return 'error&msg=Registrar';
+        }
 
         return $this->crearEnvio();
     }
@@ -137,13 +144,13 @@ class Envio extends Conexion
             $insertUbicacion->execute([$this->ubicacion_destino, $cod_envio, 'Destino']);
 
             $this->conexion->commit();
-            return true;
+            return 'success';
         } catch (\PDOException $e) {
             if ($this->conexion->inTransaction()) {
                 $this->conexion->rollBack();
             }
 
-            return "<script>alert('Error al crear el envío: " . addslashes($e->getMessage()) . "');</script>";
+            return "exception&msg=" . urlencode($e->getMessage());
         }
     }
 
