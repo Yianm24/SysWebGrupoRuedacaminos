@@ -1,5 +1,135 @@
 document.addEventListener("DOMContentLoaded", function () {
- 
+
+  ajaxConsultar();
+  function ajaxConsultar(){
+  /* $.ajax({
+    url: "index.php?url=marca",
+    type: "POST",
+    dataType: "json",
+    data:{
+      tipoSolicitud: "consultar"
+    },
+    beforeSend: function(xhr) {
+      console.log("Mensaje antes de cargar el ajax")
+      
+    },
+    success: function(response, status, xhr) {
+      let tbody = $("#tablaMarca tbody");
+      console.log(response)
+      console.log(response[1])
+      /* const registros = JSON.parse(response);
+      console.log(registros);  */
+    
+    // 1. Limpiamos la tabla para quitar datos viejos
+    /*tbody.empty(); 
+
+    // 2. Verificamos que la respuesta sea un array y tenga elementos
+    if (response.success) {
+      let rowsHtml = "";
+      // 3. Recorremos los datos con $.each
+      $.each(response, function(index, dato) {
+        rowsHtml += `
+      <tr>
+          <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
+          <td class="text-start pe-4">
+              <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMarca"
+                  datos-cod-marca="${dato.cod_marca}"
+                  datos-nombre="${dato.nombre}"
+                  datos-estado="${dato.estado}"
+                  >
+                  <i class="bi bi-pencil"></i>
+              </button>
+              <a href="#" class="text-secondary btn-eliminar ms-2"
+                  datos-cod-marca="${dato.cod_marca}" >
+                  <i class="bi bi-trash"></i>
+              </a>
+          </td>
+      </tr>
+    `;
+      });
+      tbody.html(rowsHtml);
+    } else {
+      // Opcional: Mostrar un mensaje si la tabla está vacía
+      let $trVacio = $("<tr></tr>").append(
+        $("<td></td>")
+          .attr("colspan", "2")
+          .addClass("text-center text-muted py-3")
+          .text("No se encontraron registros.")
+      );
+      tbody.append($trVacio);
+    }
+      
+    },
+    error: function(xhr, status, error) {
+      console.error("Error al cargar los datos:", error);
+    }
+  }) */
+ $.ajax({
+  url: "index.php?url=marca",
+  type: "POST",
+  dataType: "json",
+  data: {
+    tipoSolicitud: "consultar"
+  },
+  beforeSend: function() {
+    console.log("Cargando marcas...");
+  },
+  success: function(response) {
+    let tbody = $("#tablaMarca tbody");
+    console.log("Respuesta del servidor:", response);
+
+    // 1. Limpiamos la tabla
+    tbody.empty();
+
+    // 2. Si el backend devuelve un array directo [{...}, {...}]
+    // (O si viene dentro de una propiedad como response.datos, cambia 'lista' abajo)
+    let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+
+    if (lista.length > 0) {
+      let rowsHtml = "";
+
+      // 3. Recorremos únicamente el arreglo de registros
+      $.each(lista, function(index, dato) {
+        rowsHtml += `
+          <tr>
+            <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
+            <td class="text-start pe-4">
+              <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" 
+                  title="Actualizar" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#modalMarca"
+                  data-cod-marca="${dato.cod_marca}"
+                  data-nombre="${dato.nombre}"
+                  data-estado="${dato.estado}">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <a href="#" class="text-secondary btn-eliminar ms-2"
+                  data-cod-marca="${dato.cod_marca}">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.html(rowsHtml);
+    } else {
+      tbody.html(`
+        <tr>
+          <td colspan="2" class="text-center text-muted py-3">
+            No se encontraron registros.
+          </td>
+        </tr>
+      `);
+    }
+  },
+  error: function(xhr, status, error) {
+    console.error("Error al cargar los datos:", error);
+    console.log("Respuesta cruda del servidor:", xhr.responseText);
+  }
+});
+
+}
   const modal = document.getElementById('modalMarca');
 
 
