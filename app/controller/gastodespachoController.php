@@ -1,37 +1,34 @@
 <?php
+
 namespace App\Controller;
 
-use App\Model\GastosDespacho;
+use App\Model\GastoDespacho;
 
-$gastoDespacho = new GastosDespacho();
+$gastoDespacho = new GastoDespacho();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
-    case 'registrar_gasto':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['cod_despacho']) && !empty($_POST['descripcion']) && !empty($_POST['monto'])) {
-                
-                $gastoDespacho->setCodDespacho($_POST['cod_despacho']);
-                $gastoDespacho->setDescripcion($_POST['descripcion']);
-                $gastoDespacho->setMonto($_POST['monto']);
+    case 'registrar':
+        $resultado = $gastoDespacho->regDatosGastoDespacho(['descripcion', 'monto', 'cod_despacho']);
+        header("Location: ?url=gastoDespacho&status={$resultado}");
+        exit();
+        break;
 
-                $resultado = $gastoDespacho->registrarGastoTransaccional();
+    case 'actualizar':
+        $resultado = $gastoDespacho->actGastoDespacho(['cod_gasto_despacho', 'descripcion', 'monto', 'cod_despacho']);
+        header("Location: ?url=gastoDespacho&status={$resultado}");
+        exit();
+        break;
 
-                if ($resultado) {
-                    header("Location: ?url=despacho&status=gasto_success");
-                } else {
-                    header("Location: ?url=despacho&status=gasto_error");
-                }
-                exit();
-            } else {
-                echo "<script>alert('Faltan datos obligatorios para registrar el gasto');</script>";
-            }
-        }
+    case 'eliminar':
+        $resultado = $gastoDespacho->elmDatosGastoDespacho(['cod_gasto_despacho']);
+        header("Location: ?url=gastoDespacho&status={$resultado}");
+        exit();
         break;
 }
 
-// Estructura de vistas basada en tus componentes
+$registros = $gastoDespacho->obt_RegistrosGastoDespacho();
+
 include 'app/view/layout/header.php';
-include 'app/view/gastodespacho/gastodespachoView.php'; 
+include 'app/view/gasto_despacho/gastoDespachoView.php';
 include 'app/view/layout/footer.php';
-?>
