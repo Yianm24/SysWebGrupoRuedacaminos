@@ -15,7 +15,7 @@ trait EnvioTrait
         $instanciaForaneas = [
             'cliente' => new Cliente
         ];
-        
+
 
         $tipoPersona = $_POST["{$tipo_persona}"];
 
