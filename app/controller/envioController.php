@@ -7,6 +7,7 @@ use App\Model\Municipio;
 use App\Model\Cliente;
 
 use App\Model\Envio;
+use App\Model\Kilometraje;
 
 $envio = new Envio();
 
@@ -20,7 +21,8 @@ $datosForaneos = [
 
     'cliente' => (new Cliente())->obt_RegistrosClientes(),
     'municipio' => (new Municipio())->obt_RegistrosMunicipio(),
-    'estado' => (new Estado())->obt_RegistrosEstado()
+    'estado' => (new Estado())->obt_RegistrosEstado(),
+    'preciokilometraje' => (new Kilometraje())->obt_RegistrosKilometraje()
 ];
 
 $instanciaForaneas = [
@@ -48,11 +50,26 @@ switch ($solicitud) {
     case 'eliminar':
 
 
-         $resultado = $envio->elmDatosEnvio(['cod_envio']);
+        $resultado = $envio->elmDatosEnvio(['cod_envio']);
 
         header("Location: ?url=envio&status={$resultado}");
 
         echo $resultado;
+
+        break;
+
+
+    case 'modificar':
+        $articulosFragil = (isset($_POST['articulos_fragil'])) ? 1 : 0;
+
+        $keyUBicacionDespacho = $envio->registrarUbicacion($_POST['direccion_origen'], $_POST['municipio_origen']);
+        $keyUBicacionDestino = $envio->registrarUbicacion($_POST['direccion_destino'], $_POST['municipio_destino']);
+
+
+        date_default_timezone_set('America/Caracas');
+        // $resultado = $envio->creDatosEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], $_POST['ancho'], $_POST['alto'], $_POST['descripcion'], date('Y-m-d H:i:s'), $articulosFragil, $_POST['peso_total'], $_POST['kilometraje'], $keyUBicacionDespacho, $keyUBicacionDestino);
+        $resultado = $envio->modEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], ['cod_envio', 'ancho', 'alto', 'descripcion', 'peso_total', 'kilometraje'], date('Y-m-d H:i:s'), $articulosFragil, $keyUBicacionDespacho, $keyUBicacionDestino);
+        header("Location: ?url=envio&status={$resultado}");
 
         break;
 }

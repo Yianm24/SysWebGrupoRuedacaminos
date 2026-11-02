@@ -66,11 +66,23 @@ class Envio extends Conexion
         }
     }
 
+
+    private function calcularCosteEnvio(float $kilometraje, $precioKm = 2.36): float
+    {
+        try {
+            $montofinal = $kilometraje * $precioKm;
+            return $montofinal;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function creDatosEnvio(array $tipo_cliente, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
     {
 
         $this->cod_remitente = $this->extraerDatosParticipante($tipo_cliente[0], "remitente", "rem");
         $this->cod_destinatario = $this->extraerDatosParticipante($tipo_cliente[1], "destinatario", "dest");
+
 
         if (is_array($this->validarPost($campos, "envio"))) {
 
@@ -79,7 +91,7 @@ class Envio extends Conexion
             $this->ancho = $array['ancho'];
             $this->alto = $array['alto'];
             $this->descripcion_cont = $array['descripcion'];
-            // $this->monto_total = 1000.5;
+            $this->monto_total = $this->calcularCosteEnvio($array['kilometraje']);
             $this->distancia_total = $array['kilometraje'];
             $this->estado = 1;
             $this->estatus_fragil = $estatus_fragil;
@@ -109,8 +121,9 @@ class Envio extends Conexion
             `anchura`, 
             `altura`, 
             `peso_total`, 
-            `distancia_total`
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            `distancia_total`,
+            `monto_total`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
 
             $insertEnvio = $this->conexion->prepare($sqlEnvio);
             $insertEnvio->execute([
@@ -121,7 +134,8 @@ class Envio extends Conexion
                 $this->ancho,
                 $this->alto,
                 $this->peso_total,
-                $this->distancia_total
+                $this->distancia_total,
+                $this->monto_total
             ]);
 
             // Obtener el ID autogenerado del envío
@@ -136,8 +150,7 @@ class Envio extends Conexion
             $insertParticipante->execute([$this->cod_destinatario, $cod_envio, 'Destinatario']);
 
             // 3. Inserción de ubicaciones (Despacho y Destino) en 'ubicaciones_envio'
-            $sqlUbicacion = "INSERT INTO `ubicaciones_envio` (`cod_ubicacion`, `cod_envio`,`tipo_ubicacion`) 
-                         VALUES (?, ?, ?)";
+            $sqlUbicacion = "INSERT INTO `ubicaciones_envio` (`cod_ubicacion`, `cod_envio`,`tipo_ubicacion`) VALUES (?, ?, ?)";
             $insertUbicacion = $this->conexion->prepare($sqlUbicacion);
 
             $insertUbicacion->execute([$this->ubicacion_despacho, $cod_envio, 'Despacho']);
@@ -206,5 +219,12 @@ class Envio extends Conexion
         } catch (\PDOException $e) {
             return  "exception&msg=" . urlencode($e->getMessage());
         }
+    }
+
+
+    public function modEnvio(array $campos)
+    {
+
+        $array = $this->validarPost($campos, 'envio');
     }
 }

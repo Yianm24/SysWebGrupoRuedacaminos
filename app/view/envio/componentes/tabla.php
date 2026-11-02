@@ -35,7 +35,7 @@
                         <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
                             <td class="text-start pe-4">
 
-                                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado">
+                                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modiicarEnvio">
 
                                     <i class="bi bi-pencil"></i>
                                 </button>
