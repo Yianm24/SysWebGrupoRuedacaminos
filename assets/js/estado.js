@@ -1,5 +1,74 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+
+ajaxConsultar();
+  function ajaxConsultar(){
+    $.ajax({
+      url: "index.php?url=estado",
+      type: "POST",
+      dataType: "json",
+      data: {
+        tipoSolicitud: "consultar"
+      },
+      beforeSend: function() {
+        console.log("Cargando estados...");
+      },
+      success: function(response) {
+        let tbody = $("#tablaEstado tbody");
+        console.log("Respuesta del servidor:", response);
+
+        // 1. Limpiamos la tabla
+        tbody.empty();
+
+        // 2. Si el backend devuelve un array directo [{...}, {...}]
+        // (O si viene dentro de una propiedad como response.datos, cambia 'lista' abajo)
+        let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+
+        if (lista.length > 0) {
+          let rowsHtml = "";
+
+          // 3. Recorremos únicamente el arreglo de registros
+          $.each(lista, function(index, dato) {
+            rowsHtml += `<tr>
+                    <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
+                    <td class="text-start pe-4">
+                          
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado"
+                                datos-cod-estado="${dato.cod_estado}"
+                                datos-nombre="${dato.nombre}"
+                                datos-estado="${dato.estado}"
+                                >
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        <a href="#" class="text-secondary btn-eliminar"
+                                datos-cod-estado="${dato.cod_estado}" >
+                                <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            `
+            ;
+          });
+
+          tbody.html(rowsHtml);
+        } else {
+          tbody.html(`
+            <tr>
+              <td colspan="2" class="text-center text-muted py-3">
+                No se encontraron registros.
+              </td>
+            </tr>
+          `);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("Error al cargar los datos:", error);
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
+      }
+    });
+
+  }
+
   const modal = document.getElementById('modalEstado');
 
 
