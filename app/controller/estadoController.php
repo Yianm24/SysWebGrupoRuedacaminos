@@ -7,6 +7,8 @@ use App\Model\Estado;
 $estado = new Estado();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
+$registros = $estado->obt_RegistrosEstado();
+
 switch ($solicitud) {
     case 'registrar':
 
@@ -35,13 +37,19 @@ switch ($solicitud) {
     case 'eliminar':
 
         $resultado = $estado->elmDatosEstado(['cod_estado']);
-        
+
         header("Location: ?url=estado&status={$resultado}");
+        break;
+
+    case 'consultar':
+
+        echo $registros;
+        exit();
         break;
 }
 
 
-$registros = $estado->obt_RegistrosEstado();
+// $registros = $estado->obt_RegistrosEstado();
 
 // app/controller/unidadesmedidaController.php
 include 'app/view/layout/header.php';

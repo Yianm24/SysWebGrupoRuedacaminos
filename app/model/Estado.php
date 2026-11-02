@@ -40,7 +40,8 @@ class Estado extends Conexion
             $sentencia = "SELECT * FROM Estado WHERE estado = 1";
             $consulta = $this->conexion->prepare($sentencia);
             $consulta->execute();
-            return $consulta->fetchAll(\PDO::FETCH_ASSOC);
+            $registros=json_encode($consulta->fetchAll(\PDO::FETCH_ASSOC));
+            return $registros;
         } catch (\PDOException $e) {
             echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
             return [];
