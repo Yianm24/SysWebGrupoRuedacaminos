@@ -1,5 +1,70 @@
 document.addEventListener("DOMContentLoaded", function () {
- 
+
+  ajaxConsultar();
+  function ajaxConsultar(){
+    $.ajax({
+      url: "index.php?url=marca",
+      type: "POST",
+      dataType: "json",
+      data: {
+        tipoSolicitud: "consultar"
+      },
+      beforeSend: function() {
+        console.log("Cargando marcas...");
+      },
+      success: function(response) {
+        let tbody = $("#tablaMarca tbody");
+        console.log("Respuesta del servidor:", response);
+
+        // 1. Limpiamos la tabla
+        tbody.empty();
+
+        // 2. Si el backend devuelve un array directo [{...}, {...}]
+        // (O si viene dentro de una propiedad como response.datos, cambia 'lista' abajo)
+        let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+
+        if (lista.length > 0) {
+          let rowsHtml = "";
+
+          // 3. Recorremos únicamente el arreglo de registros
+          $.each(lista, function(index, dato) {
+            rowsHtml += `
+              <tr>
+                <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
+                <td class="text-start pe-4">
+                  <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMarca"
+                      datos-cod-marca="${dato.cod_marca}"
+                      datos-nombre="${dato.nombre}"
+                      datos-estado="${dato.estado}">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <a href="#" class="text-secondary btn-eliminar"
+                      datos-cod-marca="${dato.cod_marca}">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </td>
+              </tr>
+            `;
+          });
+
+          tbody.html(rowsHtml);
+        } else {
+          tbody.html(`
+            <tr>
+              <td colspan="2" class="text-center text-muted py-3">
+                No se encontraron registros.
+              </td>
+            </tr>
+          `);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("Error al cargar los datos:", error);
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
+      }
+    });
+
+  }
   const modal = document.getElementById('modalMarca');
 
 
@@ -47,39 +112,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-  botonesEliminar.forEach(boton => {
-    boton.addEventListener('click', function (event) {
-      event.preventDefault();
-      let codmarca = this.getAttribute('datos-cod-marca');
+  $("#tablaMarca tbody").on("click", ".btn-eliminar", function (event) {
+    event.preventDefault();
 
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
-        buttonsStyling: false
-      });
+    const codmarca = this.getAttribute("datos-cod-marca");
 
-      swalWithBootstrapButtons.fire({
-        title: "¿Está seguro que desea eliminar este registro?",
-        text: "¡No podrás revertir esto!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          let form = document.createElement('form');
-          form.method = 'POST';
-          form.action = '?url=marca';
-          form.innerHTML = `
-                        <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="cod_marca" value="${codmarca}">
-                    `;
-          document.body.appendChild(form);
-          form.submit();
-        }
-      });
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success ms-2",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
     });
+
+    swalWithBootstrapButtons.fire({
+      title: "¿Está seguro que desea eliminar este registro?",
+      text: "¡No podrás revertir esto!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true
+    }).then((result) => {
+          if (result.isConfirmed) {
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '?url=marca';
+            form.innerHTML = `
+                          <input type="hidden" name="tipoSolicitud" value="eliminar">
+                          <input type="hidden" name="cod_marca" value="${codmarca}">
+                      `;
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
   });
 
   // Lógica para mostrar alertas de estado (éxito, error, etc.)
