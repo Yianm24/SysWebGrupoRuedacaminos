@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
 
 
-ajaxConsultar();
-  function ajaxConsultar(){
+  ajaxConsultar();
+  function ajaxConsultar() {
     $.ajax({
       url: "index.php?url=estado",
       type: "POST",
@@ -10,10 +10,10 @@ ajaxConsultar();
       data: {
         tipoSolicitud: "consultar"
       },
-      beforeSend: function() {
+      beforeSend: function () {
         console.log("Cargando estados...");
       },
-      success: function(response) {
+      success: function (response) {
         let tbody = $("#tablaEstado tbody");
         console.log("Respuesta del servidor:", response);
 
@@ -28,7 +28,7 @@ ajaxConsultar();
           let rowsHtml = "";
 
           // 3. Recorremos únicamente el arreglo de registros
-          $.each(lista, function(index, dato) {
+          $.each(lista, function (index, dato) {
             rowsHtml += `<tr>
                     <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
                     <td class="text-start pe-4">
@@ -47,7 +47,7 @@ ajaxConsultar();
                     </td>
                 </tr>
             `
-            ;
+              ;
           });
 
           tbody.html(rowsHtml);
@@ -61,7 +61,7 @@ ajaxConsultar();
           `);
         }
       },
-      error: function(xhr, status, error) {
+      error: function (xhr, status, error) {
         console.error("Error al cargar los datos:", error);
         console.log("Respuesta cruda del servidor:", xhr.responseText);
       }
@@ -116,38 +116,39 @@ ajaxConsultar();
     })
   }
 
-  const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-  botonesEliminar.forEach(boton => {
-    boton.addEventListener('click', function (event) {
-      event.preventDefault();
-      let codestado = this.getAttribute('datos-cod-estado');
+  $("#tablaEstado tbody").on("click", ".btn-eliminar", function (event) {
+    event.preventDefault();
 
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
-        buttonsStyling: false
-      });
+    const codestado = this.getAttribute("datos-cod-estado");
 
-      swalWithBootstrapButtons.fire({
-        title: "¿Está seguro que desea eliminar este registro?",
-        text: "¡No podrás revertir esto!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          let form = document.createElement('form');
-          form.method = 'POST';
-          form.action = '?url=estado';
-          form.innerHTML = `
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success ms-2",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+    
+    swalWithBootstrapButtons.fire({
+      title: "¿Está seguro que desea eliminar este registro?",
+      text: "¡No podrás revertir esto!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '?url=estado';
+        form.innerHTML = `
                         <input type="hidden" name="tipoSolicitud" value="eliminar">
                         <input type="hidden" name="cod_estado" value="${codestado}">
                     `;
-          document.body.appendChild(form);
-          form.submit();
-        }
-      });
+        document.body.appendChild(form);
+        form.submit();
+      }
     });
   });
 
