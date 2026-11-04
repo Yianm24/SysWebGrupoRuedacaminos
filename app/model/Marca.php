@@ -79,7 +79,7 @@ class Marca extends Conexion
             $this->cod_marca = $datos[0];
             $this->nombre = strtoupper($datos[1]);
         } else {
-            return 'error&msg=Actualizar';
+            return json_encode(['status' => 'error', 'message' => 'Actualizar.']);
         }
 
         return $this->actualizarMarca();
@@ -91,9 +91,9 @@ class Marca extends Conexion
             $sentencia = "UPDATE `marca` SET nombre = ? WHERE cod_marca = ?";
             $update = $this->conexion->prepare($sentencia);
             $update->execute([$this->nombre, $this->cod_marca]);
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' =>  'La Marca ha sido actualizada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 

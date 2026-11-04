@@ -222,7 +222,7 @@ function mostrarAlerta(status, mensaje) {
         break;
       case 'updated':
         title = "Actualización exitosa!";
-        text = "La Marca ha sido actualizada correctamente.";
+        text = mensaje;
         icon = "success";
         break;
       case 'deleted':

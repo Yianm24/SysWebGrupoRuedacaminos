@@ -22,18 +22,21 @@ switch ($solicitud) {
 
         echo $resultado;
         exit();
-
         break;
     case 'actualizar':
 
-        if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
+        /* if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
             header("Location: ?url=marca&status=exists");
             exit();
-        }
+        } */
+       $datosAjax = [
+            'cod_marca' => $_POST['cod_marca'] ?? null,
+            'nombre_marca' => $_POST['nombre_marca'] ?? null
+        ];
 
-        $resultado = $marca->actMarca(['cod_marca', 'nombre_marca']);
-        header("Location: ?url=marca&status={$resultado}");
-
+        $resultado = $marca->actMarca([$datosAjax['cod_marca'],$datosAjax['nombre_marca']]);
+        echo $resultado;
+        exit();
         break;
     case 'eliminar':
         $resultado = $marca->elmDatosMarca(['cod_marca']);
