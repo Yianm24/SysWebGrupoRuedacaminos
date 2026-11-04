@@ -39,8 +39,12 @@ switch ($solicitud) {
         exit();
         break;
     case 'eliminar':
-        $resultado = $marca->elmDatosMarca(['cod_marca']);
-        header("Location: ?url=marca&status={$resultado}");
+        $datosAjax = [
+            'cod_marca' => $_POST['cod_marca'] ?? null
+        ];
+        $resultado = $marca->elmDatosMarca([$datosAjax['cod_marca']]);
+        echo $resultado;
+        exit();        
         break;
     case 'consultar':
         echo $registros;

@@ -101,9 +101,9 @@ class Marca extends Conexion
     {
         if (is_array($this->validarPost($campos))) {
             $datos = $this->validarPost($campos);
-            $this->cod_marca = $datos['cod_marca'];
+            $this->cod_marca = $datos[0];
         } else {
-            return 'error&msg=Eliminar';
+            return json_encode(['status' => 'error', 'message' => 'Eliminar.']);
         }
         return $this->eliminarMarca();
     }
@@ -114,9 +114,9 @@ class Marca extends Conexion
             $sentencia = "UPDATE `marca` SET estado = 0 WHERE cod_marca = ?";
             $delete = $this->conexion->prepare($sentencia);
             $delete->execute([$this->cod_marca]);
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'La Marca ha sido eliminada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

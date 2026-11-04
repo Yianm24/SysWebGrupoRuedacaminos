@@ -12,11 +12,14 @@ $(document).ready(function () {
     });
     $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
       event.preventDefault();
-      const cod_marca = $("#cod-marca").val();
-      const nombre_marca = $("#nombre_marca").val();
+      const datos ={
+        cod_marca: $("#cod-marca").val(),
+        nombre_marca: $("#nombre_marca").val()
+      }
+      
       const btnEnviar = this;
       const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-      ajaxEnvioDatos(objmodal, btnEnviar, cod_marca, nombre_marca);
+      ajaxEnvioDatos(objmodal, btnEnviar, datos);
     });
 
   };
@@ -44,15 +47,7 @@ $(document).ready(function () {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        let form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '?url=marca';
-        form.innerHTML = `
-                          <input type="hidden" name="tipoSolicitud" value="eliminar">
-                          <input type="hidden" name="cod_marca" value="${codmarca}">
-                      `;
-        document.body.appendChild(form);
-        form.submit();
+        ajaxEnvioDatos(null,null, { cod_marca: codmarca});
       }
     });
   });
@@ -116,14 +111,19 @@ function ajaxConsultar() {
 
 }
 
-function ajaxEnvioDatos(modal, btnEnviar, cod_marca, nombre_marca) {
+function ajaxEnvioDatos(modal = null, btnEnviar, datos) {
+  const cod_marca = datos.cod_marca ?? '';
+  const nombre_marca = datos.nombre_marca ?? '';
 
-  let tipoSolicitud = "";
-  if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-    tipoSolicitud = "registrar";
-  } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-    tipoSolicitud = "actualizar";
-  }
+    let tipoSolicitud = "";
+    if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+      tipoSolicitud = "registrar";
+    } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+      tipoSolicitud = "actualizar";
+    }else{
+      tipoSolicitud = "eliminar";
+    }
+  
   iconoCargar("#tablaMarca tbody");
   $.ajax({
     url: "index.php?url=marca",
@@ -135,9 +135,10 @@ function ajaxEnvioDatos(modal, btnEnviar, cod_marca, nombre_marca) {
       nombre_marca: nombre_marca
     },
     beforeSend: function () {
-      modal.hide();
-      $(btnEnviar).attr("disabled", true);
-
+      if(modal != null){
+        modal.hide();
+        $(btnEnviar).attr("disabled", true);
+      }
     }
   })
     .done(function (response) {
@@ -227,7 +228,7 @@ function mostrarAlerta(status, mensaje) {
         break;
       case 'deleted':
         title = "Eliminación exitosa!";
-        text = "La Marca ha sido eliminada correctamente.";
+        text = mensaje;
         icon = "success";
         break;
       case 'exists':
