@@ -126,4 +126,9 @@ $(document).ready(function () {
         inputs.siblings('.mensaje-error').hide().text('');
         btnEnviar.prop('disabled', true);
     });
+
+    $('.modal').on('hidden.bs.modal',function(){
+        $('input').removeClass('is-valid');
+        $('input').removeClass('is-invalid');
+    })
 });

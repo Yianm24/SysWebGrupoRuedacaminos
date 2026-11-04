@@ -140,9 +140,9 @@ function ajaxEnvioDatos(modal,btnEnviar, cod_marca, nombre_marca) {
   })
     .done(function (response) {
       console.log("Respuesta del servidor:", response);
-      if(response.status === 'success'){
-        mostrarAlerta(response.status, response.message);
-      }
+      
+      mostrarAlerta(response.status, response.message);
+      
      
     })
     .fail(function (xhr, status, error) {
@@ -152,6 +152,7 @@ function ajaxEnvioDatos(modal,btnEnviar, cod_marca, nombre_marca) {
     .always(function() {
       // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
       ajaxConsultar();
+      
     });
 
 }

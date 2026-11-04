@@ -47,7 +47,7 @@ class Marca extends Conexion
     private function registrarMarca()
     {
         try {
-            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?,?)";
+            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?,)";
 
             $insert = $this->conexion->prepare($sentencia);
             $insert->execute([$this->nombre, $this->estado]);
@@ -76,8 +76,8 @@ class Marca extends Conexion
     {
         if (is_array($this->validarPost($campos))) {
             $datos = $this->validarPost($campos);
-            $this->cod_marca = $datos['cod_marca'];
-            $this->nombre = strtoupper($datos['nombre_marca']);
+            $this->cod_marca = $datos[0];
+            $this->nombre = strtoupper($datos[1]);
         } else {
             return 'error&msg=Actualizar';
         }
