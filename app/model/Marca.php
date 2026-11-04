@@ -34,12 +34,12 @@ class Marca extends Conexion
 
     public function regDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos, "marca"))) {
-            $datos = $this->validarPost($campos, "marca");
-            $this->nombre = strtoupper($datos['nombre_marca']);
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->nombre = strtoupper($datos[0]);
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return json_encode(['status' => 'error', 'message' => 'Registrar.']);
         }
         return $this->registrarMarca();
     }
@@ -51,10 +51,10 @@ class Marca extends Conexion
 
             $insert = $this->conexion->prepare($sentencia);
             $insert->execute([$this->nombre, $this->estado]);
-
-            return 'success';
+            
+            return json_encode(['status' => 'success', 'message' => 'Marca registrada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return  json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -74,8 +74,8 @@ class Marca extends Conexion
 
     public function actMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos, "marca"))) {
-            $datos = $this->validarPost($campos, "marca");
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
             $this->cod_marca = $datos['cod_marca'];
             $this->nombre = strtoupper($datos['nombre_marca']);
         } else {
@@ -99,8 +99,8 @@ class Marca extends Conexion
 
     public function elmDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos, "marca"))) {
-            $datos = $this->validarPost($campos, "marca");
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
             $this->cod_marca = $datos['cod_marca'];
         } else {
             return 'error&msg=Eliminar';

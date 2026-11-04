@@ -10,13 +10,18 @@ $registros = $marca->obt_RegistrosMarca();
 switch ($solicitud) {
     case 'registrar':
 
-        if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
+        /* if ($marca->verificarMarcaDuplicada($_POST['nombre_marca'], $_POST['cod_marca'])) {
             header("Location: ?url=marca&status=exists");
             exit();
-        }
+        } */
+        $datosAjax = [
 
-        $resultado = $marca->regDatosMarca(['nombre_marca']);
-        header("Location: ?url=marca&status={$resultado}");
+            'nombre_marca' => $_POST['nombre_marca'] ?? null
+        ];
+        $resultado = $marca->regDatosMarca([$datosAjax['nombre_marca']]);
+
+        echo $resultado;
+        exit();
 
         break;
     case 'actualizar':
