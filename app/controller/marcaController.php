@@ -52,15 +52,6 @@ switch ($solicitud) {
         break;
 }
 
-//$registros = $marca->obt_RegistrosMarca();
-//$enJson = json_encode($registros);
-//print_r($registros);
-//$marca->buscarId();
-// app/controller/unidadesmedidaController.php
-/* if($_GET['tipoSolicitud'] == 'consultar'){
-    echo $registros;
-    exit;
-} */
 include 'app/view/layout/header.php';
 include 'app/view/marca/marcaView.php';
 include 'app/view/layout/footer.php';
