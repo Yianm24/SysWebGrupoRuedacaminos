@@ -3,12 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Marca extends Conexion
 {
 
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
     private $cod_marca;
     private $nombre;
     private $estado;
@@ -47,7 +47,7 @@ class Marca extends Conexion
     private function registrarMarca()
     {
         try {
-            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?,)";
+            $sentencia = "INSERT INTO marca (nombre,estado) VALUES (?,?)";
 
             $insert = $this->conexion->prepare($sentencia);
             $insert->execute([$this->nombre, $this->estado]);

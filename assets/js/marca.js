@@ -8,15 +8,17 @@ $(document).ready(function () {
       // Obtener acceso al botón que disparó el modal
       const boton = event.relatedTarget;
       AccionModal(boton, modal);
-      $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
-        event.preventDefault();
-        const cod_marca = $("#cod-marca").val();
-        const nombre_marca = $("#nombre_marca").val();
-        const btnEnviar = this;
-        const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-        ajaxEnvioDatos(objmodal,btnEnviar, cod_marca, nombre_marca);
-      });
+
     });
+    $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
+      event.preventDefault();
+      const cod_marca = $("#cod-marca").val();
+      const nombre_marca = $("#nombre_marca").val();
+      const btnEnviar = this;
+      const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
+      ajaxEnvioDatos(objmodal, btnEnviar, cod_marca, nombre_marca);
+    });
+
   };
 
   $("#tablaMarca tbody").on("click", ".btn-eliminar", function (event) {
@@ -111,15 +113,15 @@ function ajaxConsultar() {
       console.error("Error al cargar los datos:", error);
       console.log("Respuesta cruda del servidor:", xhr.responseText);
     })
-    
+
 }
 
-function ajaxEnvioDatos(modal,btnEnviar, cod_marca, nombre_marca) {
-  
+function ajaxEnvioDatos(modal, btnEnviar, cod_marca, nombre_marca) {
+
   let tipoSolicitud = "";
-  if($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+  if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
     tipoSolicitud = "registrar";
-  } else if($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+  } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
     tipoSolicitud = "actualizar";
   }
   iconoCargar("#tablaMarca tbody");
@@ -135,24 +137,22 @@ function ajaxEnvioDatos(modal,btnEnviar, cod_marca, nombre_marca) {
     beforeSend: function () {
       modal.hide();
       $(btnEnviar).attr("disabled", true);
-      
+
     }
   })
     .done(function (response) {
       console.log("Respuesta del servidor:", response);
-      
+
       mostrarAlerta(response.status, response.message);
-      
-     
     })
     .fail(function (xhr, status, error) {
       console.error("Error al cargar los datos:", error);
       console.log("Respuesta cruda del servidor:", xhr.responseText);
     })
-    .always(function() {
+    .always(function () {
       // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
       ajaxConsultar();
-      
+
     });
 
 }
@@ -211,53 +211,53 @@ function iconoCargar(selector) {
 }
 
 function mostrarAlerta(status, mensaje) {
-    setTimeout(() => {
-      let title, text, icon;
+  setTimeout(() => {
+    let title, text, icon;
 
-      switch (status) {
-        case 'success':
-          title = "Registro exitoso!";
-          text = mensaje;
-          icon = "success";
-          break;
-        case 'updated':
-          title = "Actualización exitosa!";
-          text = "La Marca ha sido actualizada correctamente.";
-          icon = "success";
-          break;
-        case 'deleted':
-          title = "Eliminación exitosa!";
-          text = "La Marca ha sido eliminada correctamente.";
-          icon = "success";
-          break;
-        case 'exists':
-          title = "Marca existente!";
-          text = "La Marca ingresada ya existe en la base de datos.";
-          icon = "warning";
-          break;
-        case 'empty':
-          title = "Campos vacíos!";
-          text = "Uno o más campos están vacíos.";
-          icon = "warning";
-          break;
-        case 'error':
-          title = "Error!";
-          text = `Se produjo un error en el proceso de ${mensaje}.`;
-          icon = "error";
-          break;
-        case 'exception':
-          title = "Exception Retornada!";
-          text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-          icon = "error";
-          break;
-      }
+    switch (status) {
+      case 'success':
+        title = "Registro exitoso!";
+        text = mensaje;
+        icon = "success";
+        break;
+      case 'updated':
+        title = "Actualización exitosa!";
+        text = "La Marca ha sido actualizada correctamente.";
+        icon = "success";
+        break;
+      case 'deleted':
+        title = "Eliminación exitosa!";
+        text = "La Marca ha sido eliminada correctamente.";
+        icon = "success";
+        break;
+      case 'exists':
+        title = "Marca existente!";
+        text = "La Marca ingresada ya existe en la base de datos.";
+        icon = "warning";
+        break;
+      case 'empty':
+        title = "Campos vacíos!";
+        text = "Uno o más campos están vacíos.";
+        icon = "warning";
+        break;
+      case 'error':
+        title = "Error!";
+        text = `Se produjo un error en el proceso de ${mensaje}.`;
+        icon = "error";
+        break;
+      case 'exception':
+        title = "Exception Retornada!";
+        text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+        icon = "error";
+        break;
+    }
 
-      if (title && text && icon) {
-        Swal.fire({
-          title: title,
-          text: text,
-          icon: icon
-        });
-      }
-    }, 100);
-  }
+    if (title && text && icon) {
+      Swal.fire({
+        title: title,
+        text: text,
+        icon: icon
+      });
+    }
+  }, 100);
+}
