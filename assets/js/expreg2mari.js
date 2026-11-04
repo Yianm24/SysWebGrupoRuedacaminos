@@ -127,8 +127,14 @@ $(document).ready(function () {
         btnEnviar.prop('disabled', true);
     });
 
-    $('.modal').on('hidden.bs.modal',function(){
-        $('input').removeClass('is-valid');
-        $('input').removeClass('is-invalid');
+    
+    $('#btnCerrar').on('click',function(){
+        $('.modal input').removeClass('is-valid');
+        $('.modal input').removeClass('is-invalid');
+        $('.modal input').val('');
+        $('.modal .mensaje-error').hide().text('');
+        btnEnviar.prop('disabled', true);
     })
+    
+   
 });
