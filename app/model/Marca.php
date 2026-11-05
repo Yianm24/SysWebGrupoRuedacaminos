@@ -3,12 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Marca extends Conexion
 {
 
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
     private $cod_marca;
     private $nombre;
     private $estado;
@@ -34,12 +34,12 @@ class Marca extends Conexion
 
     public function regDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos, "marca"))) {
-            $datos = $this->validarPost($campos, "marca");
-            $this->nombre = strtoupper($datos['nombre_marca']);
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->nombre = strtoupper($datos[0]);
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return json_encode(['status' => 'error', 'message' => 'Registrar.']);
         }
         return $this->registrarMarca();
     }
@@ -51,10 +51,10 @@ class Marca extends Conexion
 
             $insert = $this->conexion->prepare($sentencia);
             $insert->execute([$this->nombre, $this->estado]);
-
-            return 'success';
+            
+            return json_encode(['status' => 'success', 'message' => 'Marca registrada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return  json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -74,12 +74,12 @@ class Marca extends Conexion
 
     public function actMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos, "marca"))) {
-            $datos = $this->validarPost($campos, "marca");
-            $this->cod_marca = $datos['cod_marca'];
-            $this->nombre = strtoupper($datos['nombre_marca']);
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->cod_marca = $datos[0];
+            $this->nombre = strtoupper($datos[1]);
         } else {
-            return 'error&msg=Actualizar';
+            return json_encode(['status' => 'error', 'message' => 'Actualizar.']);
         }
 
         return $this->actualizarMarca();
@@ -91,19 +91,19 @@ class Marca extends Conexion
             $sentencia = "UPDATE `marca` SET nombre = ? WHERE cod_marca = ?";
             $update = $this->conexion->prepare($sentencia);
             $update->execute([$this->nombre, $this->cod_marca]);
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' =>  'La Marca ha sido actualizada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function elmDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos, "marca"))) {
-            $datos = $this->validarPost($campos, "marca");
-            $this->cod_marca = $datos['cod_marca'];
+        if (is_array($this->validarPost($campos))) {
+            $datos = $this->validarPost($campos);
+            $this->cod_marca = $datos[0];
         } else {
-            return 'error&msg=Eliminar';
+            return json_encode(['status' => 'error', 'message' => 'Eliminar.']);
         }
         return $this->eliminarMarca();
     }
@@ -114,9 +114,9 @@ class Marca extends Conexion
             $sentencia = "UPDATE `marca` SET estado = 0 WHERE cod_marca = ?";
             $delete = $this->conexion->prepare($sentencia);
             $delete->execute([$this->cod_marca]);
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'La Marca ha sido eliminada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

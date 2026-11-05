@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Traits;
+
+trait ValidadorTraitAjax
+{
+
+    // 1. Verifica que la petición sea POST y que los campos requeridos no estén vacíos
+    public function validarPost(array $camposRequeridos)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return false;
+        }
+
+        $array = [];
+
+        foreach ($camposRequeridos as $campo) {
+            if (empty(trim($campo))) {
+                return false;
+            }
+            $array[] = $this->input($campo, null);
+        }
+        return $array;
+    }
+
+    // 2. Obtiene el dato limpio del POST
+    public function input(string $campo, $default = null)
+    {
+        return (!empty($campo)) ? htmlspecialchars(trim($campo)) : $default;
+    }
+}

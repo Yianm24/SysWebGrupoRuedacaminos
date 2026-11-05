@@ -18,8 +18,8 @@
                 </div>
 
                 <footer class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="" class="btn btn-primary" disabled></button>
+                    <button type="button" id="btnCerrar" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" name="tipoSolicitud" value="" class="btn btn-primary" disabled></button>
                 </footer>
             </form>
         </div>

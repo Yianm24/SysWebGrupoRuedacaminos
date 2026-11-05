@@ -126,4 +126,15 @@ $(document).ready(function () {
         inputs.siblings('.mensaje-error').hide().text('');
         btnEnviar.prop('disabled', true);
     });
+
+    
+    $('#btnCerrar').on('click',function(){
+        $('.modal input').removeClass('is-valid');
+        $('.modal input').removeClass('is-invalid');
+        $('.modal input').val('');
+        $('.modal .mensaje-error').hide().text('');
+        btnEnviar.prop('disabled', true);
+    })
+    
+   
 });
