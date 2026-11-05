@@ -7,6 +7,7 @@ use App\Model\Estado;
 
 $municipio = new Municipio();
 $estado = new Estado();
+$registros = $municipio->obt_RegistrosMunicipio();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
@@ -39,10 +40,15 @@ switch ($solicitud) {
         $resultado = $municipio->elmDatosMunicipio(['cod_municipio']);
         header("Location: ?url=municipio&status={$resultado}");
         break;
+
+    case 'consultar':
+        echo $registros;
+        exit();
+        break;
 }
 
 
-$registros = $municipio->obt_RegistrosMunicipio();
+
 $estadosRegistros = $estado->obt_RegistrosEstado();
 include 'app/view/layout/header.php';
 include 'app/view/municipio/municipioView.php';

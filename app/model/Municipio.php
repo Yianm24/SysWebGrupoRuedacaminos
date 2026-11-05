@@ -50,8 +50,10 @@ class Municipio extends Conexion
 
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+            $registros=json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            return $registros;
         } catch (\PDOException $e) {
+            echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
             return [];
         }
     }
