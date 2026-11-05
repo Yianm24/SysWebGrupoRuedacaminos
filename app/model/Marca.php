@@ -89,12 +89,12 @@ class Marca extends Conexion
 
     public function actMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
-            $this->cod_marca = $datos[0];
-            $this->nombre = strtoupper($datos[1]);
+        $resultadoTrait = $this->validarPost($campos); 
+        if (is_array($resultadoTrait)) {
+            $this->cod_marca = $resultadoTrait[0];
+            $this->nombre = strtoupper($resultadoTrait[1]);
         } else {
-            return json_encode(['status' => 'error', 'message' => 'Actualizar.']);
+            return $resultadoTrait;
         }
 
         return $this->actualizarMarca();
@@ -114,11 +114,12 @@ class Marca extends Conexion
 
     public function elmDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
-            $this->cod_marca = $datos[0];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            
+            $this->cod_marca = $resultadoTrait[0];
         } else {
-            return json_encode(['status' => 'error', 'message' => 'Eliminar.']);
+            return $resultadoTrait;
         }
         return $this->eliminarMarca();
     }
