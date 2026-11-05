@@ -41,7 +41,7 @@ switch ($solicitud) {
 
 
 $registros = $modelo->obt_RegistrosModelo();
-$marcasRegistros = $marca->obt_RegistrosMarca();
+$marcasRegistros = $marca->obt_RegistrosMarcaOld();
 // app/controller/unidadesmedidaController.php
 include 'app/view/layout/header.php';
 include 'app/view/modelo/modeloView.php';

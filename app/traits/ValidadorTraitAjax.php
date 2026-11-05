@@ -9,14 +9,14 @@ trait ValidadorTraitAjax
     public function validarPost(array $camposRequeridos)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return false;
+            return json_encode(['status'=>'empty', 'message'=>'Metodo invalido.']);
         }
 
         $array = [];
 
         foreach ($camposRequeridos as $campo) {
             if (empty(trim($campo))) {
-                return false;
+                return json_encode(['status'=>'empty', 'message'=>'Uno o más campos están vacíos.']);
             }
             $array[] = $this->input($campo, null);
         }

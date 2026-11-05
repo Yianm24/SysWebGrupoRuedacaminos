@@ -1,6 +1,6 @@
 <div class="card-body p-0">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table id="tablaModelo" class="table table-hover align-middle mb-0">
             <thead class="table-light table-header-custom">
                 <tr>
                     <th class="ps-4 ">NOMBRE DE LA MODELO</th>
