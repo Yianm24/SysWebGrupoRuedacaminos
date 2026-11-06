@@ -9,6 +9,26 @@ $(document).ready(function () {
       accionModal(boton);
 
     })
+    $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
+      event.preventDefault();
+      const datos = {
+        cod_modelo: $("#cod-modelo").val(),
+        nombre_modelo: $("#nombre_modelo").val(),
+        cod_marca: $('#marca').val()
+      }
+
+      const btnEnviar = this;
+      let solicitud = "";
+      if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+        solicitud = "registrar";
+      } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+        solicitud = "actualizar";
+      } else {
+        solicitud = "eliminar";
+      }
+      const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
+      ajaxEnvioDatos('modelo',objmodal, solicitud,btnEnviar, datos);
+    });
   }
 
   $("#tablaModelo tbody").on("click", ".btn-eliminar", function (event) {
@@ -44,16 +64,7 @@ $(document).ready(function () {
         form.submit();
       }
     });
-});
-
-// Lógica para mostrar alertas de estado (éxito, error, etc.)
-const urlParams = new URLSearchParams(window.location.search);
-const status = urlParams.get('status');
-const mensaje = urlParams.get('msg');
-
-if (status) {
-  mostrarAlerta(status, mensaje);
-}
+  });
 
 });
 
@@ -117,6 +128,41 @@ function ajaxConsultar() {
 
 }
 
+function ajaxEnvioDatos(moduloNombre, modal = null, solicitud, btnEnviar, datos) {
+
+  iconoCargar("#tablaMarca tbody");
+  $.ajax({
+    url: `index.php?url=${moduloNombre}`,
+    type: "POST",
+    dataType: "json",
+    data: {
+      tipoSolicitud: solicitud,
+      datos: datos
+    },
+    beforeSend: function () {
+      if (modal != null) {
+        modal.hide();
+        $(btnEnviar).attr("disabled", true);
+      }
+    }
+  })
+    .done(function (response) {
+      console.log("Respuesta del servidor:", response);
+
+      mostrarAlerta(response.status, response.message);
+    })
+    .fail(function (xhr, status, error) {
+      console.error("Error al cargar los datos:", error);
+      console.log("Respuesta cruda del servidor:", xhr.responseText);
+    })
+    .always(function () {
+      // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
+      ajaxConsultar();
+
+    });
+
+}
+
 function accionModal(boton) {
   const encabezadoModal = $('#modalLabel');
   const botonModal = $('button[name="tipoSolicitud"]');
@@ -143,7 +189,7 @@ function accionModal(boton) {
       inputMarca.val("");
       $('#marca').prop('selectedIndex', 0);
 
-    break;
+      break;
     case "Actualizar":
       encabezadoModal.html('<i class="bi bi-car-front me-2"></i> Actualizacion de Modelo');
       botonModal.val("actualizar");
@@ -185,7 +231,7 @@ function mostrarAlerta(status, mensaje) {
     switch (status) {
       case 'success':
         title = "Registro exitoso!";
-        text = "El Modelo ha sido registrada correctamente.";
+        text = mensaje;
         icon = "success";
         break;
       case 'updated':
