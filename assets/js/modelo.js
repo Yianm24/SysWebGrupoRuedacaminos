@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  ajaxConsultar();
   const modal = $('#modalModelo');
 
   if (modal) {
@@ -56,6 +57,66 @@ if (status) {
 
 });
 
+function ajaxConsultar() {
+  iconoCargar("#tablaModelo tbody");
+  $.ajax({
+    url: "index.php?url=modelo",
+    type: "POST",
+    dataType: "json",
+    data: {
+      tipoSolicitud: "consultar"
+    }
+  })
+    .done(function (response) {
+
+      let tbody = $("#tablaModelo tbody");
+      tbody.empty();
+
+      let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+
+      if (lista.length > 0) {
+        let rowsHtml = "";
+
+        $.each(lista, function (index, dato) {
+          rowsHtml += `
+            <tr>
+              <td class="ps-4 fw-bold ">${dato.nombre}</td>
+              <td class="ps-4 text-secondary ">${dato.nombre_marca}</td>
+              <td class="text-start pe-4">
+                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalModelo"
+                    datos-cod-modelo="${dato.cod_modelo}"
+                    datos-nombre="${dato.nombre}"
+                    datos-marca="${dato.cod_marca}"
+                    datos-estado="${dato.estado}">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <a href="#" class="text-secondary btn-eliminar"
+                    datos-cod-modelo="${dato.cod_modelo}">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.html(rowsHtml);
+      } else {
+        tbody.html(`
+    <tr>
+      <td colspan="2" class="text-center text-muted py-3">
+        No se encontraron registros.
+      </td>
+    </tr>
+  `);
+      }
+    })
+    .fail(function (xhr, status, error) {
+      console.error("Error al cargar los datos:", error);
+      console.log("Respuesta cruda del servidor:", xhr.responseText);
+    })
+
+}
+
 function accionModal(boton) {
   const encabezadoModal = $('#modalLabel');
   const botonModal = $('button[name="tipoSolicitud"]');
@@ -100,6 +161,20 @@ function accionModal(boton) {
       }
       break;
   }
+}
+
+function iconoCargar(selector) {
+  const elementoHtml = $(`${selector}`);
+  elementoHtml.html(`
+    <tr>
+      <td colspan="2" class="text-center text-muted py-3">
+        <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading...
+      </button>
+      </td>
+    </tr>
+  `);
 }
 
 function mostrarAlerta(status, mensaje) {

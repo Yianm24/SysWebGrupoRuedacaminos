@@ -9,27 +9,6 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($registros as $dato): ?>
-                    <tr>
-                        <td class="ps-4 fw-bold "><?= $dato['nombre'] ?></td>
-                        <td class="ps-4 text-secondary "><?= $dato['nombre_marca'] ?></td>
-                        <td class="text-end pe-4">
-
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalModelo"
-                                datos-cod-modelo="<?php echo $dato['cod_modelo']; ?>"
-                                datos-nombre="<?php echo $dato['nombre']; ?>"
-                                datos-marca="<?= $dato['cod_marca'] ?>"
-                                datos-estado="<?= $dato['estado']?>">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <a href="#" class="text-secondary btn-eliminar"
-                                datos-cod-modelo="<?= $dato['cod_modelo'] ?>">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-
             </tbody>
         </table>
     </div>

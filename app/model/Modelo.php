@@ -76,9 +76,8 @@ use ValidadorTrait;
 
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+            return json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
         } catch (\PDOException $e) {
-            echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
             return [];
         }
     }

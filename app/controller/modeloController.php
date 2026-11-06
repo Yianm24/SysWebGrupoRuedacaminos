@@ -36,11 +36,15 @@ switch ($solicitud) {
         $resultado = $modelo->elmDatosModelo(['cod_modelo']);
         header("Location: ?url=modelo&status={$resultado}");
     break;
-
+    case 'consultar':
+        $resultado = $modelo->obt_RegistrosModelo();
+        echo $resultado;
+        exit();
+    break;
 }
 
 
-$registros = $modelo->obt_RegistrosModelo();
+//$registros = $modelo->obt_RegistrosModelo();
 $marcasRegistros = $marca->obt_RegistrosMarcaOld();
 // app/controller/unidadesmedidaController.php
 include 'app/view/layout/header.php';
