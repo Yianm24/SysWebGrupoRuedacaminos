@@ -16,9 +16,31 @@ $(document).ready(function () {
       AccionModal(boton);
     })
 
+    $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
+      event.preventDefault();
+      const datos = {
+        cod_estado: $("#cod-estado").val(),
+        nombre_estado: $("#nombre_estado").val()
+      }
+
+      const btnEnviar = this;
+
+      let solicitud = "";
+      if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+        solicitud = "registrar";
+      } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
+        solicitud = "actualizar";
+      } else {
+        solicitud = "eliminar";
+      }
+
+      const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
+      ajaxEnvioDatos(objmodal, btnEnviar, solicitud, datos);
+
+    });
   }
 
-    $("#tablaEstado tbody").on("click", ".btn-eliminar", function (event) {
+  $("#tablaEstado tbody").on("click", ".btn-eliminar", function (event) {
     event.preventDefault();
 
     const codestado = this.getAttribute("datos-cod-estado");
@@ -58,12 +80,10 @@ $(document).ready(function () {
   const status = urlParams.get('status');
   const mensaje = urlParams.get('msg');
 
-  if(status){
-
-
-
-    mostrarAlerta(status,mensaje)
+  if (status) {
+    mostrarAlerta(status, mensaje)
   }
+
 })
 
 
@@ -137,6 +157,49 @@ function ajaxConsultar() {
 
 }
 
+
+function ajaxEnvioDatos(modal = null, btnEnviar, solicitud, datos) {
+  // const cod_estado = datos.cod_estado ?? '';
+  // const nombre_ = datos.nombre_estado ?? '';
+
+
+  iconoCargar("#tablaEstado tbody");
+  $.ajax({
+    url: "index.php?url=estado",
+    type: "POST",
+    dataType: "json",
+    data: {
+      tipoSolicitud: solicitud,
+      datos: datos
+      // nombre_estado: nombre_estado
+    },
+    beforeSend: function () {
+      if (modal != null) {
+        modal.hide();
+        $(btnEnviar).attr("disabled", true);
+      }
+    }
+  })
+    .done(function (response) {
+      console.log("Respuesta del servidor:", response);
+
+      mostrarAlerta(response.status, response.message);
+    })
+    .fail(function (xhr, status, error) {
+      console.error("Error al cargar los datos:", error);
+      console.log("Respuesta cruda del servidor:", xhr.responseText);
+    })
+    .always(function () {
+      // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
+      ajaxConsultar();
+
+    });
+
+}
+
+
+
+
 function AccionModal(boton) {
   const encabezadoModal = $('#modalLabel');
   const botonModal = $('button[name="tipoSolicitud"]');
@@ -193,8 +256,6 @@ function iconoCargar(selector) {
 }
 
 function mostrarAlerta(status, mensaje) {
-
-  if (status) {
     // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
     setTimeout(() => {
       let title, text, icon;
@@ -202,7 +263,7 @@ function mostrarAlerta(status, mensaje) {
       switch (status) {
         case 'success':
           title = "Registro exitoso!";
-          text = "El Estado ha sido registrado correctamente.";
+          text = mensaje;
           icon = "success";
           break;
         case 'updated':
@@ -245,7 +306,6 @@ function mostrarAlerta(status, mensaje) {
         });
       }
     }, 100);
-  }
 
 
 }
