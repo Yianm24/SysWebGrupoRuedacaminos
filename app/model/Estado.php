@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Estado extends Conexion
 {
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
 
     private $cod_estado;
     private $nombre;
@@ -50,13 +50,13 @@ class Estado extends Conexion
 
     public function regDatosEstado(array $campos)
     {
-        if (is_array($this->validarPost($campos, "estado"))) {
+        $resultadoTrait=$this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
 
-            $array = $this->validarPost($campos, "estado");
-            $this->nombre = $this->formatearPalabra($array['nombre_estado']);
+            $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
         return $this->registrarEstado();
     }
@@ -72,9 +72,9 @@ class Estado extends Conexion
             $insert->bindValue(2, $this->estado);
             $insert->execute();
 
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'El Estado ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
