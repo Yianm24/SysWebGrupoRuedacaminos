@@ -20,7 +20,7 @@ $envio = new Envio();
 $datosForaneos = [
 
     'cliente' => (new Cliente())->obt_RegistrosClientes(),
-    'municipio' => (new Municipio())->obt_RegistrosMunicipio(),
+    'municipio' => (new Municipio())->obt_RegistrosMunicipioNoAjax(),
     'estado' => (new Estado())->obt_RegistrosEstado(),
     'preciokilometraje' => (new Kilometraje())->obt_RegistrosKilometraje()
 ];
@@ -71,10 +71,16 @@ switch ($solicitud) {
         $resultado = $envio->modEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], ['cod_envio', 'ancho', 'alto', 'descripcion', 'peso_total', 'kilometraje'], date('Y-m-d H:i:s'), $articulosFragil, $keyUBicacionDespacho, $keyUBicacionDestino);
         header("Location: ?url=envio&status={$resultado}");
 
-        break;
+    break;
+    case 'consultar':
+        $registros = $envio->obt_RegistrosEnvio();
+        /* print_r($registros); */
+        echo $registros;
+        exit();
+    break;
 }
 
-$registros = $envio->obt_RegistrosEnvio();
+//$registros = $envio->obt_RegistrosEnvio();
 
 // app/controller/envioController.php
 include 'app/view/layout/header.php';
