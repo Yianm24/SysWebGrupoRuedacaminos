@@ -38,6 +38,10 @@ switch ($solicitud) {
                 exit(); */
         }
         break;
+    case 'consultar-envios':
+        $registros = $despacho->obtEnviosPendientes();
+        echo $registros;
+        exit();
 }
 
 //header('Content-Type: application/json; charset=utf-8');
@@ -48,5 +52,4 @@ switch ($solicitud) {
 include 'app/view/layout/header.php';
 include 'app/view/despacho/despachoView.php';
 include 'app/view/layout/footer.php';
-
 

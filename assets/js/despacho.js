@@ -1,21 +1,14 @@
-document.addEventListener("DOMContentLoaded", function () {
-  $('#botonRegistrar').on('click', function() {
-        $(this).prop('disabled', true);
-
-        $('#formularioRegistrar').removeClass('d-none').hide().fadeIn(500);
-    });
-
-    // Ocultar contenedor y habilitar nuevamente #botonRegistrar
-    $('#cancelarRegistro').on('click', function() {
-        $('#formularioRegistrar').fadeOut(500, function() {
-            $(this).addClass('d-none');
-            $('#botonRegistrar').prop('disabled', false);
-        });
-    });
-
+$(document).ready(function () {
   
+  const modal = document.getElementById('modalDespacho');
+
   const selectVehiculo = document.querySelectorAll("td select[name='select_vehiculo']");
 
+  if (modal) {
+    modal.addEventListener('show.bs.modal', event => {
+      ajaxConsultarEnvios();
+      const encabezadoModal = modal.querySelector('h1#modalLabel');
+      const botonModal = document.querySelector('button[name="tipoSolicitud"]');
       const botonSiguiente = document.getElementById('btn_siguiente');
       const tbodyDespachos = document.querySelector('#tabla_Despacho tbody');
 
@@ -28,14 +21,11 @@ document.addEventListener("DOMContentLoaded", function () {
         let arrayDespachos = [];
 
         filasTablaVehiculoFecha.forEach(fila => {
-          const selectInput = fila.querySelector('select[name="select_vehiculo"]');
-          //El código es capturado desde el input oculto en lugar del texto
+          // CAMBIO: Capturamos el código desde el input oculto en lugar del texto
           const cod_envio = fila.querySelector('input[name="cod_envio"]').value;
-          
-          const cod_vehiculo = selectInput.value;
-          const texto_vehiculo = selectInput.options[selectInput.selectedIndex].text;
-          const fecha = fila.querySelector('input[name="fechaSalida"]').value;
-          const hora = fila.querySelector('input[name="horaSalida"]').value;
+          //const texto_vehiculo = fila.querySelector('input[name="cod_vehiculo"]');
+          const cod_vehiculo= fila.querySelector('select[name="select_vehiculo"]').value;
+          const fecha = fila.querySelector('input[name="fecha"]').value;
 
           // Omitir si la fila no tiene vehículo o fecha asignada
           if (!cod_vehiculo || !fecha) return;
@@ -52,9 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // Si no existe, creamos un nuevo objeto en el array
             arrayDespachos.push({
               vehiculo: cod_vehiculo, // Guardamos tanto el nombre como el código del vehículo
-              placamarca:texto_vehiculo,
+              //placamarca:texto_vehiculo,
               fecha: fecha,
-              hora: hora,
               codigos: [cod_envio] // Iniciamos el array con el primer código
             });
           }
@@ -65,20 +54,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
           filasDespacho.innerHTML = `
               <td class="ps-4 fw-medium">
-                          <input type="hidden" value=${grupo.vehiculo ? `"${grupo.vehiculo}"` : "VACIO"} name="vehiculo_asignado[]">
-                          <input value=${grupo.placamarca ? `"${grupo.placamarca}"` : "VACIO"} name="vehiculo_asignado[]" 
-                          readonly>
+                          <input ${grupo.vehiculo ? `value="${grupo.vehiculo}"` : 'VACIO'} name="vehiculo_asignado[]" 
+                          readonly></input>
                       </td>
                   <td class="text-center align-middle">
-                  <div class="input-group d-inline-flex justify-content-center w-auto mx-auto">
-                      <input type="date" class="form-control" name="fechaDespacho" value="${grupo.fecha}" readonly>
-                      <input type="time" class="form-control" name="horaDespacho" value="${grupo.hora}" readonly>
-                      </div>
+                      <input type="date" class="form-control" name="fecha_establecida" value="${grupo.fecha}" readonly>
                   </td>
                   <td class="text-center align-middle">
-                      <button type="button" class="btn btn-outline-secondary" title="Choferes" data-bs-toggle="modal" data-bs-target="#modalChofer">
-                        Seleccionar Chofer
-                    </button>
+                      <select class="form-select form-select-sm" aria-label="Seleccionar Empleado" name="cod_empleado" required>
+                          <option selected>Empleados</option>
+                          <?php if (!empty($datosForaneos['empleado'])): ?>
+                              <?php foreach ($datosForaneos['empleado'] as $empleado): ?>
+                                  <option value="<?= $empleado['cod_empleado']; ?>"><?php echo $empleado['nombre'] . ' ' . $empleado['apellido']; ?></option>
+                              <?php endforeach; ?>
+                          <?php else: ?>
+                              <option value="">No hay empleados con el cargo especificado</option>
+                          <?php endif; ?>
+                      </select>
                   </td>
                  
           `;
@@ -88,7 +80,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Array agrupado generado:", arrayDespachos);
 
-      });  
+      });
+
+
+
+      // Obtener acceso al botón que disparó el modal
+      const boton = event.relatedTarget;
+
+      switch (boton.title) {
+        case "Registrar":
+
+          encabezadoModal.innerHTML = '<i class="bi bi-boxes me-2"> Registro Despacho';
+          botonModal.value = "registrar";
+          botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+          break
+      };
+    });
+  };
 
 // Lógica para mostrar alertas de estado (éxito, error, etc.)
   const urlParams = new URLSearchParams(window.location.search);
@@ -139,3 +147,79 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+
+function ajaxConsultarEnvios() {
+  iconoCargar("#tablaDespacho tbody");
+  $.ajax({
+    url: "index.php?url=despacho",
+    type: "POST",
+    dataType: "json",
+    data: {
+      tipoSolicitud: "consultar-envios"
+    }
+  })
+    .done(function (response) {
+
+      let tbody = $("#tablaDespacho tbody");
+      tbody.empty();
+
+      let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+
+      if (lista.length > 0) {
+        let rowsHtml = "";
+
+        $.each(lista, function (index, dato) {
+          rowsHtml += `
+            <tr>
+              <td class="ps-4 fw-medium ">
+              ${dato.razon_social} ${dato.apellido}
+              <input type="hidden" value="${dato.cod_envio}" name="cod_envio">  
+              </td>
+              <td>
+                <span class="fw-medium"></span>
+              </td>
+              <td class="text-center align-middle">
+                  <select class="form-select form-select-sm" aria-label="Seleccionar Vehiculo" name="select_vehiculo" required>
+                      <option selected>Vehiculos</option>
+                  </select>
+              </td>
+              <td class="text-center align-middle">
+                  <div class="input-group d-inline-flex justify-content-center w-auto mx-auto">
+                      <input type="date" name="fecha" class="form-control">
+                      <input type="time" name="hora" class="form-control">
+                  </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.html(rowsHtml);
+      } else {
+        tbody.html(`
+    <tr>
+      <td colspan="2" class="text-center text-muted py-3">
+        No se encontraron registros.
+      </td>
+    </tr>
+  `);
+      }
+    })
+    .fail(function (xhr, status, error) {
+      console.error("Error al cargar los datos:", error);
+      console.log("Respuesta cruda del servidor:", xhr.responseText);
+    })
+
+}
+function iconoCargar(selector) {
+    const elementoHtml = $(`${selector}`);
+    elementoHtml.html(`
+    <tr>
+      <td colspan="2" class="text-center text-muted py-3">
+        <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading...
+      </button>
+      </td>
+    </tr>
+  `);
+}
