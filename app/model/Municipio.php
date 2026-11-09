@@ -38,6 +38,27 @@ class Municipio extends Conexion
         return $count->fetchColumn() > 0;
     }
 
+
+    public function obt_RegistrosMunicipioNoAjax()
+    {
+
+        try {
+            $sentencia = "SELECT municipio.*, estado.nombre AS nombre_estado, 
+            estado.cod_estado
+            FROM municipio
+            INNER JOIN estado 
+            ON municipio.cod_estado= estado.cod_estado
+            WHERE municipio.estado=1";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
+
     public function obt_RegistrosMunicipio()
     {
         try {
@@ -50,7 +71,7 @@ class Municipio extends Conexion
 
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            $registros=json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
             return $registros;
         } catch (\PDOException $e) {
             echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
