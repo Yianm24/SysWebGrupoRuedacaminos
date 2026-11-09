@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Modelo extends Conexion
 {
-use ValidadorTrait;
+use ValidadorTraitAjax;
     private $cod_modelo;
     private $nombre;
     private $marca;
@@ -38,14 +38,13 @@ use ValidadorTrait;
 
     public function regDatosModelo(array $campos)
     {
-        if(is_array($this->validarPost($campos,"modelo"))){
-
-        $datos = $this->validarPost($campos,"modelo");
-        $this->nombre =strtoupper($datos['nombre_modelo']);
-        $this->marca = $datos['marca'];
+        $resultadoTrait = $this->validarPost($campos);
+        if(is_array($resultadoTrait)){
+        $this->nombre =strtoupper($resultadoTrait[0]);
+        $this->marca = $resultadoTrait[1];
         $this->estado = 1;
         }else{
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
         return $this->registrarModelo();
     }
@@ -58,9 +57,9 @@ use ValidadorTrait;
             $insert = $this->conexion->prepare($sentencia);
             $insert->execute([$this->nombre,$this->marca,$this->estado]);
 
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'El Modelo ha sido registrada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=".urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -76,9 +75,8 @@ use ValidadorTrait;
 
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+            return json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
         } catch (\PDOException $e) {
-            echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
             return [];
         }
     }

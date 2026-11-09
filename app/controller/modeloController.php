@@ -11,13 +11,17 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($modelo->verificarModeloDuplicado($_POST['nombre_modelo'], $_POST['marca'],$_POST['cod_modelo'])) {
+        /* if ($modelo->verificarModeloDuplicado($_POST['nombre_modelo'], $_POST['marca'],$_POST['cod_modelo'])) {
             header("Location: ?url=modelo&status=exists");
             exit();
-        }
+        } */
 
-        $resultado = $modelo->regDatosModelo(['nombre_modelo','marca']);
-        header("Location: ?url=modelo&status={$resultado}");
+        $dataAjax = json_encode($_POST['datos']);
+        $datosObt = json_decode($dataAjax,true);
+        
+        $resultado = $modelo->regDatosModelo([$datosObt['nombre_modelo'],$datosObt['cod_marca']]);
+        echo $resultado;
+        exit();
                 
     break;
     case 'actualizar':
@@ -36,12 +40,16 @@ switch ($solicitud) {
         $resultado = $modelo->elmDatosModelo(['cod_modelo']);
         header("Location: ?url=modelo&status={$resultado}");
     break;
-
+    case 'consultar':
+        $resultado = $modelo->obt_RegistrosModelo();
+        echo $resultado;
+        exit();
+    break;
 }
 
 
-$registros = $modelo->obt_RegistrosModelo();
-$marcasRegistros = $marca->obt_RegistrosMarca();
+//$registros = $modelo->obt_RegistrosModelo();
+$marcasRegistros = $marca->obt_RegistrosMarcaOld();
 // app/controller/unidadesmedidaController.php
 include 'app/view/layout/header.php';
 include 'app/view/modelo/modeloView.php';

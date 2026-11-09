@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Model;
+
 use App\Config\Conexion;
 
 class Despacho extends Conexion
@@ -18,7 +20,31 @@ class Despacho extends Conexion
         parent::__construct();
     }
 
-    public function regDatosDespacho($cod_vehiculo, $fecha_salida){
+    public function obtEnviosPendientes()
+    {
+
+        try {
+            
+            $sentencia = "SELECT *
+            FROM despacho
+            RIGHT JOIN envio 
+                ON despacho.cod_despacho = envio.cod_despacho";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            return $registros;
+        } catch (\PDOException $e) {
+            // Si ocurre algún error, revertimos la transacción
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+            return [];
+        }
+    }
+
+    public function regDatosDespacho($cod_vehiculo, $fecha_salida)
+    {
         $this->cod_vehiculo = $cod_vehiculo;
         $this->fecha_salida = $fecha_salida;
         $this->estado = 1;
@@ -26,23 +52,20 @@ class Despacho extends Conexion
         return $this->regDespacho();
     }
 
-    private function regDespacho(){
+    private function regDespacho()
+    {
         try {
-        $sentencia = "INSERT INTO `despacho`(`cod_vehiculo`, `fecha_salida`, `estado`) VALUES ('[value-1]','[value-2]','[value-3]')";
-        $insert = $this->conexion->prepare($sentencia);
-        $insert->bindValue(1,$this->cod_vehiculo);
-        $insert->bindValue(2,$this->fecha_salida);
-        $insert->bindValue(3,$this->estado);
-        $resultado = $insert->execute();
+            $sentencia = "INSERT INTO `despacho`(`cod_vehiculo`, `fecha_salida`, `estado`) VALUES ('[value-1]','[value-2]','[value-3]')";
+            $insert = $this->conexion->prepare($sentencia);
+            $insert->bindValue(1, $this->cod_vehiculo);
+            $insert->bindValue(2, $this->fecha_salida);
+            $insert->bindValue(3, $this->estado);
+            $resultado = $insert->execute();
 
-        return $resultado;
+            return $resultado;
         } catch (\PDOException $e) {
             urlencode($e);
             return header("Location: ?url=despacho&status=bdError&msg='$e'");
-
         }
-        
     }
-
 }
-?>

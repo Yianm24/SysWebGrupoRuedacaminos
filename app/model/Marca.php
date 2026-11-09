@@ -34,12 +34,13 @@ class Marca extends Conexion
 
     public function regDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
-            $this->nombre = strtoupper($datos[0]);
+        $resultadoTrait = $this->validarPost($campos); 
+        if (is_array($resultadoTrait)) {
+            $this->nombre = strtoupper($resultadoTrait[0]);
             $this->estado = 1;
         } else {
-            return json_encode(['status' => 'error', 'message' => 'Registrar.']);
+            return $resultadoTrait;
+        //return json_encode(['status' => 'error', 'message' => 'Registrar.']);
         }
         return $this->registrarMarca();
     }
@@ -55,6 +56,20 @@ class Marca extends Conexion
             return json_encode(['status' => 'success', 'message' => 'Marca registrada correctamente.']);
         } catch (\PDOException $e) {
             return  json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function obt_RegistrosMarcaOld()
+    {
+
+        try {
+            $sentencia = "SELECT * FROM marca WHERE estado = 1";
+            $consulta = $this->conexion->prepare($sentencia);
+            $consulta->execute();
+            return $consulta->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
+            return [];
         }
     }
 
@@ -74,12 +89,12 @@ class Marca extends Conexion
 
     public function actMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
-            $this->cod_marca = $datos[0];
-            $this->nombre = strtoupper($datos[1]);
+        $resultadoTrait = $this->validarPost($campos); 
+        if (is_array($resultadoTrait)) {
+            $this->cod_marca = $resultadoTrait[0];
+            $this->nombre = strtoupper($resultadoTrait[1]);
         } else {
-            return json_encode(['status' => 'error', 'message' => 'Actualizar.']);
+            return $resultadoTrait;
         }
 
         return $this->actualizarMarca();
@@ -99,11 +114,12 @@ class Marca extends Conexion
 
     public function elmDatosMarca(array $campos)
     {
-        if (is_array($this->validarPost($campos))) {
-            $datos = $this->validarPost($campos);
-            $this->cod_marca = $datos[0];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            
+            $this->cod_marca = $resultadoTrait[0];
         } else {
-            return json_encode(['status' => 'error', 'message' => 'Eliminar.']);
+            return $resultadoTrait;
         }
         return $this->eliminarMarca();
     }
