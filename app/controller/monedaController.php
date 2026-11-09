@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Model\Moneda;
 
 $moneda = new Moneda();
+$registros = $moneda->obt_RegistrosMoneda();
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
@@ -39,9 +40,15 @@ switch ($solicitud) {
         header("Location: ?url=moneda&status={$resultado}");
 
         break;
+
+    case 'consultar':
+
+        echo $registros;
+        exit();
+        break;
 }
 
-$registros = $moneda->obt_RegistrosMoneda();
+
 include 'app/view/layout/header.php';
 include 'app/view/moneda/monedaView.php';
 include 'app/view/layout/footer.php';

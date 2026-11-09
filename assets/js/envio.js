@@ -1,32 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    /* const textareaUbiDestino = document.getElementById('direccion_destino'),
-        inputKilometro = document.getElementById('kilometraje'); */
-    // const coordenadasOrigen = {
-    //     ccmetropoli: [10.062907758626542, -69.36506133308706],
-    //     ccsambil: [10.07193188848613, -69.2929416674693],
-    //     ccbabilon: [10.076775653967122, -69.34135927947186]
-    // }
-
-    // let mapaInstancia = null;
-
-    // function CrearElementoMapa(id) {
-    //     const mapa = L.map(id, {
-    //         // CORRECCIÓN: Faltaba el corchete "[" al inicio de las coordenadas
-    //         center: [10.062907758626542, -69.36506133308706], // Coordenadas de la ubicación inicial
-    //         zoom: 12
-    //     });
-
-    //     //Aca se hace el llamado a la plantilla del mapa, es decir su diseño
-    //     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //         maxZoom: 19,
-    //         //Se trata del copiright de la "capa" osea del diseño del mapa
-    //         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    //     }).addTo(mapa);
-    //     //L.marker(coordenadasOrigen.ccmetropoli).addTo(mapa);
-
-    //     return mapa
-    // }
-
+    ajaxConsultar();
     //Variables para el remitente
     const radioNaturalRem = document.getElementById("persona_natural_remitente");
     const radioJuridicaRem = document.getElementById("persona_juridica_remitente");
@@ -78,56 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     radioNaturalDest.addEventListener("change", () => actualizarFormulario("destinatario"));
     radioJuridicaDest.addEventListener("change", () => actualizarFormulario("destinatario"));
-    // 4. Ejecutamos la función una vez al cargar la página para sincronizar la vista 
-    // con el radio que venga 'checked' por defecto en el HTML
     actualizarFormulario();
-
-
-    // function CrearMapa(id) {  // Creamos el mapa solo si no existe
-    //     console.log("Creando mapa en el contenedor con ID:", id);
-    //     if (!mapaInstancia) {
-    //         mapaInstancia = CrearElementoMapa(id);
-
-    //     }
-
-    //     // Forzamos a recalcular el tamaño una vez que el modal está abierto
-    //     setTimeout(() => {
-    //         mapaInstancia.invalidateSize();
-    //     }, 500);
-    // }
-
-    // function DestruirMapa() {
-    //     if (mapaInstancia) {
-    //         mapaInstancia.remove(); // Destruye el mapa y limpia el contenedor HTML
-    //         mapaInstancia = null;   // Reinicia tu variable
-    //     }
-    // }
-
-    // Modal de cotización
-    // const modalCotizar = document.getElementById('cotizarEnvio');
-
-    // if (modalCotizar) {
-    //     modalCotizar.addEventListener('show.bs.modal', event => {
-    //         CrearMapa('mapCotizar');
-    //     }) }
-
-    // modalCotizar.addEventListener('hidden.bs.modal', event => {
-    //     DestruirMapa();
-    // });
-
-
-    // const modalEnvio = document.getElementById('carouselEnvio');
-
-    // if (modalEnvio) {
-    //     modalEnvio.addEventListener('show.bs.modal', event =>
-    //         CrearMapa('mapCrear')
-    //     );
-    // }
-
-    // modalEnvio.addEventListener('hidden.bs.modal', event => {
-    //     DestruirMapa();
-    // });
-
 
 
     const pesoSumarInput = document.getElementById('peso_sumar');
@@ -246,3 +170,92 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+function ajaxConsultar() {
+    iconoCargar("#tablaEnvio tbody");
+    $.ajax({
+        url: "index.php?url=envio",
+        type: "POST",
+        dataType: "json",
+        data: {
+            tipoSolicitud: "consultar"
+        }
+    })
+        .done(function (response) {
+
+            let tbody = $("#tablaEnvio tbody");
+            tbody.empty();
+
+            let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+
+            if (lista.length > 0) {
+                let rowsHtml = "";
+
+                $.each(lista, function (index, dato) {
+                    rowsHtml += `
+                        <tr class="align-middle">
+                            <td class="ps-4 fw-semibold text-dark py-3">
+                                ${dato.rem_doc} - ${dato.rem_nombre} ${dato.rem_apellido}
+                            </td>
+                            <td>
+                                <span class="fw-medium">
+                                ${dato.dest_doc} - ${dato.dest_nombre} ${dato.dest_apellido}
+                                </span>
+                            </td>
+                            <td class="py-3">
+                                ${dato.direccion_destino}
+                            </td>
+                            <td class="text-secondary py-3">${dato.descrip_contenido}</td>
+                            <td class="text-secondary fw-medium py-3">${dato.peso_total}</td>
+                            <td class="text-secondary fw-medium py-3">${dato.estatus}</td>
+                            <td class="text-secondary py-3">
+                                ${dato.fecha}
+                            </td>
+                            <td class="text-start pe-4">
+                                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#carouselEnvio" 
+                                data-peso="${dato.peso_total}" 
+                                data-descrip-content="${dato.descrip_contenido}" 
+                                data-anchura="${dato.anchura}" 
+                                data-altura="${dato.altura}" 
+                                data-peso-total="${dato.peso_total}">
+                                <i class="bi bi-pencil"></i>
+                                </button>
+                                <a href="#" class="text-secondary btn-eliminar" data-cod-envio="${dato.cod_envio}">
+                                <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>`;
+                });
+
+                tbody.html(rowsHtml);
+            } else {
+                tbody.html(`
+    <tr>
+      <td colspan="2" class="text-center text-muted py-3">
+        No se encontraron registros.
+      </td>
+    </tr>
+  `);
+            }
+        })
+        .fail(function (xhr, status, error) {
+            console.error("Error al cargar los datos:", error);
+            console.log("Respuesta cruda del servidor:", xhr.responseText);
+        })
+}
+
+function iconoCargar(selector) {
+    const elementoHtml = $(`${selector}`);
+    elementoHtml.html(`
+    <tr>
+      <td colspan="2" class="text-center text-muted py-3">
+        <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading...
+      </button>
+      </td>
+    </tr>
+  `);
+}
