@@ -1,5 +1,80 @@
 document.addEventListener("DOMContentLoaded", () => {
     ajaxConsultar();
+
+
+    //console.log(direccionOrigen);
+
+    $('button[name="tipoSolicitud"]').on("click", function (event) {
+        event.preventDefault();
+        const datos = { ancho: $("#ancho").val(), alto: $("#alto").val(), descripcion: $("#descripcion").val(), peso_total: $("#peso_total").val(), kilometraje: $('input[name="kilometraje"').val() };
+        console.log(datos);
+        const modal = bootstrap.Modal.getInstance($('#carouselEnvio'));
+
+        let remitente = obtenerValoreCliente('remitente', 'rem');
+        const destinatario = obtenerValoreCliente('destinatario', 'dest');
+
+        console.log("Remitente");
+        console.log(remitente);
+        console.log("---------------------");
+        console.log("Destinatario");
+        console.log(destinatario);
+
+
+        let articulosFragil = { fragil: $("#fragil").is(":checked") };
+
+
+        let despacho = {
+            municipio: $('#municipio_origen').val(),
+            direccion: $('textarea[name="direccion_origen"]').val().trim()
+        };
+
+        console.log(despacho.direccion);
+
+        const destino = {
+            municipio: $('#municipio_destino').val(),
+            direccion: $('textarea[name="direccion_destino"]').val().trim()
+        };
+
+        console.log(destino.direccion);
+
+        const btnEnviar = this;
+
+        let solicitud = "crear";
+
+        ajaxEnvioDatos(modal, solicitud, btnEnviar, datos, remitente, destinatario, articulosFragil, despacho, destino);
+
+    })
+
+
+
+    function obtenerValoreCliente(tipoCliente, abrev) {
+
+        let cliente = {};
+        if ($(`#persona_natural_${tipoCliente}`).is(":checked")) {
+            cliente = {
+                tipo_document: $(`#${abrev}_documento_natural`).val(),
+                cedula: $(`#${abrev}_cedula`).val(),
+                nombre: $(`#${abrev}_nombre`).val(),
+                apellido: $(`#${abrev}_apellido`).val(),
+                correo: $(`#${abrev}_correo`).val(),
+                telefono: $(`#${abrev}_telefono`).val(),
+            }
+        } else if ($(`#persona_juridica_${tipoCliente}`).is(":checked")) {
+            cliente = {
+                tipo_document: $(`#${abrev}_documento_juridico`).val(),
+                rif: $(`#${abrev}_rif`).val(),
+                razon_social: $(`#${abrev}_razon_social`).val(),
+                correo: $(`#${abrev}_correo`).val(),
+                telefono: $(`#${abrev}_telefono`).val()
+            }
+        }
+
+        return cliente;
+
+    }
+
+
+
     //Variables para el remitente
     const radioNaturalRem = document.getElementById("persona_natural_remitente");
     const radioJuridicaRem = document.getElementById("persona_juridica_remitente");
@@ -86,89 +161,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
+    $("#tablaEnvio tbody").on("click", ".btn-eliminar", function (event) {
+        event.preventDefault();
 
+        const codenvio = this.getAttribute("data-cod-envio");
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success ms-2",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
 
-    if (status) {
-        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-        setTimeout(() => {
-            let title, text, icon;
-
-            switch (status) {
-                case 'success':
-                    title = "Creación exitosa!";
-                    text = "El envio ha sido creado correctamente.";
-                    icon = "success";
-                    break;
-                case 'updated':
-                    title = "Modificación exitosa!";
-                    text = "El envio ha sido modificado correctamente.";
-                    icon = "success";
-                    break;
-                case 'deleted':
-                    title = "Eliminación exitosa!";
-                    text = "El envio ha sido eliminado correctamente.";
-                    icon = "success";
-                    break;
-                case 'exists':
-                    title = "Envio existente!";
-                    text = "El envio ingresado ya existe en la base de datos.";
-                    icon = "warning";
-                    break;
-                case 'empty':
-                    title = "Campos vacíos!";
-                    text = "Uno o más campos están vacíos.";
-                    icon = "warning";
-                    break;
+        swalWithBootstrapButtons.fire({
+            title: "¿Está seguro que desea eliminar este registro?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                ajaxEnvioDatos(null, 'eliminar',null, { cod_envio: codenvio });
             }
-
-            if (title && text && icon) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: icon
-                });
-            }
-        }, 100);
-    }
-
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-    botonesEliminar.forEach(boton => {
-        boton.addEventListener('click', function (event) {
-            event.preventDefault();
-            let codenvio = this.getAttribute('datos-cod-envio');
-
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
-                buttonsStyling: false
-            });
-
-            swalWithBootstrapButtons.fire({
-                title: "¿Está seguro que desea eliminar este registro?",
-                text: "¡No podrás revertir esto!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Confirmar",
-                cancelButtonText: "Cancelar",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '?url=envio';
-                    form.innerHTML = `
-                        <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="cod_envio" value="${codenvio}">
-                    `;
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
         });
     });
-
 });
 
 function ajaxConsultar() {
@@ -246,6 +265,47 @@ function ajaxConsultar() {
         })
 }
 
+
+function ajaxEnvioDatos(modal = null, solicitud, btnEnviar, datos, datosRemitente, datosDestinatarios, articulosFragil, despacho, destino) {
+
+    iconoCargar("#tablaEnvio tbody");
+    $.ajax({
+        url: 'index.php?url=envio',
+        type: "POST",
+        dataType: "json",
+        data: {
+            tipoSolicitud: solicitud,
+            datos: datos,
+            remitente: datosRemitente,
+            destinatario: datosDestinatarios,
+            articulosFragil: articulosFragil,
+            despacho: despacho,
+            destino: destino
+        },
+        beforeSend: function () {
+            if (modal != null) {
+                modal.hide();
+                $(btnEnviar).attr("disabled", true);
+            }
+        }
+    })
+        .done(function (response) {
+            console.log("Respuesta del servidor:", response);
+
+            mostrarAlerta(response.status, response.message);
+        })
+        .fail(function (xhr, status, error) {
+            console.error("Error al cargar los datos:", error);
+            console.log("Respuesta cruda del servidor:", xhr.responseText);
+        })
+        .always(function () {
+            // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
+            ajaxConsultar();
+
+        });
+
+}
+
 function iconoCargar(selector) {
     const elementoHtml = $(`${selector}`);
     elementoHtml.html(`
@@ -258,4 +318,59 @@ function iconoCargar(selector) {
       </td>
     </tr>
   `);
+}
+
+function mostrarAlerta(status, mensaje) {
+    // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+    setTimeout(() => {
+        let title, text, icon;
+
+        switch (status) {
+            case 'success':
+                title = "Registro exitoso!";
+                text = mensaje;
+                icon = "success";
+                break;
+            case 'updated':
+                title = "Actualización exitosa!";
+                text = "El Estado ha sido actualizado correctamente.";
+                icon = "success";
+                break;
+            case 'deleted':
+                title = "Eliminación exitosa!";
+                text = mensaje;
+                icon = "success";
+                break;
+            case 'exists':
+                title = "Estado existente!";
+                text = "El Estado ingresado ya existe en la base de datos.";
+                icon = "warning";
+                break;
+            case 'empty':
+                title = "Campos vacíos!";
+                text = "Uno o más campos están vacíos.";
+                icon = "warning";
+                break;
+            case 'error':
+                title = "Error!";
+                text = `Se produjo un error en el processo de ${mensaje}`;
+                icon = "error";
+                break;
+            case 'exception':
+                title = "Exception Retornada!";
+                text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+                icon = "error";
+                break;
+        }
+
+        if (title && text && icon) {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon
+            });
+        }
+    }, 100);
+
+
 }
