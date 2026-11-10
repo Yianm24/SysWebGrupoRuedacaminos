@@ -4,12 +4,12 @@ namespace App\Model;
 
 use App\Config\Conexion;
 use App\Traits\EnvioTrait;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Envio extends Conexion
 {
 
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
     use EnvioTrait;
 
     private $cod_remitente, $cod_destinatario;
@@ -88,24 +88,24 @@ class Envio extends Conexion
         }
     }
 
-    public function obt_DestinatariosEnvio()
-    {
-        try {
-            $sentencia = "SELECT participante_envio.cod_envio, cliente.razon_social, cliente.apellido
-            FROM participante_envio
-            INNER JOIN cliente
-            ON participante_envio.cod_cliente= cliente.cod_cliente
-            INNER JOIN envio 
-    		ON participante_envio.cod_envio = envio.cod_envio
-            WHERE cliente.estado=1 and envio.estado=1 and participante_envio.rol_cliente='Destinatario';";
+    // public function obt_DestinatariosEnvio()
+    // {
+    //     try {
+    //         $sentencia = "SELECT participante_envio.cod_envio, cliente.razon_social, cliente.apellido
+    //         FROM participante_envio
+    //         INNER JOIN cliente
+    //         ON participante_envio.cod_cliente= cliente.cod_cliente
+    //         INNER JOIN envio 
+    // 		ON participante_envio.cod_envio = envio.cod_envio
+    //         WHERE cliente.estado=1 and envio.estado=1 and participante_envio.rol_cliente='Destinatario';";
 
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
-        }
-    }
+    //         $select = $this->conexion->prepare($sentencia);
+    //         $select->execute();
+    //         return $select->fetchAll(\PDO::FETCH_ASSOC);
+    //     } catch (\PDOException $e) {
+    //         return [];
+    //     }
+    // }
 
 
     private function calcularCosteEnvio(float $kilometraje, $precioKm = 2.36): float
@@ -124,24 +124,23 @@ class Envio extends Conexion
         $this->cod_remitente = $this->extraerDatosParticipante($tipo_cliente[0], "remitente", "rem");
         $this->cod_destinatario = $this->extraerDatosParticipante($tipo_cliente[1], "destinatario", "dest");
 
+        $resultTrait = $this->validarPost($campos);
+        if (is_array($resultTrait)) {
 
-        if (is_array($this->validarPost($campos, "envio"))) {
-
-            $array = $this->validarPost($campos, "estado");
             $this->fecha = $fecha;
-            $this->ancho = $array['ancho'];
-            $this->alto = $array['alto'];
-            $this->descripcion_cont = $array['descripcion'];
-            $this->monto_total = $this->calcularCosteEnvio($array['kilometraje']);
-            $this->distancia_total = $array['kilometraje'];
+            $this->ancho = $resultTrait[0];
+            $this->alto = $resultTrait[1];
+            $this->descripcion_cont = $resultTrait[2];
+            $this->monto_total = $this->calcularCosteEnvio($resultTrait[3]);
+            $this->distancia_total = $resultTrait[3];
             $this->estado = 1;
             $this->estatus_fragil = $estatus_fragil;
-            $this->peso_total = $array['peso_total'];
+            $this->peso_total = $resultTrait[4];
             $this->ubicacion_despacho = $ubicacion_despacho;
             $this->ubicacion_destino = $ubicacion_destino;
         } else {
 
-            return 'error&msg=Registrar';
+            return $resultTrait;
         }
 
         return $this->crearEnvio();
@@ -198,13 +197,12 @@ class Envio extends Conexion
             $insertUbicacion->execute([$this->ubicacion_destino, $cod_envio, 'Destino']);
 
             $this->conexion->commit();
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'El envio ha sido creado correctamente.']);
         } catch (\PDOException $e) {
             if ($this->conexion->inTransaction()) {
                 $this->conexion->rollBack();
             }
-
-            return "exception&msg=" . urlencode($e->getMessage());
+             return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -235,7 +233,7 @@ class Envio extends Conexion
     }
 
 
-public function modDatosEnvio(array $tipo_cliente, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
+    public function modDatosEnvio(array $tipo_cliente, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
     {
 
         $this->cod_remitente = $this->extraerDatosParticipante($tipo_cliente[0], "remitente", "rem");
@@ -265,12 +263,13 @@ public function modDatosEnvio(array $tipo_cliente, array $campos, $fecha, $estat
         return $this->modificar_envio();
     }
 
-private function modificar_envio() {
-    try {
-        $this->conexion->beginTransaction();
+    private function modificar_envio()
+    {
+        try {
+            $this->conexion->beginTransaction();
 
-        // 1. Actualización en la tabla 'envio'
-        $sqlEnvio = "UPDATE `envio` SET 
+            // 1. Actualización en la tabla 'envio'
+            $sqlEnvio = "UPDATE `envio` SET 
             `fecha` = ?, 
             `estatus_fragil` = ?, 
             `estado` = ?, 
@@ -282,47 +281,46 @@ private function modificar_envio() {
             `monto_total` = ? 
             WHERE `cod_envio` = ?";
 
-        $updateEnvio = $this->conexion->prepare($sqlEnvio);
-        $updateEnvio->execute([
-            $this->fecha,
-            $this->estatus_fragil,
-            $this->estado,
-            $this->descripcion_cont,
-            $this->ancho,
-            $this->alto,
-            $this->peso_total,
-            $this->distancia_total,
-            $this->monto_total,
-            $this->cod_envio
-        ]);
+            $updateEnvio = $this->conexion->prepare($sqlEnvio);
+            $updateEnvio->execute([
+                $this->fecha,
+                $this->estatus_fragil,
+                $this->estado,
+                $this->descripcion_cont,
+                $this->ancho,
+                $this->alto,
+                $this->peso_total,
+                $this->distancia_total,
+                $this->monto_total,
+                $this->cod_envio
+            ]);
 
-        // 2. Actualización de participantes (Remitente y Destinatario)
-        $sqlParticipante = "UPDATE `participante_envio` 
+            // 2. Actualización de participantes (Remitente y Destinatario)
+            $sqlParticipante = "UPDATE `participante_envio` 
                             SET `cod_cliente` = ? 
                             WHERE `cod_envio` = ? AND `rol_cliente` = ?";
-        $updateParticipante = $this->conexion->prepare($sqlParticipante);
+            $updateParticipante = $this->conexion->prepare($sqlParticipante);
 
-        $updateParticipante->execute([$this->cod_remitente, $this->cod_envio, 'Remitente']);
-        $updateParticipante->execute([$this->cod_destinatario, $this->cod_envio, 'Destinatario']);
+            $updateParticipante->execute([$this->cod_remitente, $this->cod_envio, 'Remitente']);
+            $updateParticipante->execute([$this->cod_destinatario, $this->cod_envio, 'Destinatario']);
 
-        // 3. Actualización de ubicaciones (Despacho y Destino)
-        $sqlUbicacion = "UPDATE `ubicaciones_envio` 
+            // 3. Actualización de ubicaciones (Despacho y Destino)
+            $sqlUbicacion = "UPDATE `ubicaciones_envio` 
                          SET `cod_ubicacion` = ? 
                          WHERE `cod_envio` = ? AND `tipo_ubicacion` = ?";
-        $updateUbicacion = $this->conexion->prepare($sqlUbicacion);
+            $updateUbicacion = $this->conexion->prepare($sqlUbicacion);
 
-        $updateUbicacion->execute([$this->ubicacion_despacho, $this->cod_envio, 'Despacho']);
-        $updateUbicacion->execute([$this->ubicacion_destino, $this->cod_envio, 'Destino']);
+            $updateUbicacion->execute([$this->ubicacion_despacho, $this->cod_envio, 'Despacho']);
+            $updateUbicacion->execute([$this->ubicacion_destino, $this->cod_envio, 'Destino']);
 
-        $this->conexion->commit();
-        return 'success';
-
-    } catch (\PDOException $e) {
-        // Revertir los cambios si ocurre algún error en cualquiera de las consultas
-        $this->conexion->rollBack();
-        return 'error: ' . $e->getMessage();
+            $this->conexion->commit();
+            return 'success';
+        } catch (\PDOException $e) {
+            // Revertir los cambios si ocurre algún error en cualquiera de las consultas
+            $this->conexion->rollBack();
+            return 'error: ' . $e->getMessage();
+        }
     }
-}
 
 
 

@@ -123,7 +123,7 @@
                                                             <div class="col-md-5">
                                                                 <label for="rem_cedula" class="form-label small fw-semibold">Cédula</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="rem_documento_natural">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" id="rem_documento_natural" name="rem_documento_natural">
                                                                         <option value="V">V-</option>
                                                                         <option value="E">E-</option>
                                                                     </select>
@@ -147,7 +147,7 @@
                                                             <div class="col-md-5">
                                                                 <label for="rem_rif" class="form-label small fw-semibold">RIF</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="rem_documento_juridico">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" id="rem_documento_juridico" name="rem_documento_juridico">
                                                                         <option value="J">J-</option>
                                                                         <option value="G">G-</option>
                                                                         <option value="V">V-</option>
@@ -158,7 +158,7 @@
                                                             </div>
                                                             <div class="col-md-7">
                                                                 <label for="rem_razon_social" class="form-label small fw-semibold">Razón Social</label>
-                                                                <input type="text" class="form-control    " id="rem_razon_social" name="rem_razon_social" placeholder="Nombre de la empresa">
+                                                                <input type="text" class="form-control " id="rem_razon_social" name="rem_razon_social" placeholder="Nombre de la empresa">
                                                                 <span class="mensaje-error"></span>
                                                             </div>
                                                         </div>
@@ -168,7 +168,7 @@
                                                     <div class="row g-3 mt-1">
                                                         <div class="col-md-6">
                                                             <label for="rem_telefono" class="form-label small fw-semibold" required>Teléfono</label>
-                                                            <input type="tel" class="form-control    " id="rem_telefono" name="rem_telefono" placeholder="0414 1234567">
+                                                            <input type="tel" class="form-control " id="rem_telefono" name="rem_telefono" placeholder="0414 1234567">
                                                             <span class="mensaje-error"></span>
                                                         </div>
                                                         <div class="col-md-6">
@@ -212,7 +212,7 @@
                                                             <div class="col-md-5">
                                                                 <label for="dest_cedula" class="form-label small fw-semibold">Cédula</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_documento_natural">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" id="dest_documento_natural" name="dest_documento_natural">
                                                                         <option value="V">V-</option>
                                                                         <option value="E">E-</option>
                                                                     </select>
@@ -236,7 +236,7 @@
                                                             <div class="col-md-5">
                                                                 <label for="dest_rif" class="form-label small fw-semibold">RIF</label>
                                                                 <div class="input-group">
-                                                                    <select class="form-select flex-grow-0" style="width: 75px;" name="dest_documento_juridico">
+                                                                    <select class="form-select flex-grow-0" style="width: 75px;" id="dest_documento_juridico" name="dest_documento_juridico">
                                                                         <option value="J">J-</option>
                                                                         <option value="G">G-</option>
                                                                         <option value="V">V-</option>
@@ -358,7 +358,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="crear" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
+                    <button type="button" name="tipoSolicitud" value="crear" class="btn btn-primary"><i class="bi bi-save"></i> Registrar</button>
                 </footer>
             </form>
         </div>

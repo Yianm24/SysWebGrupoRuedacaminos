@@ -42,8 +42,10 @@ switch ($solicitud) {
 
         date_default_timezone_set('America/Caracas');
         // $resultado = $envio->creDatosEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], $_POST['ancho'], $_POST['alto'], $_POST['descripcion'], date('Y-m-d H:i:s'), $articulosFragil, $_POST['peso_total'], $_POST['kilometraje'], $keyUBicacionDespacho, $keyUBicacionDestino);
-        $resultado = $envio->creDatosEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], ['ancho', 'alto', 'descripcion', 'peso_total', 'kilometraje'], date('Y-m-d H:i:s'), $articulosFragil, $keyUBicacionDespacho, $keyUBicacionDestino);
-        header("Location: ?url=envio&status={$resultado}");
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
+        $resultado = $envio->creDatosEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], [$datosAjax['ancho'], $datosAjax['alto'], $datosAjax['descripcion'], $datosAjax['peso_total'], $datosAjax['kilometraje']], date('Y-m-d H:i:s'), $articulosFragil, $keyUBicacionDespacho, $keyUBicacionDestino);
+        echo $resultado;
+        exit();
 
         break;
 
@@ -71,13 +73,13 @@ switch ($solicitud) {
         $resultado = $envio->modEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], ['cod_envio', 'ancho', 'alto', 'descripcion', 'peso_total', 'kilometraje'], date('Y-m-d H:i:s'), $articulosFragil, $keyUBicacionDespacho, $keyUBicacionDestino);
         header("Location: ?url=envio&status={$resultado}");
 
-    break;
+        break;
     case 'consultar':
         $registros = $envio->obt_RegistrosEnvio();
         /* print_r($registros); */
         echo $registros;
         exit();
-    break;
+        break;
 }
 
 //$registros = $envio->obt_RegistrosEnvio();

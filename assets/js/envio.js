@@ -1,5 +1,66 @@
 document.addEventListener("DOMContentLoaded", () => {
     ajaxConsultar();
+
+    $('button[name="tipoSolicitud"]').on("click", function (event) {
+        const datos = { ancho: $("#ancho").val(), alto: $("#alto").val(), descripcion: $("#descripcion").val(), peso_total: $("#peso_total").val() };
+        const modal = bootstrap.Modal.getInstance($('#carouselEnvio'));
+
+        let remitente = obtenerValoreCliente('remitente','rem');
+        const destinatario = obtenerValoreCliente('destinatario','dest');
+
+
+        console.log("Remitente");
+        console.log(remitente);
+        console.log("---------------------");
+        console.log("Destinatario");
+        console.log(destinatario);
+
+
+        
+        //Anterior ajax ---> // const clientes = { rem_natural: $("#persona_natural_remitente").is(":checked"), rem_juridica: $("#persona_juridica_remitente").is(":checked"), dest_natural: $("#persona_natural_destinatario").is(":checked"), dest_juridica: $("#persona_juridica_destinatario").is(":checked") };
+        // const articulosFragil = { fragil: $("#fragil").is(":checked") };
+        // const keyUBicacionDespacho = $("#key_ubicacion_despacho").val();
+        // const keyUBicacionDestino = $("#key_ubicacion_destino").val();
+
+        const btnEnviar = this;
+
+        let solicitud = "registrar";
+
+        // ajaxEnvioDatos("envio", modal, solicitud, btnEnviar, datos, clientes, articulosFragil, keyUBicacionDespacho, keyUBicacionDestino);
+
+    })
+
+
+
+    function obtenerValoreCliente(tipoCliente, abrev)
+     {
+
+        let cliente = {};
+        if ($(`#persona_natural_${tipoCliente}`).is(":checked")) {
+            cliente = {
+                tipo_document: $(`#${abrev}_documento_natural`).val(),
+                cedula: $(`#${abrev}_cedula`).val(),
+                nombre: $(`#${abrev}_nombre`).val(),
+                apellido: $(`#${abrev}_apellido`).val(),
+                correo: $(`#${abrev}_correo`).val(),
+                telefono: $(`#${abrev}_telefono`).val()
+            }
+        } else if ($(`#persona_juridica_${tipoCliente}`).is(":checked")) {
+            cliente = {
+                tipo_document: $(`#${abrev}_documento_juridico`).val(),
+                rif: $(`#${abrev}_rif`).val(),
+                razon_social: $(`#${abrev}_razon_social`).val(),
+                correo: $(`#${abrev}_correo`).val(),
+                telefono: $(`#${abrev}_telefono`).val()
+            }
+        }
+
+        return cliente;
+
+    }
+
+
+
     //Variables para el remitente
     const radioNaturalRem = document.getElementById("persona_natural_remitente");
     const radioJuridicaRem = document.getElementById("persona_juridica_remitente");
@@ -91,36 +152,90 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
 
-    if (status) {
+    // if (status) {
+    //     // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+    //     setTimeout(() => {
+    //         let title, text, icon;
+
+    //         switch (status) {
+    //             case 'success':
+    //                 title = "Creación exitosa!";
+    //                 text = "El envio ha sido creado correctamente.";
+    //                 icon = "success";
+    //                 break;
+    //             case 'updated':
+    //                 title = "Modificación exitosa!";
+    //                 text = "El envio ha sido modificado correctamente.";
+    //                 icon = "success";
+    //                 break;
+    //             case 'deleted':
+    //                 title = "Eliminación exitosa!";
+    //                 text = "El envio ha sido eliminado correctamente.";
+    //                 icon = "success";
+    //                 break;
+    //             case 'exists':
+    //                 title = "Envio existente!";
+    //                 text = "El envio ingresado ya existe en la base de datos.";
+    //                 icon = "warning";
+    //                 break;
+    //             case 'empty':
+    //                 title = "Campos vacíos!";
+    //                 text = "Uno o más campos están vacíos.";
+    //                 icon = "warning";
+    //                 break;
+    //         }
+
+    //         if (title && text && icon) {
+    //             Swal.fire({
+    //                 title: title,
+    //                 text: text,
+    //                 icon: icon
+    //             });
+    //         }
+    //     }, 100);
+    // }
+
+
+    function mostrarAlerta(status, mensaje) {
         // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
         setTimeout(() => {
             let title, text, icon;
 
             switch (status) {
                 case 'success':
-                    title = "Creación exitosa!";
-                    text = "El envio ha sido creado correctamente.";
+                    title = "Registro exitoso!";
+                    text = mensaje;
                     icon = "success";
                     break;
                 case 'updated':
-                    title = "Modificación exitosa!";
-                    text = "El envio ha sido modificado correctamente.";
+                    title = "Actualización exitosa!";
+                    text = "El Estado ha sido actualizado correctamente.";
                     icon = "success";
                     break;
                 case 'deleted':
                     title = "Eliminación exitosa!";
-                    text = "El envio ha sido eliminado correctamente.";
+                    text = "El Estado ha sido eliminado correctamente.";
                     icon = "success";
                     break;
                 case 'exists':
-                    title = "Envio existente!";
-                    text = "El envio ingresado ya existe en la base de datos.";
+                    title = "Estado existente!";
+                    text = "El Estado ingresado ya existe en la base de datos.";
                     icon = "warning";
                     break;
                 case 'empty':
                     title = "Campos vacíos!";
                     text = "Uno o más campos están vacíos.";
                     icon = "warning";
+                    break;
+                case 'error':
+                    title = "Error!";
+                    text = `Se produjo un error en el processo de ${mensaje}`;
+                    icon = "error";
+                    break;
+                case 'exception':
+                    title = "Exception Retornada!";
+                    text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+                    icon = "error";
                     break;
             }
 
@@ -132,7 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         }, 100);
+
+
     }
+
 
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(boton => {
@@ -244,6 +362,46 @@ function ajaxConsultar() {
             console.error("Error al cargar los datos:", error);
             console.log("Respuesta cruda del servidor:", xhr.responseText);
         })
+}
+
+
+function ajaxEnvioDatos(moduloNombre, modal = null, solicitud, btnEnviar, datos, clientes, articulosFragil, keyUBicacionDespacho, keyUBicacionDestino) {
+
+    iconoCargar("#tablaEnvio tbody");
+    $.ajax({
+        url: `index.php?url=${moduloNombre}`,
+        type: "POST",
+        dataType: "json",
+        data: {
+            tipoSolicitud: solicitud,
+            datos: datos,
+            clientes: clientes,
+            articulosFragil: articulosFragil,
+            keyUBicacionDespacho: keyUBicacionDespacho,
+            keyUBicacionDestino: keyUBicacionDestino
+        },
+        beforeSend: function () {
+            if (modal != null) {
+                modal.hide();
+                $(btnEnviar).attr("disabled", true);
+            }
+        }
+    })
+        .done(function (response) {
+            console.log("Respuesta del servidor:", response);
+
+            mostrarAlerta(response.status, response.message);
+        })
+        .fail(function (xhr, status, error) {
+            console.error("Error al cargar los datos:", error);
+            console.log("Respuesta cruda del servidor:", xhr.responseText);
+        })
+        .always(function () {
+            // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
+            ajaxConsultar();
+
+        });
+
 }
 
 function iconoCargar(selector) {
