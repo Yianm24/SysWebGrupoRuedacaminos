@@ -118,11 +118,11 @@ class Envio extends Conexion
         }
     }
 
-    public function creDatosEnvio(array $tipo_cliente, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
+    public function creDatosEnvio(array $remitente,array $destinatario, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
     {
 
-        $this->cod_remitente = $this->extraerDatosParticipante($tipo_cliente[0], "remitente", "rem");
-        $this->cod_destinatario = $this->extraerDatosParticipante($tipo_cliente[1], "destinatario", "dest");
+        $this->cod_remitente = $this->extraerDatosParticipante($remitente);
+        $this->cod_destinatario = $this->extraerDatosParticipante($destinatario);
 
         $resultTrait = $this->validarPost($campos);
         if (is_array($resultTrait)) {
@@ -131,11 +131,11 @@ class Envio extends Conexion
             $this->ancho = $resultTrait[0];
             $this->alto = $resultTrait[1];
             $this->descripcion_cont = $resultTrait[2];
-            $this->monto_total = $this->calcularCosteEnvio($resultTrait[3]);
-            $this->distancia_total = $resultTrait[3];
+            $this->monto_total = $this->calcularCosteEnvio($resultTrait[4]);
+            $this->distancia_total = $resultTrait[4];
             $this->estado = 1;
             $this->estatus_fragil = $estatus_fragil;
-            $this->peso_total = $resultTrait[4];
+            $this->peso_total = $resultTrait[3];
             $this->ubicacion_despacho = $ubicacion_despacho;
             $this->ubicacion_destino = $ubicacion_destino;
         } else {

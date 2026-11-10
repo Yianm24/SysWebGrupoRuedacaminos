@@ -1,39 +1,53 @@
 document.addEventListener("DOMContentLoaded", () => {
     ajaxConsultar();
 
+    
+    //console.log(direccionOrigen);
+
     $('button[name="tipoSolicitud"]').on("click", function (event) {
-        const datos = { ancho: $("#ancho").val(), alto: $("#alto").val(), descripcion: $("#descripcion").val(), peso_total: $("#peso_total").val() };
+        event.preventDefault();
+        const datos = { ancho: $("#ancho").val(), alto: $("#alto").val(), descripcion: $("#descripcion").val(), peso_total: $("#peso_total").val(),kilometraje: $('input[name="kilometraje"').val() };
+        console.log(datos);
         const modal = bootstrap.Modal.getInstance($('#carouselEnvio'));
+        
+        let remitente = obtenerValoreCliente('remitente', 'rem');
+        const destinatario = obtenerValoreCliente('destinatario', 'dest');
 
-        let remitente = obtenerValoreCliente('remitente','rem');
-        const destinatario = obtenerValoreCliente('destinatario','dest');
-
-
-        console.log("Remitente");
+         console.log("Remitente");
         console.log(remitente);
         console.log("---------------------");
         console.log("Destinatario");
         console.log(destinatario);
 
 
-        
-        //Anterior ajax ---> // const clientes = { rem_natural: $("#persona_natural_remitente").is(":checked"), rem_juridica: $("#persona_juridica_remitente").is(":checked"), dest_natural: $("#persona_natural_destinatario").is(":checked"), dest_juridica: $("#persona_juridica_destinatario").is(":checked") };
-        // const articulosFragil = { fragil: $("#fragil").is(":checked") };
-        // const keyUBicacionDespacho = $("#key_ubicacion_despacho").val();
-        // const keyUBicacionDestino = $("#key_ubicacion_destino").val();
+        let articulosFragil = { fragil: $("#fragil").is(":checked") };
+      
+
+        let despacho = {
+            municipio: $('#municipio_origen').val(),
+            direccion: $('textarea[name="direccion_origen"]').val().trim()
+        };
+
+        console.log(despacho.direccion);
+
+        const destino = {
+            municipio: $('#municipio_destino').val(),
+            direccion: $('textarea[name="direccion_destino"]').val().trim()
+        };
+
+       console.log(destino.direccion);
 
         const btnEnviar = this;
 
-        let solicitud = "registrar";
+        let solicitud = "crear";
 
-        // ajaxEnvioDatos("envio", modal, solicitud, btnEnviar, datos, clientes, articulosFragil, keyUBicacionDespacho, keyUBicacionDestino);
+        ajaxEnvioDatos(modal, solicitud, btnEnviar, datos, remitente, destinatario, articulosFragil, despacho, destino);
 
     })
 
 
 
-    function obtenerValoreCliente(tipoCliente, abrev)
-     {
+    function obtenerValoreCliente(tipoCliente, abrev) {
 
         let cliente = {};
         if ($(`#persona_natural_${tipoCliente}`).is(":checked")) {
@@ -43,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 nombre: $(`#${abrev}_nombre`).val(),
                 apellido: $(`#${abrev}_apellido`).val(),
                 correo: $(`#${abrev}_correo`).val(),
-                telefono: $(`#${abrev}_telefono`).val()
+                telefono: $(`#${abrev}_telefono`).val(),
             }
         } else if ($(`#persona_juridica_${tipoCliente}`).is(":checked")) {
             cliente = {
@@ -195,63 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //     }, 100);
     // }
 
-
-    function mostrarAlerta(status, mensaje) {
-        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-        setTimeout(() => {
-            let title, text, icon;
-
-            switch (status) {
-                case 'success':
-                    title = "Registro exitoso!";
-                    text = mensaje;
-                    icon = "success";
-                    break;
-                case 'updated':
-                    title = "Actualización exitosa!";
-                    text = "El Estado ha sido actualizado correctamente.";
-                    icon = "success";
-                    break;
-                case 'deleted':
-                    title = "Eliminación exitosa!";
-                    text = "El Estado ha sido eliminado correctamente.";
-                    icon = "success";
-                    break;
-                case 'exists':
-                    title = "Estado existente!";
-                    text = "El Estado ingresado ya existe en la base de datos.";
-                    icon = "warning";
-                    break;
-                case 'empty':
-                    title = "Campos vacíos!";
-                    text = "Uno o más campos están vacíos.";
-                    icon = "warning";
-                    break;
-                case 'error':
-                    title = "Error!";
-                    text = `Se produjo un error en el processo de ${mensaje}`;
-                    icon = "error";
-                    break;
-                case 'exception':
-                    title = "Exception Retornada!";
-                    text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-                    icon = "error";
-                    break;
-            }
-
-            if (title && text && icon) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: icon
-                });
-            }
-        }, 100);
-
-
-    }
-
-
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(boton => {
         boton.addEventListener('click', function (event) {
@@ -365,20 +322,21 @@ function ajaxConsultar() {
 }
 
 
-function ajaxEnvioDatos(moduloNombre, modal = null, solicitud, btnEnviar, datos, clientes, articulosFragil, keyUBicacionDespacho, keyUBicacionDestino) {
+function ajaxEnvioDatos(modal = null, solicitud, btnEnviar, datos, datosRemitente, datosDestinatarios, articulosFragil, despacho, destino) {
 
     iconoCargar("#tablaEnvio tbody");
     $.ajax({
-        url: `index.php?url=${moduloNombre}`,
+        url: 'index.php?url=envio',
         type: "POST",
         dataType: "json",
         data: {
             tipoSolicitud: solicitud,
             datos: datos,
-            clientes: clientes,
+            remitente: datosRemitente,
+            destinatario: datosDestinatarios,
             articulosFragil: articulosFragil,
-            keyUBicacionDespacho: keyUBicacionDespacho,
-            keyUBicacionDestino: keyUBicacionDestino
+            despacho: despacho,
+            destino: destino
         },
         beforeSend: function () {
             if (modal != null) {
@@ -417,3 +375,58 @@ function iconoCargar(selector) {
     </tr>
   `);
 }
+
+function mostrarAlerta(status, mensaje) {
+        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+        setTimeout(() => {
+            let title, text, icon;
+
+            switch (status) {
+                case 'success':
+                    title = "Registro exitoso!";
+                    text = mensaje;
+                    icon = "success";
+                    break;
+                case 'updated':
+                    title = "Actualización exitosa!";
+                    text = "El Estado ha sido actualizado correctamente.";
+                    icon = "success";
+                    break;
+                case 'deleted':
+                    title = "Eliminación exitosa!";
+                    text = "El Estado ha sido eliminado correctamente.";
+                    icon = "success";
+                    break;
+                case 'exists':
+                    title = "Estado existente!";
+                    text = "El Estado ingresado ya existe en la base de datos.";
+                    icon = "warning";
+                    break;
+                case 'empty':
+                    title = "Campos vacíos!";
+                    text = "Uno o más campos están vacíos.";
+                    icon = "warning";
+                    break;
+                case 'error':
+                    title = "Error!";
+                    text = `Se produjo un error en el processo de ${mensaje}`;
+                    icon = "error";
+                    break;
+                case 'exception':
+                    title = "Exception Retornada!";
+                    text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+                    icon = "error";
+                    break;
+            }
+
+            if (title && text && icon) {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon
+                });
+            }
+        }, 100);
+
+
+    }

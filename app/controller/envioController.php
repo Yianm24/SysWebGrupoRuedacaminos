@@ -34,16 +34,22 @@ $instanciaForaneas = [
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'crear':
-        $articulosFragil = (isset($_POST['articulos_fragil'])) ? 1 : 0;
+        $articulosFragil = ($_POST['articulosFragil']) ? 1 : 0;
 
-        $keyUBicacionDespacho = $envio->registrarUbicacion($_POST['direccion_origen'], $_POST['municipio_origen']);
-        $keyUBicacionDestino = $envio->registrarUbicacion($_POST['direccion_destino'], $_POST['municipio_destino']);
+        $datosDespacho = json_decode(json_encode($_POST['despacho']), true);
+        $datosDestino = json_decode(json_encode($_POST['destino']), true);
+
+
+        $keyDespacho = $envio->registrarUbicacion($datosDespacho['direccion'], $datosDespacho['municipio']);
+        $keyDestino = $envio->registrarUbicacion($datosDestino['direccion'], $datosDestino['municipio']);
 
 
         date_default_timezone_set('America/Caracas');
-        // $resultado = $envio->creDatosEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], $_POST['ancho'], $_POST['alto'], $_POST['descripcion'], date('Y-m-d H:i:s'), $articulosFragil, $_POST['peso_total'], $_POST['kilometraje'], $keyUBicacionDespacho, $keyUBicacionDestino);
-        $datosAjax = json_decode(json_encode($_POST['datos']), true);
-        $resultado = $envio->creDatosEnvio(['tipo_persona_remitente', 'tipo_persona_destinatario'], [$datosAjax['ancho'], $datosAjax['alto'], $datosAjax['descripcion'], $datosAjax['peso_total'], $datosAjax['kilometraje']], date('Y-m-d H:i:s'), $articulosFragil, $keyUBicacionDespacho, $keyUBicacionDestino);
+        
+        $datosEnvio = json_decode(json_encode($_POST['datos']), true);
+        $datosRemitente = json_decode(json_encode($_POST['remitente']), true);
+        $datosDestinatario = json_decode(json_encode($_POST['destinatario']), true);
+        $resultado = $envio->creDatosEnvio($datosRemitente,$datosDestinatario, [$datosEnvio['ancho'], $datosEnvio['alto'], $datosEnvio['descripcion'], $datosEnvio['peso_total'], $datosEnvio['kilometraje']], date('Y-m-d H:i:s'), $articulosFragil, $keyDespacho, $keyDestino);
         echo $resultado;
         exit();
 

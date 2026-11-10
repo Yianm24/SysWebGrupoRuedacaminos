@@ -42,7 +42,7 @@
 
                                                 <div class="row mb-2">
                                                     <div class="col-6">
-                                                        <select name="municipio_origen" class="form-select form-select-sm" aria-label="Seleccionar Municipio">
+                                                        <select id="municipio_origen" name="municipio_origen" class="form-select form-select-sm" aria-label="Seleccionar Municipio">
                                                             <option selected>Municipio</option>
                                                             <?php foreach ($datosForaneos['municipio'] as $dato): ?>
                                                                 <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
@@ -60,7 +60,7 @@
 
                                                 <div class="row mb-2">
                                                     <div class="col-6">
-                                                        <select name="municipio_destino" class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
+                                                        <select name="municipio_destino" id="municipio_destino" class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
                                                             <option selected>Municipio</option>
                                                             <?php foreach ($datosForaneos['municipio'] as $dato): ?>
                                                                 <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
@@ -150,7 +150,8 @@
                                                                     <select class="form-select flex-grow-0" style="width: 75px;" id="rem_documento_juridico" name="rem_documento_juridico">
                                                                         <option value="J">J-</option>
                                                                         <option value="G">G-</option>
-                                                                        <option value="V">V-</option>
+                                                                        <option value="G">P-</option>
+                                                                        <option value="G">C-</option>
                                                                     </select>
                                                                     <input type="text" class="form-control" id="rem_rif" name="rem_rif" placeholder="12345678-0">
                                                                     <span class="mensaje-error"></span>
@@ -239,7 +240,8 @@
                                                                     <select class="form-select flex-grow-0" style="width: 75px;" id="dest_documento_juridico" name="dest_documento_juridico">
                                                                         <option value="J">J-</option>
                                                                         <option value="G">G-</option>
-                                                                        <option value="V">V-</option>
+                                                                        <option value="G">P-</option>
+                                                                        <option value="G">C-</option>
                                                                     </select>
                                                                     <input type="text" class="form-control" id="dest_rif" name="dest_rif" placeholder="12345678-0">
                                                                     <span class="mensaje-error"></span>
