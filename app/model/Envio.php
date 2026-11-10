@@ -76,7 +76,7 @@ class Envio extends Conexion
             LEFT JOIN municipio m_orig ON u_orig.cod_municipio = m_orig.cod_municipio
             LEFT JOIN estado est_orig ON m_orig.cod_estado = est_orig.cod_estado
             LEFT JOIN despacho d ON e.cod_despacho = d.cod_despacho
-            WHERE e.estado = 1
+            WHERE 1
             ORDER BY e.cod_envio DESC";
 
             $select = $this->conexion->prepare($sentencia);
@@ -118,7 +118,7 @@ class Envio extends Conexion
         }
     }
 
-    public function creDatosEnvio(array $remitente,array $destinatario, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
+    public function creDatosEnvio(array $remitente, array $destinatario, array $campos, $fecha, $estatus_fragil, $ubicacion_despacho, $ubicacion_destino)
     {
 
         $this->cod_remitente = $this->extraerDatosParticipante($remitente);
@@ -202,7 +202,7 @@ class Envio extends Conexion
             if ($this->conexion->inTransaction()) {
                 $this->conexion->rollBack();
             }
-             return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -322,17 +322,13 @@ class Envio extends Conexion
         }
     }
 
-
-
-
     public function elmDatosEnvio(array $campos)
     {
-
-        if (is_array($this->validarPost($campos, "envio"))) {
-            $array = $this->validarPost($campos, "envio");
-            $this->cod_envio = $array['cod_envio'];
+        $resultTrait = $this->validarPost($campos);
+        if (is_array($resultTrait)) {
+            $this->cod_envio = $resultTrait[0];
         } else {
-            return 'error&msg=Eliminar';
+            return $resultTrait;
         }
         return $this->eliminarEnvio();
     }
@@ -341,15 +337,15 @@ class Envio extends Conexion
     {
 
         try {
-            $sentencia = "UPDATE `Envio` SET estado = 0 WHERE cod_envio = ?";
+            $sentencia = "UPDATE `Envio` SET estado = 0 , estatus='ANULADO' WHERE cod_envio = ?";
             $delete = $this->conexion->prepare($sentencia);
 
             $delete->bindValue(1, $this->cod_envio);
             $delete->execute();
 
-            return "deleted";
+            return json_encode(['status' => 'deleted', 'message' => 'El envio ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return  json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 

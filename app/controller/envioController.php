@@ -45,11 +45,11 @@ switch ($solicitud) {
 
 
         date_default_timezone_set('America/Caracas');
-        
+
         $datosEnvio = json_decode(json_encode($_POST['datos']), true);
         $datosRemitente = json_decode(json_encode($_POST['remitente']), true);
         $datosDestinatario = json_decode(json_encode($_POST['destinatario']), true);
-        $resultado = $envio->creDatosEnvio($datosRemitente,$datosDestinatario, [$datosEnvio['ancho'], $datosEnvio['alto'], $datosEnvio['descripcion'], $datosEnvio['peso_total'], $datosEnvio['kilometraje']], date('Y-m-d H:i:s'), $articulosFragil, $keyDespacho, $keyDestino);
+        $resultado = $envio->creDatosEnvio($datosRemitente, $datosDestinatario, [$datosEnvio['ancho'], $datosEnvio['alto'], $datosEnvio['descripcion'], $datosEnvio['peso_total'], $datosEnvio['kilometraje']], date('Y-m-d H:i:s'), $articulosFragil, $keyDespacho, $keyDestino);
         echo $resultado;
         exit();
 
@@ -57,13 +57,11 @@ switch ($solicitud) {
 
     case 'eliminar':
 
-
-        $resultado = $envio->elmDatosEnvio(['cod_envio']);
-
-        header("Location: ?url=envio&status={$resultado}");
+        $datosEnvio = json_decode(json_encode($_POST['datos']), true);
+        $resultado = $envio->elmDatosEnvio([$datosEnvio['cod_envio']]);
 
         echo $resultado;
-
+        exit();
         break;
 
 
