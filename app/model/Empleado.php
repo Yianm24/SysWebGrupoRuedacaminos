@@ -4,10 +4,11 @@ namespace App\Model;
 
 use App\Config\Conexion;
 use App\Traits\ValidadorTraitAjax;
+use App\Traits\ExpRegexTrait;
 
 class Empleado extends Conexion
 {
-    use ValidadorTraitAjax;
+    use ValidadorTraitAjax, ExpRegexTrait;
 
     private $cod_empleado;
     private $cedula;
@@ -78,16 +79,58 @@ class Empleado extends Conexion
     {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
-            $datos = $this->validarPost($campos, 'empleado');
-            $this->nombre = $this->formatearPalabra($datos['nombre']);
-            $this->apellido = $this->formatearPalabra($datos['apellido']);
-            $this->cedula = $datos['cedula'];
-            $this->telefono = $datos['telefono'];
-            $this->telefono_emergencia = $_POST['telefono_emergencia'] ?? '';
-            $this->cod_cargo = $datos['cod_cargo'];
+            $cedulaLimpia = $resultadoTrait[0];
+            $nombreLimpio = $this->formatearPalabra($resultadoTrait[1]);
+            $apellidoLimpio = $this->formatearPalabra($resultadoTrait[2]);
+            $telefonoLimpio = $resultadoTrait[3];
+            $cargoLimpio = $resultadoTrait[4];
+
+            if(strlen($cedulaLimpia) < 7 || strlen($cedulaLimpia) > 9) 
+                return json_encode(['status' => 'error', 'message' => 'Longitud de cédula inválida.']);
+
+            $valCedula = $this->ExplorarDatos(['solo-numeros' => $cedulaLimpia]);
+            if ($valCedula !== true) 
+                return $valCedula;
+
+            if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 25) 
+                return json_encode(['status' => 'error', 'message' => 'Longitud de nombre inválida.']);
+
+            $valNombre = $this->ExplorarDatos(['solo-letras' => $nombreLimpio]);
+            if ($valNombre !== true) 
+                return $valNombre;
+
+            if(strlen($apellidoLimpio) < 3 || strlen($apellidoLimpio) > 25) 
+                return json_encode(['status' => 'error', 'message' => 'Longitud de apellido inválida.']);
+
+            $valApellido = $this->ExplorarDatos(['solo-letras' => $apellidoLimpio]);
+            if ($valApellido !== true) 
+                return $valApellido;
+
+            if(strlen($telefonoLimpio) != 11) 
+                return json_encode(['status' => 'error', 'message' => 'El teléfono debe tener 11 dígitos.']);
+            $valTelefono = $this->ExplorarDatos(['solo-numeros' => $telefonoLimpio]);
+            if ($valTelefono !== true) 
+                return $valTelefono;
+
+            $emergenciaLimpio = $this->input($telEmergencia, '');
+            if($emergenciaLimpio !== '') {
+                if(strlen($emergenciaLimpio) != 11) 
+                    return json_encode(['status' => 'error', 'message' => 'El teléfono de emergencia debe tener 11 dígitos.']);
+
+                $valEmergencia = $this->ExplorarDatos(['solo-numeros' => $emergenciaLimpio]);
+                if ($valEmergencia !== true) 
+                    return $valEmergencia;
+            }
+
+            $this->cedula = $cedulaLimpia;
+            $this->nombre = $nombreLimpio;
+            $this->apellido = $apellidoLimpio;
+            $this->telefono = $telefonoLimpio;
+            $this->telefono_emergencia = $emergenciaLimpio;
+            $this->cod_cargo = $cargoLimpio;
             $this->estado = 1;
-            } else {
-            return 'error&msg=Registrar';
+        } else {
+            return $resultadoTrait;
         }
         return $this->registrarEmpleado();
     }
@@ -108,24 +151,70 @@ class Empleado extends Conexion
             $insert->execute();
             return 'success';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 
 
-    public function modDatosEmpleado(array $campos)
+    public function modDatosEmpleado(array $campos, $telEmergencia = '')
     {
-        if (is_array($this->validarPost($campos, 'empleado'))) {
-            $datos = $this->validarPost($campos, 'empleado');
-            $this->cod_empleado = $datos['id_empleado_editar'];
-            $this->nombre = $this->formatearPalabra($datos['nombre_editar']);
-            $this->apellido = $this->formatearPalabra($datos['apellido_editar']);
-            $this->cedula = $datos['cedula_editar'];
-            $this->telefono = $datos['telefono_editar'];
-            $this->telefono_emergencia = $_POST['telefono_emergencia_editar'] ?? '';
-            $this->cod_cargo = $datos['cod_cargo_editar'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $codLimpio = $resultadoTrait[0];
+            $cedulaLimpia = $resultadoTrait[1];
+            $nombreLimpio = $this->formatearPalabra($resultadoTrait[2]);
+            $apellidoLimpio = $this->formatearPalabra($resultadoTrait[3]);
+            $telefonoLimpio = $resultadoTrait[4];
+            $cargoLimpio = $resultadoTrait[5];
+        
+            if(strlen($cedulaLimpia) < 7 || strlen($cedulaLimpia) > 9) 
+                return json_encode(['status' => 'error', 'message' => 'Longitud de cédula inválida.']);
+            
+            $valCedula = $this->ExplorarDatos(['solo-numeros' => $cedulaLimpia]);
+            if ($valCedula !== true) 
+                return $valCedula;
+
+            if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 25) 
+                return json_encode(['status' => 'error', 'message' => 'Longitud de nombre inválida.']);
+            
+            $valNombre = $this->ExplorarDatos(['solo-letras' => $nombreLimpio]);
+            if ($valNombre !== true) 
+                return $valNombre;
+
+            if(strlen($apellidoLimpio) < 3 || strlen($apellidoLimpio) > 25) 
+                return json_encode(['status' => 'error', 'message' => 'Longitud de apellido inválida.']);
+            
+            $valApellido = $this->ExplorarDatos(['solo-letras' => $apellidoLimpio]);
+            if ($valApellido !== true) 
+                return $valApellido;
+
+            if(strlen($telefonoLimpio) != 11) 
+                return json_encode(['status' => 'error', 'message' => 'El teléfono debe tener 11 dígitos.']);
+            
+            $valTelefono = $this->ExplorarDatos(['solo-numeros' => $telefonoLimpio]);
+            if ($valTelefono !== true) 
+                return $valTelefono;
+
+            $emergenciaLimpio = $this->input($telEmergencia, '');
+            if($emergenciaLimpio !== '') {
+
+                if(strlen($emergenciaLimpio) != 11) 
+                    return json_encode(['status' => 'error', 'message' => 'El teléfono de emergencia debe tener 11 dígitos.']);
+                
+                $valEmergencia = $this->ExplorarDatos(['solo-numeros' => $emergenciaLimpio]);
+                if ($valEmergencia !== true) 
+                    return $valEmergencia;
+            }
+
+            $this->cod_empleado = $codLimpio;
+            $this->cedula = $cedulaLimpia;
+            $this->nombre = $nombreLimpio;
+            $this->apellido = $apellidoLimpio;
+            $this->telefono = $telefonoLimpio;
+            $this->telefono_emergencia = $emergenciaLimpio;
+            $this->cod_cargo = $cargoLimpio;
         } else {
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
         return $this->modificarEmpleado();
     }
@@ -145,17 +234,17 @@ class Empleado extends Conexion
             $update->execute();
             return 'updated';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 
     public function elmDatosEmpleado(array $campos)
     {
-        if (is_array($this->validarPost($campos, 'empleado'))) {
-            $datos = $this->validarPost($campos, 'empleado');
-            $this->cod_empleado = $datos['id_empleado'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->cod_empleado = $resultadoTrait[0];
         } else {
-            return 'error&msg=Eliminar';
+            return $resultadoTrait;
         }
         return $this->eliminarEmpleado();
     }
@@ -169,7 +258,7 @@ class Empleado extends Conexion
             $delete->execute();
             return 'deleted';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 }

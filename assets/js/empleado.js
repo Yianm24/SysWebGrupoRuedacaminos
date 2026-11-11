@@ -1,18 +1,35 @@
 $(document).ready(function () {
     ajaxConsultarEmpleado();
     const modalEmpleado = $('#modalEmpleado');
+    let hasChanged = false;
 
     //jqueryvalidate
     $('#formEmpleado').validate({
         onkeyup: function (element) {
             $(element).valid();
-            let esValido = this.checkForm();
-            $('#btnSubmitModal').prop('disabled', !esValido);
+            if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+                hasChanged = true;
+            }
+            evaluarBotonModificar();
         },
         onfocusout: function (element) {
             $(element).valid();
-            let esValido = this.checkForm();
-            $('#btnSubmitModal').prop('disabled', !esValido);
+            if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+                hasChanged = true;
+            }
+            evaluarBotonModificar(); 
+        },
+        onclick: function(element) {
+            if (element.tagName === 'SELECT') {
+                $(element).valid();
+                if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+                    hasChanged = true;
+                }
+                setTimeout(() => 
+                    { 
+                    evaluarBotonModificar(); 
+                }, 0);
+            }
         },
         rules: {
             cedula: { 
@@ -37,7 +54,8 @@ $(document).ready(function () {
             },
             telefono_emergencia: { 
                 minlength: 11, 
-                maxlength: 11 },
+                maxlength: 11 
+            },
             cod_cargo: { 
                 required: true 
             }
@@ -51,21 +69,21 @@ $(document).ready(function () {
             nombre: { 
                 required: "Nombre requerido.", 
                 minlength: "Mínimo 3 letras.", 
-                maxlength: "Máximo 25 letras." 
+                maxlength: "Máximo 25 letras."
             },
             apellido: { 
                 required: "Apellido requerido.", 
-                minlength: "Mínimo 3 letras.", 
+                minlength: "Mínimo 3 letras.",
                 maxlength: "Máximo 25 letras." 
             },
             telefono: { 
                 required: "Teléfono requerido.", 
-                minlength: "Debe tener 11 números.", 
+                minlength: "Debe tener 11 números.",
                 maxlength: "Debe tener 11 números." 
             },
             telefono_emergencia: { 
                 minlength: "Debe tener 11 números.", 
-                maxlength: "Debe tener 11 números." 
+                maxlength: "Debe tener 11 números."
             },
             cod_cargo: { 
                 required: "Seleccione un cargo." 
@@ -100,7 +118,10 @@ $(document).ready(function () {
                     cargo: $("#cod_cargo").val()
                 };
                 if (JSON.stringify(originales) === JSON.stringify(actuales)) {
-                    Swal.fire({ title: "Sin modificaciones", text: "Los datos ingresados son iguales a los actuales.", icon: "info" });
+                    Swal.fire({ 
+                        title: "Sin modificaciones", 
+                        text: "Los datos ingresados son iguales a los actuales.", 
+                        icon: "info" });
                     return false; 
                 }
             }
@@ -120,10 +141,57 @@ $(document).ready(function () {
         }
     });
 
+    $('#cod_cargo').on('change', function() {
+        $(this).valid();
+        if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+            hasChanged = true;
+        }
+        setTimeout(() => {
+            let validador = $('#formEmpleado').validate();
+            let esValido = validador.checkForm();
+            let btnEnviar = $('#btnSubmitModal');
+            let solicitud = btnEnviar.attr('value');
+
+            if (solicitud === 'actualizar') {
+                btnEnviar.prop('disabled', !(esValido && hasChanged));
+            } else {
+                btnEnviar.prop('disabled', !esValido);
+            }
+        }, 0);
+    });
+
+    $('#formEmpleado input').on('input', function() {
+        if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+            hasChanged = true;
+            evaluarBotonModificar();
+        }
+    });
+
+    function evaluarBotonModificar() {
+        let validador = $('#formEmpleado').validate();
+        let esValido = validador.checkForm();
+        let btnEnviar = $('#btnSubmitModal');
+        let solicitud = btnEnviar.attr('value');
+
+        if (solicitud === 'actualizar') {
+            btnEnviar.prop('disabled', !(esValido && hasChanged));
+        } else {
+            btnEnviar.prop('disabled', !esValido);
+        }
+    }
+
     if (modalEmpleado.length) {
         modalEmpleado.on('show.bs.modal', function (event) {
             const boton = $(event.relatedTarget);
             accionModalEmpleado(boton);
+        });
+        
+        modalEmpleado.on('shown.bs.modal', function () {
+            if (document.activeElement) document.activeElement.blur();
+        });
+
+        modalEmpleado.on('hidden.bs.modal', function () {
+            if (document.activeElement) document.activeElement.blur();
         });
     }
 
@@ -131,7 +199,6 @@ $(document).ready(function () {
     $("table tbody").on("click", ".btn-eliminar", function (event) {
         event.preventDefault();
         const idEmpleado = $(this).attr("data-id");
-
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
             buttonsStyling: false
@@ -144,13 +211,17 @@ $(document).ready(function () {
             showCancelButton: true,
             confirmButtonText: "Confirmar",
             cancelButtonText: "Cancelar",
-            reverseButtons: true
+            reverseButtons: true,
+            didOpen: () => { if(document.activeElement) document.activeElement.blur(); }
         }).then((result) => {
             if (result.isConfirmed) {
                 const datos = { cod_empleado: idEmpleado };
                 ajaxEnvioDatosEmpleado("eliminar", null, null, datos);
             } else if (result.dismiss === Swal.DismissReason.cancel) {
-                swalWithBootstrapButtons.fire({ title: "Cancelado", text: "Eliminación cancelada.", icon: "error" });
+                swalWithBootstrapButtons.fire({ 
+                    title: "Cancelado",
+                    text: "Eliminación cancelada.", 
+                    icon: "error" });
             }
         });
     });
@@ -166,10 +237,19 @@ function ajaxEnvioDatosEmpleado(solicitud, modal, btnEnviar, datos) {
         beforeSend: function () {
             if (modal) { modal.hide(); }
             if (btnEnviar) { $(btnEnviar).prop("disabled", true); }
-            Swal.fire({ title: 'Procesando...', text: 'Por favor espere un momento.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+            Swal.fire({ 
+                    title: 'Procesando...',
+                    text: 'Por favor espere un momento.', 
+                    allowOutsideClick: false, 
+                    didOpen: () => { 
+                        if(document.activeElement) document.activeElement.blur(); 
+                        Swal.showLoading(); 
+                    } 
+            });
         }
     })
     .done(function (response) {
+        console.log("Respuesta del servidor:", response);
         const elapsedTime = Date.now() - startTime;
         const delay = Math.max(0, 500 - elapsedTime);
 
@@ -180,7 +260,13 @@ function ajaxEnvioDatosEmpleado(solicitud, modal, btnEnviar, datos) {
     })
     .fail(function (xhr, status, error) {
         console.error("Error AJAX:", error);
-        Swal.fire({ title: "Error de Servidor", text: "Ocurrió un problema de conexión al procesar la solicitud.", icon: "error" });
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
+        Swal.fire({ 
+                title: "Error de Servidor", 
+                text: "Ocurrió un problema de conexión al procesar la solicitud.", 
+                icon: "error",
+                didOpen: () => { if(document.activeElement) document.activeElement.blur(); }
+        });
     })
     .always(function () {
         if (btnEnviar) { $(btnEnviar).prop("disabled", false); }
@@ -189,7 +275,10 @@ function ajaxEnvioDatosEmpleado(solicitud, modal, btnEnviar, datos) {
 
 function ajaxConsultarEmpleado() {
     $.ajax({
-        url: "index.php?url=empleado", type: "POST", dataType: "json", data: { tipoSolicitud: "consultar" }
+        url: "index.php?url=empleado", 
+        type: "POST", 
+        dataType: "json", 
+        data: { tipoSolicitud: "consultar" }
     })
     .done(function (response) {
         let tbody = $("table tbody");
@@ -224,10 +313,15 @@ function ajaxConsultarEmpleado() {
             tbody.html('<tr><td colspan="6" class="text-center text-muted py-4">No hay empleados registrados.</td></tr>');
         }
     })
-    .fail(function (xhr, status, error) { console.error(`Error AJAX:`, error); });
+    .fail(function (xhr, status, error) { 
+        console.error(`Error AJAX:`, error); 
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
+    });
 }
 
 function accionModalEmpleado(boton) {
+    if(document.activeElement) document.activeElement.blur();
+    hasChanged = false;
     const tituloModal = $('#modalLabel');
     const btnSubmit = $('#btnSubmitModal');
     
@@ -245,7 +339,7 @@ function accionModalEmpleado(boton) {
 
     } else if (boton.attr('title') === "Editar") {
         tituloModal.html('<i class="bi bi-pencil-square"></i> Modificar Empleado');
-        btnSubmit.val("actualizar").html('<i class="bi bi-save"></i> Modificar');
+        btnSubmit.val("actualizar").html('<i class="bi bi-save"></i> Guardar');
         
         $("#id_empleado").val(boton.attr('data-id'));
         $("#cedula").val(boton.attr('data-cedula'));
@@ -256,12 +350,15 @@ function accionModalEmpleado(boton) {
         $("#cod_cargo").val(boton.attr('data-cargo'));
 
         const datosOriginales = {
-            cedula: $("#cedula").val(), nombre: $("#nombre").val(),
-            apellido: $("#apellido").val(), telefono: $("#telefono").val(),
-            emergencia: $("#telefono_emergencia").val(), cargo: $("#cod_cargo").val()
+            cedula: $("#cedula").val(), 
+            nombre: $("#nombre").val(),
+            apellido: $("#apellido").val(), 
+            telefono: $("#telefono").val(),
+            emergencia: $("#telefono_emergencia").val(), 
+            cargo: $("#cod_cargo").val()
         };
         $('#formEmpleado').attr('data-originales', JSON.stringify(datosOriginales));
-        btnSubmit.prop('disabled', false);
+        btnSubmit.prop('disabled', true);
     }
 }
 
@@ -307,6 +404,9 @@ function mostrarAlerta(status, mensaje = "") {
             icon = "error"; break;
         }
     if (title && text && icon) {
-        Swal.fire({ title: title, text: text, icon: icon });
-        }
+        Swal.fire({ title: title, text: text, icon: icon, 
+            didOpen: () => { if(document.activeElement) document.activeElement.blur(); },
+            willClose: () => { if(document.activeElement) document.activeElement.blur(); }
+        });
     }
+}

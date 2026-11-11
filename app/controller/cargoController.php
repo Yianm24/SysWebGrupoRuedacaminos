@@ -62,6 +62,14 @@ switch ($solicitud) {
         $dataAjax = json_encode($_POST['datos'] ?? []);
         $datosObt = json_decode($dataAjax, true);
 
+        if ($cargo->verificarEmpleadosAsociados($datosObt['cod_cargo'] ?? '')) {
+            echo json_encode([
+                'status' => 'error', 
+                'message' => 'No se puede eliminar este cargo porque esta asignado a empleados.'
+            ]);
+            exit();
+        }
+
         $resultado = $cargo->elmDatosCargo([$datosObt['cod_cargo'] ?? '']);
         if (is_string($resultado) && is_array(json_decode($resultado, true))) {
             echo $resultado;
