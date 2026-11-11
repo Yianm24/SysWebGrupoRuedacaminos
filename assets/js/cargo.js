@@ -2,7 +2,7 @@ $(document).ready(function () {
     ajaxConsultarCargo();
     const modalCargo = $('#modalCargo');
 
-    // 1. CONFIGURACIÓN DE JQUERY VALIDATE
+    //JQueryValidate
     $('#formCargo').validate({
         rules: {
             nombre: {

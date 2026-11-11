@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Empleado extends Conexion
 {
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
 
     private $cod_empleado;
     private $cedula;
@@ -40,7 +40,7 @@ class Empleado extends Conexion
                 return [];
             }
         } catch (\PDOException $e) {
-            return "<script>alert('Error al obtener los registros de empleados del cargo especificado: " . $e->getMessage() . "');</script>";
+            return [];
         }
     }
 
@@ -74,9 +74,10 @@ class Empleado extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosEmpleado(array $campos)
+    public function regDatosEmpleado(array $campos, $telEmergencia = '')
     {
-        if (is_array($this->validarPost($campos, 'empleado'))) {
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
             $datos = $this->validarPost($campos, 'empleado');
             $this->nombre = $this->formatearPalabra($datos['nombre']);
             $this->apellido = $this->formatearPalabra($datos['apellido']);
