@@ -4,10 +4,11 @@ namespace App\Model;
 
 use App\Config\Conexion;
 use App\Traits\ValidadorTraitAjax;
+use App\Traits\ExpRegexTrait;
 
 class Cargo extends Conexion
 {
-    use ValidadorTraitAjax;
+    use ValidadorTraitAjax, ExpRegexTrait;
 
     private $cod_cargo;
     private $estado;
@@ -45,6 +46,19 @@ class Cargo extends Conexion
         return $count->fetchColumn() > 0;
     }
 
+    public function verificarEmpleadosAsociados($cod_cargo)
+    {
+        try {
+            $sentencia = "SELECT COUNT(*) FROM empleado WHERE cod_cargo = ? AND estado = 1";
+            $count = $this->conexion->prepare($sentencia);
+            $count->bindValue(1, $cod_cargo);
+            $count->execute();
+            return $count->fetchColumn() > 0;
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
     public function regDatosCargo(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
@@ -55,8 +69,9 @@ class Cargo extends Conexion
             if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
                 return json_encode(['status' => 'error', 'message' => 'El cargo debe tener entre 3 y 15 letras.']);
             }
-            if(!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $nombreLimpio)) {
-                return json_encode(['status' => 'error', 'message' => 'Formato inválido. Solo se aceptan letras y espacios.']);
+            $validacionRegex = $this->ExplorarDatos(['solo-letras' => $nombreLimpio]);
+            if($validacionRegex !== true) {
+                return $validacionRegex;
             }
             $this->nombre = $nombreLimpio;
             $this->estado = 1;
@@ -90,8 +105,9 @@ class Cargo extends Conexion
             if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
                 return json_encode(['status' => 'error', 'message' => 'El cargo debe tener entre 3 y 15 letras.']);
             }
-            if(!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $nombreLimpio)) {
-                return json_encode(['status' => 'error', 'message' => 'Formato inválido. Solo se aceptan letras y espacios.']);
+            $validacionRegex = $this->ExplorarDatos(['solo-letras' => $nombreLimpio]);
+            if ($validacionRegex !== true) {
+                return $validacionRegex;
             }
 
             $this->cod_cargo = $resultadoTrait[0];

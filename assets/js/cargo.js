@@ -1,8 +1,16 @@
 $(document).ready(function () {
+
     ajaxConsultarCargo();
     const modalCargo = $('#modalCargo');
+    let hasChanged = false;
 
-    // 1. CONFIGURACIÓN DE JQUERY VALIDATE
+    if (modalCargo.length) {
+        modalCargo.on('shown.bs.modal', function () {
+            if (document.activeElement) document.activeElement.blur();
+        });
+    }
+
+    //JQueryValidate
     $('#formCargo').validate({
         rules: {
             nombre: {
@@ -32,13 +40,17 @@ $(document).ready(function () {
         },
         onkeyup: function (element, event) {
             $(element).valid();
-            let esValido = this.checkForm();
-            $('#btnSubmitModal').prop('disabled', !esValido);
+            if ($('#btnSubmitModal').attr('value') === 'modificar') {
+                hasChanged = true;
+            }
+            evaluarBotonModificarCargo();
         },
         onfocusout: function (element) {
             $(element).valid();
-            let esValido = this.checkForm();
-            $('#btnSubmitModal').prop('disabled', !esValido);
+            if ($('#btnSubmitModal').attr('value') === 'modificar') {
+                hasChanged = true;
+            }
+            evaluarBotonModificarCargo();
         },
         submitHandler: function (form, event) {
             event.preventDefault();
@@ -65,6 +77,26 @@ $(document).ready(function () {
         }
     });
 
+    $('#nombre').on('input', function() {
+        if ($('#btnSubmitModal').attr('value') === 'modificar') {
+            hasChanged = true;
+            evaluarBotonModificarCargo();
+        }
+    });
+
+    function evaluarBotonModificarCargo() {
+        let validador = $('#formCargo').validate();
+        let esValido = validador.checkForm();
+        let btnEnviar = $('#btnSubmitModal');
+        let solicitud = btnEnviar.attr('value');
+
+        if (solicitud === 'modificar') {
+            btnEnviar.prop('disabled', !(esValido && hasChanged));
+        } else {
+            btnEnviar.prop('disabled', !esValido);
+        }
+    }
+
     if (modalCargo.length) {
         modalCargo.on('show.bs.modal', function (event) {
             const boton = $(event.relatedTarget);
@@ -89,7 +121,8 @@ $(document).ready(function () {
             showCancelButton: true,
             confirmButtonText: "Confirmar",
             cancelButtonText: "Cancelar",
-            reverseButtons: true
+            reverseButtons: true,
+            didOpen: () => { if(document.activeElement) document.activeElement.blur(); } 
         }).then((result) => {
             if (result.isConfirmed) {
                 const datos = { cod_cargo: codCargo };
@@ -122,11 +155,15 @@ function ajaxEnvioDatosCargo(solicitud, modal, btnEnviar, datos) {
                 title: 'Procesando...',
                 text: 'Por favor espere un momento.',
                 allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
+                didOpen: () => { 
+                    if(document.activeElement) document.activeElement.blur();
+                    Swal.showLoading(); 
+                }
             });
         }
     })
     .done(function (response) {
+        console.log("Respuesta del servidor:", response);
         const elapsedTime = Date.now() - startTime;
         const delay = Math.max(0, 500 - elapsedTime);
 
@@ -137,7 +174,8 @@ function ajaxEnvioDatosCargo(solicitud, modal, btnEnviar, datos) {
     })
     .fail(function (xhr, status, error) {
         console.error("Error AJAX:", error);
-        Swal.fire({ title: "Error de Servidor", text: "Ocurrió un problema de conexión al procesar la solicitud.", icon: "error" });
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
+        Swal.fire({ title: "Error de Servidor", text: "Ocurrió un problema de conexión al procesar la solicitud.", icon: "error", didOpen: () => { if(document.activeElement) document.activeElement.blur(); }});
     })
     .always(function () {
         if (btnEnviar) { $(btnEnviar).prop("disabled", false); }
@@ -181,10 +219,12 @@ function ajaxConsultarCargo() {
     })
     .fail(function (xhr, status, error) {
         console.error(`Error AJAX al cargar la tabla:`, error);
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
     });
 }
 
 function accionModalCargo(boton) {
+    hasChanged = false;
     const tituloModal = $('#modalLabel');
     const btnSubmit = $('#btnSubmitModal');
     const inputId = $('#cod_cargo');
@@ -208,7 +248,7 @@ function accionModalCargo(boton) {
         inputId.val(boton.attr('datos-cod-cargo'));
         inputNombre.val(boton.attr('datos-nombre'));
         $('#formCargo').attr('data-nombre-original', inputNombre.val());
-        btnSubmit.prop('disabled', false);
+        btnSubmit.prop('disabled', true);
     }
 }
 
@@ -259,6 +299,6 @@ function mostrarAlerta(status, mensaje = "") {
     }
 
     if (title && text && icon) {
-        Swal.fire({ title: title, text: text, icon: icon });
+        Swal.fire({ title: title, text: text, icon: icon, didOpen: () => { if(document.activeElement) document.activeElement.blur(); } });
     }
 }

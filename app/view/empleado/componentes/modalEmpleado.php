@@ -14,17 +14,17 @@
                     <div class="row mb-3">
                         <div class="col-md-4 mb-3 mb-md-0">
                             <label for="cedula" class="form-label">Cédula</label>
-                            <input type="text" class="form-control solo-numeros input-evaluar" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
+                            <input type="text" class="form-control solo-numeros" id="cedula" name="cedula" placeholder="Ej: 12345678" minlength="7" maxlength="9" required>
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                         <div class="col-md-4 mb-3 mb-md-0">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control solo-letras input-evaluar" id="nombre" name="nombre" placeholder="Ej: Juan" required>
+                            <input type="text" class="form-control solo-letras" id="nombre" name="nombre" placeholder="Ej: Juan" minlength="3" maxlength="25" required>
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                         <div class="col-md-4">
                             <label for="apellido" class="form-label">Apellido</label>
-                            <input type="text" class="form-control solo-letras input-evaluar" id="apellido" name="apellido" placeholder="Ej: Pérez" required>
+                            <input type="text" class="form-control solo-letras" id="apellido" name="apellido" placeholder="Ej: Pérez" minlength="3" maxlength="25" required>
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                     </div>
@@ -32,12 +32,12 @@
                     <div class="row mb-3">
                         <div class="col-md-4 mb-3 mb-md-0">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="text" class="form-control solo-numeros input-evaluar" id="telefono" name="telefono" placeholder="04141234567" required>
+                            <input type="text" class="form-control solo-numeros" id="telefono" name="telefono" placeholder="04141234567" minlength="11" maxlength="11" required>
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                         <div class="col-md-4 mb-3 mb-md-0">
                             <label for="telefono_emergencia" class="form-label">Telf. Emergencia (Opcional)</label>
-                            <input type="text" class="form-control solo-numeros input-evaluar opcional" id="telefono_emergencia" name="telefono_emergencia" placeholder="04147778654">
+                            <input type="text" class="form-control solo-numeros opcional" id="telefono_emergencia" name="telefono_emergencia" placeholder="04147778654" minlength="11" maxlength="11">
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                         <div class="col-md-4">
@@ -54,7 +54,7 @@
                 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" id="btnSubmitModal" value="" class="btn btn-primary"></button>
+                    <button type="submit" name="tipoSolicitud" id="btnSubmitModal" value="" class="btn btn-primary" disabled></button>
                 </footer>
             </form>
         </div>
