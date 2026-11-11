@@ -38,4 +38,4 @@
 
 <script src="assets/js/sweetalert2.all.min.js"></script>
 <script src="assets/js/busqueda.js"></script>
-<script src="assets/js/cargo.js"></script>
+<script src="assets/js/cargo.js?=v1"></script>

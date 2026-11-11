@@ -41,11 +41,12 @@ $(document).ready(function () {
 
     const btnEnviar = $('button[name="tipoSolicitud"]');
     const inputs = $('.input-evaluar');
+    const inputsBloquear = $('.input-evaluar, .solo-letras, .formato-placa, .solo-numeros, .numeros-decimales, .correo-electronico, .letra-num-ceb');
 
     // =========================================================================
     // 1. FILTRADO PREVIO AL ESCRIBIR (Bloqueo de caracteres no deseados)
     // =========================================================================
-    inputs.on('beforeinput', function (e) {
+    inputsBloquear.on('beforeinput', function (e) {
         // e.originalEvent da acceso al evento nativo del navegador en jQuery
         const textoIngresado = e.originalEvent.data;
 
@@ -136,5 +137,4 @@ $(document).ready(function () {
         btnEnviar.prop('disabled', true);
     })
     
-   
 });

@@ -14,9 +14,10 @@
         <!-- Bootstrap JS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/sidebar.js"></script>
-        <!--Logica de expresiones regulares del sistema-->
+        <!--plugin para validar inputs-->
+        <script src="assets/js/jquery.validate.min.js"></script>
         <!-- <script src="assets/js/expreg.js?v=2"></script> -->
-         <script src="assets/js/expreg2mari.js"></script>
+        <script src="assets/js/expreg2mari.js"></script>
         </body>
 
         </html>

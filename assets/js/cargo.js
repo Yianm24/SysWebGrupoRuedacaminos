@@ -1,138 +1,264 @@
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
+    ajaxConsultarCargo();
+    const modalCargo = $('#modalCargo');
 
-
-    // Validación de Registro y Modificación.
-    const modalCargo = document.getElementById('modalCargo');
-    if (modalCargo) {
-        modalCargo.addEventListener('show.bs.modal', event => {
-            const botonTrig = event.relatedTarget;
-            const tituloModal = modalCargo.querySelector('#modalLabel');
-            const btnSubmit = modalCargo.querySelector('#btnSubmitModal');
-            
-            const inputId = modalCargo.querySelector('#cod_cargo');
-            const inputNombre = modalCargo.querySelector('#nombre');
-
-            $(inputNombre).removeClass('is-valid is-invalid');$(inputNombre).siblings('.mensaje-error').hide().text('');
-            
-            if (botonTrig.title === "Registrar" || botonTrig.getAttribute('title') === 'Registrar') {
-                tituloModal.innerHTML = '<i class="bi bi-person-badge"></i> Registrar Nuevo Cargo';
-                btnSubmit.value = "registrar";
-                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Registrar';
-                inputId.name = ""; 
-                inputNombre.name = "nombre";
-                inputId.value = "";
-                inputNombre.value = "";
-
-                $(inputNombre).trigger('input');
-                
-            } else if (botonTrig.title === "Modificar" || botonTrig.getAttribute('title') === 'Modificar') {
-                tituloModal.innerHTML = '<i class="bi bi-pencil-square"></i> Modificar Cargo';
-                btnSubmit.value = "modificar";
-                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Guardar';
-                inputId.name = "cod-cargo";
-                inputNombre.name = "nombre";
-                inputId.value = botonTrig.getAttribute('datos-cod-cargo');
-                inputNombre.value = botonTrig.getAttribute('datos-nombre');
-
-                document.getElementById('formCargo').setAttribute('data-nombre-original', inputNombre.value);
-                
-                $(inputNombre).trigger('input');
-                btnSubmit.disabled = true;
+    // 1. CONFIGURACIÓN DE JQUERY VALIDATE
+    $('#formCargo').validate({
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 3,
+                maxlength: 15,
             }
-        });
-    }
-
-    //validar edición de cargo sin cambios
-    const formCargo = document.getElementById('formCargo');
-    if (formCargo) {
-        formCargo.addEventListener('submit', function(event) {
-            const btnSubmit = modalCargo.querySelector('#btnSubmitModal');
+        },
+        messages: {
+            nombre: {
+                required: "Debes ingresar el nombre del cargo.",
+                minlength: "El cargo debe tener al menos 3 letras.",
+                maxlength: "El cargo no puede superar las 15 letras.",
+            }
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            let spanError = element.siblings('.mensaje-error');
+            spanError.text(error.text()).show();
+        },
+        highlight: function (element) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+        },
+        unhighlight: function (element) {
+            $(element).addClass('is-valid').removeClass('is-invalid');
+            $(element).siblings('.mensaje-error').hide().text('');
+        },
+        onkeyup: function (element, event) {
+            $(element).valid();
+            let esValido = this.checkForm();
+            $('#btnSubmitModal').prop('disabled', !esValido);
+        },
+        onfocusout: function (element) {
+            $(element).valid();
+            let esValido = this.checkForm();
+            $('#btnSubmitModal').prop('disabled', !esValido);
+        },
+        submitHandler: function (form, event) {
+            event.preventDefault();
             
-            if (btnSubmit.value === "modificar") {
-                const nombreOriginal = this.getAttribute('data-nombre-original');
-                const nombreActual = document.getElementById('nombre').value;
-                
+            const btnEnviar = $('#btnSubmitModal');
+            let solicitud = btnEnviar.attr('value');
+
+            if (solicitud === "modificar") {
+                const nombreOriginal = $('#formCargo').attr('data-nombre-original');
+                const nombreActual = $("#nombre").val();
                 if (nombreOriginal === nombreActual) {
-                    event.preventDefault();
-                    Swal.fire({ title: "Sin modificaciones", text: "El nombre ingresado es igual al actual y no se registraron cambios.", icon: "info" });
+                    Swal.fire({ title: "Sin modificaciones", text: "El nombre ingresado es igual al actual.", icon: "info" });
+                    return false; 
                 }
             }
+
+            const datos = {
+                cod_cargo: $("#cod_cargo").val(),
+                nombre: $("#nombre").val()
+            };
+
+            const objModal = bootstrap.Modal.getInstance(modalCargo[0]);
+            ajaxEnvioDatosCargo(solicitud, objModal, btnEnviar, datos);
+        }
+    });
+
+    if (modalCargo.length) {
+        modalCargo.on('show.bs.modal', function (event) {
+            const boton = $(event.relatedTarget);
+            accionModalCargo(boton);
         });
     }
 
     // Modal Eliminar.
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-    botonesEliminar.forEach(boton => {
-        boton.addEventListener('click', function(event) {
-            event.preventDefault(); 
-            let codCargo = this.getAttribute('data-id');
+    $("table tbody").on("click", ".btn-eliminar", function (event) {
+        event.preventDefault();
+        const codCargo = $(this).attr("data-id");
 
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
-                buttonsStyling: false
-            });
-
-            swalWithBootstrapButtons.fire({
-                title: "¿Está seguro que desea eliminar este cargo?",
-                text: "¡No podrás revertir esto!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Confirmar",
-                cancelButtonText: "Cancelar",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '?url=cargo';
-                    form.innerHTML = `<input type="hidden" name="tipoSolicitud" value="eliminar"><input type="hidden" name="cod_cargo" value="${codCargo}">`;
-                    document.body.appendChild(form);
-                    form.submit();
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire({ title: "Cancelado", text: "Eliminación del cargo cancelada", icon: "error" });
-                }
-            });
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+            buttonsStyling: false
         });
-    });
 
-    // Mensajes y alertas.
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-
-    if (status) {
-        setTimeout(() => {
-            let title, text, icon;
-
-            switch (status) {
-                case 'success':
-                    title = "Registro exitoso!";
-                    text = "El cargo ha sido registrado correctamente.";
-                    icon = "success";
-                    break;
-                case 'updated':
-                    title = "Actualización exitosa!";
-                    text = "El cargo ha sido modificado correctamente.";
-                    icon = "success";
-                    break;
-                case 'deleted':
-                    title = "¡Eliminado!";
-                    text = "El cargo ha sido eliminado correctamente.";
-                    icon = "success";
-                    break;
-                case 'exists':
-                    title = "Cargo existente!";
-                    text = "El cargo ingresado ya existe en la base de datos.";
-                    icon = "warning";
-                    break;
-            }
-
-            if (title && text && icon) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: icon
+        swalWithBootstrapButtons.fire({
+            title: "¿Está seguro que desea eliminar este cargo?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const datos = { cod_cargo: codCargo };
+                ajaxEnvioDatosCargo("eliminar", null, null, datos);
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire({ 
+                    title: "Cancelado", 
+                    text: "Eliminación del cargo cancelada.", 
+                    icon: "error" 
                 });
             }
-        }, 100);
-    }
+        });
+    });
 });
+
+function ajaxEnvioDatosCargo(solicitud, modal, btnEnviar, datos) {
+    const startTime = Date.now();
+    $.ajax({
+        url: "index.php?url=cargo",
+        type: "POST",
+        dataType: "json",
+        data: {
+            tipoSolicitud: solicitud,
+            datos: datos
+        },
+        beforeSend: function () {
+            if (modal) { modal.hide(); }
+            if (btnEnviar) { $(btnEnviar).prop("disabled", true); }
+            Swal.fire({
+                title: 'Procesando...',
+                text: 'Por favor espere un momento.',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+        }
+    })
+    .done(function (response) {
+        const elapsedTime = Date.now() - startTime;
+        const delay = Math.max(0, 500 - elapsedTime);
+
+        setTimeout(() => {
+            mostrarAlerta(response.status, response.message);
+            ajaxConsultarCargo();
+        }, delay);
+    })
+    .fail(function (xhr, status, error) {
+        console.error("Error AJAX:", error);
+        Swal.fire({ title: "Error de Servidor", text: "Ocurrió un problema de conexión al procesar la solicitud.", icon: "error" });
+    })
+    .always(function () {
+        if (btnEnviar) { $(btnEnviar).prop("disabled", false); }
+    });
+}
+
+function ajaxConsultarCargo() {
+    $.ajax({
+        url: "index.php?url=cargo",
+        type: "POST",
+        dataType: "json",
+        data: { tipoSolicitud: "consultar" }
+    })
+    .done(function (response) {
+        let tbody = $("table tbody");
+        tbody.empty();
+
+        if (Array.isArray(response) && response.length > 0) {
+            let rowsHtml = "";
+            $.each(response, function (index, dato) {
+                rowsHtml += `
+                    <tr>
+                        <td class="ps-4 fw-medium text-secondary">${dato.nombre}</td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modalCargo"
+                                datos-cod-cargo="${dato.cod_cargo}"
+                                datos-nombre="${dato.nombre}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar ms-2" title="Eliminar" data-id="${dato.cod_cargo}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.html(rowsHtml);
+        } else {
+            tbody.html('<tr><td colspan="2" class="text-center text-muted py-4">No hay cargos registrados.</td></tr>');
+        }
+    })
+    .fail(function (xhr, status, error) {
+        console.error(`Error AJAX al cargar la tabla:`, error);
+    });
+}
+
+function accionModalCargo(boton) {
+    const tituloModal = $('#modalLabel');
+    const btnSubmit = $('#btnSubmitModal');
+    const inputId = $('#cod_cargo');
+    const inputNombre = $('#nombre');
+    
+    let validador = $('#formCargo').validate();
+    validador.resetForm();
+    inputNombre.removeClass('is-valid is-invalid');
+    inputNombre.siblings('.mensaje-error').hide().text('');
+
+    if (boton.attr('title') === "Registrar") {
+        tituloModal.html('<i class="bi bi-person-badge"></i> Registrar Nuevo Cargo');
+        btnSubmit.val("registrar").html('<i class="bi bi-save"></i> Registrar');
+        inputId.val(""); 
+        inputNombre.val("");
+        btnSubmit.prop('disabled', true);
+
+    } else if (boton.attr('title') === "Modificar") {
+        tituloModal.html('<i class="bi bi-pencil-square"></i> Modificar Cargo');
+        btnSubmit.val("modificar").html('<i class="bi bi-save"></i> Guardar');
+        inputId.val(boton.attr('datos-cod-cargo'));
+        inputNombre.val(boton.attr('datos-nombre'));
+        $('#formCargo').attr('data-nombre-original', inputNombre.val());
+        btnSubmit.prop('disabled', false);
+    }
+}
+
+function mostrarAlerta(status, mensaje = "") {
+    let title, text, icon;
+
+    switch (status) {
+        case 'success':
+            title = "¡Registro exitoso!";
+            text = mensaje !== "" ? mensaje : "El cargo ha sido registrado correctamente.";
+            icon = "success";
+            break;
+        case 'updated':
+            title = "¡Actualización exitosa!";
+            text = mensaje !== "" ? mensaje : "El cargo ha sido modificado correctamente.";
+            icon = "success";
+            break;
+        case 'deleted':
+            title = "¡Eliminado!";
+            text = mensaje !== "" ? mensaje : "El cargo ha sido eliminado correctamente.";
+            icon = "success";
+            break;
+        case 'exists':
+            title = "¡Cargo existente!";
+            text = mensaje !== "" ? mensaje : "El cargo ingresado ya existe en la base de datos.";
+            icon = "warning";
+            break;
+        case 'empty':
+            title = "¡Campos vacíos!";
+            text = mensaje !== "" ? mensaje : "Uno o más campos están vacíos.";
+            icon = "warning";
+            break;
+        case 'error':
+            title = "¡Error!";
+            text = mensaje !== "" ?  mensaje : `Se produjo un error en el proceso de ${mensaje}.`;
+            icon = "error";
+            break;
+        case 'exception':
+            title = "¡Excepción Retornada!";
+            text = `El servidor devolvió el siguiente mensaje: ${mensaje}`;
+            icon = "error";
+            break;
+        default:
+            title = "¡Error!";
+            text = "Ha ocurrido un error inesperado.";
+            icon = "error";
+            break;
+    }
+
+    if (title && text && icon) {
+        Swal.fire({ title: title, text: text, icon: icon });
+    }
+}
