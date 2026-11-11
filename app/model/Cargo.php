@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Cargo extends Conexion
 {
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
 
     private $cod_cargo;
     private $estado;
@@ -47,12 +47,21 @@ class Cargo extends Conexion
 
     public function regDatosCargo(array $campos)
     {
-        if (is_array($this->validarPost($campos, 'cargo'))) {
-            $datos = $this->validarPost($campos);
-            $this->nombre =$this->formatearPalabra($datos['nombre']);
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $nombreLimpio = $this->formatearPalabra($resultadoTrait[0]);
+
+            //comprobar que la expresion regular se cumpla
+            if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
+                return json_encode(['status' => 'error', 'message' => 'El cargo debe tener entre 3 y 15 letras.']);
+            }
+            if(!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $nombreLimpio)) {
+                return json_encode(['status' => 'error', 'message' => 'Formato inválido. Solo se aceptan letras y espacios.']);
+            }
+            $this->nombre = $nombreLimpio;
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
 
         return $this->registrarCargo();
@@ -66,19 +75,29 @@ class Cargo extends Conexion
             $insert->execute([$this->nombre,$this->estado]);
             return 'success';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 
 
     public function modDatosCargo(array $campos)
     {
-        if (is_array($this->validarPost($campos, 'cargo'))) {
-            $datos = $this->validarPost($campos);
-            $this->cod_cargo = $datos['cod-cargo'];
-            $this->nombre = $this->formatearPalabra($datos['nombre']);
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $nombreLimpio = $this->formatearPalabra($resultadoTrait[1]);
+
+            //comprobar que la expresion regular se cumpla
+            if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
+                return json_encode(['status' => 'error', 'message' => 'El cargo debe tener entre 3 y 15 letras.']);
+            }
+            if(!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $nombreLimpio)) {
+                return json_encode(['status' => 'error', 'message' => 'Formato inválido. Solo se aceptan letras y espacios.']);
+            }
+
+            $this->cod_cargo = $resultadoTrait[0];
+            $this->nombre = $nombreLimpio;
         } else {
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
         return $this->modificarCargo();
     }
@@ -91,17 +110,17 @@ class Cargo extends Conexion
             $update->execute([$this->nombre,$this->cod_cargo]);
             return 'updated';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 
     public function elmDatosCargo(array $campos)
     {
-        if (is_array($this->validarPost($campos, 'cargo'))) {
-            $datos = $this->validarPost($campos);
-            $this->cod_cargo = $datos['cod_cargo'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->cod_cargo = $resultadoTrait[0];
         } else {
-            return 'error&msg=Eliminar';
+            return $resultadoTrait;
         }
         return $this->eliminarCargo();
     }
@@ -115,7 +134,7 @@ class Cargo extends Conexion
             $delete->execute([$this->cod_cargo]);
             return 'deleted';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 }

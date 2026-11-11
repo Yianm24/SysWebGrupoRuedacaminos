@@ -12,7 +12,7 @@
                     
                     <div class="mb-3">
                         <label class="form-label">Nombre del Cargo</label>
-                        <input type="text" class="form-control solo-letras input-evaluar" id="nombre" name="nombre" placeholder="Ej: Gerente" required>
+                        <input type="text" class="form-control solo-letras" id="nombre" name="nombre" placeholder="Ej: Gerente" minlength="3" maxlength="15" required>
                         <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                     </div>
                 </div>
