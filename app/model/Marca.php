@@ -4,11 +4,14 @@ namespace App\Model;
 
 use App\Config\Conexion;
 use App\Traits\ValidadorTraitAjax;
+use App\Traits\ExpRegexTrait;
+
 
 class Marca extends Conexion
 {
 
     use ValidadorTraitAjax;
+    use ExpRegexTrait;
     private $cod_marca;
     private $nombre;
     private $estado;
@@ -32,15 +35,19 @@ class Marca extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosMarca(array $campos)
+    public function regDatosMarca(array $campos,array $validar)
     {
-        $resultadoTrait = $this->validarPost($campos); 
-        if (is_array($resultadoTrait)) {
-            $this->nombre = strtoupper($resultadoTrait[0]);
-            $this->estado = 1;
-        } else {
+        $resultadoTrait = $this->ExplorarDatos($validar);
+        if(is_string($resultadoTrait)){
             return $resultadoTrait;
-        //return json_encode(['status' => 'error', 'message' => 'Registrar.']);
+        }else {
+            $resultadoTrait = $this->validarPost($campos); 
+            if (is_array($resultadoTrait)) {
+                $this->nombre = strtoupper($resultadoTrait[0]);
+                $this->estado = 1;
+            } else {
+                return $resultadoTrait;
+            }
         }
         return $this->registrarMarca();
     }
