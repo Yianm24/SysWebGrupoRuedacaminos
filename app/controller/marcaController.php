@@ -18,7 +18,10 @@ switch ($solicitud) {
 
             'nombre_marca' => $_POST['nombre_marca'] ?? null
         ];
-        $resultado = $marca->regDatosMarca([$datosAjax['nombre_marca']]);
+        $expRegDatos = [
+            'solo-letras' => $datosAjax['nombre_marca']
+        ];
+        $resultado = $marca->regDatosMarca([$datosAjax['nombre_marca']],$expRegDatos);
 
         echo $resultado;
         exit();
