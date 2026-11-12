@@ -4,7 +4,7 @@ $(document).ready(function () {
         {
             id: "solo-letras",
             expresion: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-            permitir: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/, // Bloquea números y símbolos
+            permitir: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/,
             mensaje: "Solo ingresar letras y espacios"
         },
         {
@@ -16,7 +16,7 @@ $(document).ready(function () {
         {
             id: "solo-numeros",
             expresion: /^\d+$/,
-            permitir: /^\d$/, // Solo deja teclear números
+            permitir: /^\d$/,
             mensaje: "Solo ingresar números"
         },
         {
@@ -25,11 +25,16 @@ $(document).ready(function () {
             mensaje: "Solo ingresar números, puede incluir separadores de miles y decimales"
         },
         {
+            id: "valores-monetarios",
+            expresion: /^[0-9]{1,3}(\.[0-9]{3})*(,[0-9]{1,2})?$/,
+            permitir: /^[0-9.,]$/,
+            mensaje: "Ingrese un formato válido. Ej: 1.000,00"
+        },
+        {
             id: "correo-electronico",
             expresion: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            // No permite espacios
             permitir: /^[^\s]$/,
-            mensaje: "Ingresar Correo válido ej: juan123@gmail.com"
+            mensaje: "Ingresar Correo válido. Ej: juan123@gmail.com"
         },
         {
             id: "letra-num-ceb",
@@ -41,36 +46,54 @@ $(document).ready(function () {
 
     const btnEnviar = $('button[name="tipoSolicitud"]');
     const inputs = $('.input-evaluar');
-    const inputsBloquear = $('.input-evaluar, .solo-letras, .formato-placa, .solo-numeros, .numeros-decimales, .correo-electronico, .letra-num-ceb');
+    const inputsBloquear = $('.input-evaluar, .solo-letras, .formato-placa, .solo-numeros, .numeros-decimales, .valores-monetarios, .correo-electronico, .letra-num-ceb');
 
-    // =========================================================================
-    // 1. FILTRADO PREVIO AL ESCRIBIR (Bloqueo de caracteres no deseados)
-    // =========================================================================
+    // Filtrado al escribir para el bloqueo de caracteres no deseados
     inputsBloquear.on('beforeinput', function (e) {
-        // e.originalEvent da acceso al evento nativo del navegador en jQuery
         const textoIngresado = e.originalEvent.data;
-
-        // Si la acción no inserta texto (por ejemplo, borrar con Backspace/Delete), lo dejamos pasar
         if (!textoIngresado) return;
 
         const inputActual = $(this);
         const reglaCoincidente = reglasRegex.find(regla => inputActual.hasClass(regla.id));
 
-        // Si el input tiene asignada una regla de caracteres permitidos
         if (reglaCoincidente && reglaCoincidente.permitir) {
-            // Evaluamos cada carácter que intenta entrar (sirve para una tecla o si pegan texto)
             for (let char of textoIngresado) {
                 if (!reglaCoincidente.permitir.test(char)) {
-                    e.preventDefault(); // Cancela la impresión en pantalla al instante
+                    e.preventDefault();
                     break;
                 }
             }
         }
     });
 
-    // =========================================================================
-    // 2. VALIDACIÓN DEL VALOR COMPLETO Y ESTADOS (Bootstrap is-valid / is-invalid)
-    // =========================================================================
+    //Formatear valores a miles y decimales
+    $('.valores-monetarios').on('input', function() {
+        let input = $(this);
+        let val = input.val();
+        
+        //validar ingreso de datos . y ,
+        val = val.replace(/[^0-9,]/g, '');
+        let partes = val.split(',');
+        if (partes.length > 2) {
+            val = partes[0] + ',' + partes.slice(1).join('');
+            partes = val.split(',');
+        }
+        
+        //decimales después de la coma permitidos
+        if (partes[1] && partes[1].length > 2) {
+            val = partes[0] + ',' + partes[1].substring(0, 2);
+            partes = val.split(',');
+        }
+        
+        //Agregar puntos de miles automáticamente
+        if (partes[0].length > 0) {
+            partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        input.val(partes.join(','));
+    });
+
+    
+    //Validar el estado completo con bootstrap (is-valid / is-invalid)
     function evaluarInput(input) {
         const valor = input.val().trim();
         const mensajeError = input.siblings('.mensaje-error');
@@ -121,7 +144,7 @@ $(document).ready(function () {
         verificarFormulario();
     });
 
-    // Botón de reset/cierre de modal (limpiar validaciones)
+    // Botón de cierre de modal y limpieza de validaciones
     $('.btn-close').on('click', function () {
         inputs.removeClass('is-valid is-invalid');
         inputs.siblings('.mensaje-error').hide().text('');

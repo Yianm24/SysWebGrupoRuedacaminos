@@ -1,11 +1,12 @@
 <?php
 namespace App\Model;
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
+use App\Traits\ExpRegexTrait;
 
 class Kilometraje extends Conexion
 {
-    use ValidadorTrait;
+    use ValidadorTraitAjax, ExpRegexTrait;
 
     private $cod_preciokilometraje;
     private $kilometraje;
@@ -17,10 +18,14 @@ class Kilometraje extends Conexion
     }
     
     public function obt_RegistrosKilometraje() {
-        $sentencia = "SELECT * FROM precio_kilometraje WHERE estado = 1";
-        $select = $this->conexion->prepare($sentencia);
-        $select->execute();
-        return $select->fetchAll(\PDO::FETCH_ASSOC);
+        try{
+            $sentencia = "SELECT * FROM precio_kilometraje WHERE estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
     }
 
     public function verificarTarifaDuplicada($kilometraje, $id_actual = null) {
@@ -39,13 +44,26 @@ class Kilometraje extends Conexion
     }
 
     public function regDatosKilometraje(array $campos) {
-        if (is_array($this->validarPost($campos, 'kilometraje'))) {
-            $datos = $this->validarPost($campos, 'kilometraje');
-            $this->kilometraje = $datos['kilometraje'];
-            $this->monto_tarifa =$datos['precio_kilometraje'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            if (strlen($resultadoTrait[0]) < 1 || strlen($resultadoTrait[0]) > 8) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
+            }
+            if (strlen($resultadoTrait[1]) < 1 || strlen($resultadoTrait[1]) > 8) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
+            }
+
+            $valKm = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[0]]);
+            if ($valKm !== true) return $valKm;
+
+            $valPrecio = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[1]]);
+            if ($valPrecio !== true) return $valPrecio;
+
+            $this->kilometraje = $resultadoTrait[0];
+            $this->monto_tarifa = $resultadoTrait[1];
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
         return $this->registrarKilometraje();
     }
@@ -60,18 +78,31 @@ class Kilometraje extends Conexion
             $insert->execute();
             return 'success';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 
     public function actDatosKilometraje(array $campos) {
-        if (is_array($this->validarPost($campos, 'kilometraje'))) {
-            $datos = $this->validarPost($campos, 'kilometraje');
-            $this->cod_preciokilometraje = $datos['id_tarifa_editar'];
-            $this->kilometraje = $datos['kilometraje_editar'];
-            $this->monto_tarifa = $datos['precio_kilometraje_editar'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            if (strlen($resultadoTrait[1]) < 1 || strlen($resultadoTrait[1]) > 8) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
+            }
+            if (strlen($resultadoTrait[2]) < 1 || strlen($resultadoTrait[2]) > 8) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
+            }
+
+            $valKm = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[1]]);
+            if ($valKm !== true) return $valKm;
+
+            $valPrecio = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[2]]);
+            if ($valPrecio !== true) return $valPrecio;
+
+            $this->cod_preciokilometraje = $resultadoTrait[0];
+            $this->kilometraje = $resultadoTrait[1];
+            $this->monto_tarifa = $resultadoTrait[2];
         } else {
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
         return $this->actualizarKilometraje();
     }
@@ -86,16 +117,16 @@ class Kilometraje extends Conexion
             $update->execute();
             return 'updated';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 
     public function elmDatosKilometraje(array $campos) {
-        if (is_array($this->validarPost($campos, 'kilometraje'))) {
-            $datos = $this->validarPost($campos, 'kilometraje');
-            $this->cod_preciokilometraje = $datos['id_tarifa'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->cod_preciokilometraje = $resultadoTrait[0];
         } else {
-            return 'error&msg=Eliminar';
+            return $resultadoTrait;
         }   
         return $this->eliminarKilometraje();
     }
@@ -108,7 +139,7 @@ class Kilometraje extends Conexion
             $delete->execute();
             return 'deleted';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 }
