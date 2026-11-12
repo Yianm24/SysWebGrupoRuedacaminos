@@ -1,3 +1,7 @@
+<?php 
+if (!isset($metodosPago)) $metodosPago = [];
+if (!isset($bancos)) $bancos = [];
+?>
 <div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
