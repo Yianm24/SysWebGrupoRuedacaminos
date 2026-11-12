@@ -17,33 +17,63 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($kilometraje->verificarTarifaDuplicada($_POST['kilometraje'])) {
-            header("Location: ?url=kilometraje&status=exists");
+        $dataAjax = json_encode($_POST['datos'] ?? []);
+        $datosObt = json_decode($dataAjax, true);
+
+        if ($kilometraje->verificarTarifaDuplicada($datosObt['kilometraje'] ?? '')) {
+            echo json_encode(['status' => 'exists', 'message' => 'Ya existe una tarifa registrada para este kilometraje.']);
             exit();
         }
-        $resultado = $kilometraje->regDatosKilometraje(['kilometraje', 'precio_kilometraje']);
-        header("Location: ?url=kilometraje&status={$resultado}");
+        $resultado = $kilometraje->regDatosKilometraje([$datosObt['kilometraje'] ?? '', $datosObt['precio_kilometraje'] ?? '']);
+        if (is_string($resultado) && is_array(json_decode($resultado, true))) {
+            echo $resultado;
+        } else {
+            echo json_encode(['status' => $resultado, 'message' => 'La tarifa ha sido registrada correctamente.']);
+        }
+        exit();
+        break;
+    
+    case 'consultar':
+        $registros = $kilometraje->obt_RegistrosKilometraje();
+        echo json_encode($registros);
+        exit();
         break;
 
     case 'actualizar':
-        if ($kilometraje->verificarTarifaDuplicada($_POST['kilometraje_editar'], $_POST['id_tarifa_editar'])) {
-            header("Location: ?url=kilometraje&status=exists");
+        $dataAjax = json_encode($_POST['datos'] ?? []);
+        $datosObt = json_decode($dataAjax, true);
+        
+        if ($kilometraje->verificarTarifaDuplicada($datosObt['kilometraje'] ?? '', $datosObt['cod_preciokilometraje'] ?? '')) {
+            echo json_encode(['status' => 'exists', 'message' => 'Ya existe una tarifa registrada para este kilometraje.']);
             exit();
-            }
-            
-        $resultado = $kilometraje->actDatosKilometraje(['id_tarifa_editar', 'kilometraje_editar', 'precio_kilometraje_editar']);
-        header("Location: ?url=kilometraje&status={$resultado}");
+        } 
+        $resultado = $kilometraje->actDatosKilometraje([$datosObt['cod_preciokilometraje'] ?? '', $datosObt['kilometraje'] ?? '', $datosObt['precio_kilometraje'] ?? '']);
+        if (is_string($resultado) && is_array(json_decode($resultado, true))) {
+            echo $resultado;
+        } else {
+            echo json_encode(['status' => $resultado, 'message' => 'La tarifa ha sido modificada correctamente.']);
+        }
+        exit();
         break;
 
     case 'eliminar':
-            $resultado = $kilometraje->elmDatosKilometraje(['id_tarifa']);
-            header("Location: ?url=kilometraje&status={$resultado}");
-            break;
-    }
+        $dataAjax = json_encode($_POST['datos'] ?? []);
+        $datosObt = json_decode($dataAjax, true);
 
-$registros = $kilometraje->obt_RegistrosKilometraje();
+        $resultado = $kilometraje->elmDatosKilometraje([$datosObt['cod_preciokilometraje'] ?? '']);
+        if (is_string($resultado) && is_array(json_decode($resultado, true))) {
+            echo $resultado;
+        } else {
+            echo json_encode(['status' => $resultado, 'message' => 'La tarifa ha sido eliminada correctamente.']);
+        }
+        exit();
+        break;
+}
 
-include 'app/view/layout/header.php';
-include 'app/view/kilometraje/kilometraje.php';
-include 'app/view/layout/footer.php';
+if (empty($solicitud)) {
+    $registros = $kilometraje->obt_RegistrosKilometraje();
+    include 'app/view/layout/header.php';
+    include 'app/view/kilometraje/kilometraje.php';
+    include 'app/view/layout/footer.php';
+}
 ?>
