@@ -1,8 +1,8 @@
-<div class="modal fade" id="actualizarRol" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalRol" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <header class="modal-header">
-                <h1 class="modal-title fs-5" id="registerModalLabel"><i class="bi bi-coin"></i>Actualizar Rol</h1>
+            <header id="moda" class="modal-header">
+                <h1 class="modal-title fs-5" id="registerModalLabel"><i id="modalLabel"></i></h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
@@ -11,15 +11,16 @@
                     <input type="hidden" id="cod-rol" name="cod-rol">
                     <div class="mb-3">
                         <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Administrador">
+                        <input type="text" class="form-control input-evaluar solo-letras" id="nombre" name="nombre" required placeholder="Ej: Administrador">
                     </div>
                 </div>
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="actualizar" class="btn btn-primary"><i class="bi bi-save"></i>Actualizar</button>
+                    <button type="button" name="tipoSolicitud" value="registrar" class="btn btn-primary"><i class="bi bi-save"></i>Registrar</button>
                 </footer>
             </form>
+
         </div>
     </div>
 </div>

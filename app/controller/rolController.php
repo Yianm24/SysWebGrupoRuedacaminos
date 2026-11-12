@@ -5,28 +5,20 @@ namespace App\Controller;
 use App\Model\Rol;
 
 $rol = new Rol();
-
 $solicitud = $_POST['tipoSolicitud'] ?? '';
+
+$registros = $rol->obt_RegistrosRol();
 
 switch ($solicitud) {
     case 'registrar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['nombre'])) {
-                $permisos = $_POST['permisos'] ?? [];
-                $permisos = json_encode($permisos);
-                if ($rol->verificarRolExiste($_POST['nombre'])) {
-                    header("Location: ?url=rol&status=exists");
-                    exit();
-                }
-                $resultado = $rol->regDatosRol($_POST['nombre'], $permisos);
-            var_dump($rol);
-                header("Location: ?url=rol&status=success");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
-            break;
-        }
+
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
+
+        $resultado = $rol->regDatosRol([$datosAjax['nombre_rol']]);
+        echo $resultado;
+        exit();
+        break;
+
 
     case 'eliminar':
         if (isset($_POST['cod_rol'])) {
@@ -38,23 +30,22 @@ switch ($solicitud) {
         break;
 
     case 'actualizar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-rol'])) {
-            if (!empty($_POST['nombre'])) {
 
-                $resultado = $rol->actDatosRol($_POST['cod-rol'], $_POST['nombre']);
-                header("Location: ?url=rol&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
-        }
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
+
+        $resultado = $rol->actDatosRol([$datosAjax['cod_rol'], $datosAjax['nombre_rol']]);
+        echo $resultado;
+        exit();
+        break;
+
+
+    case 'consultar':
+
+        echo $registros;
+        exit();
         break;
 }
 
-$registros = $rol->obt_RegistrosRol();
-
-
 include 'app/view/layout/header.php';
-include 'app/view/rol/rolView.php'; 
+include 'app/view/rol/rolView.php';
 include 'app/view/layout/footer.php';
-?>
