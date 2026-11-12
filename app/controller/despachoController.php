@@ -7,41 +7,52 @@ use App\Model\Vehiculo;
 use App\Model\Envio;
 use App\Model\Despacho;
 
+$envioObj = new Envio();
+
 $datosForaneos = [
-    'empleado' => (new Empleado())->obt_EmpleadosCargo(4),
-    'vehiculo' => (new Vehiculo())->obt_RegistrosVehiculos(),
-    'envio' => (new Envio())->obt_DestinatariosEnvio()
+    'empleados' => json_decode((new Empleado())->obt_EmpleadosCargoAjax(4),true),
+    'vehiculos' => (new Vehiculo())->obt_RegistrosVehiculos(),
+    'envios' => $envioObj->obt_EnviosPendientes()
 ];
 
-
-
-
 $despacho = new Despacho();
+
+$registros = json_encode($despacho->obt_RegistrosDespacho());
+
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
         
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      /*   $datosDespacho = json_decode(json_encode($_POST['datosDespacho']), true);
+        $enviosSeleccionados = json_decode(json_encode($_POST['envSeleccionados']), true); 
+        $resultado = $despacho->regDatosDespacho($datosDespacho['chofer'],$datosDespacho['vehiculo'],$datosDespacho['fechaSalida'],[$enviosSeleccionados['envSeleccionados']]);
+        echo $resultado;
+        exit(); */
 
-            $datosRecibidos=[
-                'vehiculo_Asignado' => $_POST['vehiculo_asignado'] ?? 'vacio',
-                'fecha_Establecida' => $_POST['fecha_establecida'] ?? 'vacio'
-                //'chofer' => $_POST['cod_empleado'] ?? 'vacio'
-            ];
-
-            header("Location: ?url=despacho&status=prueba&msg=".http_build_query($datosRecibidos));
-            //exit();
-
-                /* $resultado = $despacho->regDatosDespacho($_POST['vehiculo_asignado'],$_POST['fecha_establecida']);
-                header("Location: ?url=despacho&status=success");
-                echo $resultado;
-                exit(); */
-        }
+        $datosDespacho = $_POST['datosDespacho'] ?? [];
+        
+        $enviosSeleccionados = $_POST['envSeleccionados'] ?? [];
+        
+        $resultado = $despacho->regDatosDespacho(
+            $datosDespacho['chofer'] ?? null,
+            $datosDespacho['vehiculo'] ?? null,
+            $datosDespacho['fechaSalida'] ?? null,
+            $enviosSeleccionados 
+        );
+        
+        echo $resultado;
+        exit();
         break;
-    case 'consultar-envios':
-        $registros = $despacho->obtEnviosPendientes();
+    case 'consultar-envios-pendientes':
+
+        $registros = json_encode(['envios' => $datosForaneos['envios'], 'choferes' => $datosForaneos['empleados'], 'vehiculos' => $datosForaneos['vehiculos']]);
         echo $registros;
         exit();
+    break;
+    case 'consultar':
+        echo $registros;
+        exit();
+    break;
 }
 
 //header('Content-Type: application/json; charset=utf-8');
