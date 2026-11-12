@@ -7,35 +7,28 @@ document.addEventListener("DOMContentLoaded", () => {
     $('button[name="tipoSolicitud"]').on("click", function (event) {
         event.preventDefault();
         const datos = { ancho: $("#ancho").val(), alto: $("#alto").val(), descripcion: $("#descripcion").val(), peso_total: $("#peso_total").val(), kilometraje: $('input[name="kilometraje"').val() };
-        console.log(datos);
+        // console.log(datos);
         const modal = bootstrap.Modal.getInstance($('#carouselEnvio'));
 
-        let remitente = obtenerValoreCliente('remitente', 'rem');
+        const remitente = obtenerValoreCliente('remitente', 'rem');
         const destinatario = obtenerValoreCliente('destinatario', 'dest');
-
-        console.log("Remitente");
-        console.log(remitente);
-        console.log("---------------------");
-        console.log("Destinatario");
-        console.log(destinatario);
-
-
         let articulosFragil = { fragil: $("#fragil").is(":checked") };
-
-
         let despacho = {
             municipio: $('#municipio_origen').val(),
             direccion: $('textarea[name="direccion_origen"]').val().trim()
         };
-
-        console.log(despacho.direccion);
 
         const destino = {
             municipio: $('#municipio_destino').val(),
             direccion: $('textarea[name="direccion_destino"]').val().trim()
         };
 
-        console.log(destino.direccion);
+        // console.log("Remitente");
+        // console.log(remitente);
+        // console.log("---------------------");
+        // console.log("Destinatario");
+        // console.log(destinatario);
+        //console.log(destino.direccion);
 
         const btnEnviar = this;
 
@@ -120,6 +113,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    $('input[name="kilometraje"').on('keydown', function (e) {
+
+
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const kilometraje = $(this).val()
+
+            const costoEnvio = kilometraje * 2.36;
+
+            $('span#precio_envio').text(costoEnvio.toFixed(2));
+            console.log("Costo de envío calculado:", costoEnvio);
+        }
+    })
+
+
+
     // 3. Asignamos el evento 'change' a ambos inputs radio
     radioNaturalRem.addEventListener("change", () => actualizarFormulario("remitente"));
     radioJuridicaRem.addEventListener("change", () => actualizarFormulario("remitente"));
@@ -184,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                ajaxEnvioDatos(null, 'eliminar',null, { cod_envio: codenvio });
+                ajaxEnvioDatos(null, 'eliminar', null, { cod_envio: codenvio });
             }
         });
     });
@@ -231,16 +240,7 @@ function ajaxConsultar() {
                                 ${dato.fecha}
                             </td>
                             <td class="text-start pe-4">
-                                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar"
-                                data-bs-toggle="modal" 
-                                data-bs-target="#carouselEnvio" 
-                                data-peso="${dato.peso_total}" 
-                                data-descrip-content="${dato.descrip_contenido}" 
-                                data-anchura="${dato.anchura}" 
-                                data-altura="${dato.altura}" 
-                                data-peso-total="${dato.peso_total}">
-                                <i class="bi bi-pencil"></i>
-                                </button>
+                              
                                 <a href="#" class="text-secondary btn-eliminar" data-cod-envio="${dato.cod_envio}">
                                 <i class="bi bi-trash"></i>
                                 </a>
@@ -286,6 +286,10 @@ function ajaxEnvioDatos(modal = null, solicitud, btnEnviar, datos, datosRemitent
             if (modal != null) {
                 modal.hide();
                 $(btnEnviar).attr("disabled", true);
+                setTimeout(() => {
+                    $(btnEnviar).attr("disabled", false);
+                }, 2000);
+
             }
         }
     })
