@@ -34,4 +34,5 @@
 
 <script src="assets/js/sweetalert2.all.min.js"></script>
 <script src="assets/js/busqueda.js"></script>
+<script src="assets/js/autoNumeric.min.js"></script>
 <script src="assets/js/pago.js"></script>

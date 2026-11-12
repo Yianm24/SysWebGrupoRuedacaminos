@@ -1,12 +1,16 @@
-document.addEventListener("DOMContentLoaded", function () {
-    
+let montoInput;
+let hasChanged = false;
+
+$(document).ready(function () {
+    ajaxConsultarPago();
+    const modalPago = $('#modalPago');
     let montoBaseCalculo = 0;
     let tasasDelDia = { "VES": 1, "USD": 1, "USDT": 1, "EUR": 1 };
-    const inputTasasJson = document.getElementById('tasas_backend_json');
-
-    if (inputTasasJson && inputTasasJson.value) {
+    
+    const $inputTasasJson = $('#tasas_backend_json');
+    if ($inputTasasJson.length && $inputTasasJson.val()) {
         try {
-            let tasasBackend = JSON.parse(inputTasasJson.value);
+            let tasasBackend = JSON.parse($inputTasasJson.val());
             tasasDelDia['VES'] = 1; 
             tasasDelDia['USD'] = tasasBackend['USD'] || 1;
             tasasDelDia['EUR'] = tasasBackend['EUR'] || 1;
@@ -14,7 +18,36 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) { console.error("Error leyendo las tasas", error); }
     }
 
-    //funcion para asignar ' . ' si supera los 3 digitos y ' , ' al final con 2 digitos para evitar errores de ingreso de los montos
+    if ($('#monto_ingresado').length) {
+        $('#monto_ingresado').attr('autocomplete', 'off');
+    }
+
+    function inicializarAutoNumeric() {
+        if (!montoInput && $('#monto_ingresado').length) {
+            montoInput = new AutoNumeric('#monto_ingresado', {
+                digitGroupSeparator: '.',
+                decimalCharacter: ',',
+                decimalPlaces: 2,
+                maximumValue: '999999.99',
+                minimumValue: '0',
+                decimalPlacesShownOnFocus: 2,
+                allowDecimalPadding: true,
+                emptyInputBehavior: 'zero',
+                unformatOnSubmit: true,
+                modifyValueOnWheel: false,
+                modifyValueOnUpDownArrow: false 
+            });
+            
+            $('#monto_ingresado').on('autoNumeric:rawValueModified', function() {
+                $(this).valid();
+                calcularRestante(); 
+                evaluarBotonModificar();
+            });
+        }
+    }
+
+    inicializarAutoNumeric();
+
     function parsearMonto(valor) {
         if (!valor) return 0;
         let numStr = String(valor).trim();
@@ -33,149 +66,189 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function formatearVisual(numero) {
-        if (isNaN(numero) || numero === 0) return "";
+        if (isNaN(numero) || numero === 0) return "0,00";
         return Number(numero).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    //funcion que forza que los inputs y selects sean validados antes de registrar o editar.
-    function forzarSeguridad() {
+    $.validator.addMethod("montoValido", function() {
+        if (!montoInput) return false;
+        let num = montoInput.getNumber();
+        let estatusPago = $('#estatus_pago').val();
+        let visual = $('#estatus_pago_visual').text();
+        
+        if (num === null || num <= 0 || num > 999999.99) return false;
+        if (estatusPago === "0" && (visual === "Excedido" || visual === "Inválido")) return false;
+        
+        return true;
+    }, "Monto inválido, excede el límite o supera la deuda.");
+
+    $('#formPago').validate({
+        onkeyup: function (element) {
+            $(element).valid();
+            if ($('#btnSubmitModal').val() === 'actualizar') hasChanged = true;
+            evaluarBotonModificar();
+        },
+        onfocusout: function (element) {
+            $(element).valid();
+            if ($('#btnSubmitModal').val() === 'actualizar') hasChanged = true;
+            evaluarBotonModificar(); 
+        },
+        onclick: function(element) {
+            if (element.tagName === 'SELECT') {
+                $(element).valid();
+                if ($('#btnSubmitModal').val() === 'actualizar') hasChanged = true;
+                setTimeout(() => { evaluarBotonModificar(); }, 0);
+            }
+        },
+        rules: {
+            monto_ingresado: { 
+                required: true, 
+                montoValido: true 
+            },
+            fecha_pago: { 
+                required: true 
+            },
+            metodos: { 
+                required: true 
+            },
+            cuentas: {
+                required: true 
+            },
+            referencia: { 
+                required: true 
+            }
+        },
+        messages: {
+            monto_ingresado: { 
+                required: "Debe ingresar el monto abonado.", 
+                montoValido: "Monto inválido o supera la deuda permitida." 
+            },
+            fecha_pago: { 
+                required: "Seleccione una fecha." 
+            },
+            metodos: { 
+                required: "Seleccione un método de pago." }
+                ,
+            cuentas: { 
+                required: "Seleccione una cuenta destino." 
+            },
+            referencia: { 
+                required: "Ingrese la referencia bancaria." 
+            }
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            let spanError = element.siblings('.mensaje-error');
+            if(spanError.length) { spanError.text(error.text()).show(); } else { error.insertAfter(element); }
+        },
+        highlight: function (element) { $(element).addClass('is-invalid').removeClass('is-valid'); },
+        unhighlight: function (element) {
+            $(element).addClass('is-valid').removeClass('is-invalid');
+            let spanError = $(element).siblings('.mensaje-error');
+            if(spanError.length) spanError.hide().text('');
+        },
+        submitHandler: function (form, event) {
+            event.preventDefault();
+            
+            const $btnSubmit = $('#btnSubmitModal');
+            let solicitud = $btnSubmit.val();
+            let montoPuro = montoInput ? montoInput.getNumber() : 0;
+            $('#monto_ingresado').val(montoPuro.toFixed(2));
+
+            if (solicitud === "actualizar" && $(form).attr('data-originales')) {
+                const org = JSON.parse($(form).attr('data-originales'));
+                const actualMonto = montoPuro;
+                const actualRef = $('#referencia').val().trim();
+                const actualMetodo = $('#metodos').val();
+                const actualBanco = $('#cuentas').val();
+                const actualFecha = $('#fecha_pago').val();
+
+                if (org.monto === actualMonto && org.referencia === actualRef && org.metodo === actualMetodo && org.banco === actualBanco && org.fecha === actualFecha) {
+                    Swal.fire({ 
+                        title: "Sin modificaciones", 
+                        text: "Los datos ingresados son iguales a los actuales.", 
+                        icon: "info" });
+                    return false;
+                }
+            }
+
+            const datosObj = {
+                cod_pago: $("#cod_pago").val(),
+                cod_envio: $("#cod_envio").val(),
+                cod_detallepago: $("#cod_detallepago").val(),
+                fecha_pago: $("#fecha_pago").val(),
+                monto: $("#monto_dolares_oculto").val(),
+                monto_ingresado: montoPuro.toFixed(2),
+                referencia: $("#referencia").val().trim(),
+                metodos: $("#metodos").val(),
+                cuentas: $("#cuentas").val()
+            };
+
+            ajaxEnvioDatosPago(solicitud, modalPago, $btnSubmit, { tipoSolicitud: solicitud, datos: datosObj });
+        }
+    });
+
+    function evaluarBotonModificar() {
         setTimeout(() => {
-            const btnSubmit = document.getElementById('btnSubmitModal');
-            const selectMetodo = document.getElementById('metodos');
-            const selectCuenta = document.getElementById('cuentas');
-            const estatusPago = document.getElementById('estatus_pago').value;
-            const inputMonto = document.getElementById('monto_ingresado');
-            const inputRef = document.getElementById('referencia');
-            const inputFecha = document.getElementById('fecha_pago');
-            const formPago = document.getElementById('formPago');
-            const msjErrorSpan = $(inputMonto).siblings('.mensaje-error');
+            let validador = $('#formPago').validate();
+            let esValido = validador.checkForm();
+            let $btnSubmit = $('#btnSubmitModal');
+            let solicitud = $btnSubmit.val();
 
-            if (!btnSubmit) return;
-
-            let hayError = false;
-
-            if (selectMetodo && selectMetodo.value === "") hayError = true;
-            if (selectCuenta && selectCuenta.value === "") hayError = true;
-            
-            let montoPuro = parsearMonto(inputMonto.value);
-
-            // 
-            if (montoPuro > 999999.99) {
-                hayError = true;
-                $(inputMonto).removeClass('is-valid').addClass('is-invalid');
-                msjErrorSpan.text("El monto excede el límite permitido 999.999,99").show();
-            } else if (estatusPago === "0") {
-                hayError = true;
-                const visual = document.getElementById('estatus_pago_visual').textContent;
-                if (visual === "Excedido") {
-                    $(inputMonto).removeClass('is-valid').addClass('is-invalid');
-                    msjErrorSpan.text("El monto supera la deuda.").show();
-                } else if (visual === "Inválido") {
-                    $(inputMonto).removeClass('is-valid').addClass('is-invalid');
-                    msjErrorSpan.text("El monto es demasiado bajo.").show();
-                }
-            }
-
-            let esEfectivo = selectMetodo && selectMetodo.selectedIndex > 0 && 
-                selectMetodo.options[selectMetodo.selectedIndex].text.toLowerCase().includes('efectivo');
-            
-            if (esEfectivo && inputRef) {
-                $(inputRef).removeClass('is-invalid').addClass('is-valid');
-                $(inputRef).siblings('.mensaje-error').hide().text('');
-            }
-
-            const inputsRequeridos = Array.from(document.querySelectorAll('.input-evaluar:not(.opcional)'));
-            const expRegFalla = inputsRequeridos.some(input => input.classList.contains('is-invalid') || input.value.trim() === '');
-
-            if (expRegFalla || hayError) {
-                btnSubmit.disabled = true;
-                return;
-            }
-
-            if (btnSubmit.value === "actualizar" && formPago.hasAttribute('data-originales')) {
-                const org = JSON.parse(formPago.getAttribute('data-originales'));
-                const actualMonto = parsearMonto(inputMonto.value);
-                const actualRef = inputRef ? inputRef.value.trim() : '';
-                const actualMetodo = selectMetodo ? selectMetodo.value : '';
-                const actualBanco = selectCuenta ? selectCuenta.value : '';
-                const actualFecha = inputFecha ? inputFecha.value : '';
-
-                if (org.monto === actualMonto && org.referencia === actualRef &&
-                    org.metodo === actualMetodo && org.banco === actualBanco &&
-                    org.fecha === actualFecha) {
-                    btnSubmit.disabled = true;
-                    return;
-                }
-            }
-
-            btnSubmit.disabled = false;
+            if (solicitud === 'actualizar') { $btnSubmit.prop('disabled', !(esValido && hasChanged)); } 
+            else { $btnSubmit.prop('disabled', !esValido); }
         }, 50);
     }
 
     function filtrarBancos() {
-        const selectMetodo = document.getElementById('metodos');
-        const selectBanco = document.getElementById('cuentas');
-        const inputRef = document.getElementById('referencia');
+        const $selectMetodo = $('#metodos');
+        const $selectBanco = $('#cuentas');
+        const $inputRef = $('#referencia');
         
-        if (!selectMetodo || !selectBanco || selectMetodo.selectedIndex <= 0) {
-            forzarSeguridad();
-            return;
+        if (!$selectMetodo.length || !$selectBanco.length || $selectMetodo.prop('selectedIndex') <= 0) {
+            evaluarBotonModificar(); return;
         }
 
-        //si el metodo de pago es efectivo se autoseleccionan los select y se llena el campo de refencia para evitar mensaje de error al no ser numerico.
-        let esEfectivo = selectMetodo.options[selectMetodo.selectedIndex].text.toLowerCase().includes('efectivo');
-        if (inputRef) {
+        let esEfectivo = $selectMetodo.find('option:selected').text().toLowerCase().includes('efectivo');
+        if ($inputRef.length) {
             if (esEfectivo) {
-                inputRef.value = "EFECTIVO";
-                inputRef.readOnly = true;
-                inputRef.classList.add('bg-light', 'is-valid');
-                inputRef.classList.remove('solo-numeros', 'is-invalid'); 
-                $(inputRef).siblings('.mensaje-error').hide().text('');
+                $inputRef.val("EFECTIVO").prop('readonly', true).addClass('bg-light is-valid').removeClass('solo-numeros is-invalid'); 
+                $inputRef.siblings('.mensaje-error').hide().text('');
             } else {
-                if (inputRef.value === "EFECTIVO") inputRef.value = "";
-                inputRef.readOnly = false;
-                inputRef.classList.remove('bg-light', 'is-valid');
-                inputRef.classList.add('solo-numeros');
+                if ($inputRef.val() === "EFECTIVO") $inputRef.val("");
+                $inputRef.prop('readonly', false).removeClass('bg-light is-valid').addClass('solo-numeros');
             }
-            $(inputRef).trigger('input'); 
+            $inputRef.trigger('input'); 
         }
 
-        Array.from(selectBanco.options).forEach(opt => {
-            if (opt.value === "") return;
-            let esCaja = opt.text.toLowerCase().includes('caja');
-            
+        $selectBanco.find('option').each(function() {
+            if ($(this).val() === "") return;
+            let esCaja = $(this).text().toLowerCase().includes('caja');
             if (esEfectivo) {
-                opt.disabled = !esCaja;
-                if (esCaja) selectBanco.value = opt.value; 
+                $(this).prop('disabled', !esCaja);
+                if (esCaja) $selectBanco.val($(this).val()); 
             } else {
-                opt.disabled = esCaja;
+                $(this).prop('disabled', esCaja);
             }
         });
-
-        if (selectBanco.options[selectBanco.selectedIndex]?.disabled) {
-            selectBanco.value = "";
-        }
-        forzarSeguridad();
+        if ($selectBanco.find('option:selected').prop('disabled')) { $selectBanco.val(""); }
+        evaluarBotonModificar();
     }
 
-    //funcion que calcula el restante y asigna las tarjetas de aviso: PENDIENTE, COMPLETADO o EXCEDIDO.
     function calcularRestante() {
-        const inputMonto = document.getElementById('monto_ingresado');
-        const selectMetodo = document.getElementById('metodos');
+        let montoIngresado = montoInput ? montoInput.getNumber() : 0;
+        const $selectMetodo = $('#metodos');
         
         let moneda = 'USD';
-        if (selectMetodo && selectMetodo.selectedIndex >= 0) {
-            let opcion = selectMetodo.options[selectMetodo.selectedIndex];
-            if (opcion && !opcion.disabled) moneda = opcion.getAttribute('data-moneda') || 'USD';
+        if ($selectMetodo.length && $selectMetodo.prop('selectedIndex') >= 0) {
+            let $opcion = $selectMetodo.find('option:selected');
+            if ($opcion.length && !$opcion.prop('disabled')) moneda = $opcion.attr('data-moneda') || 'USD';
         }
 
-        let montoIngresado = parsearMonto(inputMonto.value);
         let dolaresCalculados = 0;
         let tasaUSD = tasasDelDia['USD'] || 1;
-        if (moneda === 'USD') {
-            dolaresCalculados = montoIngresado;
-        } else if (moneda === 'VES') {
-            dolaresCalculados = montoIngresado / tasaUSD;
+        if (moneda === 'USD') { dolaresCalculados = montoIngresado;
+        } else if (moneda === 'VES') { dolaresCalculados = montoIngresado / tasaUSD;
         } else {
             let tasaMonedaExtranjera = tasasDelDia[moneda] || 1;
             dolaresCalculados = (montoIngresado * tasaMonedaExtranjera) / tasaUSD; 
@@ -186,342 +259,360 @@ document.addEventListener("DOMContentLoaded", function () {
         let restanteCents = deudaCents - abonadoCents;
         let abonadoUSD = abonadoCents / 100;
         let mostrarRestanteUSD = Math.max(0, restanteCents / 100);
-        const spans = {
-            simb: document.getElementById('simbolo_moneda_dinamico'),
-            oculto: document.getElementById('monto_dolares_oculto'),
-            restUSD: document.getElementById('monto_restante_dinamico'),
-            restBS: document.getElementById('monto_restante_bs_dinamico')
-        };
+        
+        const $simb = $('#simbolo_moneda_dinamico');
+        const $oculto = $('#monto_dolares_oculto');
+        const $restUSD = $('#monto_restante_dinamico');
+        const $restBS = $('#monto_restante_bs_dinamico');
 
-        if (spans.simb) spans.simb.innerHTML = (moneda === 'VES') ? 'Bs' : (moneda === 'EUR' ? '€' : (moneda === 'USDT' ? 'USDT' : '$'));
-        if (spans.oculto) spans.oculto.value = abonadoUSD.toFixed(2);
-        if (spans.restUSD) {
-            spans.restUSD.textContent = mostrarRestanteUSD.toFixed(2);
-            spans.restUSD.className = 'input-group-text bg-white fw-bold';
-        }
-        if (spans.restBS) {
-            spans.restBS.textContent = (mostrarRestanteUSD * tasaUSD).toFixed(2);
-            spans.restBS.className = 'input-group-text bg-white fw-bold';
-        }
+        if ($simb.length) $simb.html((moneda === 'VES') ? 'Bs' : (moneda === 'EUR' ? '€' : (moneda === 'USDT' ? 'USDT' : '$')));
+        if ($oculto.length) $oculto.val(abonadoUSD.toFixed(2));
+        if ($restUSD.length) { $restUSD.text(formatearVisual(mostrarRestanteUSD)).attr('class', 'input-group-text bg-white fw-bold'); }
+        if ($restBS.length) { $restBS.text(formatearVisual(mostrarRestanteUSD * tasaUSD)).attr('class', 'input-group-text bg-white fw-bold'); }
 
-        const el = {
-            estatus: document.getElementById('estatus_pago'),
-            visual: document.getElementById('estatus_pago_visual'),
-            tarjeta: document.getElementById('tarjeta_estatus')
-        };
+        const $estatus = $('#estatus_pago');
+        const $visual = $('#estatus_pago_visual');
+        const $tarjeta = $('#tarjeta_estatus');
 
         const setEstatus = (val, texto, clTarjeta) => {
-            if (el.estatus) el.estatus.value = val;
-            if (el.visual) el.visual.textContent = texto;
-            if (el.tarjeta) el.tarjeta.className = `alert text-center shadow-sm mb-0 p-2 ${clTarjeta}`;
+            if ($estatus.length) $estatus.val(val);
+            if ($visual.length) $visual.text(texto);
+            if ($tarjeta.length) $tarjeta.attr('class', `alert text-center shadow-sm mb-0 p-2 ${clTarjeta}`);
         };
 
-        if (montoIngresado === 0) {
+        if (montoIngresado === 0 || montoIngresado === null) {
             setEstatus("0", "Pendiente", "alert-secondary text-dark");
         } else if (abonadoCents === 0) {
             setEstatus("0", "Inválido", "alert-danger text-white");
         } else if (restanteCents < 0 || montoIngresado > 999999.99) {
             setEstatus("0", "Excedido", "alert-danger text-white"); 
         } else {
-            if (restanteCents === 0) {
-                setEstatus("1", "Completado", "alert-success text-dark");
-            } else {
-                setEstatus("1", "Pendiente", "alert-warning text-dark"); 
-            }
+            if (restanteCents === 0) { setEstatus("1", "Completado", "alert-success text-dark"); } 
+            else { setEstatus("1", "Pendiente", "alert-warning text-dark"); }
         }
-        
-        forzarSeguridad();
     }
 
-    //funcion para autocompletar monto restante del envio.
     function autocompletarMonto() {
-        const inputMonto = document.getElementById('monto_ingresado');
-        const selectMetodo = document.getElementById('metodos');
-
+        const $selectMetodo = $('#metodos');
         let moneda = 'USD';
-        if (selectMetodo && selectMetodo.selectedIndex >= 0) {
-            let opcion = selectMetodo.options[selectMetodo.selectedIndex];
-            if (opcion && !opcion.disabled) moneda = opcion.getAttribute('data-moneda') || 'USD';
+        if ($selectMetodo.length && $selectMetodo.prop('selectedIndex') >= 0) {
+            let $opcion = $selectMetodo.find('option:selected');
+            if ($opcion.length && !$opcion.prop('disabled')) moneda = $opcion.attr('data-moneda') || 'USD';
         }
 
         let tasaUSD = tasasDelDia['USD'] || 1;
         let baseUSD = Math.round(montoBaseCalculo * 100) / 100;
         let valorAutocompletado = 0;
 
-        if (moneda === 'USD') {
-            valorAutocompletado = baseUSD;
-        } else if (moneda === 'VES') {
-            valorAutocompletado = baseUSD * tasaUSD;
+        if (moneda === 'USD') { valorAutocompletado = baseUSD;
+        } else if (moneda === 'VES') { valorAutocompletado = baseUSD * tasaUSD;
         } else {
             let tasaMonedaExtranjera = tasasDelDia[moneda] || 1;
             valorAutocompletado = (baseUSD * tasaUSD) / tasaMonedaExtranjera;
         }
 
-        if (inputMonto) {
-            inputMonto.value = formatearVisual(valorAutocompletado);
-            $(inputMonto).trigger('input').trigger('change');
+        if (montoInput) {
+            montoInput.set(valorAutocompletado);
             calcularRestante();
-            forzarSeguridad();
+            evaluarBotonModificar();
         }
     }
 
-    document.getElementById('btn_autocompletar')?.addEventListener('click', autocompletarMonto);
+    $('#btn_autocompletar').on('click', autocompletarMonto);
 
-    let isFormatting = false;
-    document.body.addEventListener('input', function (e) {
-        if (e.target && e.target.id === 'monto_ingresado') {
-            if (isFormatting) return;
-            isFormatting = true;
-            
-            let input = e.target;
-            let valorPuro = input.value.replace(/\D/g, ''); 
-            
-            if (valorPuro !== '') {
-                let num = parseInt(valorPuro, 10) / 100;
-                input.value = formatearVisual(num);
-            } else {
-                input.value = "";
-            }
-            
-            calcularRestante();
-            isFormatting = false;
+    $(document).on('change', '#metodos, #cuentas, #fecha_pago, #referencia', function () {
+        if ($(this).attr('id') === 'metodos') {
+            filtrarBancos();
+            let curMonto = montoInput ? montoInput.getNumber() : 0;
+            if(curMonto === 0 || curMonto === null) autocompletarMonto(); 
         }
-        forzarSeguridad();
+        calcularRestante(); 
+        evaluarBotonModificar();
     });
 
-    document.body.addEventListener('change', e => {
-        if (['metodos', 'cuentas', 'fecha_pago', 'referencia', 'monto_ingresado'].includes(e.target?.id)) {
-            if (e.target.id === 'metodos') filtrarBancos();
-            calcularRestante(); 
-            forzarSeguridad();
-        }
-    });
+    if (modalPago.length) {
+        modalPago.on('show.bs.modal', function (event) {
+            inicializarAutoNumeric();
 
-    const modalPago = document.getElementById('modalPago');
-    if (modalPago) {
-        modalPago.addEventListener('show.bs.modal', function (event) {
-            const botonTrig = event.relatedTarget;
-            const tituloModal = modalPago.querySelector('#modalLabel');
-            const btnSubmit = modalPago.querySelector('#btnSubmitModal');
-            const formPago = document.getElementById('formPago');
+            const botonTrig = $(event.relatedTarget);
+            const $tituloModal = $('#modalLabel');
+            const $btnSubmit = $('#btnSubmitModal');
+            const $formPago = $('#formPago');
 
-            if ((botonTrig.title === "Registrar" || botonTrig.getAttribute('title') === 'Registrar') && parseFloat(botonTrig.getAttribute('data-montorestante')) <= 0) {
+            let validador = $formPago.validate();
+            validador.resetForm();
+            $formPago.find('input, select').removeClass('is-valid is-invalid');
+            $('.mensaje-error').hide().text('');
+            hasChanged = false;
+
+            if (botonTrig.attr('title') === "Registrar" && parseFloat(botonTrig.attr('data-montorestante')) <= 0) {
                 event.preventDefault();
-                Swal.fire({ title: "Envío Solvente", text: "Este envío ya está pagado en su totalidad.", icon: "info" });
+                Swal.fire({ 
+                    title: "Envío Solvente", 
+                    text: "Este envío ya está pagado en su totalidad.", 
+                    icon: "info" });
                 return;
             }
 
-            const inputs = {
-                cod_pago: modalPago.querySelector('#cod_pago'),
-                cod_envio: modalPago.querySelector('#cod_envio'),
-                cod_detalle: modalPago.querySelector('#cod_detallepago'),
-                monto: modalPago.querySelector('#monto_ingresado'),
-                fecha: modalPago.querySelector('#fecha_pago'),
-                metodo: modalPago.querySelector('#metodos'),
-                banco: modalPago.querySelector('#cuentas'),
-                referencia: modalPago.querySelector('#referencia')
-            };
+            const $cod_pago = $('#cod_pago');
+            const $cod_envio = $('#cod_envio');
+            const $cod_detalle = $('#cod_detallepago');
+            const $fecha = $('#fecha_pago');
+            const $metodo = $('#metodos');
+            const $banco = $('#cuentas');
+            const $referencia = $('#referencia');
 
-            inputs.referencia.classList.add('solo-numeros');
-            inputs.referencia.readOnly = false;
-            
-            modalPago.querySelectorAll('.input-evaluar').forEach(inp => {
-                $(inp).removeClass('is-valid is-invalid').siblings('.mensaje-error').hide().text('');
-            });
-            
-            btnSubmit.disabled = true;
+            $referencia.addClass('solo-numeros').prop('readonly', false);
+            $btnSubmit.prop('disabled', true);
 
-            if (botonTrig.title === "Registrar" || botonTrig.getAttribute('title') === 'Registrar') {
-                tituloModal.innerHTML = '<i class="bi bi-wallet2"></i> Registro de Pago';
-                modalPago.querySelector('#div_codigo_envio').style.display = 'block';
-                modalPago.querySelector('#codigo_envio_mostrar').textContent = botonTrig.getAttribute('data-envio');
-                btnSubmit.value = "registrar";
-                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Registrar';
+            if (botonTrig.attr('title') === "Registrar") {
+                $tituloModal.html('<i class="bi bi-wallet2"></i> Registro de Pago');
+                $('#div_codigo_envio').show();
+                $('#codigo_envio_mostrar').text(botonTrig.attr('data-envio'));
+                $btnSubmit.val("registrar").html('<i class="bi bi-save"></i> Registrar');
 
-                montoBaseCalculo = parsearMonto(botonTrig.getAttribute('data-montorestante'));
+                montoBaseCalculo = parsearMonto(botonTrig.attr('data-montorestante'));
+                $cod_pago.val("");
+                $cod_envio.val(botonTrig.attr('data-envio'));
+                $cod_detalle.val("");
+                
+                if(montoInput) montoInput.set(''); 
 
-                inputs.cod_pago.value = "";
-                inputs.cod_envio.value = botonTrig.getAttribute('data-envio');
-                inputs.cod_detalle.value = "";
-                inputs.monto.value = "";
-                inputs.referencia.value = "";
-                inputs.metodo.selectedIndex = 0;
-                Array.from(inputs.banco.options).forEach(opt => opt.disabled = false);
-                inputs.banco.selectedIndex = 0;
+                $referencia.val("");
+                $metodo.prop('selectedIndex', 0);
+                $banco.find('option').prop('disabled', false);
+                $banco.prop('selectedIndex', 0);
                 
                 const hoy = new Date();
                 const dia = String(hoy.getDate()).padStart(2, '0');
                 const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-                inputs.fecha.value = `${hoy.getFullYear()}-${mes}-${dia}`;
+                $fecha.val(`${hoy.getFullYear()}-${mes}-${dia}`);
 
-                formPago.removeAttribute('data-originales');
+                $formPago.removeAttr('data-originales');
                 filtrarBancos(); calcularRestante();
                 
-            } else if (botonTrig.title === "Editar" || botonTrig.getAttribute('title') === 'Editar') {
-                tituloModal.innerHTML = '<i class="bi bi-pencil-square"></i> Editar Pago';
-                modalPago.querySelector('#div_codigo_envio').style.display = 'none';
-                btnSubmit.value = "actualizar";
-                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Actualizar';
-                montoBaseCalculo = parsearMonto(botonTrig.getAttribute('data-montobaseeditar'));
-                inputs.cod_pago.value = botonTrig.getAttribute('data-id');
-                inputs.cod_envio.value = botonTrig.getAttribute('data-envio');
-                inputs.cod_detalle.value = botonTrig.getAttribute('data-detalle');
-                inputs.fecha.value = botonTrig.getAttribute('data-fecha');
+            } else if (botonTrig.attr('title') === "Editar") {
+                $tituloModal.html('<i class="bi bi-pencil-square"></i> Editar Pago');
+                $('#div_codigo_envio').hide();
+                $btnSubmit.val("actualizar").html('<i class="bi bi-save"></i> Actualizar');
+                
+                montoBaseCalculo = parsearMonto(botonTrig.attr('data-montobaseeditar'));
+                $cod_pago.val(botonTrig.attr('data-id'));
+                $cod_envio.val(botonTrig.attr('data-envio'));
+                $cod_detalle.val(botonTrig.attr('data-detalle'));
+                $fecha.val(botonTrig.attr('data-fecha'));
 
-                let metodoGuardado = String(botonTrig.getAttribute('data-metodo') || '');
-                inputs.metodo.value = metodoGuardado;
-                if (inputs.metodo.value !== metodoGuardado) inputs.metodo.selectedIndex = 0;
+                let metodoGuardado = String(botonTrig.attr('data-metodo') || '');
+                $metodo.val(metodoGuardado);
+                if ($metodo.val() !== metodoGuardado) $metodo.prop('selectedIndex', 0);
 
-                let montoOriginal_BD = parseFloat(botonTrig.getAttribute('data-monto-original')) || 0;
-                let montoUSD_BD = parseFloat(botonTrig.getAttribute('data-monto')) || 0;
+                let montoOriginal_BD = parseFloat(botonTrig.attr('data-monto-original')) || 0;
+                let montoUSD_BD = parseFloat(botonTrig.attr('data-monto')) || 0;
 
                 if(montoOriginal_BD > 0 && montoUSD_BD > 0 && montoOriginal_BD !== montoUSD_BD) {
-                    formPago.setAttribute('data-tasa-historica', montoOriginal_BD / montoUSD_BD);
+                    $formPago.attr('data-tasa-historica', montoOriginal_BD / montoUSD_BD);
                 } else {
-                    formPago.setAttribute('data-tasa-historica', 1);
+                    $formPago.attr('data-tasa-historica', 1);
                 }
 
-                inputs.monto.value = formatearVisual(montoOriginal_BD);
-                inputs.referencia.value = botonTrig.getAttribute('data-referencia');
+                if(montoInput) montoInput.set(montoOriginal_BD); 
+
+                $referencia.val(botonTrig.attr('data-referencia'));
                 filtrarBancos();
-                inputs.banco.value = String(botonTrig.getAttribute('data-banco') || '');
+                $banco.val(String(botonTrig.attr('data-banco') || ''));
 
                 const originales = {
-                    monto: parsearMonto(inputs.monto.value),
-                    referencia: inputs.referencia.value.trim(),
-                    metodo: inputs.metodo.value,
-                    banco: inputs.banco.value,
-                    fecha: inputs.fecha.value
+                    monto: montoInput ? montoInput.getNumber() : montoOriginal_BD,
+                    referencia: $referencia.val().trim(),
+                    metodo: $metodo.val(),
+                    banco: $banco.val(),
+                    fecha: $fecha.val()
                 };
-                formPago.setAttribute('data-originales', JSON.stringify(originales));
+                $formPago.attr('data-originales', JSON.stringify(originales));
 
                 setTimeout(() => {
-                    $(inputs.monto).trigger('input');
-                    if (inputs.referencia.value !== 'EFECTIVO') {
-                        $(inputs.referencia).trigger('input');
-                    }
+                    if ($referencia.val() !== 'EFECTIVO') { $referencia.trigger('input'); }
                     calcularRestante(); 
-                    forzarSeguridad();
+                    evaluarBotonModificar();
                 }, 100);
             }
         });
-    }
 
-    const formPago = document.getElementById('formPago');
-    if (formPago) {
-        formPago.addEventListener('submit', function (event) {
-            const btnSubmit = document.getElementById('btnSubmitModal');
-            const inputMonto = document.getElementById('monto_ingresado');
-            const estadoActual = document.getElementById('estatus_pago').value;
-
-            if (estadoActual === "0") {
-                event.preventDefault();
-                Swal.fire({ title: "Acción Denegada", text: "Verifique los errores en el formulario antes de guardar.", icon: "error" });
-                return;
-            }
-
-            let montoPuro = parsearMonto(inputMonto.value);
-
-            if (btnSubmit.value === "actualizar") {
-                const org = JSON.parse(this.getAttribute('data-originales'));
-                if (org.monto === montoPuro && org.referencia === document.getElementById('referencia').value.trim() &&
-                    org.metodo === document.getElementById('metodos').value && org.banco === document.getElementById('cuentas').value &&
-                    org.fecha === document.getElementById('fecha_pago').value) {
-                    event.preventDefault();
-                    Swal.fire({ title: "Sin modificaciones", text: "No se registraron cambios.", icon: "info" });
-                    return;
-                }
-            }
-            inputMonto.value = montoPuro.toFixed(2);
+        modalPago.on('hidden.bs.modal', function () {
+            if (document.activeElement) document.activeElement.blur();
+            if(montoInput) montoInput.set(''); 
         });
     }
 
-    //Modal eliminar
-    document.body.addEventListener('click', function(event) {
-        let botonEliminar = event.target.closest('.btn-eliminar');
-        if (botonEliminar) {
-            event.preventDefault(); 
-            let idPago = botonEliminar.getAttribute('data-id');
+    // Modal Anular / Eliminar Pago
+    $("table tbody").on("click", ".btn-eliminar", function (event) {
+        event.preventDefault();
+        const idPago = $(this).attr("data-id");
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
+            buttonsStyling: false
+        });
 
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
-                buttonsStyling: false
-            });
+        swalWithBootstrapButtons.fire({
+            title: "¿Está seguro que desea anular este pago?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                ajaxEnvioDatosPago("eliminar", null, null, { tipoSolicitud: 'eliminar', datos: { cod_pago: idPago } });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire({ 
+                        title: "Cancelado", 
+                        text: "Anulación de pago cancelada", 
+                        icon: "error" });
+            }
+        });
+    });
+});
 
-            swalWithBootstrapButtons.fire({
-                title: "¿Está seguro que desea eliminar este pago?",
-                text: "¡No podrás revertir esto!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Confirmar",
-                cancelButtonText: "Cancelar",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '?url=pago';
-                    form.innerHTML = `<input type="hidden" name="tipoSolicitud" value="eliminar"><input type="hidden" name="cod_pago" value="${idPago}">`;
-                    document.body.appendChild(form);
-                    form.submit();
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire({
-                        title: "Cancelado",
-                        text: "Eliminación del pago cancelada",
-                        icon: "error"
-                    });
-                }
+function ajaxEnvioDatosPago(solicitud, modal, btnEnviar, datosForm) {
+    const startTime = Date.now();
+    $.ajax({
+        url: "index.php?url=pago",
+        type: "POST",
+        dataType: "json",
+        data: datosForm,
+        beforeSend: function () {
+            if (modal) { modal.modal('hide'); }
+            if (btnEnviar) { $(btnEnviar).prop("disabled", true); }
+            Swal.fire({ 
+                title: 'Procesando...', text: 'Por favor espere un momento.', 
+                allowOutsideClick: false, 
+                didOpen: () => { if(document.activeElement) document.activeElement.blur(); Swal.showLoading(); } 
             });
         }
-    });
-
-    //mensajes de alerta
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-    const mensaje = urlParams.get('msg');
-
-    if (status) {
+    })
+    .done(function (response) {
+        const elapsedTime = Date.now() - startTime;
+        const delay = Math.max(0, 500 - elapsedTime);
         setTimeout(() => {
-            let title, text, icon;
-            switch (status) {
-                case 'success':
-                    title = "Registro exitoso!"; 
-                    text = "El pago ha sido registrado correctamente."; 
-                    icon = "success"; break;
-                case 'updated':
-                    title = "Actualización exitosa!"; 
-                    text = "El pago ha sido modificado correctamente."; 
-                    icon = "success"; break;
-                case 'deleted':
-                    title = "¡Eliminado!"; 
-                    text = "El pago ha sido eliminado correctamente."; 
-                    icon = "success"; break;
-                case 'completed':
-                    title = "¡Envío solvente!"; 
-                    text = "El pago del envío ya fue completado previamente al 100%."; 
-                    icon = "warning"; break;
-                case 'exists_ref':
-                    title = "¡Referencia existente!"; 
-                    text = "Ya existe un pago registrado con la referencia bancaria ingresada."; 
-                    icon = "warning"; break;
-                case 'pending_error':
-                    title = "Acción bloqueada"; 
-                    text = "No se puede eliminar un pago que se encuentra en curso o pendiente."; 
-                    icon = "error"; break;
-                case 'empty': 
-                    title = "Campos vacíos!"; 
-                    text = "Uno o más campos están vacíos."; 
-                    icon = "warning"; break;
-                case 'error': 
-                    title = "Error!"; 
-                    text = `Se produjo un error en el proceso: ${mensaje || 'desconocido'}.`; 
-                    icon = "error"; break;
-                case 'exception': 
-                    title = "Exception Retornada!"; 
-                    text = `El servidor devolvió el siguiente mensaje: ${mensaje || 'desconocido'}`; 
-                    icon = "error"; break;
-            }
-            if (title && text && icon) Swal.fire({ title: title, text: text, icon: icon });
-        }, 100);
+            mostrarAlerta(response.status, response.message);
+            ajaxConsultarPago();
+        }, delay);
+    })
+    .fail(function (xhr, status, error) {
+        console.error("Error AJAX:", error);
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
+        Swal.fire({ title: "Error de Servidor", text: "Ocurrió un problema de conexión al procesar la solicitud.", icon: "error" });
+    })
+    .always(function () {
+        if (btnEnviar) { $(btnEnviar).prop("disabled", false); }
+    });
+}
+
+function ajaxConsultarPago() {
+    $.ajax({
+        url: "index.php?url=pago", 
+        type: "POST", 
+        dataType: "json", 
+        data: { tipoSolicitud: "consultar" } 
+    }).done(function (response) { 
+        let tbody = $("table tbody");
+        tbody.empty();
+
+        if (Array.isArray(response) && response.length > 0) {
+            let rowsHtml = "";
+            $.each(response, function (index, dato) {
+                let badgeEstatus = dato.estado_envio == 1 ? '<span class="badge bg-success">Completado</span>' : '<span class="badge bg-warning text-dark">Pendiente</span>';
+                
+                let formatearNum = (num) => Number(num).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                
+                let restante = parseFloat(dato.monto_total) - parseFloat(dato.total_abonado_envio);
+                restante = restante < 0 ? 0 : restante;
+
+                rowsHtml += `
+                    <tr>
+                        <td class="ps-4 fw-bold text-dark">${dato.cod_envio}</td>
+                        <td>${badgeEstatus}</td>
+                        <td class="text-secondary fw-medium">$${formatearNum(dato.monto_total)}</td>
+                        <td class="text-secondary">$${formatearNum(dato.monto_abonado_usd)}</td>
+                        <td class="text-secondary">$${formatearNum(restante)}</td>
+                        <td>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" title="Registrar" data-bs-toggle="modal" data-bs-target="#modalPago"
+                                data-envio="${dato.cod_envio}" data-montorestante="${restante}">
+                                <i class="bi bi-folder-plus"></i> Añadir
+                            </button>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline me-3 btn-editar" title="Editar" data-bs-toggle="modal" data-bs-target="#modalPago"
+                                data-id="${dato.cod_pago}" data-envio="${dato.cod_envio}" data-detalle="${dato.cod_detallepago}" data-fecha="${dato.fecha}" 
+                                data-metodo="${dato.cod_metodopago}" data-banco="${dato.cod_banco}" data-monto="${dato.monto_abonado_usd}" data-monto-original="${dato.monto_ingresado_original}" data-referencia="${dato.referencia}" data-montobaseeditar="${parseFloat(dato.monto_total) - (parseFloat(dato.total_abonado_envio) - parseFloat(dato.monto_abonado_usd))}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar" title="Eliminar" data-id="${dato.cod_pago}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.html(rowsHtml);
+        } else {
+            tbody.html('<tr><td colspan="7" class="text-center text-muted py-4">No hay pagos registrados.</td></tr>');
+        }
+    })
+    .fail(function (xhr, status, error) { 
+        console.error(`Error AJAX al cargar pagos:`, error); 
+        console.log("Respuesta cruda del servidor:", xhr.responseText);
+        Swal.fire({ title: "Error de Servidor", text: "Ocurrió un problema de conexión al procesar la solicitud.", icon: "error" });
+    });
+}
+
+// Mensajes y alertas
+function mostrarAlerta(status, mensaje = "") {
+    let title, text, icon;
+    switch (status) {
+        case 'success':
+            title = "Registro exitoso!"; 
+            text = mensaje !== "" ? mensaje : "El pago ha sido registrado correctamente."; 
+            icon = "success"; break;
+        case 'updated':
+            title = "Actualización exitosa!"; 
+            text = mensaje !== "" ? mensaje : "El pago ha sido modificado correctamente."; 
+            icon = "success"; break;
+        case 'deleted':
+            title = "¡Anulado!"; 
+            text = mensaje !== "" ? mensaje : "El pago ha sido anulado correctamente."; 
+            icon = "success"; break;
+        case 'completed':
+            title = "¡Envío solvente!"; 
+            text = mensaje !== "" ? mensaje : "El pago del envío ya fue completado previamente al 100%."; 
+            icon = "warning"; break;
+        case 'exists_ref':
+            title = "¡Referencia existente!"; 
+            text = mensaje !== "" ? mensaje : "Ya existe un pago registrado con la referencia bancaria ingresada."; 
+            icon = "warning"; break;
+        case 'pending_error':
+            title = "Acción bloqueada"; 
+            text = mensaje !== "" ? mensaje : "No se puede anular un pago de un envío que aún no ha sido ANULADO."; 
+            icon = "error"; break;
+        case 'empty': 
+            title = "Campos vacíos!"; 
+            text = mensaje !== "" ? mensaje : "Uno o más campos están vacíos."; 
+            icon = "warning"; break;
+        case 'error': 
+            title = "Error!"; 
+            text = mensaje !== "" ? mensaje : `Se produjo un error en el proceso.`; 
+            icon = "error"; break;
+        case 'exception': 
+            title = "Exception Retornada!"; 
+            text = mensaje !== "" ? mensaje : `El servidor devolvió una excepción.`; 
+            icon = "error"; break;
     }
-});
+    if (title && text && icon) {
+        Swal.fire({ 
+            title: title, text: text, icon: icon, 
+            didOpen: () => { if(document.activeElement) document.activeElement.blur(); },
+            willClose: () => { if(document.activeElement) document.activeElement.blur(); }
+        });
+    }
+}

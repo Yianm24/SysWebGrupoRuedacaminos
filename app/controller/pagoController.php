@@ -4,8 +4,9 @@ namespace App\Controller;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 if (!isset($_SESSION['usuario'])) {
-    header("Location: ?url=login");
+    echo json_encode(['status' => 'error', 'message' => 'No autorizado']);
     exit(); 
 }
 
@@ -16,69 +17,116 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 $rol_usuario = $_SESSION['usuario']['rol'];
 
 if (in_array($solicitud, ['actualizar', 'eliminar']) && $rol_usuario != 6) {
-    header("Location: ?url=pago&status=unauthorized");
+    echo json_encode(['status' => 'error', 'message' => 'No autorizado para realizar esta acción.']);
     exit();
 }
 
 switch ($solicitud) {
     case 'registrar':
-        if ($pago->verificarPagoCompletado($_POST['cod_envio'])) {
-            header("Location: ?url=pago&status=completed");
+        $dataAjax = json_encode($_POST['datos'] ?? []);
+        $datosObt = json_decode($dataAjax, true);
+
+        if ($pago->verificarPagoCompletado($datosObt['cod_envio'] ?? '')) {
+            echo json_encode(['status' => 'completed', 'message' => 'El pago del envío ya fue completado previamente al 100%.']);
             exit();
         }
 
-        if ($pago->verificarReferenciaDuplicada($_POST['referencia'])) {
-        header("Location: ?url=pago&status=exists_ref");
-        exit();
+        if ($pago->verificarReferenciaDuplicada($datosObt['referencia'] ?? '')) {
+            echo json_encode(['status' => 'exists_ref', 'message' => 'Ya existe un pago registrado con la referencia bancaria ingresada.']);
+            exit();
         }
 
         date_default_timezone_set('America/Caracas');
-        $fecha = $_POST['fecha_pago'] ?? date('Y-m-d');
-        if (empty($_POST['fecha_pago'])) {
-            $_POST['fecha_pago'] = date('Y-m-d');
-        }
+        $fecha = $datosObt['fecha_pago'] ?? date('Y-m-d');
         $hora = date('H:i:s');
-        $estatus_calculado = $pago->determinarEstatusPago($_POST['cod_envio'], $_POST['monto']);
+        $estatus_calculado = $pago->determinarEstatusPago($datosObt['cod_envio'] ?? '', $datosObt['monto'] ?? '');
 
-            $resultado = $pago->regDatosPago(
-                ['fecha_pago', 'monto', 'monto_ingresado', 'referencia', 'cod_envio', 'metodos', 'cuentas'],
-                $hora,
-                $estatus_calculado
-            );
+        $resultado = $pago->regDatosPago(
+            [
+                $fecha, 
+                $datosObt['monto'] ?? '', 
+                $datosObt['monto_ingresado'] ?? '', 
+                $datosObt['referencia'] ?? '', 
+                $datosObt['cod_envio'] ?? '', 
+                $datosObt['metodos'] ?? '', 
+                $datosObt['cuentas'] ?? ''
+            ],
+            $hora,
+            $estatus_calculado
+        );
 
-            header("Location: ?url=pago&status={$resultado}");
-            exit();
+        if (is_string($resultado) && is_array(json_decode($resultado, true))) {
+            echo $resultado;
+        } else {
+            echo json_encode(['status' => $resultado, 'message' => 'El pago ha sido registrado correctamente.']);
+        }
+        exit();
+        break;
+
+    case 'consultar':
+        $registros = $pago->obt_RegistrosPago();
+        echo json_encode($registros);
+        exit();
+        break;
 
     case 'actualizar':
-        if ($pago->verificarReferenciaDuplicada($_POST['referencia'], $_POST['cod_pago'])) {
-            header("Location: ?url=pago&status=exists_ref");
+        $dataAjax = json_encode($_POST['datos'] ?? []);
+        $datosObt = json_decode($dataAjax, true);
+
+        if ($pago->verificarReferenciaDuplicada($datosObt['referencia'] ?? '', $datosObt['cod_pago'] ?? '')) {
+            echo json_encode(['status' => 'exists_ref', 'message' => 'Ya existe otro pago registrado con la referencia bancaria ingresada.']);
             exit();
         }
 
         date_default_timezone_set('America/Caracas');
-        $hora = $_POST['hora'] ?? date('H:i:s');
-        $estatus_calculado = $pago->determinarEstatusPago($_POST['cod_envio'], $_POST['monto'], $_POST['cod_pago']);
+        $hora = date('H:i:s');
+        $estatus_calculado = $pago->determinarEstatusPago($datosObt['cod_envio'] ?? '', $datosObt['monto'] ?? '', $datosObt['cod_pago'] ?? '');
         
         $resultado = $pago->actDatosPago(
-            ['cod_pago', 'fecha_pago', 'monto', 'monto_ingresado', 'referencia', 'cod_detallepago', 'metodos', 'cuentas'], 
+            [
+                $datosObt['cod_pago'] ?? '', 
+                $datosObt['fecha_pago'] ?? '', 
+                $datosObt['monto'] ?? '', 
+                $datosObt['monto_ingresado'] ?? '', 
+                $datosObt['referencia'] ?? '', 
+                $datosObt['cod_detallepago'] ?? '', 
+                $datosObt['metodos'] ?? '', 
+                $datosObt['cuentas'] ?? ''
+            ], 
             $hora, 
             $estatus_calculado
         );
-        header("Location: ?url=pago&status={$resultado}");
+
+        if (is_string($resultado) && is_array(json_decode($resultado, true))) {
+            echo $resultado;
+        } else {
+            echo json_encode(['status' => $resultado, 'message' => 'El pago ha sido modificado correctamente.']);
+        }
         exit();
+        break;
 
     case 'eliminar':
-            $resultado = $pago->elmDatosPago(['cod_pago']);
-            header("Location: ?url=pago&status={$resultado}");
-            exit();
-    }
+        $dataAjax = json_encode($_POST['datos'] ?? []);
+        $datosObt = json_decode($dataAjax, true);
 
-$registros = $pago->obt_RegistrosPago();
-$tasasJSON = json_encode($pago->obt_TasasDelDia());
-$bancos = $pago->obt_BancosActivos();
-$metodosPago = $pago->obt_MetodosPagoActivos();
+        $resultado = $pago->elmDatosPago([$datosObt['cod_pago'] ?? '']);
+        if (is_string($resultado) && is_array(json_decode($resultado, true))) {
+            echo $resultado;
+        } else {
+            echo json_encode(['status' => $resultado, 'message' => 'El pago ha sido anulado correctamente.']);
+        }
+        exit();
+        break;
+}
 
-include 'app/view/layout/header.php';
-include 'app/view/pago/pagoView.php';
-include 'app/view/layout/footer.php';
+if (empty($solicitud)) {
+    $registros = $pago->obt_RegistrosPago();
+    $tasasJSON = json_encode($pago->obt_TasasDelDia());
+    $bancos = $pago->obt_BancosActivos();
+    $metodosPago = $pago->obt_MetodosPagoActivos();
+
+    include 'app/view/layout/header.php';
+    include 'app/view/pago/pagoView.php';
+    include 'app/view/layout/footer.php';
+}
 ?>
