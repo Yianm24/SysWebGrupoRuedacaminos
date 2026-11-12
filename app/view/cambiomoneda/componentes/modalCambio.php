@@ -25,7 +25,7 @@
 
                     <div class="mb-3">
                         <label for="tasa" class="form-label">Valor Tasa (VES)</label>
-                        <input type="text" class="form-control numeros-decimales input-evaluar" id="tasa" name="tasa" placeholder="Ej: 10,00" minlength="4" maxlength="14" required>
+                        <input type="text" class="form-control numeros-decimales input-evaluar" id="tasa" name="tasa" placeholder="Ej: 10,00" minlength="4" maxlength="12" required>
                         <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                     </div>
                 </div>

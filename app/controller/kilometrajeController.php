@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] != 6) {
-    header("Location: ?url=dashboard&status=unauthorized");
+    echo json_encode(['status' => 'error', 'message' => 'No autorizado']);
     exit(); 
 }
 

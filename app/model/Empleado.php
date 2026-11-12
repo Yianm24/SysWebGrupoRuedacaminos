@@ -25,10 +25,14 @@ class Empleado extends Conexion
     }
 
     public function obt_TodosLosCargos() {
-        $sentencia = "SELECT cod_cargo, nombre FROM cargo WHERE estado = 1";
-        $select = $this->conexion->prepare($sentencia);
-        $select->execute();
-        return $select->fetchAll(\PDO::FETCH_ASSOC);
+        try {
+            $sentencia = "SELECT cod_cargo, nombre FROM cargo WHERE estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
     }
     public function obt_EmpleadosCargo(int $rol){
         try {
@@ -48,10 +52,7 @@ class Empleado extends Conexion
     public function obt_RegistrosEmpleado()
     {
         try {
-            $sentencia = "SELECT e.*, c.nombre as nombre_cargo 
-                        FROM empleado e 
-                        INNER JOIN cargo c ON e.cod_cargo = c.cod_cargo 
-                        WHERE e.estado = 1";
+            $sentencia = "SELECT e.*, c.nombre as nombre_cargo FROM empleado e INNER JOIN cargo c ON e.cod_cargo = c.cod_cargo WHERE e.estado = 1";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
             return $select->fetchAll(\PDO::FETCH_ASSOC);
