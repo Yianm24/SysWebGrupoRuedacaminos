@@ -13,7 +13,7 @@
 
                     <div class="mb-3">
                         <label for="moneda" class="form-label">Moneda</label>
-                        <select class="form-select" id="moneda" name="moneda" required>
+                        <select class="form-select input-evaluar" id="moneda" name="moneda" required>
                             <option value="" selected disabled>Seleccionar...</option>
                             <?php foreach ($listaMonedas as $moneda): ?>
                                 <option value="<?= $moneda['cod_moneda'] ?>">
@@ -25,7 +25,7 @@
 
                     <div class="mb-3">
                         <label for="tasa" class="form-label">Valor Tasa (VES)</label>
-                        <input type="text" class="form-control numeros-decimales input-evaluar" id="tasa" name="tasa" placeholder="0.00" required>
+                        <input type="text" class="form-control numeros-decimales input-evaluar" id="tasa" name="tasa" placeholder="Ej: 10,00" minlength="4" maxlength="14" required>
                         <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                     </div>
                 </div>
