@@ -1,11 +1,12 @@
 <?php
 namespace App\Model;
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
+use App\Traits\ExpRegexTrait;
 
 class CambioMoneda extends Conexion
 {
-    use ValidadorTrait;
+    use ValidadorTraitAjax, ExpRegexTrait;
 
     private $cod_cambio;
     private $tasa;
@@ -18,10 +19,14 @@ class CambioMoneda extends Conexion
     }
 
     public function obt_TodasLasMonedas() {
-        $sentencia = "SELECT cod_moneda, nombre, abreviatura FROM moneda WHERE estado = 1 AND abreviatura != 'VES'";
-        $select = $this->conexion->prepare($sentencia);
-        $select->execute();
-        return $select->fetchAll(\PDO::FETCH_ASSOC);
+        try {
+            $sentencia = "SELECT cod_moneda, nombre, abreviatura FROM moneda WHERE estado = 1 AND abreviatura != 'VES'";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
     }
 
     public function verificarTasaDuplicada($cod_moneda, $fecha, $id_actual = null) {
@@ -41,17 +46,54 @@ class CambioMoneda extends Conexion
         return $stmt->fetchColumn() > 0;
     }
 
+    public function verificarUsoEnPagos($cod_cambio) {
+        try {
+            $stmt = $this->conexion->prepare("SELECT cod_moneda, fecha FROM cambio_moneda WHERE cod_cambio = ?");
+            $stmt->execute([$cod_cambio]);
+            $cambio = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if ($cambio) {
+                $sql = "SELECT COUNT(*) FROM pago p INNER JOIN detalle_pago dp ON p.cod_detallepago = dp.cod_detallepago INNER JOIN metodo_pago mp ON dp.cod_metodopago = mp.cod_metodo WHERE mp.cod_moneda = ? AND p.fecha = DATE(?) AND p.estado = 1";
+                $check = $this->conexion->prepare($sql);
+                $check->execute([$cambio['cod_moneda'], $cambio['fecha']]);
+                return $check->fetchColumn() > 0;
+            }
+            return false;
+        } catch (\PDOException $e) {
+            return true;
+        }
+    }
+
+    public function obt_RegistrosCambios() {
+        try {
+            $sentencia ="SELECT c.cod_cambio, c.tasa, c.fecha, c.cod_moneda, m.abreviatura FROM cambio_moneda c INNER JOIN moneda m ON c.cod_moneda = m.cod_moneda WHERE c.estado = 1 GROUP BY c.cod_cambio ORDER BY c.fecha DESC";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            return $select->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
     public function regDatosCambio(array $campos) {
-        if (is_array($this->validarPost($campos, 'cambiomoneda'))) {
-            $datos = $this->validarPost($campos, 'cambiomoneda');
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            if (strlen($resultadoTrait[0]) < 1 || strlen($resultadoTrait[0]) > 10) {
+                return json_encode(['status' => 'error', 'message' => 'La tasa supera el límite numérico permitido.']);
+            }
+            $valTasa = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[0]]);
+            if ($valTasa !== true) return $valTasa;
+
+            $valMoneda = $this->ExplorarDatos(['solo-numeros' => $resultadoTrait[1]]);
+            if ($valMoneda !== true) return $valMoneda;
+
             date_default_timezone_set('America/Caracas');
-        
-            $this->tasa = $datos['tasa'];
-            $this->cod_moneda = $datos['moneda'];
+            $this->tasa = $resultadoTrait[0];
+            $this->cod_moneda = $resultadoTrait[1];
             $this->fecha = date('Y-m-d H:i:s');
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
         return $this->registrarCambio();
     }
@@ -67,30 +109,27 @@ class CambioMoneda extends Conexion
             $insert->execute();
             return 'success';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";;
         }
     }
 
-    public function obt_RegistrosCambios() {
-        $sentencia ="SELECT c.cod_cambio, c.tasa, c.fecha, c.cod_moneda, m.abreviatura 
-                    FROM cambio_moneda c 
-                    INNER JOIN moneda m ON c.cod_moneda = m.cod_moneda 
-                    WHERE c.estado = 1 
-                    GROUP BY c.cod_cambio 
-                    ORDER BY c.fecha DESC";
-        $select = $this->conexion->prepare($sentencia);
-        $select->execute();
-        return $select->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
     public function actDatosCambio(array $campos) {
-        if (is_array($this->validarPost($campos, 'cambiomoneda'))) {
-            $datos = $this->validarPost($campos, 'cambiomoneda');
-            $this->cod_cambio = $datos['id_cambio_editar'];
-            $this->tasa = $datos['tasa_editar'];
-            $this->cod_moneda = $datos['moneda_editar'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            if (strlen($resultadoTrait[1]) < 1 || strlen($resultadoTrait[1]) > 10) {
+                return json_encode(['status' => 'error', 'message' => 'La tasa supera el límite numérico permitido.']);
+            }
+            $valTasa = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[1]]);
+            if ($valTasa !== true) return $valTasa;
+
+            $valMoneda = $this->ExplorarDatos(['solo-numeros' => $resultadoTrait[2]]);
+            if ($valMoneda !== true) return $valMoneda;
+
+            $this->cod_cambio = $resultadoTrait[0];
+            $this->tasa = $resultadoTrait[1];
+            $this->cod_moneda = $resultadoTrait[2];
         } else {
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
         return $this->actualizarCambio();
     }
@@ -105,16 +144,20 @@ class CambioMoneda extends Conexion
             $update->execute();
             return 'updated';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 
     public function elmDatosCambio(array $campos) {
-        if (is_array($this->validarPost($campos, 'cambiomoneda'))) {
-            $datos = $this->validarPost($campos, 'cambiomoneda');
-            $this->cod_cambio = $datos['id_cambio'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->cod_cambio = $resultadoTrait[0];
+
+            if ($this->verificarUsoEnPagos($this->cod_cambio)) {
+                return json_encode(['status' => 'error', 'message' => 'No se puede eliminar esta tasa porque ya fue usada en uno o más registros de pagos.']);
+            }
         } else {
-            return 'error&msg=Eliminar';
+            return $resultadoTrait;
         }
         return $this->eliminarCambio();
     }
@@ -127,7 +170,7 @@ class CambioMoneda extends Conexion
             $delete->execute();
             return 'deleted';
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return "exception";
         }
     }
 } ?>
