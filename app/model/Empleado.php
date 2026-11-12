@@ -24,6 +24,21 @@ class Empleado extends Conexion
         parent::__construct();
     }
 
+    public function obt_EmpleadosCargoAjax(int $rol){
+        try {
+            $sentencia = "SELECT cod_empleado, nombre, apellido FROM empleado WHERE cod_cargo = ? AND estado = 1";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute([$rol]);
+            if ($select->rowCount() > 0) {
+                return json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            } else {
+                return [];
+            }
+        } catch (\PDOException $e) {
+            return "<script>alert('Error al obtener los registros de empleados del cargo especificado: " . $e->getMessage() . "');</script>";
+        }
+    }
+
     public function obt_TodosLosCargos() {
         try {
             $sentencia = "SELECT cod_cargo, nombre FROM cargo WHERE estado = 1";
