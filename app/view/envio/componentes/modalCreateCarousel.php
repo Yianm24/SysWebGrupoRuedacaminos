@@ -14,76 +14,65 @@
                                 <fieldset class="mb-4">
                                     <legend class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Datos del Envío</legend>
 
-                                    <div class="row">
-                                        <!-- Columna Izquierda: El Mapa y Precio -->
-                                        <!-- Usamos d-flex y flex-column para que el mapa empuje el precio hacia abajo de forma prolija -->
-                                        <section class="col-12 col-md-6 mb-4 mb-md-0 d-flex flex-column">
+                                    <div class="row g-3">
+                                        <!-- Columna 1: Origen -->
+                                        <div class="col-12 col-md-6">
+                                            <div class="p-3 bg-light border rounded h-100">
+                                                <label for="direccion_origen" class="form-label small fw-semibold text-secondary text-uppercase mb-2">Dirección de Origen</label>
 
-                                            <!-- Contenedor del Mapa -->
-                                            <div class="flex-grow-1 bg-light border rounded d-flex align-items-center justify-content-center p-4">
-                                                <!-- <h3 class="text-muted">El mapa</h3> -->
-                                                <div id="mapCrear" class="rounded"></div>
+                                                <div class="mb-2">
+                                                    <select id="municipio_origen" name="municipio_origen" class="form-select form-select-sm" aria-label="Seleccionar Municipio">
+                                                        <option selected disabled value="">Seleccionar Municipio...</option>
+                                                        <?php foreach ($datosForaneos['municipio'] as $dato): ?>
+                                                            <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+
+                                                <div>
+                                                    <textarea id="direccion_origen" name="direccion_origen" class="form-control" rows="3" placeholder="Calle, número, punto de referencia..." required></textarea>
+                                                </div>
                                             </div>
+                                        </div>
 
-                                            <!-- Contenedor del Precio (Debajo del mapa) -->
-                                            <div class="alert alert-success text-center shadow-sm mt-3 mb-0" role="alert">
-                                                <span class="d-block small fw-bold text-uppercase mb-1 opacity-75">Costo Estimado del Envío</span>
-                                                <input type="hidden" name="precio_envio" id="precio_envio_hidden" value="0">
+                                        <!-- Columna 2: Destino -->
+                                        <div class="col-12 col-md-6">
+                                            <div class="p-3 bg-light border rounded h-100">
+                                                <label for="direccion_destino" class="form-label small fw-semibold text-secondary text-uppercase mb-2">Dirección de Destino</label>
+
+                                                <div class="mb-2">
+                                                    <select name="municipio_destino" id="municipio_destino" class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
+                                                        <option selected disabled value="">Seleccionar Municipio...</option>
+                                                        <?php foreach ($datosForaneos['municipio'] as $dato): ?>
+                                                            <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+
+                                                <div>
+                                                    <textarea id="direccion_destino" name="direccion_destino" class="form-control" rows="3" placeholder="Calle, número, punto de referencia..." required></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Fila Inferior: Kilometraje y Costo Estimado -->
+                                        <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+                                            <label for="kilometraje" class="form-label small fw-semibold">Distancia del Recorrido</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control text-end bg-white" name="kilometraje" id="kilometraje" placeholder="0.0" step="0.1" min="0">
+                                                <span class="input-group-text fw-semibold text-secondary">km</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <div class="alert alert-success d-flex align-items-center justify-content-between shadow-sm mb-0 py-3 px-4" role="alert">
+                                                <div>
+                                                    <span class="d-block small fw-bold text-uppercase opacity-75">Costo Estimado del Envío</span>
+                                                    <input type="hidden" name="precio_envio" id="precio_envio_hidden" value="0">
+                                                </div>
                                                 <h3 class="mb-0 fw-bold">$<span id="precio_envio">0.00</span></h3>
                                             </div>
-                                        </section>
-
-                                        <!-- Columna Derecha: Formularios -->
-                                        <section class="col-12 col-md-6">
-
-                                            <!-- Bloque 1: Origen -->
-                                            <div class="mb-3">
-                                                <label for="direccion_origen" class="form-label small fw-semibold">Dirección de Origen</label>
-
-                                                <div class="row mb-2">
-                                                    <div class="col-6">
-                                                        <select id="municipio_origen" name="municipio_origen" class="form-select form-select-sm" aria-label="Seleccionar Municipio">
-                                                            <option selected>Municipio</option>
-                                                            <?php foreach ($datosForaneos['municipio'] as $dato): ?>
-                                                                <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <textarea id="direccion_origen" name="direccion_origen" class="form-control" rows="2" placeholder="Calle, número, ciudad..." required></textarea>
-                                            </div>
-
-                                            <!-- Bloque 2: Destino -->
-                                            <div class="mb-3">
-                                                <label for="direccion_destino" class="form-label small fw-semibold">Dirección de Destino</label>
-
-                                                <div class="row mb-2">
-                                                    <div class="col-6">
-                                                        <select name="municipio_destino" id="municipio_destino" class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
-                                                            <option selected>Municipio</option>
-                                                            <?php foreach ($datosForaneos['municipio'] as $dato): ?>
-                                                                <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <textarea id="direccion_destino" name="direccion_destino" class="form-control " rows="2" placeholder="Calle, número, ciudad..." required></textarea>
-                                            </div>
-
-                                            <!-- Bloque 3: Kilometraje -->
-                                            <div class="mb-2">
-                                                <label for="kilometraje" class="form-label small fw-semibold">Distancia del Recorrido</label>
-
-                                                <!-- Aquí sí es ideal el input-group -->
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control text-end bg-white" name="kilometraje" id="kilometraje" placeholder="0.0" step="0.1">
-                                                    <span class="input-group-text fw-semibold text-secondary">km</span>
-                                                </div>
-                                            </div>
-
-                                        </section>
+                                        </div>
                                     </div>
                                 </fieldset>
                             </div>

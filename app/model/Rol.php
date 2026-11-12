@@ -3,14 +3,16 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTraitAjax;
 
 class Rol extends Conexion
 {
+    use ValidadorTraitAjax;
 
     private $cod_rol;
     private $estado;
     private $nombre;
-    private $permisos;
+    //private $permisos
 
     public function __construct()
     {
@@ -23,8 +25,11 @@ class Rol extends Conexion
             $sentencia = "SELECT * FROM rol WHERE estado = 1";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            return $registros;
         } catch (\PDOException $e) {
+            echo "Error al obtener los registros de Estado: " . $e->getMessage();
             return [];
         }
     }
@@ -37,13 +42,15 @@ class Rol extends Conexion
         $count->execute();
         return $count->fetchColumn() > 0;
     }
-    public function regDatosRol($nombre, $permisos)
+    public function regDatosRol(array $campos)
     {
-
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->estado = 1;
-        $this->permisos = $permisos;
-
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
+            $this->estado = 1;
+        } else {
+            return $resultadoTrait;
+        }
         return $this->registrarRol();
     }
 
@@ -51,27 +58,29 @@ class Rol extends Conexion
     private function registrarRol()
     {
         try {
-            $sentencia = "INSERT INTO rol (nombre, permisos , estado) VALUES (?, ?, ?)";
+            $sentencia = "INSERT INTO rol (nombre, estado) VALUES (?, ?)";
 
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->permisos);
-            $insert->bindValue(3, $this->estado);
+            $insert->bindValue(2, $this->estado);
 
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
+            return json_encode(['status' => 'success', 'message' => 'El Rol ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el rol: " . $e->getMessage() . "');</script>";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
-
-    public function actDatosRol($cod_rol, $nombre)
+    public function actDatosRol(array $campos)
     {
-        $this->cod_rol = $cod_rol;
-        $this->nombre = $this->formatearPalabra($nombre);
+
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->cod_rol = $resultadoTrait[0];
+            $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
+        }
 
         return $this->actualizarRol();
     }
@@ -86,8 +95,10 @@ class Rol extends Conexion
             $update->bindValue(2, $this->cod_rol);
 
             $update->execute();
+
+            return json_encode(['status' => 'updated', 'message' =>  'El Rol ha sido actualizada correctamente.']);
         } catch (\PDOException $e) {
-            return "Error al actualizar el rol: " . $e->getMessage();
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -107,7 +118,6 @@ class Rol extends Conexion
 
             $delete->bindValue(1, $this->cod_rol);
             $delete->execute();
-
         } catch (\PDOException $e) {
             return "Error al eliminar el rol: " . $e->getMessage();
         }
