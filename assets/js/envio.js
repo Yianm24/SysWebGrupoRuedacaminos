@@ -118,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (e.key === 'Enter') {
             e.preventDefault();
+            
             const kilometraje = $(this).val()
 
             const costoEnvio = kilometraje * 2.36;
