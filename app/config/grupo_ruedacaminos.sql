@@ -254,6 +254,7 @@ CREATE TABLE `envio` (
   `monto_total` decimal(8,2) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `cod_despacho` int(11) DEFAULT NULL,
+  `estatus` enum('PENDIENTE','EN DESPACHO','ENTREGADO','ANULADO') NOT NULL DEFAULT 'PENDIENTE',
   `peso_total` decimal(6,2) DEFAULT NULL,
   `anchura` decimal(5,2) NOT NULL,
   `altura` decimal(5,2) NOT NULL,
