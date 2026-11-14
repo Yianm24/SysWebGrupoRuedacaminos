@@ -1,8 +1,9 @@
 $(document).ready(function () {
   ajaxConsultar();
 
-  console.log("jquery funciones");
+  //   const table = new DataTable('#myTa', {
 
+  // });
 
 
   const modal = $('#modalEstado');
@@ -89,6 +90,13 @@ $(document).ready(function () {
 
 
 function ajaxConsultar() {
+   let miTabla = $('#tablaEstado').DataTable({
+
+    searching: true,
+    language: {
+      url: 'assets/json/datatable.json'
+    }
+  })
   iconoCargar("#tablaEstado tbody");
 
   $.ajax({
@@ -102,43 +110,60 @@ function ajaxConsultar() {
       console.log("Cargando estados...");
     },
     success: function (response) {
-      let tbody = $("#tablaEstado tbody");
+      //let tbody = $("#tablaEstado tbody");
       console.log("Respuesta del servidor:", response);
 
       // 1. Limpiamos la tabla
-      tbody.empty();
-
+      //tbody.empty();
+      miTabla.clear();
       // 2. Si el backend devuelve un array directo [{...}, {...}]
       // (O si viene dentro de una propiedad como response.datos, cambia 'lista' abajo)
       let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
 
       if (lista.length > 0) {
-        let rowsHtml = "";
+        // let rowsHtml = "";
+        const botones=` <td class="text-start pe-4">
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado"
+                                 datos-cod-estado="${response.cod_estado}"
+                                 datos-nombre="${response.nombre}"
+                                 datos-estado="${response.estado}"
+                                 >
+                                 <i class="bi bi-pencil"></i>
+                             </button>
+                         <a href="#" class="text-secondary btn-eliminar"
+                                 datos-cod-estado="${response.cod_estado}" >
+                                 <i class="bi bi-trash"></i>
+                         </a>
+                     </td>`;
 
         // 3. Recorremos únicamente el arreglo de registros
         $.each(lista, function (index, dato) {
-          rowsHtml += `<tr>
-                    <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
-                    <td class="text-start pe-4">
+          // rowsHtml += `<tr>
+          //           <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
+          //           <td class="text-start pe-4">
                           
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado"
-                                datos-cod-estado="${dato.cod_estado}"
-                                datos-nombre="${dato.nombre}"
-                                datos-estado="${dato.estado}"
-                                >
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                        <a href="#" class="text-secondary btn-eliminar"
-                                datos-cod-estado="${dato.cod_estado}" >
-                                <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            `
-            ;
+          //                   <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado"
+          //                       datos-cod-estado="${dato.cod_estado}"
+          //                       datos-nombre="${dato.nombre}"
+          //                       datos-estado="${dato.estado}"
+          //                       >
+          //                       <i class="bi bi-pencil"></i>
+          //                   </button>
+          //               <a href="#" class="text-secondary btn-eliminar"
+          //                       datos-cod-estado="${dato.cod_estado}" >
+          //                       <i class="bi bi-trash"></i>
+          //               </a>
+          //           </td>
+          //       </tr>
+          //   `
+          //   ;
+            miTabla.row.add([
+              dato.nombre,
+              botones
+            ])
         });
-
-        tbody.html(rowsHtml);
+miTabla.draw();
+      /*   tbody.html(rowsHtml); */
       } else {
         tbody.html(`
             <tr>
@@ -256,56 +281,56 @@ function iconoCargar(selector) {
 }
 
 function mostrarAlerta(status, mensaje) {
-    // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-    setTimeout(() => {
-      let title, text, icon;
+  // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+  setTimeout(() => {
+    let title, text, icon;
 
-      switch (status) {
-        case 'success':
-          title = "Registro exitoso!";
-          text = mensaje;
-          icon = "success";
-          break;
-        case 'updated':
-          title = "Actualización exitosa!";
-          text = "El Estado ha sido actualizado correctamente.";
-          icon = "success";
-          break;
-        case 'deleted':
-          title = "Eliminación exitosa!";
-          text = "El Estado ha sido eliminado correctamente.";
-          icon = "success";
-          break;
-        case 'exists':
-          title = "Estado existente!";
-          text = "El Estado ingresado ya existe en la base de datos.";
-          icon = "warning";
-          break;
-        case 'empty':
-          title = "Campos vacíos!";
-          text = "Uno o más campos están vacíos.";
-          icon = "warning";
-          break;
-        case 'error':
-          title = "Error!";
-          text = `Se produjo un error en el processo de ${mensaje}`;
-          icon = "error";
-          break;
-        case 'exception':
-          title = "Exception Retornada!";
-          text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-          icon = "error";
-          break;
-      }
+    switch (status) {
+      case 'success':
+        title = "Registro exitoso!";
+        text = mensaje;
+        icon = "success";
+        break;
+      case 'updated':
+        title = "Actualización exitosa!";
+        text = "El Estado ha sido actualizado correctamente.";
+        icon = "success";
+        break;
+      case 'deleted':
+        title = "Eliminación exitosa!";
+        text = "El Estado ha sido eliminado correctamente.";
+        icon = "success";
+        break;
+      case 'exists':
+        title = "Estado existente!";
+        text = "El Estado ingresado ya existe en la base de datos.";
+        icon = "warning";
+        break;
+      case 'empty':
+        title = "Campos vacíos!";
+        text = "Uno o más campos están vacíos.";
+        icon = "warning";
+        break;
+      case 'error':
+        title = "Error!";
+        text = `Se produjo un error en el processo de ${mensaje}`;
+        icon = "error";
+        break;
+      case 'exception':
+        title = "Exception Retornada!";
+        text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+        icon = "error";
+        break;
+    }
 
-      if (title && text && icon) {
-        Swal.fire({
-          title: title,
-          text: text,
-          icon: icon
-        });
-      }
-    }, 100);
+    if (title && text && icon) {
+      Swal.fire({
+        title: title,
+        text: text,
+        icon: icon
+      });
+    }
+  }, 100);
 
 
 }
