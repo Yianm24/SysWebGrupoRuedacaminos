@@ -1,12 +1,10 @@
 $(document).ready(function () {
-  ajaxConsultar();
 
-  console.log("jquery funciones");
+  const miTabla = instanciarDatatableGlobal('#tablaEstado');
 
-
+  dibujarTabla(miTabla);
 
   const modal = $('#modalEstado');
-
 
   if (modal) {
     modal.on('show.bs.modal', event => {
@@ -25,17 +23,10 @@ $(document).ready(function () {
 
       const btnEnviar = this;
 
-      let solicitud = "";
-      if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-        solicitud = "registrar";
-      } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-        solicitud = "actualizar";
-      } else {
-        solicitud = "eliminar";
-      }
+      let solicitud = $(this).val();
 
       const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-      ajaxEnvioDatos(objmodal, btnEnviar, solicitud, datos);
+      ajaxEnvioDatosGlobal('estado', solicitud, ajaxConsultar, miTabla, datos, objmodal, btnEnviar)
 
     });
   }
@@ -86,124 +77,50 @@ $(document).ready(function () {
 
 })
 
+function dibujarTabla(objTable) {
+  const modulo = 'estado'
+  ajaxConsultarGlobal(modulo, (response) => {
 
+    objTable.clear();
 
-function ajaxConsultar() {
-  iconoCargar("#tablaEstado tbody");
+    let lista = Array.isArray(response) ? response : [];
 
-  $.ajax({
-    url: "index.php?url=estado",
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: "consultar"
-    },
-    beforeSend: function () {
-      console.log("Cargando estados...");
-    },
-    success: function (response) {
-      let tbody = $("#tablaEstado tbody");
-      console.log("Respuesta del servidor:", response);
-
-      // 1. Limpiamos la tabla
-      tbody.empty();
-
-      // 2. Si el backend devuelve un array directo [{...}, {...}]
-      // (O si viene dentro de una propiedad como response.datos, cambia 'lista' abajo)
-      let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
-
-      if (lista.length > 0) {
-        let rowsHtml = "";
-
-        // 3. Recorremos únicamente el arreglo de registros
-        $.each(lista, function (index, dato) {
-          rowsHtml += `<tr>
-                    <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
-                    <td class="text-start pe-4">
-                          
+    if (lista.length > 0) {
+      const botones = ` <td class="text-start pe-4">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado"
-                                datos-cod-estado="${dato.cod_estado}"
-                                datos-nombre="${dato.nombre}"
-                                datos-estado="${dato.estado}"
-                                >
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                        <a href="#" class="text-secondary btn-eliminar"
-                                datos-cod-estado="${dato.cod_estado}" >
-                                <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            `
-            ;
-        });
+                                 datos-cod-estado="${response.cod_estado}"
+                                 datos-nombre="${response.nombre}"
+                                 datos-estado="${response.estado}"
+                                 >
+                                 <i class="bi bi-pencil"></i>
+                             </button>
+                         <a href="#" class="text-secondary btn-eliminar"
+                                 datos-cod-estado="${response.cod_estado}" >
+                                 <i class="bi bi-trash"></i>
+                         </a>
+                     </td>`;
+      $.each(lista, function (index, dato) {
 
-        tbody.html(rowsHtml);
-      } else {
-        tbody.html(`
-            <tr>
-              <td colspan="2" class="text-center text-muted py-3">
-                No se encontraron registros.
-              </td>
-            </tr>
-          `);
-      }
-    },
-    error: function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    }
-  });
-
-}
-
-
-function ajaxEnvioDatos(modal = null, btnEnviar, solicitud, datos) {
-  // const cod_estado = datos.cod_estado ?? '';
-  // const nombre_ = datos.nombre_estado ?? '';
-
-
-  iconoCargar("#tablaEstado tbody");
-  $.ajax({
-    url: "index.php?url=estado",
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: solicitud,
-      datos: datos
-      // nombre_estado: nombre_estado
-    },
-    beforeSend: function () {
-      if (modal != null) {
-        modal.hide();
-        $(btnEnviar).attr("disabled", true);
-      }
+        objTable.row.add([
+          dato.nombre,
+          botones
+        ])
+      });
+      objTable.draw();
+    } else {
+      objTable.row.add([
+        'No se encontraron registros.',
+        'No se encontraron registros.'
+      ])
+      objTable.draw();
     }
   })
-    .done(function (response) {
-      console.log("Respuesta del servidor:", response);
-
-      mostrarAlerta(response.status, response.message);
-    })
-    .fail(function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-    .always(function () {
-      // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
-      ajaxConsultar();
-
-    });
 
 }
-
-
-
 
 function AccionModal(boton) {
   const encabezadoModal = $('#modalLabel');
   const botonModal = $('button[name="tipoSolicitud"]');
-
 
   //Obtener los datos del vehículo desde los atributos datos- del botón
   const cod_estado = $(boton).attr('datos-cod-estado');
@@ -239,73 +156,4 @@ function AccionModal(boton) {
       }
       break
   }
-}
-
-function iconoCargar(selector) {
-  const elementoHtml = $(`${selector}`);
-  elementoHtml.html(`
-    <tr>
-      <td colspan="2" class="text-center text-muted py-3">
-        <button class="btn btn-primary" type="button" disabled>
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Loading...
-      </button>
-      </td>
-    </tr>
-  `);
-}
-
-function mostrarAlerta(status, mensaje) {
-    // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-    setTimeout(() => {
-      let title, text, icon;
-
-      switch (status) {
-        case 'success':
-          title = "Registro exitoso!";
-          text = mensaje;
-          icon = "success";
-          break;
-        case 'updated':
-          title = "Actualización exitosa!";
-          text = "El Estado ha sido actualizado correctamente.";
-          icon = "success";
-          break;
-        case 'deleted':
-          title = "Eliminación exitosa!";
-          text = "El Estado ha sido eliminado correctamente.";
-          icon = "success";
-          break;
-        case 'exists':
-          title = "Estado existente!";
-          text = "El Estado ingresado ya existe en la base de datos.";
-          icon = "warning";
-          break;
-        case 'empty':
-          title = "Campos vacíos!";
-          text = "Uno o más campos están vacíos.";
-          icon = "warning";
-          break;
-        case 'error':
-          title = "Error!";
-          text = `Se produjo un error en el processo de ${mensaje}`;
-          icon = "error";
-          break;
-        case 'exception':
-          title = "Exception Retornada!";
-          text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-          icon = "error";
-          break;
-      }
-
-      if (title && text && icon) {
-        Swal.fire({
-          title: title,
-          text: text,
-          icon: icon
-        });
-      }
-    }, 100);
-
-
 }

@@ -1,5 +1,6 @@
 $(document).ready(function () {
-  ajaxConsultar();
+
+  ajaxEnvioDatos("#tablaMarca tbody", "marca", "consultar", html, null, null, null);
 
   const modal = $('#modalMarca');
 
@@ -19,7 +20,7 @@ $(document).ready(function () {
       
       const btnEnviar = this;
       const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-      ajaxEnvioDatos(objmodal, btnEnviar, datos);
+      //ajaxEnvioDatos(objmodal, btnEnviar, datos);
     });
 
   };
@@ -52,111 +53,6 @@ $(document).ready(function () {
     });
   });
 });
-
-function ajaxConsultar() {
-  iconoCargar("#tablaMarca tbody");
-  $.ajax({
-    url: "index.php?url=marca",
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: "consultar"
-    }
-  })
-    .done(function (response) {
-
-      let tbody = $("#tablaMarca tbody");
-      tbody.empty();
-
-      let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
-
-      if (lista.length > 0) {
-        let rowsHtml = "";
-
-        $.each(lista, function (index, dato) {
-          rowsHtml += `
-            <tr>
-              <td class="ps-4 text-center fw-bold text-secondary">${dato.nombre}</td>
-              <td class="text-start pe-4">
-                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMarca"
-                    datos-cod-marca="${dato.cod_marca}"
-                    datos-nombre="${dato.nombre}"
-                    datos-estado="${dato.estado}">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <a href="#" class="text-secondary btn-eliminar"
-                    datos-cod-marca="${dato.cod_marca}">
-                  <i class="bi bi-trash"></i>
-                </a>
-              </td>
-            </tr>
-          `;
-        });
-
-        tbody.html(rowsHtml);
-      } else {
-        tbody.html(`
-    <tr>
-      <td colspan="2" class="text-center text-muted py-3">
-        No se encontraron registros.
-      </td>
-    </tr>
-  `);
-      }
-    })
-    .fail(function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-
-}
-
-function ajaxEnvioDatos(modal = null, btnEnviar, datos) {
-  const cod_marca = datos.cod_marca ?? '';
-  const nombre_marca = datos.nombre_marca ?? '';
-
-    let tipoSolicitud = "";
-    if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-      tipoSolicitud = "registrar";
-    } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-      tipoSolicitud = "actualizar";
-    }else{
-      tipoSolicitud = "eliminar";
-    }
-  
-  iconoCargar("#tablaMarca tbody");
-  $.ajax({
-    url: "index.php?url=marca",
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: tipoSolicitud,
-      cod_marca: cod_marca,
-      nombre_marca: nombre_marca
-    },
-    beforeSend: function () {
-      if(modal != null){
-        modal.hide();
-        $(btnEnviar).attr("disabled", true);
-      }
-    }
-  })
-    .done(function (response) {
-      console.log("Respuesta del servidor:", response);
-
-      mostrarAlerta(response.status, response.message);
-    })
-    .fail(function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-    .always(function () {
-      // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
-      ajaxConsultar();
-
-    });
-
-}
 
 function AccionModal(boton) {
   const $encadezadoModal = $('#modalLabel');
@@ -209,56 +105,4 @@ function iconoCargar(selector) {
       </td>
     </tr>
   `);
-}
-
-function mostrarAlerta(status, mensaje) {
-  setTimeout(() => {
-    let title, text, icon;
-
-    switch (status) {
-      case 'success':
-        title = "Registro exitoso!";
-        text = mensaje;
-        icon = "success";
-        break;
-      case 'updated':
-        title = "Actualización exitosa!";
-        text = mensaje;
-        icon = "success";
-        break;
-      case 'deleted':
-        title = "Eliminación exitosa!";
-        text = mensaje;
-        icon = "success";
-        break;
-      case 'exists':
-        title = "Marca existente!";
-        text = "La Marca ingresada ya existe en la base de datos.";
-        icon = "warning";
-        break;
-      case 'empty':
-        title = "Campos vacíos!";
-        text = "Uno o más campos están vacíos.";
-        icon = "warning";
-        break;
-      case 'error':
-        title = "Error!";
-        text = `Se produjo un error en el proceso de ${mensaje}.`;
-        icon = "error";
-        break;
-      case 'exception':
-        title = "Exception Retornada!";
-        text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-        icon = "error";
-        break;
-    }
-
-    if (title && text && icon) {
-      Swal.fire({
-        title: title,
-        text: text,
-        icon: icon
-      });
-    }
-  }, 100);
 }

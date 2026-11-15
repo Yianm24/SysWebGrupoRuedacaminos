@@ -19,11 +19,13 @@
         <script src="assets/js/componentes/externos/autoNumeric.min.js"></script>
         <!--Alertar personalizadas-->
         <script src="assets/js/componentes/externos/sweetalert2.all.min.js"></script>
+        <script src="assets/js/componentes/externos/datatables.min.js"></script>
 
         <!-- Componentes internos -->
         <script src="assets/js/componentes/internos/sidebar.js"></script>
         <script src="assets/js/componentes/internos/expreg2mari.js"></script>
         <script src="assets/js/componentes/internos/busqueda.js"></script>
+        <script src="assets/js/componentes/internos/ajaxMaster.js"></script>
 
         <script src="assets/js/<?= $_GET['url'] ?>.js"></script>
     </body>
