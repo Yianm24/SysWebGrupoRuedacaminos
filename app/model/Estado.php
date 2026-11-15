@@ -40,7 +40,7 @@ class Estado extends Conexion
             $sentencia = "SELECT * FROM Estado WHERE estado = 1";
             $consulta = $this->conexion->prepare($sentencia);
             $consulta->execute();
-            $registros=json_encode($consulta->fetchAll(\PDO::FETCH_ASSOC));
+            $registros = json_encode($consulta->fetchAll(\PDO::FETCH_ASSOC));
             return $registros;
         } catch (\PDOException $e) {
             echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
@@ -50,7 +50,7 @@ class Estado extends Conexion
 
     public function regDatosEstado(array $campos)
     {
-        $resultadoTrait=$this->validarPost($campos);
+        $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
 
             $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
@@ -80,14 +80,13 @@ class Estado extends Conexion
 
     public function actDatosEstado(array $campos)
     {
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
 
-        if (is_array($this->validarPost($campos, "estado"))) {
-
-            $array = $this->validarPost($campos, "estado");
-            $this->cod_estado = $array['cod_estado'];
-            $this->nombre = $this->formatearPalabra($array['nombre_estado']);
+            $this->cod_estado = $resultadoTrait[0];
+            $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
         } else {
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
         return $this->actualizarEstado();
     }
@@ -103,20 +102,20 @@ class Estado extends Conexion
 
             $update->execute();
 
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'El Estado ha sido actualizado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function elmDatosEstado(array $campos)
     {
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
 
-        if (is_array($this->validarPost($campos, "estado"))) {
-            $array = $this->validarPost($campos, "estado");
-            $this->cod_estado = $array['cod_estado'];
+            $this->cod_estado = $resultadoTrait[0];
         } else {
-            return 'error&msg=Eliminar';
+            return $resultadoTrait;
         }
 
         return $this->eliminarEstado();
@@ -131,9 +130,9 @@ class Estado extends Conexion
             $delete->bindValue(1, $this->cod_estado);
             $delete->execute();
 
-            return "deleted";
+            return json_encode(['status' => 'deleted', 'message' => 'El Estado ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

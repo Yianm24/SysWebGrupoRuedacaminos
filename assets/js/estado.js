@@ -23,10 +23,10 @@ $(document).ready(function () {
 
       const btnEnviar = this;
 
-      let solicitud = $(this).val();
+      const solicitud = $(this).val();
 
       const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-      ajaxEnvioDatosGlobal('estado', solicitud, ajaxConsultar, miTabla, datos, objmodal, btnEnviar)
+      ajaxEnvioDatosGlobal('estado', solicitud, dibujarTabla, miTabla, datos, objmodal, btnEnviar)
 
     });
   }
@@ -54,15 +54,7 @@ $(document).ready(function () {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        let form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '?url=estado';
-        form.innerHTML = `
-                        <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="cod_estado" value="${codestado}">
-                    `;
-        document.body.appendChild(form);
-        form.submit();
+        ajaxEnvioDatosGlobal('estado', 'eliminar', dibujarTabla, miTabla, { cod_estado: codestado }, null, null)
       }
     });
   });
@@ -77,8 +69,9 @@ $(document).ready(function () {
 
 })
 
+//Dibuja los registros de la tabla
 function dibujarTabla(objTable) {
-  const modulo = 'estado'
+  const modulo = 'estado';
   ajaxConsultarGlobal(modulo, (response) => {
 
     objTable.clear();
@@ -86,20 +79,22 @@ function dibujarTabla(objTable) {
     let lista = Array.isArray(response) ? response : [];
 
     if (lista.length > 0) {
-      const botones = ` <td class="text-start pe-4">
+      $.each(lista, function (index, dato) {
+
+
+        const botones = ` <td class="text-start pe-4">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado"
-                                 datos-cod-estado="${response.cod_estado}"
-                                 datos-nombre="${response.nombre}"
-                                 datos-estado="${response.estado}"
+                                 datos-cod-estado="${dato.cod_estado}"
+                                 datos-nombre="${dato.nombre}"
+                                 datos-estado="${dato.estado}"
                                  >
                                  <i class="bi bi-pencil"></i>
                              </button>
                          <a href="#" class="text-secondary btn-eliminar"
-                                 datos-cod-estado="${response.cod_estado}" >
+                                 datos-cod-estado="${dato.cod_estado}" >
                                  <i class="bi bi-trash"></i>
                          </a>
                      </td>`;
-      $.each(lista, function (index, dato) {
 
         objTable.row.add([
           dato.nombre,
