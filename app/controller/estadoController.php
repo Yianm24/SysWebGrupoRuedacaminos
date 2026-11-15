@@ -12,7 +12,7 @@ $registros = $estado->obt_RegistrosEstado();
 switch ($solicitud) {
     case 'registrar':
 
-        $datosAjax=json_decode(json_encode($_POST['datos']), true);
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
 
         $resultado = $estado->regDatosEstado([$datosAjax['nombre_estado']]);
         echo $resultado;
@@ -22,21 +22,27 @@ switch ($solicitud) {
     case 'actualizar':
 
 
-        if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
-            header("Location: ?url=estado&status=exists");
-            exit();
-        }
+        // if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
+        //     header("Location: ?url=estado&status=exists");
+        //     exit();
+        // }
 
-        $resultado = $estado->actDatosEstado(['cod_estado', 'nombre_estado']);
-        header("Location: ?url=estado&status={$resultado}");
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
 
+        $resultado = $estado->actDatosEstado([$datosAjax['cod_estado'], $datosAjax['nombre_estado']]);
+        echo $resultado;
 
+        exit();
+        
         break;
     case 'eliminar':
 
-        $resultado = $estado->elmDatosEstado(['cod_estado']);
+        //$datosAjax=json_decode(json_encode($_POST['datos']), true);
 
-        header("Location: ?url=estado&status={$resultado}");
+        $resultado = $estado->elmDatosEstado([$_POST['datos']['cod_estado']]);
+
+        echo $resultado;
+        exit();
         break;
 
     case 'consultar':
