@@ -1,9 +1,8 @@
 $(document).ready(function () {
-
-  ajaxEnvioDatos("#tablaMarca tbody", "marca", "consultar", html, null, null, null);
-
+  const objDatatable = instanciarDatatableGlobal('#tablaMarca');
+  //ajaxEnvioDatos("#tablaMarca tbody", "marca", "consultar", html, null, null, null);
+  dibujarTabla(objDatatable);
   const modal = $('#modalMarca');
-
   if (modal) {
     modal.on('show.bs.modal', event => {
       // Obtener acceso al botón que disparó el modal
@@ -19,8 +18,9 @@ $(document).ready(function () {
       }
       
       const btnEnviar = this;
-      const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-      //ajaxEnvioDatos(objmodal, btnEnviar, datos);
+      const objmodal = bootstrap.Modal.getInstance(modal) ?? ''; 
+
+      ajaxEnvioDatosGlobal('marca',$(this).val(),dibujarTabla,objDatatable,datos,objmodal,btnEnviar);
     });
 
   };
@@ -48,11 +48,54 @@ $(document).ready(function () {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        ajaxEnvioDatos(null,null, { cod_marca: codmarca});
+        ajaxEnvioDatosGlobal('marca','eliminar',dibujarTabla,objDatatable,{cod_marca:codmarca},null,null);
       }
     });
   });
 });
+
+//Dibuja los registros de la tabla
+function dibujarTabla(objTable) {
+  const modulo = 'marca';
+  ajaxConsultarGlobal(modulo, (response) => {
+
+    objTable.clear();
+
+    let lista = Array.isArray(response) ? response : [];
+
+    if (lista.length > 0) {
+      $.each(lista, function (index, dato) {
+
+
+        const botones = `
+        <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMarca"
+        datos-cod-marca="${dato.cod_marca}"
+        datos-nombre="${dato.nombre}"
+        datos-estado="${dato.estado}">
+          <i class="bi bi-pencil"></i>
+        </button>
+        <a href="#" class="text-secondary btn-eliminar"
+        datos-cod-marca="${dato.cod_marca}">
+          <i class="bi bi-trash"></i>
+        </a>
+        `;
+
+        objTable.row.add([
+          dato.nombre,
+          botones
+        ])
+      });
+      objTable.draw();
+    } else {
+      objTable.row.add([
+        'No se encontraron registros.',
+        'No se encontraron registros.'
+      ])
+      objTable.draw();
+    }
+  })
+
+}
 
 function AccionModal(boton) {
   const $encadezadoModal = $('#modalLabel');
@@ -91,18 +134,4 @@ function AccionModal(boton) {
       }
       break;
   }
-}
-
-function iconoCargar(selector) {
-  const elementoHtml = $(`${selector}`);
-  elementoHtml.html(`
-    <tr>
-      <td colspan="2" class="text-center text-muted py-3">
-        <button class="btn btn-primary" type="button" disabled>
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Loading...
-      </button>
-      </td>
-    </tr>
-  `);
 }

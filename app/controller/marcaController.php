@@ -14,10 +14,7 @@ switch ($solicitud) {
             header("Location: ?url=marca&status=exists");
             exit();
         } */
-        $datosAjax = [
-
-            'nombre_marca' => $_POST['nombre_marca'] ?? null
-        ];
+        $datosAjax = json_decode(json_encode($_POST['datos']),true);
         $expRegDatos = [
             'solo-letras' => $datosAjax['nombre_marca']
         ];
@@ -32,20 +29,22 @@ switch ($solicitud) {
             header("Location: ?url=marca&status=exists");
             exit();
         } */
-       $datosAjax = [
-            'cod_marca' => $_POST['cod_marca'] ?? null,
-            'nombre_marca' => $_POST['nombre_marca'] ?? null
+        $datosAjax = json_decode(json_encode($_POST['datos']),true);
+        $expRegDatos = [
+            'solo-numeros' => $datosAjax['cod_marca'],
+            'solo-letras' => $datosAjax['nombre_marca']
         ];
+        $resultado = $marca->actMarca([$datosAjax['cod_marca'],$datosAjax['nombre_marca']],$expRegDatos);
 
-        $resultado = $marca->actMarca([$datosAjax['cod_marca'],$datosAjax['nombre_marca']]);
         echo $resultado;
         exit();
         break;
     case 'eliminar':
-        $datosAjax = [
-            'cod_marca' => $_POST['cod_marca'] ?? null
+        $expRegDatos = [
+            'solo-numeros' => $_POST['datos']['cod_marca']
         ];
-        $resultado = $marca->elmDatosMarca([$datosAjax['cod_marca']]);
+        $resultado = $marca->elmDatosMarca([$_POST['datos']['cod_marca']],$expRegDatos);
+        
         echo $resultado;
         exit();        
         break;

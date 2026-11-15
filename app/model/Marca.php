@@ -94,14 +94,19 @@ class Marca extends Conexion
         }
     }
 
-    public function actMarca(array $campos)
+    public function actMarca(array $campos, array $validar)
     {
-        $resultadoTrait = $this->validarPost($campos); 
-        if (is_array($resultadoTrait)) {
-            $this->cod_marca = $resultadoTrait[0];
-            $this->nombre = strtoupper($resultadoTrait[1]);
-        } else {
+        $resultadoTrait = $this->ExplorarDatos($validar);
+        if(is_string($resultadoTrait)){
             return $resultadoTrait;
+        }else{
+            $resultadoTrait = $this->validarPost($campos); 
+            if (is_array($resultadoTrait)) {
+                $this->cod_marca = $resultadoTrait[0];
+                $this->nombre = strtoupper($resultadoTrait[1]);
+            } else {
+                return $resultadoTrait;
+            }
         }
 
         return $this->actualizarMarca();
@@ -119,14 +124,19 @@ class Marca extends Conexion
         }
     }
 
-    public function elmDatosMarca(array $campos)
+    public function elmDatosMarca(array $campos,$validar)
     {
-        $resultadoTrait = $this->validarPost($campos);
-        if (is_array($resultadoTrait)) {
-            
-            $this->cod_marca = $resultadoTrait[0];
-        } else {
+        $resultadoTrait = $this->ExplorarDatos($validar);
+        if(is_string($resultadoTrait)){
             return $resultadoTrait;
+        }else {
+            $resultadoTrait = $this->validarPost($campos);
+            if (is_array($resultadoTrait)) {
+                
+                $this->cod_marca = $resultadoTrait[0];
+            } else {
+                return $resultadoTrait;
+            }
         }
         return $this->eliminarMarca();
     }
