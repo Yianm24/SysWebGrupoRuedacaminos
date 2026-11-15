@@ -12,11 +12,6 @@ $registros = $estado->obt_RegistrosEstado();
 switch ($solicitud) {
     case 'registrar':
 
-        // if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
-        //     header("Location: ?url=estado&status=exists");
-        //     exit();
-        // }
-
         $datosAjax=json_decode(json_encode($_POST['datos']), true);
 
         $resultado = $estado->regDatosEstado([$datosAjax['nombre_estado']]);

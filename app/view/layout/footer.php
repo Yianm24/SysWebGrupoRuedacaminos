@@ -25,6 +25,7 @@
         <script src="assets/js/componentes/internos/sidebar.js"></script>
         <script src="assets/js/componentes/internos/expreg2mari.js"></script>
         <script src="assets/js/componentes/internos/busqueda.js"></script>
+        <script src="assets/js/componentes/internos/ajaxMaster.js"></script>
 
         <script src="assets/js/<?= $_GET['url'] ?>.js"></script>
     </body>
