@@ -58,13 +58,6 @@ $(document).ready(function () {
         });
     });
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-    const mensaje = urlParams.get('msg');
-
-    if (status) {
-        mostrarAlerta(status, mensaje)
-    }
 });
 
 function dibujarTabla(objTable) {
