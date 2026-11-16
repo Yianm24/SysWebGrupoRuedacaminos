@@ -11,9 +11,9 @@
                     <input type="hidden" id="cod-banco" name="cod_banco">
                     <div class="mb-3">
                         <label class="form-label">Nombre del Banco</label>
-                        <input type="text" class="form-control" id="nombre_banco" name="nombre_banco" placeholder="Ej: Banco de la Nación" required>
+                        <input type="text" class="form-control input-evaluar solo-letras" id="nombre_banco" name="nombre_banco" placeholder="Ej: Banco de la Nación" required>
                     </div>
-                    
+
                 </div>
 
                 <footer class="modal-footer">

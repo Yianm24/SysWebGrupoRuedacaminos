@@ -3,9 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTraitAjax;
 
 class Banco extends Conexion
 {
+    use ValidadorTraitAjax;
 
     private $cod_banco;
     private $nombre;
@@ -30,11 +32,33 @@ class Banco extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosBanco($nombre)
+    public function obt_RegistrosBanco()
     {
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->estado = 1;
 
+        try {
+            $sentencia = "SELECT * FROM banco WHERE estado = 1";
+            $consulta = $this->conexion->prepare($sentencia);
+            $consulta->execute();
+            $registros = json_encode($consulta->fetchAll(\PDO::FETCH_ASSOC));
+
+            return $registros;
+        } catch (\PDOException $e) {
+            echo "Error al obtener los registros de banco: " . $e->getMessage();
+            return [];
+        }
+    }
+
+
+    public function regDatosBanco(array $campos)
+    {
+
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
+            $this->estado = 1;
+        } else {
+            return $resultadoTrait;
+        }
         return $this->registrarBanco();
     }
 
@@ -47,33 +71,24 @@ class Banco extends Conexion
 
             $insert->bindValue(1, $this->nombre);
             $insert->bindValue(2, $this->estado);
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
+            return json_encode(['status' => 'success', 'message' => 'El Banco ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el Banco: " . $e->getMessage() . "');</script>";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
-    public function obt_RegistrosBanco()
+    public function actDatosBanco(array $campos)
     {
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
 
-        try {
-            $sentencia = "SELECT * FROM banco WHERE estado = 1";
-            $consulta = $this->conexion->prepare($sentencia);
-            $consulta->execute();
-            return $consulta->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            echo "Error al obtener los registros de banco: " . $e->getMessage();
-            return [];
+            $this->cod_banco = $resultadoTrait[0];
+            $this->nombre =  $this->formatearPalabra($resultadoTrait[1]);
+        } else {
+            return $resultadoTrait;
         }
-    }
-
-    public function actBanco($cod_banco, $nombre)
-    {
-        $this->cod_banco = $cod_banco;
-        $this->nombre = $nombre;
-
         return $this->actualizarBanco();
     }
 
@@ -87,15 +102,22 @@ class Banco extends Conexion
             $update->bindValue(2, $this->cod_banco);
 
             $update->execute();
+            return json_encode(['status' => 'updated', 'message' => 'El Banco ha sido actualizado correctamente.']);
         } catch (\PDOException $e) {
-            return "Error al actualizar el registro del banco: " . $e->getMessage();
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
-    public function elmDatosBanco(int $cod_banco)
+    public function elmDatosBanco(array $campos)
     {
-        $this->cod_banco = $cod_banco;
 
+        $resultadoTrait = $this->validarPost($campos);
+
+        if (is_array($resultadoTrait)) {
+            $this->cod_banco = $resultadoTrait[0];
+        } else {
+            return $resultadoTrait;
+        }
         return $this->eliminarBanco();
     }
 
@@ -108,9 +130,9 @@ class Banco extends Conexion
             $delete->bindValue(1, $this->cod_banco);
             $delete->execute();
 
-            return "Banco eliminado exitosamente";
+            return json_encode(['status' => 'deleted', 'message' => 'El Banco ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return "Error al eliminar el Banco: " . $e->getMessage();
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }
