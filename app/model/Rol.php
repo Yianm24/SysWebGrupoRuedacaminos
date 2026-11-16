@@ -42,6 +42,8 @@ class Rol extends Conexion
         $count->execute();
         return $count->fetchColumn() > 0;
     }
+
+    
     public function regDatosRol(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
@@ -78,6 +80,7 @@ class Rol extends Conexion
 
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
+            
             $this->cod_rol = $resultadoTrait[0];
             $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
         }
@@ -102,9 +105,15 @@ class Rol extends Conexion
         }
     }
 
-    public function elmDatosRol(int $cod_rol)
+    public function elmDatosRol(array $campos)
     {
-        $this->cod_rol = $cod_rol;
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_rol = $resultadoTrait[0];
+        } else {
+            $resultadoTrait;
+        }
 
         return $this->eliminarRol();
     }
@@ -118,8 +127,9 @@ class Rol extends Conexion
 
             $delete->bindValue(1, $this->cod_rol);
             $delete->execute();
+            return json_encode(['status' => 'deleted', 'message' => 'El Rol ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return "Error al eliminar el rol: " . $e->getMessage();
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

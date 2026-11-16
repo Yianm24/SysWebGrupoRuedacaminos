@@ -20,15 +20,6 @@ switch ($solicitud) {
         break;
 
 
-    case 'eliminar':
-        if (isset($_POST['cod_rol'])) {
-
-            $resultado = $rol->elmDatosRol($_POST['cod_rol']);
-            header("Location: ?url=rol&status=deleted");
-            exit();
-        }
-        break;
-
     case 'actualizar':
 
         $datosAjax = json_decode(json_encode($_POST['datos']), true);
@@ -38,6 +29,18 @@ switch ($solicitud) {
         exit();
         break;
 
+    case 'eliminar':
+        // if (isset($_POST['cod_rol'])) {
+
+        //     $resultado = $rol->elmDatosRol($_POST['cod_rol']);
+        //     header("Location: ?url=rol&status=deleted");
+        //     exit();
+        // }
+        $resultado = $rol->elmDatosRol([$_POST['datos']['cod_rol']]);
+
+        echo $resultado;
+        exit();
+        break;
 
     case 'consultar':
 
