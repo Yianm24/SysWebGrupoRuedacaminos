@@ -26,7 +26,7 @@ $(document).ready(function () {
       const solicitud = $(this).val();
 
       const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-      ajaxEnvioDatosGlobal('estado', solicitud, dibujarTabla, miTabla, datos, objmodal, btnEnviar)
+      ajaxEnvioDatosGlobal('estado', solicitud, dibujarTabla, miTabla, datos, objmodal, btnEnviar);
 
     });
   }
@@ -81,7 +81,6 @@ function dibujarTabla(objTable) {
     if (lista.length > 0) {
       $.each(lista, function (index, dato) {
 
-
         const botones = ` <td class="text-start pe-4">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalEstado"
                                  datos-cod-estado="${dato.cod_estado}"
@@ -110,7 +109,6 @@ function dibujarTabla(objTable) {
       objTable.draw();
     }
   })
-
 }
 
 function AccionModal(boton) {
