@@ -18,9 +18,9 @@ $(document).ready(function () {
       }
       
       const btnEnviar = this;
-      const objmodal = bootstrap.Modal.getInstance(modal) ?? ''; 
+      const objModal = bootstrap.Modal.getInstance(modal) ?? ''; 
 
-      ajaxEnvioDatosGlobal('marca',$(this).val(),dibujarTabla,objDatatable,datos,objmodal,btnEnviar);
+      ajaxEnvioDatosGlobal('marca',$(this).val(),dibujarTabla,objDatatable,datos,objModal,btnEnviar);
     });
 
   };

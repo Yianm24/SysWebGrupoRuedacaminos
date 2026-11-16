@@ -6,7 +6,6 @@ use App\Model\Marca;
 
 $marca = new Marca();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
-$registros = $marca->obt_RegistrosMarca();
 switch ($solicitud) {
     case 'registrar':
 
@@ -49,6 +48,7 @@ switch ($solicitud) {
         exit();        
         break;
     case 'consultar':
+        $registros = $marca->obt_RegistrosMarca();
         echo $registros;
         exit();
         break;

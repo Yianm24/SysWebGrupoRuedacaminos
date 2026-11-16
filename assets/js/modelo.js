@@ -1,5 +1,6 @@
 $(document).ready(function () {
-  ajaxConsultar();
+  const objDatatable = instanciarDatatableGlobal('#tablaModelo');
+  dibujarTabla(objDatatable);
   const modal = $('#modalModelo');
 
   if (modal) {
@@ -18,16 +19,8 @@ $(document).ready(function () {
       }
 
       const btnEnviar = this;
-      let solicitud = "";
-      if ($(btnEnviar).val() === "registrar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-        solicitud = "registrar";
-      } else if ($(btnEnviar).val() === "actualizar" && $(btnEnviar).attr('name') === "tipoSolicitud") {
-        solicitud = "actualizar";
-      } else {
-        solicitud = "eliminar";
-      }
-      const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-      ajaxEnvioDatos('modelo',objmodal, solicitud,btnEnviar, datos);
+      const objModal = bootstrap.Modal.getInstance(modal) ?? '';
+      ajaxEnvioDatosGlobal('modelo',$(this).val(),dibujarTabla,objDatatable,datos,objModal,btnEnviar);
     });
   }
 
@@ -53,79 +46,53 @@ $(document).ready(function () {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        let form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '?url=modelo';
-        form.innerHTML = `
-                        <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="cod_modelo" value="${codmodelo}">
-                    `;
-        document.body.appendChild(form);
-        form.submit();
+        ajaxEnvioDatosGlobal('modelo','eliminar',dibujarTabla,objDatatable,{cod_modelo:codmodelo},null,null);
       }
     });
   });
 
 });
 
-function ajaxConsultar() {
-  iconoCargar("#tablaModelo tbody");
-  $.ajax({
-    url: "index.php?url=modelo",
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: "consultar"
+function dibujarTabla(objTabla) {
+  const modulo = 'modelo';
+  ajaxConsultarGlobal(modulo, (response) => {
+    objTabla.clear();
+
+    let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+
+    if (lista.length > 0) {
+
+      $.each(lista, function (index, dato) {
+        const botones = `
+          <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalModelo"
+              datos-cod-modelo="${dato.cod_modelo}"
+              datos-nombre="${dato.nombre}"
+              datos-marca="${dato.cod_marca}"
+              datos-estado="${dato.estado}">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <a href="#" class="text-secondary btn-eliminar"
+              datos-cod-modelo="${dato.cod_modelo}">
+            <i class="bi bi-trash"></i>
+          </a>
+        `;
+        objTabla.row.add([
+          dato.nombre,
+          dato.nombre_marca,
+          botones
+
+        ])
+      });
+      objTabla.draw();
+    } else {
+      objTabla.row.add([
+        'No se encontraron registros.',
+        'No se encontraron registros.',
+        'No se encontraron registros.'
+        ])
+        objTabla.draw()
     }
   })
-    .done(function (response) {
-
-      let tbody = $("#tablaModelo tbody");
-      tbody.empty();
-
-      let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
-
-      if (lista.length > 0) {
-        let rowsHtml = "";
-
-        $.each(lista, function (index, dato) {
-          rowsHtml += `
-            <tr>
-              <td class="ps-4 fw-bold ">${dato.nombre}</td>
-              <td class="ps-4 text-secondary ">${dato.nombre_marca}</td>
-              <td class="text-start pe-4">
-                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalModelo"
-                    datos-cod-modelo="${dato.cod_modelo}"
-                    datos-nombre="${dato.nombre}"
-                    datos-marca="${dato.cod_marca}"
-                    datos-estado="${dato.estado}">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <a href="#" class="text-secondary btn-eliminar"
-                    datos-cod-modelo="${dato.cod_modelo}">
-                  <i class="bi bi-trash"></i>
-                </a>
-              </td>
-            </tr>
-          `;
-        });
-
-        tbody.html(rowsHtml);
-      } else {
-        tbody.html(`
-    <tr>
-      <td colspan="2" class="text-center text-muted py-3">
-        No se encontraron registros.
-      </td>
-    </tr>
-  `);
-      }
-    })
-    .fail(function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-
 }
 
 function ajaxEnvioDatos(moduloNombre, modal = null, solicitud, btnEnviar, datos) {
@@ -207,71 +174,4 @@ function accionModal(boton) {
       }
       break;
   }
-}
-
-function iconoCargar(selector) {
-  const elementoHtml = $(`${selector}`);
-  elementoHtml.html(`
-    <tr>
-      <td colspan="2" class="text-center text-muted py-3">
-        <button class="btn btn-primary" type="button" disabled>
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Loading...
-      </button>
-      </td>
-    </tr>
-  `);
-}
-
-function mostrarAlerta(status, mensaje) {
-  // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-  setTimeout(() => {
-    let title, text, icon;
-
-    switch (status) {
-      case 'success':
-        title = "Registro exitoso!";
-        text = mensaje;
-        icon = "success";
-        break;
-      case 'updated':
-        title = "Actualización exitosa!";
-        text = "El Modelo ha sido actualizada correctamente.";
-        icon = "success";
-        break;
-      case 'deleted':
-        title = "Eliminación exitosa!";
-        text = "El Modelo ha sido eliminada correctamente.";
-        icon = "success";
-        break;
-      case 'exists':
-        title = "Modelo existente!";
-        text = "El Modelo ingresada ya existe en la base de datos.";
-        icon = "warning";
-        break;
-      case 'empty':
-        title = "Campos vacíos!";
-        text = "Uno o más campos están vacíos.";
-        icon = "warning";
-        break;
-      case 'error':
-        title = "Error!";
-        text = `Se produjo un error en el proceso de ${mensaje}.`;
-        icon = "error";
-        break;
-      case 'exception':
-        title = "Exception Retornada!";
-        text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-        icon = "error";
-        break;
-    }
-
-    if (title && text && icon) {
-      Swal.fire({
-        title: title,
-        text: text,
-        icon: icon
-      });
-    }
-  }, 100);
 }

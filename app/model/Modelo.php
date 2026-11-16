@@ -4,10 +4,13 @@ namespace App\Model;
 
 use App\Config\Conexion;
 use App\Traits\ValidadorTraitAjax;
+use App\Traits\ExpRegexTrait;
 
 class Modelo extends Conexion
 {
 use ValidadorTraitAjax;
+use ExpRegexTrait;
+
     private $cod_modelo;
     private $nombre;
     private $marca;
@@ -36,15 +39,20 @@ use ValidadorTraitAjax;
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosModelo(array $campos)
+    public function regDatosModelo(array $campos, array $validar)
     {
-        $resultadoTrait = $this->validarPost($campos);
-        if(is_array($resultadoTrait)){
-        $this->nombre =strtoupper($resultadoTrait[0]);
-        $this->marca = $resultadoTrait[1];
-        $this->estado = 1;
-        }else{
+        $resultadoTrait = $this->ExplorarDatos($validar);
+        if(is_string($resultadoTrait)){
             return $resultadoTrait;
+        }else{
+            $resultadoTrait = $this->validarPost($campos);
+            if(is_array($resultadoTrait)){
+            $this->nombre =strtoupper($resultadoTrait[0]);
+            $this->marca = $resultadoTrait[1];
+            $this->estado = 1;
+            }else{
+                return $resultadoTrait;
+            }
         }
         return $this->registrarModelo();
     }
@@ -83,13 +91,13 @@ use ValidadorTraitAjax;
 
     public function actDatosModelo(array $campos)
     {
-        if(is_array($this->validarPost($campos,"modelo"))){
-            $datos = $this->validarPost($campos,"modelo");    
-            $this->cod_modelo = $datos['cod_modelo'];
-            $this->nombre =strtoupper($datos['nombre_modelo']);
-            $this->marca = $datos['marca'];
+        $resultadoTrait = $this->validarPost($campos); 
+        if(is_array($resultadoTrait)){    
+            $this->cod_modelo = $resultadoTrait[0];
+            $this->nombre =strtoupper($resultadoTrait[1]);
+            $this->marca = $resultadoTrait[2];
         }else{
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
 
         return $this->actualizarModelo();
@@ -104,20 +112,20 @@ use ValidadorTraitAjax;
             $update = $this->conexion->prepare($sentencia);
             $update->execute([$this->nombre,$this->marca,$this->cod_modelo]);
 
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'El Modelo ha sido actualizado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=".urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
 
     public function elmDatosModelo(array $campos)
     {
-        if(is_array($this->validarPost($campos))){
-            $datos = $this->validarPost($campos);
-            $this->cod_modelo = $datos['cod_modelo'];
+        $resultadoTrait = $this->validarPost($campos); 
+        if(is_array($resultadoTrait)){
+            $this->cod_modelo = $resultadoTrait[0];
         }else{
-            return 'error&msg=Eliminar';
+            return $resultadoTrait;
         }
 
         return $this->eliminarModelo();
@@ -131,9 +139,9 @@ use ValidadorTraitAjax;
             $delete = $this->conexion->prepare($sentencia);
             $delete->execute([$this->cod_modelo]);
 
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'El Modelo ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=".urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }
