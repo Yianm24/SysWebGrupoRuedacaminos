@@ -12,34 +12,42 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
 
-        if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
-            header("Location: ?url=moneda&status=exists");
-            exit();
-        }
-        $resultado = $moneda->regDatosMoneda(['nombre', 'abreviatura']);
+        // if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
+        //     header("Location: ?url=moneda&status=exists");
+        //     exit();
+        // }
 
-        header("Location: ?url=moneda&status={$resultado}");
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
+        $resultado = $moneda->regDatosMoneda([$datosAjax['nombre_moneda'], $datosAjax['abreviatura']]);
 
-        break;
-
-
-    case 'eliminar':
-
-        $resultado = $moneda->elmDatosMoneda(['cod_moneda']);
-        header("Location: ?url=moneda&status={$resultado}");
+        echo $resultado;
+        exit();
 
         break;
 
     case 'modificar':
-        if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
-            header("Location: ?url=moneda&status=exists");
-            exit();
-        }
+        // if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
+        //     header("Location: ?url=moneda&status=exists");
+        //     exit();
+        // }
 
-        $resultado = $moneda->modDatosMoneda(['cod-moneda', 'nombre', 'abreviatura']);
-        header("Location: ?url=moneda&status={$resultado}");
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
+        $resultado = $moneda->modDatosMoneda([$datosAjax['cod_moneda'], $datosAjax['nombre_moneda'], $datosAjax['abreviatura']]);
+        echo $resultado;
+        exit();
 
         break;
+
+    case 'eliminar':
+
+        $resultado = $moneda->elmDatosMoneda([$_POST['datos']['cod_moneda']]);
+        
+        echo $resultado;
+        exit();
+
+        break;
+
+
 
     case 'consultar':
 

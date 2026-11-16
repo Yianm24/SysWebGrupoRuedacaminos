@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Moneda extends Conexion
 {
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
 
     private $cod_moneda;
     private $estado;
@@ -38,21 +38,20 @@ class Moneda extends Conexion
             $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
             return $registros;
         } catch (\PDOException $e) {
-             echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
+            echo "Error al obtener los registros de unidad de medida: " . $e->getMessage();
             return [];
         }
     }
 
     public function regDatosMoneda(array $campos)
     {
-        if (is_array($this->validarPost($campos, "moneda"))) {
-
-            $array = $this->validarPost($campos, "moneda");
-            $this->nombre = $this->formatearPalabra($array['nombre']);
-            $this->abreviatura = strtoupper($array['abreviatura']);
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
+            $this->abreviatura = strtoupper($resultadoTrait[1]);
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
         return $this->registrarMoneda();
     }
@@ -71,20 +70,25 @@ class Moneda extends Conexion
 
             $insert->execute();
 
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'La moneda ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el vehiculo: " . $e->getMessage() . "');</script>";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function modDatosMoneda(array $campos)
     {
-        if (is_array($this->validarPost($campos, "moneda"))) {
 
-            $array = $this->validarPost($campos, "moneda");
-            $this->cod_moneda = $array['cod-moneda'];
-            $this->nombre = $this->formatearPalabra($array['nombre']);
-            $this->abreviatura = strtoupper($array['abreviatura']);
+
+        $resultadoTrait = $this->validarPost($campos);
+
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_moneda = $resultadoTrait[0];
+            $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
+            $this->abreviatura = strtoupper($resultadoTrait[2]);
+        } else {
+            return $resultadoTrait;
         }
         return $this->modificarMoneda();
     }
@@ -100,21 +104,22 @@ class Moneda extends Conexion
             $update->bindValue(3, $this->cod_moneda);
 
             $update->execute();
-            return 'updated';
+
+            return json_encode(['status' => 'updated', 'message' => 'La moneda ha sido modificiada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function elmDatosMoneda(array $campos)
     {
-        if (is_array($this->validarPost($campos, "moneda"))) {
-            $array = $this->validarPost($campos, "moneda");
-            $this->cod_moneda = $array['cod_moneda'];
-        } else {
-            return 'error&msg=Eliminar';
-        }
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
 
+            $this->cod_moneda = $resultadoTrait[0];
+        } else {
+            return $resultadoTrait;
+        }
         return $this->eliminarMoneda();
     }
 
@@ -128,9 +133,9 @@ class Moneda extends Conexion
             $delete->bindValue(1, $this->cod_moneda);
             $delete->execute();
 
-            return "deleted";
+            return json_encode(['status' => 'deleted', 'message' => 'La moneda ha sido eliminada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

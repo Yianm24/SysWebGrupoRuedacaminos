@@ -52,10 +52,6 @@ switch ($solicitud) {
         break;
 }
 
-
-// $registros = $estado->obt_RegistrosEstado();
-
-// app/controller/unidadesmedidaController.php
 include 'app/view/layout/header.php';
 include 'app/view/estado/estadoView.php';
 include 'app/view/layout/footer.php';

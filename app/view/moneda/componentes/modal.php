@@ -11,7 +11,7 @@
                     <input type="hidden" id="cod-moneda" name="cod-moneda">
                     <div class="mb-3">
                         <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Dólar, Bolívar">
+                        <input type="text" class="form-control" id="nombre_moneda" name="nombre" required placeholder="Ej: Dólar, Bolívar">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Abreviatura</label>
