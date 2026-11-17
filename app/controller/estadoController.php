@@ -21,23 +21,13 @@ switch ($solicitud) {
         break;
     case 'actualizar':
 
-
-        // if ($estado->verificarEstadoDuplicada($_POST['nombre_estado'], $_POST['cod_estado'])) {
-        //     header("Location: ?url=estado&status=exists");
-        //     exit();
-        // }
-
         $datosAjax = json_decode(json_encode($_POST['datos']), true);
 
         $resultado = $estado->actDatosEstado([$datosAjax['cod_estado'], $datosAjax['nombre_estado']]);
         echo $resultado;
-
-        exit();
-        
+        exit();   
         break;
     case 'eliminar':
-
-        //$datosAjax=json_decode(json_encode($_POST['datos']), true);
 
         $resultado = $estado->elmDatosEstado([$_POST['datos']['cod_estado']]);
 

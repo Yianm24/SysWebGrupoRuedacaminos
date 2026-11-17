@@ -20,10 +20,6 @@ switch ($solicitud) {
         exit();
         break;
     case 'actualizar':
-        // if ($banco->verificarBancoDuplicado($_POST['nombre_banco'], $_POST['cod_banco'])) {
-        //     header("Location: ?url=banco&status=exists");
-        //     exit();
-        // }
 
         $datosAjax = json_decode(json_encode($_POST['datos']), true);
 
@@ -47,9 +43,6 @@ switch ($solicitud) {
         exit();
         break;
 }
-
-
-// app/controller/unidadesmedidaController.php
 include 'app/view/layout/header.php';
 include 'app/view/banco/bancoView.php';
 include 'app/view/layout/footer.php';

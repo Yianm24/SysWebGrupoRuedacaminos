@@ -18,23 +18,18 @@ class Banco extends Conexion
         parent::__construct();
     }
 
-    public function verificarBancoDuplicado($nombre, $cod_banco = null)
+    private function verificarBancoDuplicado($nombre)
     {
-        if ($cod_banco === null) {
-            $sentencia = "SELECT COUNT(*) FROM banco WHERE nombre = ? AND estado = 1;";
-        } else {
-            $sentencia = "SELECT COUNT(*) FROM banco WHERE nombre = ? AND cod_banco != ? AND estado = 1;";
-        }
+        $sentencia = "SELECT COUNT(*) FROM banco WHERE nombre = ? AND estado = 1;";
+
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
-        $count->bindValue(2, $cod_banco);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
 
     public function obt_RegistrosBanco()
     {
-
         try {
             $sentencia = "SELECT * FROM banco WHERE estado = 1";
             $consulta = $this->conexion->prepare($sentencia);
@@ -51,8 +46,13 @@ class Banco extends Conexion
 
     public function regDatosBanco(array $campos)
     {
-
         $resultadoTrait = $this->validarPost($campos);
+
+        if ($this->verificarBancoDuplicado($this->formatearPalabra($resultadoTrait[0]))) {
+
+            return json_encode(['status' => 'exists', 'message' => 'El Banco se encuentra registrado']);
+        }
+
         if (is_array($resultadoTrait)) {
             $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
             $this->estado = 1;
@@ -82,6 +82,12 @@ class Banco extends Conexion
     public function actDatosBanco(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
+
+        if ($this->verificarBancoDuplicado($this->formatearPalabra($resultadoTrait[1]))) {
+
+            return json_encode(['status' => 'exists', 'message' => 'El Banco se encuentra registrado']);
+        }
+        
         if (is_array($resultadoTrait)) {
 
             $this->cod_banco = $resultadoTrait[0];
