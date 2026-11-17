@@ -12,11 +12,6 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
 
-        // if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
-        //     header("Location: ?url=moneda&status=exists");
-        //     exit();
-        // }
-
         $datosAjax = json_decode(json_encode($_POST['datos']), true);
         $resultado = $moneda->regDatosMoneda([$datosAjax['nombre_moneda'], $datosAjax['abreviatura']]);
 
@@ -26,10 +21,6 @@ switch ($solicitud) {
         break;
 
     case 'modificar':
-        // if ($moneda->verificarMonedaExiste($_POST['nombre'], $_POST['abreviatura'])) {
-        //     header("Location: ?url=moneda&status=exists");
-        //     exit();
-        // }
 
         $datosAjax = json_decode(json_encode($_POST['datos']), true);
         $resultado = $moneda->modDatosMoneda([$datosAjax['cod_moneda'], $datosAjax['nombre_moneda'], $datosAjax['abreviatura']]);
@@ -40,14 +31,11 @@ switch ($solicitud) {
 
     case 'eliminar':
 
-        $resultado = $moneda->elmDatosMoneda([$_POST['datos']['cod_moneda']]);
-        
+        $resultado = $moneda->elmDatosMoneda([$_POST['datos']['cod_moneda']]); 
         echo $resultado;
         exit();
 
         break;
-
-
 
     case 'consultar':
 
@@ -55,8 +43,6 @@ switch ($solicitud) {
         exit();
         break;
 }
-
-
 include 'app/view/layout/header.php';
 include 'app/view/moneda/monedaView.php';
 include 'app/view/layout/footer.php';

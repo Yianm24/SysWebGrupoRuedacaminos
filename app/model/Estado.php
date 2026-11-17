@@ -18,16 +18,12 @@ class Estado extends Conexion
         parent::__construct();
     }
 
-    public function verificarEstadoDuplicada($nombre, $cod_estado = null)
+    private function verificarEstadoDuplicado($nombre)
     {
-        if ($cod_estado === null) {
-            $sentencia = "SELECT COUNT(*) FROM Estado WHERE nombre = ? AND estado = 1;";
-        } else {
-            $sentencia = "SELECT COUNT(*) FROM Estado WHERE nombre = ? AND cod_estado != ? AND estado = 1;";
-        }
+        $sentencia = "SELECT COUNT(*) FROM Estado WHERE nombre = ? AND estado = 1;";
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
-        $count->bindValue(2, $cod_estado);
+
         $count->execute();
         return $count->fetchColumn() > 0;
     }
@@ -35,7 +31,6 @@ class Estado extends Conexion
 
     public function obt_RegistrosEstado()
     {
-
         try {
             $sentencia = "SELECT * FROM Estado WHERE estado = 1";
             $consulta = $this->conexion->prepare($sentencia);
@@ -51,6 +46,13 @@ class Estado extends Conexion
     public function regDatosEstado(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
+
+        // verifica si el estado se encuentra registrado anteriormente en la BD
+        if ($this->verificarEstadoDuplicado($this->formatearPalabra($resultadoTrait[0]))) {
+            return json_encode(['status' => 'exists', 'message' => 'El Estado se encuentra registrado']);
+        }
+
+        //verifica si lo retornado por el trait validador es un array con los datos del registro
         if (is_array($resultadoTrait)) {
 
             $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
@@ -81,6 +83,12 @@ class Estado extends Conexion
     public function actDatosEstado(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
+
+        if ($this->verificarEstadoDuplicado($this->formatearPalabra($resultadoTrait[1]))) {
+            return json_encode(['status' => 'exists', 'message' => 'El Estado se encuentra registrado']);
+        }
+
+
         if (is_array($resultadoTrait)) {
 
             $this->cod_estado = $resultadoTrait[0];

@@ -19,7 +19,7 @@ class Moneda extends Conexion
         parent::__construct();
     }
 
-    public function verificarMonedaExiste($nombre, $abreviatura)
+    private function verificarMonedaExiste($nombre, $abreviatura)
     {
         $sentencia = "SELECT COUNT(*) FROM moneda WHERE nombre = ? and abreviatura = ? AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
@@ -46,6 +46,11 @@ class Moneda extends Conexion
     public function regDatosMoneda(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
+
+        if ($this->verificarMonedaExiste($this->formatearPalabra($resultadoTrait[0]), strtoupper($resultadoTrait[1]))) {
+            return json_encode(['status' => 'exists', 'message' => 'La Moneda se encuentra registrada']);
+        }
+
         if (is_array($resultadoTrait)) {
             $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
             $this->abreviatura = strtoupper($resultadoTrait[1]);
@@ -78,9 +83,12 @@ class Moneda extends Conexion
 
     public function modDatosMoneda(array $campos)
     {
-
-
         $resultadoTrait = $this->validarPost($campos);
+
+        if ($this->verificarMonedaExiste($this->formatearPalabra($resultadoTrait[1]), strtoupper($resultadoTrait[2]))) {
+            return json_encode(['status' => 'exists', 'message' => 'La Moneda se encuentra registrada']);
+        }
+
 
         if (is_array($resultadoTrait)) {
 

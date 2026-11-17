@@ -111,7 +111,7 @@ function mostrarAlerta(status, mensaje) {
                 icon = "success";
                 break;
             case 'exists':
-                title = "Modelo existente!";
+                title = "Registro existente!";
                 text = mensaje;
                 icon = "warning";
                 break;

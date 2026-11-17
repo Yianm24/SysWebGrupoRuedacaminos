@@ -34,7 +34,7 @@ class Rol extends Conexion
         }
     }
 
-    public function verificarRolExiste($nombre)
+    private function verificarRolExiste($nombre)
     {
         $sentencia = "SELECT COUNT(*) FROM rol WHERE nombre = ?  AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
@@ -43,10 +43,16 @@ class Rol extends Conexion
         return $count->fetchColumn() > 0;
     }
 
-    
+
     public function regDatosRol(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
+
+        if ($this->verificarRolExiste($this->formatearPalabra($resultadoTrait[0]))) {
+
+            return json_encode(['status' => 'exists', 'message' => 'El Rol se encuentra registrado']);
+        }
+
         if (is_array($resultadoTrait)) {
             $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
             $this->estado = 1;
@@ -79,8 +85,13 @@ class Rol extends Conexion
     {
 
         $resultadoTrait = $this->validarPost($campos);
+
+        if ($this->verificarRolExiste($this->formatearPalabra($resultadoTrait[1]))) {
+            return json_encode(['status' => 'exists', 'message' => 'El Rol se encuentra registrado']);
+        }
+
         if (is_array($resultadoTrait)) {
-            
+
             $this->cod_rol = $resultadoTrait[0];
             $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
         }
