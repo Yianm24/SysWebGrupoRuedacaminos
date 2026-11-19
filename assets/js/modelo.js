@@ -58,7 +58,7 @@ function dibujarTabla(objTabla) {
   ajaxConsultarGlobal(modulo, (response) => {
     objTabla.clear();
 
-    let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+    let lista = Array.isArray(response) ? response : [];
 
     if (lista.length > 0) {
 
@@ -93,41 +93,6 @@ function dibujarTabla(objTabla) {
         objTabla.draw()
     }
   })
-}
-
-function ajaxEnvioDatos(moduloNombre, modal = null, solicitud, btnEnviar, datos) {
-
-  iconoCargar("#tablaMarca tbody");
-  $.ajax({
-    url: `index.php?url=${moduloNombre}`,
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: solicitud,
-      datos: datos
-    },
-    beforeSend: function () {
-      if (modal != null) {
-        modal.hide();
-        $(btnEnviar).attr("disabled", true);
-      }
-    }
-  })
-    .done(function (response) {
-      console.log("Respuesta del servidor:", response);
-
-      mostrarAlerta(response.status, response.message);
-    })
-    .fail(function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-    .always(function () {
-      // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
-      ajaxConsultar();
-
-    });
-
 }
 
 function accionModal(boton) {

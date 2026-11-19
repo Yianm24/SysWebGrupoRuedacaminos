@@ -2,8 +2,31 @@ $(document).ready(function () {
     const moduloActual = "cargo";
     const tablaSelector = "#tablaCargo";
 
-    const dataTable = instanciarDatatableGlobal('table#tablaCargo');
-    ajaxConsultarCargo();
+    //const dataTable = instanciarDatatableGlobal('table#tablaCargo');
+    const otraDataTable = $(tablaSelector).DataTable({
+        processing: true ,
+        serverSide: true,
+        ajax:{
+            url: `index.php?url=cargo`,
+            type: "POST",
+            data:{
+                tipoSolicitud: 'datatable'
+            }
+        },
+        columns: [
+            {data: 'cod_cargo'},
+            {data: 'estado'},
+            {data: 'nombre'}
+            ],
+            language: {
+            url: 'assets/json/datatable.json'
+        },
+        responsive: true,
+        pageLength: 5,
+        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Todos"]],
+        order: [],
+    }); 
+    ajaxConsultarCargo(otraDataTable);
     const modalCargo = $('#modalCargo');
     let hasChanged = false;
 
@@ -104,7 +127,7 @@ $(document).ready(function () {
     });
 
 
-    function ajaxConsultarCargo() {
+    function ajaxConsultarCargo(dataTable) {
         ajaxConsultarGlobal(moduloActual, function (response) {
 
             let button = ''

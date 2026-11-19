@@ -34,11 +34,11 @@ switch ($solicitud) {
             exit();
         } */
         $datosAjax = json_decode(json_encode($_POST['datos']),true);
-        /* $expRegDatos = [
+         /* $expRegDatos = [
             'solo-numeros' => $datosAjax['cod_modelo'],
             'solo-letras' => $datosAjax['nombre_modelo'],
             'solo-numeros' => $datosAjax['cod_marca']
-        ];  */
+        ];   */
         $resultado = $modelo->actDatosModelo([$datosAjax['cod_modelo'],$datosAjax['nombre_modelo'],$datosAjax['cod_marca']]);
         
         echo $resultado;

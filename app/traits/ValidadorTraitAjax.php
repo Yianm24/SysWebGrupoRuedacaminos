@@ -16,7 +16,7 @@ trait ValidadorTraitAjax
 
         foreach ($camposRequeridos as $campo) {
             if (empty(trim($campo))) {
-                return json_encode(['status'=>'empty', 'message'=>'Uno o más campos están vacíos.']);
+                return json_encode(['status'=>'empty']);
             }
             $array[] = $this->input($campo, null);
         }

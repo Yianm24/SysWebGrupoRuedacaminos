@@ -78,6 +78,12 @@ switch ($solicitud) {
         }
         exit();
         break;
+        case 'datatable':
+        // $searchValue = isset ($_POST['search']['value']) ? $_POST['search']['value'] : '';
+        $resultado = $cargo->obt_RegistrosDatatable();
+        echo $resultado;
+        exit();
+        break;
 }
 
 if (empty($solicitud)) {

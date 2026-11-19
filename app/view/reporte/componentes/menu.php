@@ -9,7 +9,7 @@
                 <div class="col-md-10 input-group  btn-group-lg">
                     <!-- Example split danger button -->
 <!-- Example single danger button -->
-<div class="btn-group me-2">
+<!-- <div class="btn-group me-2">
   <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
     Envios Realizados
   </button>
@@ -18,9 +18,22 @@
     <li><a class="dropdown-item" href="#">Mensual</a></li>
     <li><a class="dropdown-item" href="reporteEnvios" data-bs-toggle="modal" data-bs-target="#customReporte">Personalizado</a></li>
   </ul>
+</div> -->
+<div class="me-2">
+  <button type="submit" id="reporteEnvio" name="tipoSolicitud" class="btn btn-primary" value="envios">
+    Envios Realizados
+  </button>
+
 </div>
 
-<div class="btn-group ms-2">
+<div class="me-2">
+  <button type="button" id="reportePago" class="btn btn-success" value="pagos">
+    Ingresos Obtenidos
+  </button>
+
+</div>
+
+<!-- <div class="btn-group ms-2">
   <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
     Ingresos Obtenidos
   </button>
@@ -30,7 +43,7 @@
     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customReporte">Personalizado</a></li>
     
   </ul>
-</div>
+</div> -->
 
 
                 </div>

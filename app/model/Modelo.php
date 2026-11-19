@@ -65,7 +65,7 @@ use ExpRegexTrait;
             $insert = $this->conexion->prepare($sentencia);
             $insert->execute([$this->nombre,$this->marca,$this->estado]);
 
-            return json_encode(['status' => 'success', 'message' => 'El Modelo ha sido registrada correctamente.']);
+            return json_encode(['status' => 'success', 'message' => 'El Modelo ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
             return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }

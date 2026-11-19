@@ -19,6 +19,65 @@ class Cargo extends Conexion
         parent::__construct();
     }
 
+    public function obt_RegistrosDatatable()
+    {
+        /* $draw = isset ($_POST['draw']) ? intval ($_POST['draw']) : 1;
+        $start = isset ($_POST['start']) ? intval ($_POST['start']) : 0;
+        $length = isset ($_POST['length']) ? intval ($_POST['length']) : 10;
+        $searchValue = isset ($_POST['search']['value']) ? $_POST['search']['value'] : ''; */
+        // var_dump($searchValue);
+        try {
+
+            // var_dump( $_POST );
+            // exit;
+
+            $searchValue = isset ($_POST['search']['value']) ? $_POST['search']['value'] : '';
+
+            if(empty($searchValue)){
+                $sentencia = "SELECT * FROM cargo WHERE estado = 1";
+            }else{
+                $sentencia = "SELECT * FROM cargo WHERE nombre LIKE '%".$searchValue."%' AND estado = 1";
+            }
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $data = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            // var_dump($data);
+            // exit;
+
+            $draw = 1;
+            $totalData = 6;
+            $totalFiltered = 6;
+            $dataReturn = [];
+
+            foreach ($data as $key => $value) {
+                
+                $dataReturn[] = [
+
+                    "cod_cargo" => $value['cod_cargo'],
+                    "estado" => $value['estado'],
+                    "nombre" => $value['nombre'],
+                ];
+            }
+
+            $response = [ 
+                "draw" => intval($draw), 
+                "recordsTotal" => intval($totalData), 
+                "recordsFiltered" => intval($totalFiltered), 
+                "data" => $dataReturn
+            ];
+
+            return json_encode($response); 
+
+            // return json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+
+
+
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
     public function obt_RegistrosCargo()
     {
         try {
