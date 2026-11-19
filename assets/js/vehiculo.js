@@ -1,174 +1,185 @@
-document.addEventListener("DOMContentLoaded", function () {
-
-    const modal = document.getElementById('modalVehiculo');
-
+$(function () {
+    const objDatatable = instanciarDatatableGlobal('#tablaVehiculo');
+    dibujarTabla (objDatatable);
+    
+    const modal = $('#modalVehiculo');
 
     if (modal) {
-        modal.addEventListener('show.bs.modal', event => {
-            const encabezadoModal = modal.querySelector('h1#modalLabel');
-            const botonModal = document.querySelector('button[name="tipoSolicitud"]');
-            // Obtener acceso al botón que disparó el modal
-            const boton = event.relatedTarget;
+        modal.on('show.bs.modal', function (event) {
 
-            //Obtener los datos del vehículo desde los atributos datos- del botón
-            const cod_vehiculo = boton.getAttribute('datos-cod-vehiculo');
-            const placa = boton.getAttribute('datos-placa');
-            const color = boton.getAttribute('datos-color');
-            const anio = boton.getAttribute('datos-anio');
-            const anchura = boton.getAttribute('datos-anchura');
-            const altura = boton.getAttribute('datos-altura');
-            const peso_max = boton.getAttribute('datos-peso-max');
-            const modelo = boton.getAttribute('datos-modelo');
-            const estado = boton.getAttribute('datos-estado');
-
-            // Obtener referencias a los campos del formulario dentro del modal
-            const inputCodVehiculo = modal.querySelector('.modal-body #cod-vehiculo');
-            const inputPlaca = modal.querySelector('.modal-body #placa');
-            const inputColor = modal.querySelector('.modal-body #color');
-            const inputAnio = modal.querySelector('.modal-body #anio');
-            const inputAnchura = modal.querySelector('.modal-body #anchura');
-            const inputAltura = modal.querySelector('.modal-body #altura');
-            const inputPesoMax = modal.querySelector('.modal-body #peso_max');
-            const inputModelo = modal.querySelector('.modal-body #modelo');
-
-            switch (boton.title) {
-                case "Registrar":
-                    const selectModelo = modal.querySelector('.modal-body #modelo');
-
-                    encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Registro de Vehículo';
-
-
-                    botonModal.value = "registrar";
-                    botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
-
-                    inputCodVehiculo.value = "";
-                    inputPlaca.value = "";
-                    inputColor.value = "";
-                    inputAnio.value = "";
-                    inputAnchura.value = "";
-                    inputAltura.value = "";
-                    inputPesoMax.value = "";
-                    inputModelo.value = "";
-                    selectModelo.selectedIndex = 0;
-                    break
-                case "Actualizar":
-                    encabezadoModal.innerHTML = '<i class="bi bi-truck me-2"></i> Actualización de Vehículo';
-                    botonModal.value = "actualizar";
-                    botonModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
-                    if (cod_vehiculo != "" && estado == 1) {
-                        //Inserta valores dentro de los inputs del formulario para actualizar
-                        inputCodVehiculo.value = cod_vehiculo;
-                        inputPlaca.value = placa;
-                        inputColor.value = color;
-                        inputAnio.value = anio;
-                        inputAnchura.value = anchura;
-                        inputAltura.value = altura;
-                        inputPesoMax.value = peso_max;
-                        inputModelo.value = modelo;
-
-                    } else {
-                        inputPlaca.value = "Error: Registro inactivo";
-                        inputColor.value = "Error: Registro inactivo";
-                        inputAnio.value = "Error: Registro inactivo";
-                        inputAnchura.value = "Error: Registro inactivo";
-                        inputAltura.value = "Error: Registro inactivo";
-                        inputPesoMax.value = "Error: Registro inactivo";
-                        inputModelo.value = "Error: Registro inactivo";
-                        console.log("No se puede editar el registro, ya que está inactivo.");
-                    }
-                    break
-
+            const boton = $(event.relatedTarget);
+            AccionModal(boton);
+        });
+        $(modal).on('click','button[name=tipoSolicitud]',function(evento){
+            evento.preventDefault();
+            datos = {
+                cod_vehiculo:$('#cod_vehiculo').val(),
+                placa: $('#placa').val(),
+                color: $('#color').val(),
+                modelo: $('#modelo').val(),
+                anio: $('#anio').val(),
+                anchura: $('#anchura').val(),
+                altura: $('#altura').val(),
+                peso_max: $('#peso_max').val()
             }
+            console.log(datos);
+            objModal = bootstrap.Modal.getInstance(modal) ?? '';
+
+            ajaxEnvioDatosGlobal('vehiculo',$(this).val(),dibujarTabla,objDatatable,datos,objModal,this)
         })
+
     }
 
-    //Modal Eliminar
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-    botonesEliminar.forEach(boton => {
-        boton.addEventListener('click', function (event) {
-            event.preventDefault();
-            let codvehiculo = this.getAttribute('data-id');
+    // Modal Eliminar (con delegación de eventos por si la tabla se recarga dinámicamente)
+    $(document).on('click', '.btn-eliminar', function (event) {
+        event.preventDefault();
+        const codvehiculo = $(this).data('cod-vehiculo');
 
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
-                buttonsStyling: false
-            });
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success ms-2",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
 
-            swalWithBootstrapButtons.fire({
-                title: "¿Está seguro que desea eliminar este registro?",
-                text: "¡No podrás revertir esto!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Confirmar",
-                cancelButtonText: "Cancelar",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '?url=vehiculo';
-                    form.innerHTML = `
-                        <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="cod_vehiculo" value="${codvehiculo}">
-                    `;
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
+        swalWithBootstrapButtons.fire({
+            title: "¿Está seguro que desea eliminar este registro?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+            }
         });
     });
+});
 
-    // Lógica para mostrar alertas de estado (éxito, error, etc.)
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-    const mensaje = urlParams.get('msg');
+function AccionModal(boton) {
+    const encabezadoModal = $('#modalLabel');
+    const botonModal = $('button[name="tipoSolicitud"]');
 
-    if (status) {
-        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-        setTimeout(() => {
-            let title, text, icon;
+    // Obtener los datos del vehículo desde los atributos datos- del botón
+    const cod_vehiculo = $(boton).data('cod-vehiculo');
+    const placa = $(boton).data('placa');
+    const color = $(boton).data('color');
+    const anio = $(boton).data('anio');
+    const anchura = $(boton).data('anchura');
+    const altura = $(boton).data('altura');
+    const peso_max = $(boton).data('peso-max');
+    const modelo = $(boton).data('modelo');
+    const estado = $(boton).data('estado');
 
-            switch (status) {
-                case 'success':
-                    title = "Registro exitoso!";
-                    text = "El Vehiculo ha sido registrada correctamente.";
-                    icon = "success";
-                    break;
-                case 'updated':
-                    title = "Actualización exitosa!";
-                    text = "El Vehiculo ha sido actualizada correctamente.";
-                    icon = "success";
-                    break;
-                case 'deleted':
-                    title = "Eliminación exitosa!";
-                    text = "El Vehiculo ha sido eliminada correctamente.";
-                    icon = "success";
-                    break;
-                case 'exists':
-                    title = "Vehiculo existente!";
-                    text = "El Vehiculo ingresada ya existe en la base de datos.";
-                    icon = "warning";
-                    break;
-                case 'error':
-                    title = "Error!";
-                    text = `Se produjo un error en el proceso de ${mensaje}.`;
-                    icon = "error";
-                    break;
-                case 'exception':
-                    title = "Exception Retornada!";
-                    text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-                    icon = "error";
-                    break;
+    // Obtener referencias a los campos del formulario dentro del modal
+    // Referencias directas por ID a los campos del formulario
+    const inputCodVehiculo = $('#cod_vehiculo');
+    const inputPlaca = $('#placa');
+    const inputColor = $('#color');
+    const inputAnio = $('#anio');
+    const inputAnchura = $('#anchura');
+    const inputAltura = $('#altura');
+    const inputPesoMax = $('#peso_max');
+    const inputModelo = $('#modelo');
+
+    switch (boton.attr('title')) {
+        case "Registrar":
+            encabezadoModal.html('<i class="bi bi-truck me-2"></i> Registro de Vehículo');
+            botonModal.val("registrar").html('<i class="bi bi-save"></i> Registrar');
+
+            inputCodVehiculo.val("");
+            inputPlaca.val("");
+            inputColor.val("");
+            inputAnio.val("");
+            inputAnchura.val("");
+            inputAltura.val("");
+            inputPesoMax.val("");
+            inputModelo.val("").prop('selectedIndex', 0);
+            break;
+
+        case "Actualizar":
+            encabezadoModal.html('<i class="bi bi-truck me-2"></i> Actualización de Vehículo');
+            botonModal.val("actualizar").html('<i class="bi bi-pencil"></i> Actualizar');
+
+            if (cod_vehiculo !== "" && estado == 1) {
+                inputCodVehiculo.val(cod_vehiculo);
+                inputPlaca.val(placa);
+                inputColor.val(color);
+                inputAnio.val(anio);
+                inputAnchura.val(anchura);
+                inputAltura.val(altura);
+                inputPesoMax.val(peso_max);
+                inputModelo.val(modelo);
+            } else {
+                const msgError = "Error: Registro inactivo";
+                inputPlaca.val(msgError);
+                inputColor.val(msgError);
+                inputAnio.val(msgError);
+                inputAnchura.val(msgError);
+                inputAltura.val(msgError);
+                inputPesoMax.val(msgError);
+                inputModelo.val(msgError);
+                console.log("No se puede editar el registro, ya que está inactivo.");
             }
-
-            if (title && text && icon) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: icon
-                });
-            }
-        }, 100);
+            break;
     }
 
-});
+}
+
+function dibujarTabla(objTabla){
+    const modulo = 'vehiculo';
+    ajaxConsultarGlobal(modulo, (response)=>{
+        objTabla.clear();
+        const lista = Array.isArray(response.vehiculos) ? response.vehiculos : [];
+        console.log(lista);
+        if(lista.length > 0){
+            $.each(lista, function (index, dato){
+                const botones =`
+                <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalVehiculo"
+                    data-cod-vehiculo="${dato.cod_vehiculo}"
+                    data-placa="${dato.placa}"
+                    data-color="${dato.color}"
+                    data-anio="${dato.anio}"
+                    data-anchura="${dato.anchura}"
+                    data-altura="${dato.altura}"
+                    data-peso-max="${dato.peso_max}"
+                    data-modelo="${dato.cod_modelo}"
+                    data-estado="${dato.estado}">
+                    <i class="bi bi-pencil"></i>
+                </button>
+
+                <a href="#" class="text-secondary btn-eliminar"
+                    data-cod-vehiculo="${dato.cod_vehiculo}">
+                    <i class="bi bi-trash"></i>
+                </a>
+                `;
+
+                objTabla.row.add([
+                    dato.placa,
+                    dato.color,
+                    dato.nombremodelo,
+                    dato.anio,
+                    dato.anchura,
+                    dato.altura,
+                    dato.peso_max,
+                    botones
+                ])
+            })
+        }
+    objTabla.draw();
+    // Aprovechar la misma respuesta para llenar el select de modelos
+        const modelos = Array.isArray(response.modelos) ? response.modelos : [];
+        llenarSelectModelos(modelos);        
+    })
+}
+function llenarSelectModelos(modelos) {
+    const selectModelo = $('#modelo');
+    let opciones = '';
+
+    $.each(modelos, function (index, modelo) {
+       opciones += `<option value="${modelo.cod_modelo}">${modelo.nombre}</option>`;
+    });
+    selectModelo.html(opciones);
+}

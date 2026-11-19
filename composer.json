@@ -24,5 +24,7 @@
             "App\\": "app/"
         }
     },
-    "require": {}
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    }
 }

@@ -16,29 +16,41 @@ switch ($solicitud) {
             exit();
         } */
 
-        $dataAjax = json_encode($_POST['datos']);
-        $datosObt = json_decode($dataAjax,true);
+        $datosAjax = json_decode(json_encode($_POST['datos']),true);
+        $expRegDatos = [
+            'solo-letras' => $datosAjax['nombre_modelo'],
+            'solo-numeros' => $datosAjax['cod_marca']
+        ];
+        $resultado = $modelo->regDatosModelo([$datosAjax['nombre_modelo'],$datosAjax['cod_marca']],$expRegDatos);
         
-        $resultado = $modelo->regDatosModelo([$datosObt['nombre_modelo'],$datosObt['cod_marca']]);
         echo $resultado;
         exit();
                 
     break;
     case 'actualizar':
        
-        if ($modelo->verificarModeloDuplicado($_POST['nombre_modelo'], $_POST['marca'],$_POST['cod_modelo'])) {
+        /* if ($modelo->verificarModeloDuplicado($_POST['nombre_modelo'], $_POST['marca'],$_POST['cod_modelo'])) {
             header("Location: ?url=modelo&status=exists");
             exit();
-        }
-
-        $resultado = $modelo->actDatosModelo(['cod_modelo','nombre_modelo','marca']);
-        header("Location: ?url=modelo&status={$resultado}");
+        } */
+        $datosAjax = json_decode(json_encode($_POST['datos']),true);
+         /* $expRegDatos = [
+            'solo-numeros' => $datosAjax['cod_modelo'],
+            'solo-letras' => $datosAjax['nombre_modelo'],
+            'solo-numeros' => $datosAjax['cod_marca']
+        ];   */
+        $resultado = $modelo->actDatosModelo([$datosAjax['cod_modelo'],$datosAjax['nombre_modelo'],$datosAjax['cod_marca']]);
+        
+        echo $resultado;
+        exit();
             
     break;
     case 'eliminar':
      
-        $resultado = $modelo->elmDatosModelo(['cod_modelo']);
-        header("Location: ?url=modelo&status={$resultado}");
+        $resultado = $modelo->elmDatosModelo([$_POST['datos']['cod_modelo']]);
+        
+        echo $resultado;
+        exit();
     break;
     case 'consultar':
         $resultado = $modelo->obt_RegistrosModelo();

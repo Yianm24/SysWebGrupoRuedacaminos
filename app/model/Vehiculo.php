@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Vehiculo extends Conexion
 {
-use ValidadorTrait;    
+use ValidadorTraitAjax;    
     private $cod_vehiculo;
     private $placa;
     private $color;
@@ -46,18 +46,18 @@ use ValidadorTrait;
 
     public function regDatosVehiculo(array $campos)
     {
-        if(is_array($this->validarPost($campos,"vehiculo"))){
-            $datos = $this->validarPost($campos,"vehiculo");
-            $this->placa = strtoupper($datos['placa']);
-            $this->color = $this->formatearPalabra($datos['color']);
-            $this->anio = $datos['anio'];
-            $this->anchura = $datos['anchura'];
-            $this->altura = $datos['altura'];
-            $this->peso_max = $datos['peso_max'];
-            $this->cod_modelo = $datos['modelo'];
+        $resultadoTrait = $this->validarPost($campos);
+        if(is_array($resultadoTrait)){
+            $this->placa = strtoupper($resultadoTrait[0]);
+            $this->color = $this->formatearPalabra($resultadoTrait[1]);
+            $this->anio = $resultadoTrait[2];
+            $this->anchura = $resultadoTrait[3];
+            $this->altura = $resultadoTrait[4];
+            $this->peso_max = $resultadoTrait[5];
+            $this->cod_modelo = $resultadoTrait[6];
             $this->estado = 1;
         }else{
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
 
         return $this->registrarVehiculo();
@@ -81,9 +81,9 @@ use ValidadorTrait;
 
             $insert->execute();
 
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'El Vehiculo ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=".urlencode($e->getMessage());
+            return json_encode(['status'=> 'exception', 'message'=> $e->getMessage()]);
         }
     }
 
@@ -97,26 +97,34 @@ use ValidadorTrait;
                             WHERE vehiculo.estado= 1;";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+            $vehiculos = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $sentencia = "SELECT cod_modelo, nombre 
+                        FROM modelo
+                        WHERE estado = 1;";
+        $select = $this->conexion->prepare($sentencia);
+        $select->execute();
+        $modelos = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            return json_encode(['vehiculos' => $vehiculos , 'modelos' => $modelos]);
         } catch (\PDOException $e) {
             return [];
         }
     }
     public function actDatosVehiculo(array $campos)
     {
-        if(is_array($this->validarPost($campos,"vehiculo"))){
-
-            $datos = $this->validarPost($campos,"vehiculo");
-            $this->cod_vehiculo = $datos['cod_vehiculo'];
-            $this->placa = strtoupper($datos['placa']);
-            $this->color = $this->formatearPalabra($datos['color']);
-            $this->anio = $datos['anio'];
-            $this->anchura = $datos['anchura'];
-            $this->altura = $datos['altura'];
-            $this->peso_max = $datos['peso_max'];
-            $this->cod_modelo = $datos['modelo'];
+        $resultadoTrait = $this->validarPost($campos);
+        if(is_array($resultadoTrait)){
+            $this->cod_vehiculo = $resultadoTrait[0];
+            $this->placa = strtoupper($resultadoTrait[1]);
+            $this->color = $this->formatearPalabra($resultadoTrait[2]);
+            $this->anio = $resultadoTrait[3];
+            $this->anchura = $resultadoTrait[4];
+            $this->altura = $resultadoTrait[5];
+            $this->peso_max = $resultadoTrait[6];
+            $this->cod_modelo = $resultadoTrait[7];
         }else{
-            return 'error&msg=Actualizar'; 
+            return $resultadoTrait; 
         }
 
         return $this->actualizarVehiculo();
@@ -138,9 +146,9 @@ use ValidadorTrait;
             $update->bindValue(8, $this->cod_vehiculo);
 
             $update->execute();
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'El Vehiculo ha sido actualizado correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=".urlencode($e->getMessage());
+            return  json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -163,9 +171,9 @@ use ValidadorTrait;
 
             $delete->execute([$this->cod_vehiculo]);
 
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'El Vehiculo ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=".urlencode($e->getMessage());
+            return  json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }
