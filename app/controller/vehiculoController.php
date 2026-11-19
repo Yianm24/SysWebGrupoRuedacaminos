@@ -13,35 +13,43 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
        
-        if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], null)) {
+        /* if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], null)) {
             header("Location: ?url=vehiculo&status=exists");
             exit();
-        }
-
-        $resultado = $vehiculo->regDatosVehiculo(['placa','color','anio','anchura','altura','peso_max','modelo']);
-        header("Location: ?url=vehiculo&status={$resultado}");
+        } */
+        $datosAjax = json_decode(json_encode($_POST['datos']),true);
+        $resultado = $vehiculo->regDatosVehiculo([$datosAjax['placa'],$datosAjax['color'],$datosAjax['anio'],$datosAjax['anchura'],$datosAjax['altura'],$datosAjax['peso_max'],$datosAjax['modelo']]);
+        echo $resultado;
+        exit();
                 
     break;
     case 'actualizar':
-   
+        /* 
         if ($vehiculo->verificarVehiculoDuplicado($_POST['placa'], $_POST['cod_vehiculo'])) {
             header("Location: ?url=vehiculo&status=exists");
             exit();
-        }
-
-        $resultado = $vehiculo->actDatosVehiculo(['cod_vehiculo','placa','color','anio','anchura','altura','peso_max','modelo']);
-        header("Location: ?url=vehiculo&status={$resultado}");
+        } */
+        $datosAjax = json_decode(json_encode($_POST['datos']),true);
+        $resultado = $vehiculo->regDatosVehiculo([$datosAjax['cod_vehiculo'],$datosAjax['placa'],$datosAjax['color'],$datosAjax['anio'],$datosAjax['anchura'],$datosAjax['altura'],$datosAjax['peso_max'],$datosAjax['modelo']]);
+        echo $resultado;
+        exit();
                 
     break;
     case 'eliminar':
         
             $resultado = $vehiculo->elmDatosVehiculo(['cod_vehiculo']);
-            header("Location: ?url=vehiculo&status={$resultado}");
+            echo $resultado;
+            exit();
+          
+    break;
+    case 'consultar':
+        
+            $resultado = $vehiculo->obt_RegistrosVehiculos();
+            echo $resultado;
+            exit();
           
     break;
 }
-$registros = $vehiculo->obt_RegistrosVehiculos();
-$modelosRegistros = $modelo->obt_RegistrosModelo();
 
 include 'app/view/layout/header.php';
 include 'app/view/vehiculo/vehiculoView.php';
