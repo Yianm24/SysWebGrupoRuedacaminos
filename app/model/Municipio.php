@@ -3,12 +3,12 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 class Municipio extends Conexion
 {
 
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
 
     private $cod_municipio;
     private $nombre;
@@ -22,44 +22,117 @@ class Municipio extends Conexion
         parent::__construct();
     }
 
-    public function verificarMunicipioDuplicado($nombre, $cod_estado, $cod_municipio = null)
+    private function verificarMunicipioDuplicado($nombre, $cod_estado)
     {
         $this->formatearPalabra($nombre);
-        if ($cod_municipio === null) {
-            $sentencia = "SELECT COUNT(*) FROM municipio WHERE nombre = ? AND cod_estado = ?";
-        } else {
-            $sentencia = "SELECT COUNT(*) FROM municipio WHERE nombre = ? AND cod_estado = ? AND cod_municipio != ? AND estado = 1";
-        }
+        $sentencia = "SELECT COUNT(*) FROM municipio WHERE nombre = ? AND cod_estado = ?";
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
         $count->bindValue(2, $cod_estado);
-        $count->bindValue(3, $cod_municipio);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
 
 
-    public function obt_RegistrosMunicipioNoAjax()
+    public function obt_RegistrosMunicipio()
     {
 
-        try {
-            $sentencia = "SELECT municipio.*, estado.nombre AS nombre_estado, 
-            estado.cod_estado
-            FROM municipio
-            INNER JOIN estado 
-            ON municipio.cod_estado= estado.cod_estado
-            WHERE municipio.estado=1";
+        // 2. Parámetros enviados por DataTables
+        $draw        = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+        $start       = isset($_POST['start']) ? intval($_POST['start']) : 0;
+        $length      = isset($_POST['length']) ? intval($_POST['length']) : 5;
+        $searchValue = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
 
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
+        // Mapeo de columnas para ordenamiento seguro (evita inyección SQL)
+        $columnas = [
+            0 => 'mun.nombre',
+            1 => 'est.nombre'
+        ];
+
+        // Ordenamiento por defecto (tu ORDER BY original) o el que elija el usuario en la tabla
+        $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 1;
+        $orderColumn      = $columnas[$orderColumnIndex] ?? 'est.nombre';
+        $orderDir         = (isset($_POST['order'][0]['dir']) && strtoupper($_POST['order'][0]['dir']) === 'DESC') ? 'DESC' : 'ASC';
+
+        // Base de la consulta y filtro inicial
+        $sqlBase = " FROM municipio AS mun
+             INNER JOIN estado AS est ON mun.cod_estado = est.cod_estado
+             WHERE mun.estado = 1";
+
+        // 3. Total de registros sin el filtro del buscador (pero respetando tu WHERE LIKE 'A%')
+        $stmtTotal = $this->conexion->query("SELECT COUNT(*) " . $sqlBase);
+        $recordsTotal = (int) $stmtTotal->fetchColumn();
+
+        // 4. Filtro dinámico del buscador de DataTables
+        $sqlSearch = "";
+        $params = [];
+
+        if ($searchValue !== '') {
+            $sqlSearch = " AND (mun.nombre LIKE :search OR est.nombre LIKE :search) ";
+            $params[':search'] = "%{$searchValue}%";
         }
+
+        // 5. Total de registros filtrados
+        $stmtFiltered = $this->conexion->prepare("SELECT COUNT(*) " . $sqlBase . $sqlSearch);
+        foreach ($params as $key => $val) {
+            $stmtFiltered->bindValue($key, $val, \PDO::PARAM_STR);
+        }
+        $stmtFiltered->execute();
+        $recordsFiltered = (int) $stmtFiltered->fetchColumn();
+
+        // 6. Consulta final con ordenamiento y paginación
+        $sqlData = "SELECT mun.cod_municipio, mun.nombre AS Municipio, mun.cod_estado, mun.estado, est.nombre AS Estado "
+            . $sqlBase
+            . $sqlSearch
+            . " ORDER BY {$orderColumn} {$orderDir} ";
+
+        // Si length es -1 (mostrar todos), no aplicamos LIMIT
+        if ($length != -1) {
+            $sqlData .= " LIMIT :start, :length";
+        }
+
+        $stmtData = $this->conexion->prepare($sqlData);
+
+        foreach ($params as $key => $val) {
+            $stmtData->bindValue($key, $val, \PDO::PARAM_STR);
+        }
+
+        // IMPORTANTE: En PDO, LIMIT requiere bindValue con PDO::PARAM_INT
+        if ($length != -1) {
+            $stmtData->bindValue(':start', $start, \PDO::PARAM_INT);
+            $stmtData->bindValue(':length', $length, \PDO::PARAM_INT);
+        }
+
+        $stmtData->execute();
+        $data = $stmtData->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($data as &$datos) {
+            $datos['botones'] = '<div class="text-end pe-4">
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modalMunicipio"
+                                 datos-cod-municipio="' . $datos['cod_municipio'] . '"
+                                 datos-nombre="' . $datos['Municipio'] . '"
+                                 datos-cod-estado="' . $datos['cod_estado'] . '"
+                                 datos-estado="' . $datos['estado'] . '"
+                                 >
+                                 <i class="bi bi-pencil"></i>
+                             </button>
+                         <a href="#" class="text-secondary btn-eliminar"
+                                 datos-cod-municipio="' . $datos['cod_municipio'] . '" >
+                                 <i class="bi bi-trash"></i>
+                         </a>
+                     </div>';
+        }
+        unset($datos);
+        // 7. Respuesta JSON para DataTables
+        return json_encode([
+            "draw"            => $draw,
+            "recordsTotal"    => $recordsTotal,
+            "recordsFiltered" => $recordsFiltered,
+            "data"            => $data
+        ]);
     }
 
-
-    public function obt_RegistrosMunicipio()
+    public function obt_RegistrosMunicipioNoAjax()
     {
         try {
             $sentencia = "SELECT municipio.*, estado.nombre AS nombre_estado, 
@@ -81,14 +154,19 @@ class Municipio extends Conexion
 
     public function regDatosMunicipio(array $campos)
     {
-        if (is_array($this->validarPost($campos, "municipio"))) {
+        $resultadoTrait = $this->validarPost($campos);
 
-            $array = $this->validarPost($campos, "municipio");
-            $this->nombre = $array['nombre_municipio'];
-            $this->cod_estado = $array['cod_estado'];
+        if ($this->verificarMunicipioDuplicado($this->formatearPalabra($resultadoTrait[0]), $resultadoTrait[1])) {
+            return json_encode(['status' => 'exists', 'message' => 'El Municipio se encuentra registrado']);
+        }
+
+        if (is_array($resultadoTrait)) {
+
+            $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
+            $this->cod_estado = $resultadoTrait[1];
             $this->estado = 1;
         } else {
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
         return $this->registrarMunicipio();
     }
@@ -106,23 +184,28 @@ class Municipio extends Conexion
 
             $insert->execute();
 
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'El Municipio ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function modDatosMunicipio(array $campos)
     {
 
-        if (is_array($this->validarPost($campos, "municipio"))) {
+        $resultadoTrait = $this->validarPost($campos);
 
-            $array = $this->validarPost($campos, "municipio");
-            $this->cod_municipio = $array['cod_municipio'];
-            $this->nombre = $array['nombre_municipio'];
-            $this->cod_estado = $array['cod_estado'];
+        if ($this->verificarMunicipioDuplicado($this->formatearPalabra($resultadoTrait[1]), $resultadoTrait[2])) {
+            return json_encode(['status' => 'exists', 'message' => 'El Municipio se encuentra registrado']);
+        }
+
+        if (is_array($this->validarPost($resultadoTrait))) {
+
+            $this->cod_municipio = $resultadoTrait[0];
+            $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
+            $this->cod_estado = $resultadoTrait[2];
         } else {
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
         return $this->modificarMunicipio();
     }
@@ -139,20 +222,22 @@ class Municipio extends Conexion
             $update->bindValue(3, $this->cod_municipio);
 
             $update->execute();
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'El Municipio ha sido modificado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
 
     public function elmDatosMunicipio(array $campos)
     {
-        if (is_array($this->validarPost($campos, "municipio"))) {
-            $array = $this->validarPost($campos, "municipio");
-            $this->cod_municipio = $array['cod_municipio'];
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+
+
+            $this->cod_municipio = $resultadoTrait[0];
         } else {
-            return 'error&msg=Eliminar';
+            return $resultadoTrait;
         }
 
         return $this->eliminarMunicipio();
@@ -167,9 +252,9 @@ class Municipio extends Conexion
             $delete->bindValue(1, $this->cod_municipio);
             $delete->execute();
 
-            return "deleted";
+            return json_encode(['status' => 'deleted', 'message' => 'El Municipio ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }
