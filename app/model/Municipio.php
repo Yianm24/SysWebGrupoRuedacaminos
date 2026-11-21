@@ -36,7 +36,6 @@ class Municipio extends Conexion
 
     public function obt_RegistrosMunicipio()
     {
-
         // 2. Parámetros enviados por DataTables
         $draw        = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
         $start       = isset($_POST['start']) ? intval($_POST['start']) : 0;

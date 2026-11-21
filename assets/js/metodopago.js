@@ -1,158 +1,172 @@
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
 
-    const modal = document.getElementById('modalMetodoPago');
+
+    const miTabla = instanciarDatatableGlobal('#tablaMetodopago');
+
+    dibujarTabla(miTabla);
+
+    const selectModal = $('select#cod_moneda');
+
+    dibujarSelect(selectModal);
+
+
+    const modal = $('#modalMetodoPago');
 
     if (modal) {
-        modal.addEventListener('show.bs.modal', event => {
-            // Obtener acceso al botón que disparó el modal
-            const encabezadoModal = modal.querySelector('h1#modalLabel');
+        modal.on('show.bs.modal', event => {
             const boton = event.relatedTarget;
-            const botonModal = document.querySelector('button[name="tipoSolicitud"]');
+            accionModal(boton);
+        });
 
+        $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
+            event.preventDefault();
+            const datos = {
+                cod_metodopago: $("#cod-metodopago").val(),
+                nombre_metodopago: $("#nombre_metodopago").val(),
+                cod_moneda: $('#cod_moneda').val()
+            };
 
+            const btnEnviar = this;
 
-            //Obtener los datos del vehículo desde los atributos datos- del botón
-            const cod_metodo = boton.getAttribute('datos-cod-metodo');
-            const nombre = boton.getAttribute('datos-nombre');
-            const cod_moneda = boton.getAttribute('datos-cod-moneda');
-            const estado = boton.getAttribute('datos-estado');
+            const solicitud = $(this).val();
+            console.log(solicitud);
 
-            // Obtener referencias a los campos del formulario dentro del modal
-            const inputCodMetodo = modal.querySelector('.modal-body #cod-metodo')
-            const inputNombre = modal.querySelector('.modal-body #nombre')
-            const inputCodMoneda = modal.querySelector('.modal-body #moneda')
+            const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
+            ajaxEnvioDatosGlobal('metodopago', dibujarTabla, null, miTabla, datos, objmodal, btnEnviar);
 
-
-            switch (boton.title) {
-                case "Registrar":
-                    encabezadoModal.innerHTML = '<i class="bi bi-coin"></i> Registro de Metodo de Pago';
-                    botonModal.value = "registrar";
-                    botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
-                    inputCodMetodo.value = "";
-                    inputNombre.value = "";
-                    inputCodMoneda.value = "";
-                    break;
-                case "Actualizar":
-
-                    encabezadoModal.innerHTML = '<i class="bi bi-coin"></i> Actualizacion de Metodo de Pago';
-                    botonModal.value = "actualizar";
-                    botonModal.innerHTML = '<i class="bi bi-pencil"></i> Actualizar';
-
-                    if (cod_metodo != "" && estado == 1) {
-                        // Asignar los valores obtenidos a los campos del formulario
-                        inputCodMetodo.value = cod_metodo;
-                        inputNombre.value = nombre;
-                        inputCodMoneda.value = cod_moneda;
-                    } else {
-                        inputCodMetodo.value = "Error: Registro inactivo";
-                        inputNombre.value = "Error: Registro inactivo";
-                        inputCodMoneda.value = "Error: Registro inactivo";
-                    }
-                    break;
-            }
-
-            // Asignar los valores obtenidos a los campos del formulario
-
-        })
+        });
     }
 
+    $("#tablaMetodoPago tbody").on("click", ".btn-eliminar", function (event) {
+        event.preventDefault();
+        let codmetodo = this.getAttribute('datos-cod-metodopago');
 
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success ms-2",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
 
-
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-    botonesEliminar.forEach(boton => {
-        boton.addEventListener('click', function (event) {
-            event.preventDefault();
-            let codmetodo = this.getAttribute('datos-cod-metodo');
-
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
-                buttonsStyling: false
-            });
-
-            swalWithBootstrapButtons.fire({
-                title: "¿Está seguro que desea eliminar este registro?",
-                text: "¡No podrás revertir esto!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Confirmar",
-                cancelButtonText: "Cancelar",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '?url=metodopago';
-                    form.innerHTML = `
-                        <input type="hidden" name="tipoSolicitud" value="eliminar">
-                        <input type="hidden" name="cod_metodo" value="${codmetodo}">
-                    `;
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
+        swalWithBootstrapButtons.fire({
+            title: "¿Está seguro que desea eliminar este registro?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                ajaxEnvioDatosGlobal('metodopago', 'eliminar', null, tablaServer, { cod_metodopago: codmetodo }, null, null);
+            }
         });
     });
-
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-    const mensaje = urlParams.get('msg');
-
-    if (status) {
-        // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-        setTimeout(() => {
-            let title, text, icon;
-
-            switch (status) {
-                case 'success':
-                    title = "Registro exitoso!";
-                    text = "El método de pago ha sido registrado correctamente.";
-                    icon = "success";
-                    break;
-                case 'updated':
-                    title = "Actualización exitosa!";
-                    text = "El método de pago ha sido actualizado correctamente.";
-                    icon = "success";
-                    break;
-                case 'deleted':
-                    title = "Eliminación exitosa!";
-                    text = "El método de pago ha sido eliminado correctamente.";
-                    icon = "success";
-                    break;
-                case 'exists':
-                    title = "Método de pago existente!";
-                    text = "El método de pago ya se encuentra registrado.";
-                    icon = "warning";
-                    break;
-
-                case 'empty':
-                    title = "Campos vacíos!";
-                    text = "Uno o más campos están vacíos.";
-                    icon = "warning";
-                    break;
-                case 'error':
-                    title = "Error!";
-                    text = `Se produjo un error en el processo de ${mensaje}`;
-                    icon = "error";
-                    break;
-                case 'exception':
-                    title = "Exception Retornada!";
-                    text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-                    icon = "error";
-                    break;
-            }
-
-            if (title && text && icon) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: icon
-                });
-            }
-        }, 100);
-    }
-
 });
 
 
+function dibujarTabla(objTable) {
+    const modulo = 'metodopago';
+    ajaxConsultarGlobal(modulo, (response) => {
+
+        objTable.clear();
+
+        let lista = Array.isArray(response) ? response : [];
+
+        if (lista.length > 0) {
+            $.each(lista, function (index, dato) {
+
+                const botones = `
+                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMetodoPago"
+                                 datos-cod-metodopago="${dato.cod_metodo}"
+                                 datos-nombre="${dato.nombre}"
+                                 datos-cod-moneda="${dato.cod_moneda}"
+                                 datos-estado="${dato.estado}"
+                                 >
+                                 <i class="bi bi-pencil"></i>
+                             </button>
+                         <a href="#" class="text-secondary btn-eliminar"
+                                 datos-cod-metodopago="${dato.cod_metodo}" >
+                                 <i class="bi bi-trash"></i>
+                         </a>`;
+
+                objTable.row.add([
+                    dato.nombre,
+                    dato.nombremoneda,
+                    botones
+                ])
+            });
+            objTable.draw();
+        } else {
+            objTable.row.add([
+                'No se encontraron registros.',
+                'No se encontraron registros.',
+                'No se encontraron registros.'
+            ])
+            objTable.draw();
+        }
+    })
+}
+
+function dibujarSelect(objtSelect) {
+
+    const modulo = "moneda";
+
+    let opciones = "";
+    ajaxConsultarGlobal(modulo, (response) => {
+
+        $.each(response, function (index, dato) {
+            opciones += `
+         <option value=${dato.cod_moneda}>${dato.abreviatura}</option>
+        `;
+        });
+        $(objtSelect).html(opciones);
+
+    });
+}
+
+function accionModal(boton) {
+    const encabezadoModal = $('#modalLabel');
+    const botonModal = $('button[name="tipoSolicitud"]');
+
+    // Obtener los datos desde los atributos datos- del botón
+    const codmetodopago = $(boton).attr('datos-cod-metodopago');
+    const nombre = $(boton).attr('datos-nombre');
+    const codmoneda = $(boton).attr('datos-cod-moneda');
+    const estado = $(boton).attr('datos-estado');
+
+    // Obtener referencias a los campos del formulario dentro del modal
+    const inputCodMetodo = $('#cod_metodopago');
+    const inputNombre = $('#nombre_metodopago');
+    const inputCodMoneda = $('#cod_moneda');
+
+    switch ($(boton).attr('title')) {
+        case "Registrar":
+            encabezadoModal.html('<i class="bi bi-coin me-2"></i> Registro de Método de Pago');
+            botonModal.val("registrar");
+            botonModal.html('<i class="bi bi-save"></i> Registrar');
+            inputCodMetodo.val("");
+            inputNombre.val("");
+            inputCodMoneda.val("");
+            $('#cod_moneda').prop('selectedIndex', 0);
+
+            break;
+        case "Actualizar":
+            encabezadoModal.html('<i class="bi bi-coin me-2"></i> Modificación de Método de Pago');
+            botonModal.val("actualizar");
+            botonModal.html('<i class="bi bi-pencil"></i> Actualizar');
+
+            if (codmetodopago != "" && estado == 1) {
+                // Asignar los valores obtenidos a los campos del formulario
+                inputCodMetodo.val(codmetodopago);
+                inputNombre.val(nombre);
+                inputCodMoneda.val(codmoneda);
+            } else {
+                inputCodMetodo.val("Error: Registro inactivo");
+                inputNombre.val("Error: Registro inactivo");
+                inputCodMoneda.val("Error: Registro inactivo");
+            }
+            break;
+    }
+}
