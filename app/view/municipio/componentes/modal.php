@@ -15,11 +15,8 @@
                         <span class="mensaje-error"></span>
                     </div>
                     <div class="mb-3">
-                        <select class="form-select" id="cod-estado" name="cod_estado">
+                        <select class="form-select" id="cod_estado" name="cod_estado">
                             <option selected>Estado</option>
-                            <?php foreach ($estadosRegistros as $registro): ?>
-                                <option value=<?= $registro['cod_estado'] ?>><?= $registro['nombre'] ?></option>
-                            <?php endforeach; ?>
                         </select>
                     </div>
 

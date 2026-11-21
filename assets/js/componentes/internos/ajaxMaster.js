@@ -31,21 +31,44 @@ function ajaxConsultarGlobal(modulo, devolverDatos) {
             });
         }
     })
-    .done(function (response) {
-        if (typeof devolverDatos === "function") {
-            devolverDatos(response);
-        }
-    })
-    .fail(function (xhr, status, error) {
-        console.error("Error al cargar los datos:", error);
-        console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-    .always(function () {
-        Swal.close();
-    })
+        .done(function (response) {
+            if (typeof devolverDatos === "function") {
+                devolverDatos(response);
+            }
+        })
+        .fail(function (xhr, status, error) {
+            console.error("Error al cargar los datos:", error);
+            console.log("Respuesta cruda del servidor:", xhr.responseText);
+        })
+        .always(function () {
+            Swal.close();
+        })
 }
 
-function ajaxEnvioDatosGlobal(moduloNombre, solicitud, funcConsultar, objTabla, datos = null, modal = null, btnEnviar = null) {
+
+function datatableServer(idTabla, modulo, colunms) {
+    const objDatatable = $(idTabla).DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: `index.php?url=${modulo}`,
+            type: 'POST',
+            data: { tipoSolicitud: 'consultar' }
+
+        },
+        language: {
+            url: 'assets/json/datatable.json'
+        },
+        responsive: true,
+        pageLength: 5,
+        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Todos"]],           // Cantidad inicial por página
+        order: [[1, 'asc']],     // Orden inicial por columna 1 (Estado ASC)
+        columns: colunms
+    });
+    return objDatatable;
+}
+
+function ajaxEnvioDatosGlobal(moduloNombre, solicitud, funcConsultar, objTabla = null, datos = null, modal = null, btnEnviar = null) {
 
     $.ajax({
         url: `index.php?url=${moduloNombre}`,
@@ -73,19 +96,26 @@ function ajaxEnvioDatosGlobal(moduloNombre, solicitud, funcConsultar, objTabla, 
     })
         .done(function (response) {
             console.log("Respuesta del servidor:", response);
-
             mostrarAlerta(response.status, response.message);
 
+            // Fuerza el reinicio de la petición AJAX del DataTable (serverSide)
+            if (objTabla != null && objTabla.ajax && typeof objTabla.ajax.reload === "function") {
+                objTabla.ajax.reload(null, false);
+
+            } else if (typeof funcConsultar === "function") {
+                //esto es cuando se usa la api de datatable
+                funcConsultar(objTabla);
+            }
         })
         .fail(function (xhr, status, error) {
             console.error("Error al cargar los datos:", error);
             console.log("Respuesta cruda del servidor:", xhr.responseText);
         })
         .always(function () {
-            if (typeof funcConsultar === "function") {
-                return funcConsultar(objTabla);
+            if (btnEnviar != null) {
+                $(btnEnviar).prop("disabled", false);
             }
-        })
+        });
 
 }
 

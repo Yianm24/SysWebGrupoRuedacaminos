@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="?url=envio" method="POST" id="formEnvio">
+            <form action="" method="POST" id="formEnvio">
                 <div class="modal-body">
                     <div id="carouselExampleCaptions" class="carousel slide">
                         <div class="carousel-inner">
@@ -157,12 +157,12 @@
                                                     <!-- Contacto Remitente -->
                                                     <div class="row g-3 mt-1">
                                                         <div class="col-md-6">
-                                                            <label for="rem_telefono" class="form-label small fw-semibold" required>Teléfono</label>
+                                                            <label for="rem_telefono" class="form-label small fw-semibold">Teléfono</label>
                                                             <input type="tel" class="form-control " id="rem_telefono" name="rem_telefono" placeholder="0414 1234567">
                                                             <span class="mensaje-error"></span>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="rem_correo" class="form-label small fw-semibold" required>Correo Electrónico</label>
+                                                            <label for="rem_correo" class="form-label small fw-semibold">Correo Electrónico</label>
                                                             <input type="email" class="form-control" id="rem_correo" name="rem_correo" placeholder="remitente@correo.com">
                                                             <span class="mensaje-error"></span>
                                                         </div>
