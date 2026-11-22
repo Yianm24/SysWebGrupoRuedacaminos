@@ -75,7 +75,7 @@ class Moneda extends Conexion
 
             $insert->execute();
 
-            return json_encode(['status' => 'success', 'message' => 'La moneda ha sido registrado correctamente.']);
+            return json_encode(['status' => 'success', 'message' => 'La moneda ha sido registraa correctamente.']);
         } catch (\PDOException $e) {
             return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }

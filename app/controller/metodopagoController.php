@@ -20,15 +20,16 @@ switch ($solicitud) {
 
     case 'actualizar':
         $datosAjax = json_decode(json_encode($_POST['datos']), true);
-        $resultado = $metodo->actDatosMetodoPago([$datosAjax['cod_metodo'], $datosAjax['nombre'], $datosAjax['moneda']]);
-
+        $resultado = $metodo->actDatosMetodoPago([$datosAjax['cod_metodopago'], $datosAjax['nombre_metodopago'], $datosAjax['cod_moneda']]);
+        echo $resultado;
         exit();
         break;
 
     case 'eliminar':
 
-        $resultado = $metodo->elmDatosMetodoPago([$_POST['datos']['cod_metodo']]);
+        $resultado = $metodo->elmDatosMetodoPago([$_POST['datos']['cod_metodopago']]);
         echo $resultado;
+        exit();
         break;
 
     case 'consultar':
