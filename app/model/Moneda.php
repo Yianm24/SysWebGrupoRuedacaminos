@@ -21,10 +21,13 @@ class Moneda extends Conexion
 
     private function verificarMonedaExiste($nombre, $abreviatura)
     {
-        $sentencia = "SELECT COUNT(*) FROM moneda WHERE nombre = ? and abreviatura = ? AND estado = 1";
+
+
+        $sentencia = "SELECT COUNT(*) FROM moneda WHERE nombre = ? and abreviatura = ? and estado=1";
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
         $count->bindValue(2, $abreviatura);
+
         $count->execute();
         return $count->fetchColumn() > 0;
     }
@@ -32,7 +35,12 @@ class Moneda extends Conexion
     public function obt_RegistrosMoneda()
     {
         try {
-            $sentencia = "SELECT * FROM moneda WHERE estado = 1";
+
+            if ($_SESSION['usuario']['rol'] != '6') {
+                $sentencia = "SELECT * FROM moneda where estado =1";
+            } else {
+                $sentencia = "SELECT * FROM moneda ORDER by estado DESC";
+            }
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
             $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
@@ -85,16 +93,15 @@ class Moneda extends Conexion
     {
         $resultadoTrait = $this->validarPost($campos);
 
-        if ($this->verificarMonedaExiste($this->formatearPalabra($resultadoTrait[1]), strtoupper($resultadoTrait[2]))) {
-            return json_encode(['status' => 'exists', 'message' => 'La Moneda se encuentra registrada']);
-        }
-
-
         if (is_array($resultadoTrait)) {
+            if ($this->verificarMonedaExiste($this->formatearPalabra($resultadoTrait[1]), strtoupper($resultadoTrait[2]))) {
+                return json_encode(['status' => 'exists', 'message' => 'La Moneda se encuentra registrada']);
+            }
 
             $this->cod_moneda = $resultadoTrait[0];
             $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
             $this->abreviatura = strtoupper($resultadoTrait[2]);
+            $this->estado = $resultadoTrait[3];
         } else {
             return $resultadoTrait;
         }
@@ -104,12 +111,13 @@ class Moneda extends Conexion
     private function modificarMoneda()
     {
         try {
-            $sentencia = "UPDATE `moneda` SET nombre = ?, abreviatura = ? WHERE cod_moneda = ?";
+            $sentencia = "UPDATE `moneda` SET nombre = ?, abreviatura = ?, estado = ? WHERE cod_moneda = ?";
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->nombre);
             $update->bindValue(2, $this->abreviatura);
-            $update->bindValue(3, $this->cod_moneda);
+            $update->bindValue(3, $this->estado);
+            $update->bindValue(4, $this->cod_moneda);
 
             $update->execute();
 

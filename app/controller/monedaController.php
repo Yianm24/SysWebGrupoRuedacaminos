@@ -23,7 +23,7 @@ switch ($solicitud) {
     case 'modificar':
 
         $datosAjax = json_decode(json_encode($_POST['datos']), true);
-        $resultado = $moneda->modDatosMoneda([$datosAjax['cod_moneda'], $datosAjax['nombre_moneda'], $datosAjax['abreviatura']]);
+        $resultado = $moneda->modDatosMoneda([$datosAjax['cod_moneda'], $datosAjax['nombre_moneda'], $datosAjax['abreviatura'], $datosAjax['estado']]);
         echo $resultado;
         exit();
 

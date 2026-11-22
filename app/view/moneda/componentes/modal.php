@@ -17,6 +17,18 @@
                         <label class="form-label">Abreviatura</label>
                         <input type="text" class="form-control" id="abreviatura" name="abreviatura" required placeholder="Ej: USD, VES">
                     </div>
+                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
+                        <div class="p-3 bg-light rounded border d-flex justify-content-between align-items-center">
+                            <div>
+                                <label class="form-label fw-semibold mb-0" for="estado_moneda">Estatus del Registro</label>
+                                <small class="d-block text-muted">Indica si la moneda se encuentra activa o inactiva</small>
+                            </div>
+                            <div class="form-check form-switch m-0">
+                                <input class="form-check-input fs-5" type="checkbox" role="switch" id="estado_moneda" name="estado" value="1" checked disabled>
+                                <label class="form-check-label fw-medium" id="label_estado_moneda" for="estado_moneda">Activo</label>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <footer class="modal-footer">
