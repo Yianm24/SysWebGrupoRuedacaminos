@@ -1,7 +1,6 @@
 $(document).ready(function () {
 
     const selectModal = $('select#cod_estado');
-    // console.log(selectModal);
 
     dibujarSelect(selectModal)
 

@@ -8,16 +8,12 @@
 
             <form action="?url=metodopago" method="POST">
                 <div class="modal-body">
-                    <input type="hidden" id="cod-metodo" name="cod_metodo">
+                    <input type="hidden" id="cod_metodopago" name="cod_metodopago">
                     <div class="input-group">
-                        <select class="form-select" id="moneda" name="moneda" style="max-width: 80px;" aria-label="Moneda">
-                            <!-- <option  id="chancleta" selected>cualquier cosa</option> -->
-                            <?php
-                            foreach ($regMoneda as $dato): ?>
-                                <option value="<?php echo $dato['cod_moneda']; ?>"><?php echo $dato['abreviatura']; ?></option>
-                            <?php endforeach; ?>
+                        <select class="form-select" id="cod_moneda" name="cod_moneda" style="max-width: 80px;" aria-label="Moneda">
+                            
                         </select>
-                        <input type="text" class="form-control input-evaluar solo-letras" id="nombre" name="nombre" placeholder="ej: Pago Movil">
+                        <input type="text" class="form-control input-evaluar solo-letras" id="nombre_metodopago" name="nombre" placeholder="ej: Pago Movil">
                         <!-- <span class="mensaje-error"></span> -->
                     </div>
                 </div>

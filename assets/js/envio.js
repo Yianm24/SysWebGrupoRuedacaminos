@@ -6,6 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $('button[name="tipoSolicitud"]').on("click", function (event) {
         event.preventDefault();
+
+        if (!$('#formEnvio').valid()) {
+            return
+        };
+
+
         const datos = { ancho: $("#ancho").val(), alto: $("#alto").val(), descripcion: $("#descripcion").val(), peso_total: $("#peso_total").val(), kilometraje: $('input[name="kilometraje"').val() };
         // console.log(datos);
         const modal = bootstrap.Modal.getInstance($('#carouselEnvio'));
@@ -118,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (e.key === 'Enter') {
             e.preventDefault();
-            
+
             const kilometraje = $(this).val()
 
             const costoEnvio = kilometraje * 2.36;

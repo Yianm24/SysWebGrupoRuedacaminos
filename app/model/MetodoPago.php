@@ -3,16 +3,16 @@
 namespace App\Model;
 
 use App\Config\Conexion;
-use App\Traits\ValidadorTrait;
+use App\Traits\ValidadorTraitAjax;
 
 
 class MetodoPago extends Conexion
 {
-    use ValidadorTrait;
+    use ValidadorTraitAjax;
 
     private $cod_metodo;
     private $nombre;
-    private $moneda;
+    private $cod_moneda;
     private $estado;
 
 
@@ -22,12 +22,14 @@ class MetodoPago extends Conexion
         parent::__construct();
     }
 
-    public function verificarMetodoPagoExiste($nombre, $moneda)
+    public function verificarMetodoPagoExiste($nombre, $cod_moneda)
     {
+
+        $this->formatearPalabra($nombre);
         $sentencia = "SELECT COUNT(*) FROM metodo_pago WHERE nombre = ? AND cod_moneda = ? AND estado = 1";
         $count = $this->conexion->prepare($sentencia);
         $count->bindValue(1, $nombre);
-        $count->bindValue(2, $moneda);
+        $count->bindValue(2, $cod_moneda);
         $count->execute();
         return $count->fetchColumn() > 0;
     }
@@ -44,7 +46,9 @@ class MetodoPago extends Conexion
 
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $registros=json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            return $registros;
         } catch (\PDOException $e) {
             return [];
         }

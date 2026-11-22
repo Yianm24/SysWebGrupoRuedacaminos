@@ -3,51 +3,40 @@
 namespace App\Controller;
 
 use App\Model\MetodoPago;
-use App\Model\Moneda;
 
 $metodo = new MetodoPago();
-$moneda = new Moneda();
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
 
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
 
-        if ($metodo->verificarMetodoPagoExiste($_POST['nombre'], $_POST['moneda'])) {
-            header("Location: ?url=metodopago&status=exists");
-            exit();
-        }
-
-        $resultado = $metodo->regDatosMetodoPago(['nombre', 'moneda']);
-        header("Location: ?url=metodopago&status={$resultado}");
-
-
+        $resultado = $metodo->regDatosMetodoPago([$datosAjax['nombre_metodopago'], $datosAjax['cod_moneda']]);
+        echo $resultado;
+        exit();
         break;
 
     case 'actualizar':
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
+        $resultado = $metodo->actDatosMetodoPago([$datosAjax['cod_metodo'], $datosAjax['nombre'], $datosAjax['moneda']]);
 
-
-        if ($metodo->verificarMetodoPagoExiste($_POST['nombre'], $_POST['moneda'])) {
-            header("Location: ?url=metodopago&status=exists");
-            exit();
-        }
-
-        $resultado = $metodo->actDatosMetodoPago(['cod_metodo','nombre','moneda']);
-        header("Location: ?url=metodopago&status={$resultado}");
-
+        exit();
         break;
-
 
     case 'eliminar':
-        
-            $resultado = $metodo->elmDatosMetodoPago(['cod_metodo']);
-            header("Location: ?url=metodopago&status={$resultado}");
+
+        $resultado = $metodo->elmDatosMetodoPago([$_POST['datos']['cod_metodo']]);
+        echo $resultado;
+        break;
+
+    case 'consultar':
+        $registros = $metodo->obt_RegistrosMetodoPago();
+        echo $registros;
+        exit();
         break;
 }
-
-$regMoneda = $moneda->obt_RegistrosMoneda();
-$registros = $metodo->obt_RegistrosMetodoPago();
 
 include 'app/view/layout/header.php';
 include 'app/view/metodopago/metodopagoView.php';
