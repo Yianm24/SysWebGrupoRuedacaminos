@@ -66,8 +66,9 @@ $(document).ready(function () {
         }
     });
 
+
     //Formatear valores a miles y decimales
-    $('.valores-monetarios').on('input', function() {
+    /* $('.valores-monetarios').on('input', function() {
         let input = $(this);
         let val = input.val();
         
@@ -90,9 +91,8 @@ $(document).ready(function () {
             partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
         input.val(partes.join(','));
-    });
+    }); */
 
-    
     //Validar el estado completo con bootstrap (is-valid / is-invalid)
     function evaluarInput(input) {
         const valor = input.val().trim();
@@ -150,7 +150,6 @@ $(document).ready(function () {
         inputs.siblings('.mensaje-error').hide().text('');
         btnEnviar.prop('disabled', true);
     });
-
     
     $('#btnCerrar').on('click',function(){
         $('.modal input').removeClass('is-valid');

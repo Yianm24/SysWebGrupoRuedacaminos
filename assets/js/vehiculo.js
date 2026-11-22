@@ -1,4 +1,4 @@
-$(function () {
+$(document).ready(function () {
     const objDatatable = instanciarDatatableGlobal('#tablaVehiculo');
     dibujarTabla (objDatatable);
     
@@ -12,6 +12,12 @@ $(function () {
         });
         $(modal).on('click','button[name=tipoSolicitud]',function(evento){
             evento.preventDefault();
+
+            $('.modal input').removeClass('is-valid');
+        $('.modal input').removeClass('is-invalid');
+        $('.modal input').val('');
+        $('.modal .mensaje-error').hide().text('');
+        this.prop('disabled', true);
             datos = {
                 cod_vehiculo:$('#cod_vehiculo').val(),
                 placa: $('#placa').val(),
@@ -26,6 +32,7 @@ $(function () {
             objModal = bootstrap.Modal.getInstance(modal) ?? '';
 
             ajaxEnvioDatosGlobal('vehiculo',$(this).val(),dibujarTabla,objDatatable,datos,objModal,this)
+           
         })
 
     }
@@ -53,6 +60,7 @@ $(function () {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
+                ajaxEnvioDatosGlobal('vehiculo','eliminar',dibujarTabla,objDatatable,{cod_vehiculo:codvehiculo},null,null)
             }
         });
     });
@@ -169,17 +177,12 @@ function dibujarTabla(objTabla){
             })
         }
     objTabla.draw();
-    // Aprovechar la misma respuesta para llenar el select de modelos
+        
         const modelos = Array.isArray(response.modelos) ? response.modelos : [];
-        llenarSelectModelos(modelos);        
+        let opciones = '';
+        $.each(modelos, function(index,modelo){
+            opciones += `<option value="${modelo.cod_modelo}">${modelo.nombre}</option>`; 
+        })
+        $('#modelo').html(opciones);        
     })
-}
-function llenarSelectModelos(modelos) {
-    const selectModelo = $('#modelo');
-    let opciones = '';
-
-    $.each(modelos, function (index, modelo) {
-       opciones += `<option value="${modelo.cod_modelo}">${modelo.nombre}</option>`;
-    });
-    selectModelo.html(opciones);
 }

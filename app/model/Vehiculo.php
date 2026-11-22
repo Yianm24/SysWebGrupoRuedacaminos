@@ -7,7 +7,7 @@ use App\Traits\ValidadorTraitAjax;
 
 class Vehiculo extends Conexion
 {
-use ValidadorTraitAjax;    
+    use ValidadorTraitAjax;
     private $cod_vehiculo;
     private $placa;
     private $color;
@@ -47,7 +47,7 @@ use ValidadorTraitAjax;
     public function regDatosVehiculo(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
-        if(is_array($resultadoTrait)){
+        if (is_array($resultadoTrait)) {
             $this->placa = strtoupper($resultadoTrait[0]);
             $this->color = $this->formatearPalabra($resultadoTrait[1]);
             $this->anio = $resultadoTrait[2];
@@ -56,7 +56,7 @@ use ValidadorTraitAjax;
             $this->peso_max = $resultadoTrait[5];
             $this->cod_modelo = $resultadoTrait[6];
             $this->estado = 1;
-        }else{
+        } else {
             return $resultadoTrait;
         }
 
@@ -83,7 +83,7 @@ use ValidadorTraitAjax;
 
             return json_encode(['status' => 'success', 'message' => 'El Vehiculo ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return json_encode(['status'=> 'exception', 'message'=> $e->getMessage()]);
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -102,11 +102,11 @@ use ValidadorTraitAjax;
             $sentencia = "SELECT cod_modelo, nombre 
                         FROM modelo
                         WHERE estado = 1;";
-        $select = $this->conexion->prepare($sentencia);
-        $select->execute();
-        $modelos = $select->fetchAll(\PDO::FETCH_ASSOC);
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $modelos = $select->fetchAll(\PDO::FETCH_ASSOC);
 
-            return json_encode(['vehiculos' => $vehiculos , 'modelos' => $modelos]);
+            return json_encode(['vehiculos' => $vehiculos, 'modelos' => $modelos]);
         } catch (\PDOException $e) {
             return [];
         }
@@ -114,7 +114,7 @@ use ValidadorTraitAjax;
     public function actDatosVehiculo(array $campos)
     {
         $resultadoTrait = $this->validarPost($campos);
-        if(is_array($resultadoTrait)){
+        if (is_array($resultadoTrait)) {
             $this->cod_vehiculo = $resultadoTrait[0];
             $this->placa = strtoupper($resultadoTrait[1]);
             $this->color = $this->formatearPalabra($resultadoTrait[2]);
@@ -123,8 +123,8 @@ use ValidadorTraitAjax;
             $this->altura = $resultadoTrait[5];
             $this->peso_max = $resultadoTrait[6];
             $this->cod_modelo = $resultadoTrait[7];
-        }else{
-            return $resultadoTrait; 
+        } else {
+            return $resultadoTrait;
         }
 
         return $this->actualizarVehiculo();
@@ -132,6 +132,8 @@ use ValidadorTraitAjax;
 
     private function actualizarVehiculo()
     {
+        echo $this->cod_modelo;
+        exit();
         try {
             $sentencia = "UPDATE `vehiculo` SET placa = ?, color = ?, anio = ?, anchura = ?, altura = ?, peso_max = ?, cod_modelo = ? WHERE cod_vehiculo = ?";
             $update = $this->conexion->prepare($sentencia);
@@ -154,11 +156,11 @@ use ValidadorTraitAjax;
 
     public function elmDatosVehiculo(array $campos)
     {
-        if(is_array($this->validarPost($campos,"vehiculo"))){
-            $datos = $this->validarPost($campos,"vehiculo");
-            $this->cod_vehiculo = $datos['cod_vehiculo'];
-        }else{
-            return 'error&msg=Eliminar'; 
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+            $this->cod_vehiculo = $resultadoTrait[0];
+        } else {
+            return $resultadoTrait;
         }
         return $this->eliminarVehiculo();
     }

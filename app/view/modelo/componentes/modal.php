@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="#" method="POST">
+            <form method="POST">
                 <div class="modal-body">
                     <input type="hidden" id="cod-modelo" name="cod_modelo">
                     <div class="mb-3">
@@ -16,10 +16,6 @@
                     </div>
                     <div class="mb-3">
                         <select class="form-select" id="marca" name="marca" required>
-                            <option value="0" selected>Marca</option>
-                            <?php foreach ($marcasRegistros as $registro): ?>
-                                <option value=<?= $registro['cod_marca'] ?>><?= $registro['nombre'] ?></option>
-                            <?php endforeach; ?>
                         </select>
                     </div>
 
@@ -27,7 +23,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" value="" class="btn btn-primary" disabled></button>
+                    <button type="button" name="tipoSolicitud" value="" class="btn btn-primary" disabled></button>
                 </footer>
             </form>
         </div>

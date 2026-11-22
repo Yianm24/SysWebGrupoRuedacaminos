@@ -6,9 +6,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="#" method="POST" id="formFlota">
+            <form method="POST" id="formFlota">
                 <div class="modal-body">
-                    <input type="hidden" name="cod_vehiculo" id="cod-vehiculo">
+                    <input type="hidden" name="cod_vehiculo" id="cod_vehiculo">
 
                     <fieldset class="row mb-3">
 
@@ -33,9 +33,6 @@
                                 <div class="col-md-6 mb-3">
                                     <select class="form-select" id="modelo" name="modelo" required>
                                         <option value="" selected>Modelo</option>
-                                        <?php foreach ($modelosRegistros as $registro): ?>
-                                            <option value="<?= $registro['cod_modelo'] ?>" required><?= $registro['nombre'] ?></option>
-                                        <?php endforeach; ?>
                                     </select>
                                     <span class="mensaje-error"></span>
                                 </div>
@@ -73,7 +70,7 @@
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button name="tipoSolicitud" value="" type="submit" class="btn btn-primary" disabled></button>
+                    <button name="tipoSolicitud" value="" type="button" class="btn btn-primary" disabled></button>
                 </footer>
             </form>
         </div>

@@ -37,7 +37,7 @@ switch ($solicitud) {
     break;
     case 'eliminar':
         
-            $resultado = $vehiculo->elmDatosVehiculo(['cod_vehiculo']);
+            $resultado = $vehiculo->elmDatosVehiculo([$_POST['datos']['cod_vehiculo']]);
             echo $resultado;
             exit();
           

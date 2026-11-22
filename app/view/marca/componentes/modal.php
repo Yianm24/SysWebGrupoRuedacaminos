@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </header>
 
-            <form action="#" method="POST">
+            <form method="POST">
                 <div class="modal-body">
                     <input type="hidden" id="cod-marca" name="cod_marca">
                     <div class="mb-3">
