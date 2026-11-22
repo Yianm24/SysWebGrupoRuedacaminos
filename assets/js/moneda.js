@@ -14,12 +14,20 @@ $(document).ready(function () {
             AccionModal(boton);
         })
 
+        $("#estado_moneda").on("change", function () {
+            if ($(this).is(":checked")) {
+                $(this).prop("disabled", true);
+                $("#label_estado_moneda").text("Activo");
+            }
+        });
+
         $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
             event.preventDefault();
             const datos = {
                 cod_moneda: $("#cod-moneda").val(),
                 nombre_moneda: $("#nombre_moneda").val(),
-                abreviatura:$('#abreviatura').val()
+                abreviatura: $('#abreviatura').val(),
+                estado: $("#estado_moneda").is(":checked") ? 1 : 0
             }
 
             const btnEnviar = this;
@@ -71,6 +79,18 @@ function dibujarTabla(objTable) {
         if (lista.length > 0) {
             $.each(lista, function (index, dato) {
 
+                let estadoJS;
+                if (dato.estado == 1) {
+                    estadoJS = `<span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Activo
+                                </span>`;
+                } else if (dato.estado == 0) {
+                    estadoJS = `<span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2">
+                                    <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                                </span>`;
+                }
+
+
                 const botones = ` <td class="text-start pe-4">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#modalMoneda"
                                  datos-cod-moneda="${dato.cod_moneda}"
@@ -86,19 +106,40 @@ function dibujarTabla(objTable) {
                          </a>
                      </td>`;
 
+                if (ROL_USUARIO != '6') { 
+                    
                 objTable.row.add([
                     dato.abreviatura,
-                    dato.nombre,
-                    botones
+                    dato.nombre
                 ])
+                }
+                else {
+
+                    objTable.row.add([
+                        dato.abreviatura,
+                        dato.nombre,
+                        estadoJS,
+                        botones
+                    ])
+                }
+
+
             });
             objTable.draw();
         } else {
-            objTable.row.add([
-                'No se encontraron registros.',
-                'No se encontraron registros.',
-                'No se encontraron registros.'
-            ])
+            if (ROL_USUARIO != '6') {
+                objTable.row.add([
+                    'No se encontraron registros.',
+                    'No se encontraron registros.'
+                ]);
+            } else {
+                objTable.row.add([
+                    'No se encontraron registros.',
+                    'No se encontraron registros.',
+                    'No se encontraron registros.',
+                    'No se encontraron registros.'
+                ]);
+            }
             objTable.draw();
         }
     })
@@ -109,7 +150,7 @@ function AccionModal(boton) {
     const encabezadoModal = $('#modalLabel');
     const botonModal = $('button[name="tipoSolicitud"]');
     botonModal.prop("disabled", false);
-    
+
     const cod_moneda = $(boton).attr('datos-cod-moneda');
     const nombre = $(boton).attr('datos-nombre');
     const abreviatura = $(boton).attr('datos-abreviatura');
@@ -118,6 +159,8 @@ function AccionModal(boton) {
     const inputCodMoneda = $('#cod-moneda')
     const inputNombre = $('#nombre_moneda')
     const inputAbreviatura = $('#abreviatura')
+    const checkEstado = $('#estado_moneda')
+    const labelEstado = $('#label_estado_moneda')
 
     switch ($(boton).attr('title')) {
         case "Registrar":
@@ -127,6 +170,8 @@ function AccionModal(boton) {
             inputCodMoneda.val("");
             inputNombre.val("");
             inputAbreviatura.val("");
+            checkEstado.prop("checked", true).prop("disabled", true);
+            labelEstado.text("Activo");
             break;
         case "Modificar":
 
@@ -134,16 +179,19 @@ function AccionModal(boton) {
             botonModal.val("modificar");
             botonModal.html('<i class="bi bi-pencil"></i> Modificar');
 
-
-            if (cod_moneda != "" && estado == 1) {
+            if (cod_moneda != "") {
                 // Asignar los valores obtenidos a los campos del formulario
                 inputCodMoneda.val(cod_moneda);
                 inputNombre.val(nombre);
                 inputAbreviatura.val(abreviatura);
-            } else {
-                inputCodMoneda.value = "Error: Registro inactivo";
-                inputNombre.value = "Error: Registro inactivo";
-                inputAbreviatura.value = "Error: Registro inactivo";
+
+                if (estado == 0) {
+                    checkEstado.prop("checked", false).prop("disabled", false);
+                    labelEstado.text("Inactivo");
+                } else {
+                    checkEstado.prop("checked", true).prop("disabled", true);
+                    labelEstado.text("Activo");
+                }
             }
             break;
     }

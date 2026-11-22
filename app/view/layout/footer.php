@@ -26,9 +26,12 @@
                 <script src="assets/js/componentes/internos/busqueda.js"></script>
                 <script src="assets/js/componentes/internos/ajaxMaster.js"></script>
 
+                <script>
+                    const ROL_USUARIO = <?= json_encode($_SESSION['usuario']['rol'] ?? null) ?>;
+                </script>
 
                 <script src="assets/js/<?= $_GET['url'] ?>.js"></script>
-                
+
                 <?php if (isset($_GET['url']) && $_GET['url'] === "envio"): ?>
                     <script src="assets/js/componentes/internos/rulesValidateEnvio.js"></script>
                 <?php endif; ?>
