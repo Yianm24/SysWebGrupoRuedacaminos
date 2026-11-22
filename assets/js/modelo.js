@@ -20,7 +20,7 @@ $(document).ready(function () {
 
       const btnEnviar = this;
       const objModal = bootstrap.Modal.getInstance(modal) ?? '';
-      ajaxEnvioDatosGlobal('modelo',$(this).val(),dibujarTabla,objDatatable,datos,objModal,btnEnviar);
+      ajaxEnvioDatosGlobal('modelo', $(this).val(), dibujarTabla, objDatatable, datos, objModal, btnEnviar);
     });
   }
 
@@ -46,7 +46,7 @@ $(document).ready(function () {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        ajaxEnvioDatosGlobal('modelo','eliminar',dibujarTabla,objDatatable,{cod_modelo:codmodelo},null,null);
+        ajaxEnvioDatosGlobal('modelo', 'eliminar', dibujarTabla, objDatatable, { cod_modelo: codmodelo }, null, null);
       }
     });
   });
@@ -58,11 +58,11 @@ function dibujarTabla(objTabla) {
   ajaxConsultarGlobal(modulo, (response) => {
     objTabla.clear();
 
-    let lista = Array.isArray(response) ? response : [];
+    const modelos = Array.isArray(response.modelos) ? response.modelos : [];
 
-    if (lista.length > 0) {
+    if (modelos.length > 0) {
 
-      $.each(lista, function (index, dato) {
+      $.each(modelos, function (index, dato) {
         const botones = `
           <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalModelo"
               datos-cod-modelo="${dato.cod_modelo}"
@@ -83,15 +83,15 @@ function dibujarTabla(objTabla) {
 
         ])
       });
-      objTabla.draw();
-    } else {
-      objTabla.row.add([
-        'No se encontraron registros.',
-        'No se encontraron registros.',
-        'No se encontraron registros.'
-        ])
-        objTabla.draw()
     }
+    objTabla.draw();
+     
+    const marcas = Array.isArray(response.marcas) ? response.marcas : [];
+    let opciones = '';
+    $.each(marcas, function(index,marca){
+        opciones += `<option value="${marca.cod_marca}">${marca.nombre}</option>`; 
+    })
+    $('#marca').html(opciones);   
   })
 }
 

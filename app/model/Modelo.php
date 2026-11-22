@@ -83,7 +83,16 @@ use ExpRegexTrait;
 
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
-            return json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            $modelos = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $sentencia = "SELECT cod_marca, nombre 
+                        FROM marca
+                        WHERE estado = 1;";
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $marcas = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            return json_encode(['modelos' => $modelos,'marcas' => $marcas]);
         } catch (\PDOException $e) {
             return [];
         }
