@@ -21,10 +21,11 @@ $(document).ready(function () {
         $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
             event.preventDefault();
             const datos = {
-                cod_metodopago: $("#cod-metodopago").val(),
+                cod_metodopago: $("#cod_metodopago").val(),
                 nombre_metodopago: $("#nombre_metodopago").val(),
                 cod_moneda: $('#cod_moneda').val()
             };
+
 
             const btnEnviar = this;
 
@@ -32,12 +33,12 @@ $(document).ready(function () {
             console.log(solicitud);
 
             const objmodal = bootstrap.Modal.getInstance(modal) ?? '';
-            ajaxEnvioDatosGlobal('metodopago', dibujarTabla, null, miTabla, datos, objmodal, btnEnviar);
+            ajaxEnvioDatosGlobal('metodopago', solicitud, dibujarTabla, miTabla, datos, objmodal, btnEnviar);
 
         });
     }
 
-    $("#tablaMetodoPago tbody").on("click", ".btn-eliminar", function (event) {
+    $("#tablaMetodopago tbody").on("click", ".btn-eliminar", function (event) {
         event.preventDefault();
         let codmetodo = this.getAttribute('datos-cod-metodopago');
 
@@ -59,7 +60,7 @@ $(document).ready(function () {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                ajaxEnvioDatosGlobal('metodopago', 'eliminar', null, tablaServer, { cod_metodopago: codmetodo }, null, null);
+                ajaxEnvioDatosGlobal('metodopago', 'eliminar', dibujarTabla, miTabla, { cod_metodopago: codmetodo }, null, null);
             }
         });
     });

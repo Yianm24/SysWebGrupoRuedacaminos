@@ -4,8 +4,8 @@ function instanciarDatatableGlobal(idTabla) {
             url: 'assets/json/datatable.json'
         },
         responsive: true,
-        pageLength: 5,
-        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Todos"]],
+        pageLength: 10,
+        lengthMenu: [[10, 20, 30, -1], [10, 20, 30, "Todos"]],
         order: [],
     });
     return objDatatable;
@@ -60,8 +60,8 @@ function datatableServer(idTabla, modulo, colunms) {
             url: 'assets/json/datatable.json'
         },
         responsive: true,
-        pageLength: 5,
-        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Todos"]],           // Cantidad inicial por página
+        pageLength: 10,
+        lengthMenu: [[10, 20, 30, -1], [10, 20, 30, "Todos"]],           // Cantidad inicial por página
         order: [[1, 'asc']],     // Orden inicial por columna 1 (Estado ASC)
         columns: colunms
     });
@@ -98,13 +98,12 @@ function ajaxEnvioDatosGlobal(moduloNombre, solicitud, funcConsultar, objTabla =
             console.log("Respuesta del servidor:", response);
             mostrarAlerta(response.status, response.message);
 
-            // Fuerza el reinicio de la petición AJAX del DataTable (serverSide)
-            if (objTabla != null && objTabla.ajax && typeof objTabla.ajax.reload === "function") {
-                objTabla.ajax.reload(null, false);
-
-            } else if (typeof funcConsultar === "function") {
-                //esto es cuando se usa la api de datatable
+            if (typeof funcConsultar === "function") {
+                // Cuando se usa instanciarDatatableGlobal + dibujarTabla
                 funcConsultar(objTabla);
+            } else if (objTabla != null && objTabla.ajax && typeof objTabla.ajax.reload === "function") {
+                // Cuando funcConsultar es null y se usa datatableServer (serverSide)
+                objTabla.ajax.reload(null, false);
             }
         })
         .fail(function (xhr, status, error) {

@@ -22,7 +22,7 @@ class MetodoPago extends Conexion
         parent::__construct();
     }
 
-    public function verificarMetodoPagoExiste($nombre, $cod_moneda)
+    private function verificarMetodoPagoExiste($nombre, $cod_moneda)
     {
 
         $this->formatearPalabra($nombre);
@@ -47,7 +47,7 @@ class MetodoPago extends Conexion
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
 
-            $registros=json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
             return $registros;
         } catch (\PDOException $e) {
             return [];
@@ -56,16 +56,21 @@ class MetodoPago extends Conexion
 
     public function regDatosMetodoPago(array $campos)
     {
-        if (is_array($this->validarPost($campos, "metodopago"))) {
 
-            $array = $this->validarPost($campos, "metodopago");
+        $resultadoTrait = $this->validarPost($campos);
 
-            $this->nombre = $this->formatearPalabra($array['nombre']);
-            $this->moneda = $array['moneda'];
+        if ($this->verificarMetodoPagoExiste($this->formatearPalabra($resultadoTrait[0]), $resultadoTrait[1])) {
+            return json_encode(['status' => 'exists', 'message' => 'El Metodo de Pago se encuentra registrada']);
+        }
+
+        if (is_array($resultadoTrait)) {
+
+            $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
+            $this->cod_moneda = $resultadoTrait[1];
             $this->estado = 1;
         } else {
 
-            return 'error&msg=Registrar';
+            return $resultadoTrait;
         }
 
 
@@ -80,27 +85,33 @@ class MetodoPago extends Conexion
             $insert = $this->conexion->prepare($sentencia);
 
             $insert->bindValue(1, $this->nombre);
-            $insert->bindValue(2, $this->moneda);
+            $insert->bindValue(2, $this->cod_moneda);
             $insert->bindValue(3, $this->estado);
 
             $insert->execute();
 
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'El Metodo de Pago ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function actDatosMetodoPago(array $campos)
     {
-        if (is_array($this->validarPost($campos, "metodopago"))) {
 
-            $array = $this->validarPost($campos, "metodopago");
-            $this->cod_metodo = $array['cod_metodo'];
-            $this->nombre = $this->formatearPalabra($array['nombre']);
-            $this->moneda = $array['moneda'];
+        $resultadoTrait = $this->validarPost($campos);
+        if ($this->verificarMetodoPagoExiste($this->formatearPalabra($resultadoTrait[1]), strtoupper($resultadoTrait[2]))) {
+            return json_encode(['status' => 'exists', 'message' => 'El Metodo de Pago se encuentra registrada']);
+        }
+
+
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_metodo = $resultadoTrait[0];
+            $this->nombre = $this->formatearPalabra($resultadoTrait[1]);
+            $this->cod_moneda = $resultadoTrait[2];
         } else {
-            return 'error&msg=Actualizar';
+            return $resultadoTrait;
         }
 
 
@@ -115,23 +126,26 @@ class MetodoPago extends Conexion
             $update = $this->conexion->prepare($sentencia);
 
             $update->bindValue(1, $this->nombre);
-            $update->bindValue(2, $this->moneda);
+            $update->bindValue(2, $this->cod_moneda);
             $update->bindValue(3, $this->cod_metodo);
 
             $update->execute();
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'El Metodo de pago ha sido actualizado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
 
     public function elmDatosMetodoPago(array $campos)
     {
-        if (is_array($this->validarPost($campos, "metodopago"))) {
+        $resultadoTrait = $this->validarPost($campos);
 
-            $array = $this->validarPost($campos, "metodopago");
-            $this->cod_metodo = $array['cod_metodo'];
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_metodo = $resultadoTrait[0];
+        }else{
+            return $resultadoTrait;
         }
 
         return $this->eliminarMetodoPago();
@@ -146,9 +160,9 @@ class MetodoPago extends Conexion
             $delete->bindValue(1, $this->cod_metodo);
             $delete->execute();
 
-            return "deleted";
+            return json_encode(['status' => 'deleted', 'message' => 'El Metodo de Pago ha sido eliminada correctamente.']);
         } catch (\PDOException $e) {
-            return  "exception&msg=" . urlencode($e->getMessage());
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }
