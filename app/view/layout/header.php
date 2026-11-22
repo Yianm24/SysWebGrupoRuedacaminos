@@ -10,7 +10,7 @@
     <!--Estilos custom-->
     <link href="assets/css/styles.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="assets/icons/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="vendor/twbs/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="assets/css/datatables.min.css" rel="stylesheet">
 </head>
 <?php if (isset($_SESSION['usuario'])): ?>
