@@ -5,67 +5,76 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+$esPeticionAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+$solicitud = $_POST['tipoSolicitud'] ?? '';
+
 if (!isset($_SESSION['usuario'])) {
-    echo json_encode(['status' => 'error', 'message' => 'No autorizado']);
-    exit(); 
+    if ($esPeticionAjax || !empty($solicitud)) {
+        echo json_encode(['status' => 'error', 'message' => 'No autorizado']);
+        exit();
+    }
+    header('Location: index.php');
+    exit();
 }
 
 use App\Model\CambioMoneda;
 
 $cambio = new CambioMoneda();
-$solicitud = $_POST['tipoSolicitud'] ?? '';
-$rol_usuario = $_SESSION['usuario']['rol'];
+$rol_usuario = $_SESSION['usuario']['rol'] ?? 0;
 
-//Permiso para actualizar y eliminar exclusivo para Administradores
-if (in_array($solicitud, ['actualizar', 'eliminar']) && $rol_usuario != 6) {
-    echo json_encode(['status' => 'error', 'message' => 'No tiene permisos para realizar esta acción.']);
+if (in_array($solicitud, ['actualizar', 'eliminar'], true) && $rol_usuario != 6) {
+    echo json_encode(['status' => 'error', 'message' => 'No autorizado para realizar esta acción.']);
     exit();
 }
+
+date_default_timezone_set('America/Caracas');
 
 switch ($solicitud) {
     case 'registrar':
         $dataAjax = json_encode($_POST['datos'] ?? []);
         $datosObt = json_decode($dataAjax, true);
-        
+
         $fecha_actual = date('Y-m-d');
         if ($cambio->verificarTasaDuplicada($datosObt['moneda'] ?? '', $fecha_actual)) {
             echo json_encode(['status' => 'exists', 'message' => 'Esta moneda ya posee una tasa registrada el día de hoy.']);
             exit();
         }
-        
+
         $resultado = $cambio->regDatosCambio([$datosObt['tasa'] ?? '', $datosObt['moneda'] ?? '']);
         if (is_string($resultado) && is_array(json_decode($resultado, true))) {
             echo $resultado;
         } else {
-            echo json_encode(['status' => $resultado, 'message' => 'Registro de tasa de cambio exitoso.']);
+            echo json_encode(['status' => $resultado, 'message' => 'La tasa de cambio ha sido registrada correctamente.']);
         }
         exit();
-        break;
 
     case 'consultar':
-        $registros = $cambio->obt_RegistrosCambios();
-        echo json_encode($registros);
+        $registros = $cambio->obt_RegistrosCambiosServerSide();
+        echo $registros;
         exit();
-        break;
 
     case 'actualizar':
         $dataAjax = json_encode($_POST['datos'] ?? []);
         $datosObt = json_decode($dataAjax, true);
-        
-        $fecha_actual = date('Y-m-d');
-        if ($cambio->verificarTasaDuplicada($datosObt['moneda'] ?? '', $fecha_actual, $datosObt['cod_cambio'] ?? '')) {
-            echo json_encode(['status' => 'exists', 'message' => 'Esta moneda ya posee otra tasa registrada el día de hoy.']);
+
+        $codCambio = $datosObt['cod_cambio'] ?? '';
+        $moneda = $datosObt['moneda'] ?? '';
+        $tasa = $datosObt['tasa'] ?? '';
+        $fechaRegistro = $cambio->obtenerFechaPorId($codCambio);
+
+        if (!empty($fechaRegistro) && $cambio->verificarTasaDuplicada($moneda, $fechaRegistro, $codCambio)) {
+            echo json_encode(['status' => 'exists', 'message' => 'Esta moneda ya posee otra tasa registrada en esa fecha.']);
             exit();
-        } 
-        $resultado = $cambio->actDatosCambio([$datosObt['cod_cambio'] ?? '', $datosObt['tasa'] ?? '', $datosObt['moneda'] ?? '']);
+        }
+
+        $resultado = $cambio->actDatosCambio([$codCambio, $tasa, $moneda]);
         if (is_string($resultado) && is_array(json_decode($resultado, true))) {
             echo $resultado;
         } else {
-            echo json_encode(['status' => $resultado, 'message' => 'Modificación realizada exitosamente.']);
+            echo json_encode(['status' => $resultado, 'message' => 'La tasa de cambio ha sido modificada correctamente.']);
         }
         exit();
-        break;
-        
+
     case 'eliminar':
         $dataAjax = json_encode($_POST['datos'] ?? []);
         $datosObt = json_decode($dataAjax, true);
@@ -74,10 +83,9 @@ switch ($solicitud) {
         if (is_string($resultado) && is_array(json_decode($resultado, true))) {
             echo $resultado;
         } else {
-            echo json_encode(['status' => $resultado, 'message' => 'Eliminación realizada exitosamente.']);
+            echo json_encode(['status' => $resultado, 'message' => 'La tasa de cambio ha sido eliminada correctamente.']);
         }
         exit();
-        break;
 }
 
 if (empty($solicitud)) {
@@ -86,4 +94,3 @@ if (empty($solicitud)) {
     include 'app/view/cambiomoneda/cambiomonedaView.php';
     include 'app/view/layout/footer.php';
 }
-?>
