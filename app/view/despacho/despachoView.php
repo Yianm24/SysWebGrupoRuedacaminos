@@ -25,9 +25,7 @@
                         <button class="btn btn-outline-secondary btn-sm px-3 text-muted">Siguiente</button>
                     </div>
                 </footer>
-            </div> <!-- Se reemplazó la etiqueta </section> suelta por este cierre de div -->
+            </div> 
         </div>
     </div>
 </main>
-<script src="assets/js/sweetalert2.all.min.js"></script>
-<script src="assets/js/despacho.js"></script>

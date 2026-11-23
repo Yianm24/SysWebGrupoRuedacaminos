@@ -20,6 +20,69 @@ class Despacho extends Conexion
         parent::__construct();
     }
 
+    public function obt_datosForaneos(){
+        try {
+            $sentencia = "SELECT 
+				e.cod_envio,
+                e.fecha,
+                e.monto_total,
+                e.estado,
+                e.cod_despacho,
+                COALESCE(e.estatus, 'PENDIENTE') AS estatus,
+                e.peso_total,
+                e.anchura,
+                e.altura,
+                e.descrip_contenido,
+                e.distancia_total,
+                e.estatus_fragil,
+                c_dest.tipo_documento AS dest_tipo_doc,
+                c_dest.doc_identidad AS dest_doc,
+                c_dest.razon_social AS dest_nombre,
+                c_dest.apellido AS dest_apellido,
+                c_dest.telefono AS dest_telefono,
+                m_dest.nombre AS municipio_destino,
+                est_dest.nombre AS estado_destino,
+                u_dest.descripcion AS direccion_destino
+            FROM envio e
+            LEFT JOIN participante_envio pe_dest ON e.cod_envio = pe_dest.cod_envio AND pe_dest.rol_cliente = 'Destinatario'
+            LEFT JOIN cliente c_dest ON pe_dest.cod_cliente = c_dest.cod_cliente
+            LEFT JOIN ubicaciones_envio ue_dest ON e.cod_envio = ue_dest.cod_envio AND ue_dest.tipo_ubicacion = 'Destino'
+            LEFT JOIN ubicacion u_dest ON ue_dest.cod_ubicacion = u_dest.cod_ubicacion
+            LEFT JOIN municipio m_dest ON u_dest.cod_municipio = m_dest.cod_municipio
+            LEFT JOIN estado est_dest ON m_dest.cod_estado = est_dest.cod_estado
+            WHERE e.estatus = 'PENDIENTE'
+            ORDER BY e.cod_envio DESC";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $enviosPendientes = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $sentencia = "SELECT vehiculo.cod_vehiculo,vehiculo.placa AS placaVehiculo , modelo.nombre AS modeloVehiculo
+                            FROM vehiculo
+                            INNER JOIN modelo
+                            ON vehiculo.cod_modelo = modelo.cod_modelo
+                            WHERE vehiculo.estado= 1;";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $vehiculos = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $sentencia = "SELECT emp.cod_empleado, emp.nombre AS nombreEmpleado, emp.apellido AS apellidoEmpleado
+                            FROM empleado AS emp
+                            INNER JOIN cargo
+                            ON emp.cod_cargo = cargo.cod_cargo
+                            WHERE cargo.nombre = 'chofer';";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $choferes = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            return json_encode(['enviosPendientes' => $enviosPendientes, 'vehiculos' => $vehiculos, 'choferes' => $choferes]);
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
     public function obt_RegistrosDespacho(): array
     {
         try {

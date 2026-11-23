@@ -9,11 +9,11 @@ use App\Model\Despacho;
 
 $envioObj = new Envio();
 
-$datosForaneos = [
+/* $datosForaneos = [
     'empleados' => json_decode((new Empleado())->obt_EmpleadosCargoAjax(4),true),
-    'vehiculos' => (new Vehiculo())->obt_RegistrosVehiculos(),
-    'envios' => $envioObj->obt_EnviosPendientes()
-];
+    'vehiculos' => (new Vehiculo())->obt_RegistrosVehiculos()
+    //'envios' => $envioObj->obt_EnviosPendientes()
+]; */
 
 $despacho = new Despacho();
 
@@ -43,9 +43,9 @@ switch ($solicitud) {
         echo $resultado;
         exit();
         break;
-    case 'consultar-envios-pendientes':
+    case 'datos-foraneos':
 
-        $registros = json_encode(['envios' => $datosForaneos['envios'], 'choferes' => $datosForaneos['empleados'], 'vehiculos' => $datosForaneos['vehiculos']]);
+        $registros = $despacho->obt_datosForaneos();
         echo $registros;
         exit();
     break;

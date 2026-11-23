@@ -75,53 +75,6 @@ $('#footerForm').on("click", "button[name='tipoSolicitud']", function (event) {
     ajaxEnvioDatos(solicitud, datosDespacho, enviosSeleccionados);
 });
 
-  // Lógica para mostrar alertas de estado (éxito, error, etc.)
- /*  const urlParams = new URLSearchParams(window.location.search);
-  const status = urlParams.get('status');
-  const msg = urlParams.get('msg');
-
-  if (status) {
-    // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-    setTimeout(() => {
-      let title, text, icon;
-
-      switch (status) {
-        case 'success':
-          title = "Registro exitoso!";
-          text = "El Despacho ha sido registrado correctamente.";
-          icon = "success";
-          break;
-        case 'updated':
-          title = "Actualización exitosa!";
-          text = "El Despacho ha sido actualizado correctamente.";
-          icon = "success";
-          break;
-        case 'deleted':
-          title = "Eliminación exitosa!";
-          text = "El Despacho ha sido eliminado correctamente.";
-          icon = "success";
-          break;
-        case 'exists':
-          title = "Despacho existente!";
-          text = "El Despacho ya existe en la base de datos.";
-          icon = "warning";
-          break;
-        case 'bdError':
-          title = "Despacho existente!";
-          text = `Error en la base de datos.${msg}`;
-          icon = "error";
-          break;
-      }
-
-      if (title && text && icon) {
-        Swal.fire({
-          title: title,
-          text: text,
-          icon: icon
-        });
-      }
-    }, 100);
-  }*/
 
 }); 
 
@@ -140,7 +93,7 @@ function ajaxConsultar() {
             let tbody = $("#tablaDespacho tbody");
             tbody.empty();
 
-            let lista = Array.isArray(response) ? response : ['error al obtener los datos'];
+            let lista = Array.isArray(response) ? response.enviosPendientes : ['error al obtener los datos'];
 
             if (lista.length > 0) {
                 let rowsHtml = "";
@@ -190,17 +143,17 @@ function ajaxConsultarEnvios() {
     type: "POST",
     dataType: "json",
     data: {
-      tipoSolicitud: "consultar-envios-pendientes"
+      tipoSolicitud: "datos-foraneos"
     }
   })
     .done(function (response) {
-      let datosEnvios = response.envios;
+      let datosEnvios = response.enviosPendientes;
       let choferes = response.choferes;
       let vehiculos = response.vehiculos;
 
       if (choferes.length > 0){
         $.each(choferes, function (index, chofer) {
-          $('#select_chofer').append(`<option value="${chofer.cod_empleado}">${chofer.nombre} ${chofer.apellido}</option>`);
+          $('#select_chofer').append(`<option value="${chofer.cod_empleado}">${chofer.nombreEmpleado} ${chofer.apellidoEmpleado}</option>`);
         })
       }else {
         $('#select_chofer').append(`<option value="">Sin choferes registrados</option>`);
@@ -208,7 +161,7 @@ function ajaxConsultarEnvios() {
 
       if (vehiculos.length > 0){
         $.each(vehiculos, function (index, vehiculo) {
-          $('#select_vehiculo').append(`<option value="${vehiculo.cod_vehiculo}">${vehiculo.placa}-${vehiculo.nombremodelo}</option>`);
+          $('#select_vehiculo').append(`<option value="${vehiculo.cod_vehiculo}">${vehiculo.placaVehiculo}-${vehiculo.modeloVehiculo}</option>`);
         })
       }else {
         $('#select_vehiculo').append(`<option value="">Sin choferes registrados</option>`);
