@@ -163,6 +163,13 @@ class CambioMoneda extends Conexion
     public function regDatosCambio(array $campos) {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
+            date_default_timezone_set('America/Caracas');
+            $fecha_actual = date('Y-m-d');
+
+            if ($this->verificarTasaDuplicada($resultadoTrait[1], $fecha_actual)) {
+                return json_encode(['status' => 'exists', 'message' => 'Esta moneda ya posee una tasa registrada el día de hoy.']);
+            }
+
             if (strlen($resultadoTrait[0]) < 1 || strlen($resultadoTrait[0]) > 10) {
                 return json_encode(['status' => 'error', 'message' => 'La tasa supera el límite numérico permitido.']);
             }
@@ -172,7 +179,6 @@ class CambioMoneda extends Conexion
             $valMoneda = $this->ExplorarDatos(['solo-numeros' => $resultadoTrait[1]]);
             if ($valMoneda !== true) return $valMoneda;
 
-            date_default_timezone_set('America/Caracas');
             $this->tasa = $resultadoTrait[0];
             $this->cod_moneda = $resultadoTrait[1];
             $this->fecha = date('Y-m-d H:i:s');
@@ -192,27 +198,36 @@ class CambioMoneda extends Conexion
             $insert->bindValue(3, $this->cod_moneda);
             $insert->bindValue(4, $this->estado);
             $insert->execute();
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'La tasa de cambio ha sido registrada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function actDatosCambio(array $campos) {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
-            if (strlen($resultadoTrait[1]) < 1 || strlen($resultadoTrait[1]) > 10) {
+            $codCambio = $resultadoTrait[0];
+            $tasa = $resultadoTrait[1];
+            $moneda = $resultadoTrait[2];
+
+            $fechaRegistro = $this->obtenerFechaPorId($codCambio);
+            if (!empty($fechaRegistro) && $this->verificarTasaDuplicada($moneda, $fechaRegistro, $codCambio)) {
+                return json_encode(['status' => 'exists', 'message' => 'Esta moneda ya posee otra tasa registrada en esa fecha.']);
+            }
+
+            if (strlen($tasa) < 1 || strlen($tasa) > 10) {
                 return json_encode(['status' => 'error', 'message' => 'La tasa supera el límite numérico permitido.']);
             }
-            $valTasa = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[1]]);
+            $valTasa = $this->ExplorarDatos(['numeros-decimales' => $tasa]);
             if ($valTasa !== true) return $valTasa;
 
-            $valMoneda = $this->ExplorarDatos(['solo-numeros' => $resultadoTrait[2]]);
+            $valMoneda = $this->ExplorarDatos(['solo-numeros' => $moneda]);
             if ($valMoneda !== true) return $valMoneda;
 
-            $this->cod_cambio = $resultadoTrait[0];
-            $this->tasa = $resultadoTrait[1];
-            $this->cod_moneda = $resultadoTrait[2];
+            $this->cod_cambio = $codCambio;
+            $this->tasa = $tasa;
+            $this->cod_moneda = $moneda;
         } else {
             return $resultadoTrait;
         }
@@ -227,9 +242,9 @@ class CambioMoneda extends Conexion
             $update->bindValue(2, $this->cod_moneda);
             $update->bindValue(3, $this->cod_cambio);
             $update->execute();
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'La tasa de cambio ha sido modificada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -253,9 +268,9 @@ class CambioMoneda extends Conexion
             $delete = $this->conexion->prepare($sentencia);
             $delete->bindValue(1, $this->cod_cambio);
             $delete->execute();
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'La tasa de cambio ha sido eliminada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

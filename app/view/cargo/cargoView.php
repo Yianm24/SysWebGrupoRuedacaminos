@@ -13,7 +13,7 @@
 
             <section class="card shadow-sm border-0 pb-2">
                 <div class="card-header bg-secondary text-white border-bottom-0 pt-2 pb-2 px-4 d-flex justify-content-center align-items-center">
-                    <h4 class="mb-0 fw-bold">Cargos Registrados</h4>
+                    <h4 class="mb-0 fw-bold">Listado</h4>
                 </div>
 
                 <?php require 'componentes/tabla.php'; ?>
