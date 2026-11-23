@@ -33,14 +33,15 @@ class Cargo extends Conexion
 
     public function verificarCargoDuplicado($nombre, $cod_cargo = null)
     {
-        if ($cod_cargo === null) {$sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND estado = 1";
+        if ($cod_cargo === null) {
+            $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND estado = 1";
             $count = $this->conexion->prepare($sentencia);
-            $count->bindValue(1,$nombre);
+            $count->bindValue(1, $nombre);
         } else {
             $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND cod_cargo != ? AND estado = 1";
             $count = $this->conexion->prepare($sentencia);
-            $count->bindValue(1,$nombre);
-            $count->bindValue(2,$cod_cargo);
+            $count->bindValue(1, $nombre);
+            $count->bindValue(2, $cod_cargo);
         }
         $count->execute();
         return $count->fetchColumn() > 0;
@@ -65,12 +66,15 @@ class Cargo extends Conexion
         if (is_array($resultadoTrait)) {
             $nombreLimpio = $this->formatearPalabra($resultadoTrait[0]);
 
-            //comprobar que la expresion regular se cumpla
-            if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
+            if ($this->verificarCargoDuplicado($nombreLimpio)) {
+                return json_encode(['status' => 'exists', 'message' => 'El cargo ya existe.']);
+            }
+
+            if (strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
                 return json_encode(['status' => 'error', 'message' => 'El cargo debe tener entre 3 y 15 letras.']);
             }
             $validacionRegex = $this->ExplorarDatos(['solo-letras' => $nombreLimpio]);
-            if($validacionRegex !== true) {
+            if ($validacionRegex !== true) {
                 return $validacionRegex;
             }
             $this->nombre = $nombreLimpio;
@@ -87,13 +91,12 @@ class Cargo extends Conexion
         try {
             $sentencia = "INSERT INTO cargo (nombre, estado) VALUES (?, ?)";
             $insert = $this->conexion->prepare($sentencia);
-            $insert->execute([$this->nombre,$this->estado]);
-            return 'success';
+            $insert->execute([$this->nombre, $this->estado]);
+            return json_encode(['status' => 'success', 'message' => 'El cargo ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
-
 
     public function modDatosCargo(array $campos)
     {
@@ -101,8 +104,11 @@ class Cargo extends Conexion
         if (is_array($resultadoTrait)) {
             $nombreLimpio = $this->formatearPalabra($resultadoTrait[1]);
 
-            //comprobar que la expresion regular se cumpla
-            if(strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
+            if ($this->verificarCargoDuplicado($nombreLimpio, $resultadoTrait[0])) {
+                return json_encode(['status' => 'exists', 'message' => 'El cargo ya existe.']);
+            }
+
+            if (strlen($nombreLimpio) < 3 || strlen($nombreLimpio) > 15) {
                 return json_encode(['status' => 'error', 'message' => 'El cargo debe tener entre 3 y 15 letras.']);
             }
             $validacionRegex = $this->ExplorarDatos(['solo-letras' => $nombreLimpio]);
@@ -123,10 +129,10 @@ class Cargo extends Conexion
         try {
             $sentencia = "UPDATE `cargo` SET nombre = ? WHERE cod_cargo = ?";
             $update = $this->conexion->prepare($sentencia);
-            $update->execute([$this->nombre,$this->cod_cargo]);
-            return 'updated';
+            $update->execute([$this->nombre, $this->cod_cargo]);
+            return json_encode(['status' => 'updated', 'message' => 'El cargo ha sido modificado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -135,12 +141,18 @@ class Cargo extends Conexion
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
             $this->cod_cargo = $resultadoTrait[0];
+
+            if ($this->verificarEmpleadosAsociados($this->cod_cargo)) {
+                return json_encode([
+                    'status' => 'error',
+                    'message' => 'No se puede eliminar este cargo porque esta asignado a empleados.'
+                ]);
+            }
         } else {
             return $resultadoTrait;
         }
         return $this->eliminarCargo();
     }
-
 
     private function eliminarCargo()
     {
@@ -148,9 +160,9 @@ class Cargo extends Conexion
             $sentencia = "UPDATE `cargo` SET estado = 0 WHERE cod_cargo = ?";
             $delete = $this->conexion->prepare($sentencia);
             $delete->execute([$this->cod_cargo]);
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'El cargo ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

@@ -151,7 +151,7 @@ function mostrarAlerta(status, mensaje) {
                 break;
             case 'error':
                 title = "Error!";
-                text = `Se produjo un error en el proceso de ${mensaje}.`;
+                text = mensaje;
                 icon = "error";
                 break;
             case 'exception':
