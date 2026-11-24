@@ -1,15 +1,14 @@
 let tasaInput;
-let hasChanged = false; 
+let hasChanged = false;
+let tablaCambioDt = null;
 
 $(document).ready(function () {
-    ajaxConsultarCambio();
+    const $tablaElem = $('#tablaCambio');
+    const esAdmin = $tablaElem.attr('data-es-admin') === '1';
     const modalCambio = $('#modalCambio');
 
     if (document.getElementById('tasa')) {
         $('#tasa').attr('autocomplete', 'off');
-    }
-    //Inicialización de AutoNumeric
-    if (document.getElementById('tasa')) {
         tasaInput = new AutoNumeric('#tasa', {
             digitGroupSeparator: '.',
             decimalCharacter: ',',
@@ -25,6 +24,122 @@ $(document).ready(function () {
         });
     }
 
+    const columnasConfig = [
+        {
+            data: 'fecha',
+            className: 'ps-4 fw-medium',
+            render: function (data) {
+                if (!data) return '';
+                const fechaObjeto = new Date(String(data).replace(' ', 'T'));
+                if (isNaN(fechaObjeto.getTime())) return String(data);
+                return fechaObjeto.toLocaleDateString('es-VE', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+            }
+        },
+        {
+            data: 'fecha',
+            className: 'text-secondary',
+            render: function (data) {
+                if (!data) return '';
+                const fechaObjeto = new Date(String(data).replace(' ', 'T'));
+                if (isNaN(fechaObjeto.getTime())) return '';
+                return fechaObjeto.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        },
+        {
+            data: 'abreviatura',
+            className: 'text-secondary'
+        },
+        {
+            data: 'tasa',
+            className: 'fw-bold',
+            render: function (data, type, row) {
+                const actual = parseFloat(data) || 0;
+                const anterior = (row.tasa_anterior !== null && row.tasa_anterior !== undefined)
+                    ? (parseFloat(row.tasa_anterior) || actual)
+                    : actual;
+
+                let color = 'text-secondary';
+                let icono = 'bi-dash';
+
+                if (actual > anterior) {
+                    color = 'text-success';
+                    icono = 'bi-arrow-up';
+                } else if (actual < anterior) {
+                    color = 'text-danger';
+                    icono = 'bi-arrow-down';
+                }
+
+                const tasaFormateada = actual.toLocaleString('es-VE', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                    useGrouping: true
+                });
+
+                const flechaHtml = icono !== 'bi-dash'
+                    ? `<small class="${color} ms-1"><i class="bi ${icono}"></i></small>`
+                    : '';
+
+                return `${tasaFormateada} VES ${flechaHtml}`;
+            }
+        }
+    ];
+
+    if (esAdmin) {
+        columnasConfig.push({
+            data: null,
+            orderable: false,
+            className: 'pe-4 text-center',
+            render: function (data, type, row) {
+                return `
+                    <div class="d-inline-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar"
+                            title="Editar" data-bs-toggle="modal" data-bs-target="#modalCambio"
+                            data-id="${row.cod_cambio}" data-moneda="${row.cod_moneda}" data-tasa="${parseFloat(row.tasa) || 0}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar"
+                            title="Eliminar" data-id="${row.cod_cambio}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    if ($tablaElem.length) {
+        tablaCambioDt = $tablaElem.DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: 'index.php?url=cambiomoneda',
+                type: 'POST',
+                data: {
+                    tipoSolicitud: 'consultar'
+                },
+                error: function (xhr, error, thrown) {
+                    console.error('Error DataTables Server-Side:', error, thrown);
+                    console.log('Respuesta cruda del servidor:', xhr.responseText);
+                }
+            },
+            language: {
+                url: 'assets/json/datatable.json'
+            },
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [[10, 20, 30, -1], [10, 20, 30, 'Todos']],
+            order: [[0, 'desc']],
+            columns: columnasConfig
+        });
+    }
+
     if (modalCambio.length) {
         modalCambio.on('show.bs.modal', function (event) {
             const boton = $(event.relatedTarget);
@@ -33,47 +148,53 @@ $(document).ready(function () {
 
         modalCambio.on('shown.bs.modal', function () {
             if (document.activeElement) document.activeElement.blur();
+            evaluarBotonModificar();
         });
+
         modalCambio.on('hidden.bs.modal', function () {
             if (document.activeElement) document.activeElement.blur();
-            if(tasaInput) tasaInput.set(''); 
+            if (tasaInput) tasaInput.set('');
         });
     }
 
-    $('#tasa').on('autoNumeric:rawValueModified', function() {
-        $(this).valid();
-        if ($('#btnSubmitModal').attr('value') === 'actualizar') hasChanged = true;
-        evaluarBotonModificar();
-    });
-
-    // JQuery Validate
-    $.validator.addMethod("montoValido", function() {
+    $.validator.addMethod("montoValido", function () {
         if (!tasaInput) return false;
         let num = tasaInput.getNumber();
-        return num !== null && num > 0; 
+        return num !== null && !isNaN(num) && Number(num) > 0;
     }, "Debe ser mayor a 0.");
 
     $('#formCambio').validate({
-        onkeyup: false,
-        onfocusout: function (element) {
+        onfocusout: false,
+        onkeyup: function (element) {
             $(element).valid();
-            if ($('#btnSubmitModal').attr('value') === 'actualizar') hasChanged = true;
-            evaluarBotonModificar(); 
+            if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+                verificarCambiosCambio();
+            }
+            evaluarBotonModificar();
         },
-        onclick: function(element) {
+        onclick: function (element) {
             if (element.tagName === 'SELECT') {
                 $(element).valid();
-                if ($('#btnSubmitModal').attr('value') === 'actualizar') hasChanged = true;
+                if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+                    verificarCambiosCambio();
+                }
                 evaluarBotonModificar();
             }
         },
         rules: {
-            moneda: { required: true },
-            tasa: { required: true, montoValido: true }
+            moneda: {
+                required: true
+            },
+            tasa: {
+                required: true,
+                montoValido: true
+            }
         },
         messages: {
-            moneda: { required: "Debe seleccionar una moneda." },
-            tasa: { 
+            moneda: {
+                required: "Debe seleccionar una moneda."
+            },
+            tasa: {
                 required: "Debe ingresar el valor de la tasa.",
                 montoValido: "Monto inválido. Ingrese un valor mayor a 0."
             }
@@ -81,6 +202,9 @@ $(document).ready(function () {
         errorElement: 'span',
         errorPlacement: function (error, element) {
             let spanError = element.siblings('.mensaje-error');
+            if (!spanError.length) {
+                spanError = element.closest('.mb-3').find('.mensaje-error');
+            }
             spanError.text(error.text()).show();
         },
         highlight: function (element) {
@@ -88,70 +212,96 @@ $(document).ready(function () {
         },
         unhighlight: function (element) {
             $(element).addClass('is-valid').removeClass('is-invalid');
-            $(element).siblings('.mensaje-error').hide().text('');
+            let spanError = $(element).siblings('.mensaje-error');
+            if (!spanError.length) {
+                spanError = $(element).closest('.mb-3').find('.mensaje-error');
+            }
+            spanError.hide().text('');
         },
         submitHandler: function (form, event) {
             event.preventDefault();
-            
+
             const btnEnviar = $('#btnSubmitModal');
-            let solicitud = btnEnviar.attr('value');
-            const tasaLimpia = tasaInput.getNumber(); 
+            const solicitud = btnEnviar.attr('value');
+            const tasaLimpia = tasaInput ? tasaInput.getNumber() : 0;
 
             if (solicitud === "actualizar") {
-                const originales = JSON.parse($('#formCambio').attr('data-originales'));
-                const tasaOriginal = parseFloat(originales.tasa);
-                const monedaOriginal = originales.moneda;
-                
-                if (tasaOriginal.toFixed(2) === tasaLimpia.toFixed(2) && monedaOriginal === $("#moneda").val()) {
-                    Swal.fire({ 
-                        title: "Sin modificaciones", 
-                        text: "Los datos ingresados son iguales a los actuales.", 
+                verificarCambiosCambio();
+                if (!hasChanged) {
+                    Swal.fire({
+                        title: "Sin modificaciones",
+                        text: "Los datos ingresados son iguales a los actuales.",
                         icon: "info",
-                        didOpen: () => { if(document.activeElement) document.activeElement.blur(); }
+                        didOpen: () => { if (document.activeElement) document.activeElement.blur(); }
                     });
-                    return false; 
+                    return false;
                 }
             }
 
             const datos = {
                 cod_cambio: $("#id_cambio").val(),
                 moneda: $("#moneda").val(),
-                tasa: tasaLimpia.toFixed(2)
+                tasa: (Number(tasaLimpia) || 0).toFixed(2)
             };
 
             const objModal = bootstrap.Modal.getInstance(modalCambio[0]);
-            ajaxEnvioDatosCambio(solicitud, objModal, btnEnviar, datos);
+            ajaxEnvioDatosGlobal('cambiomoneda', solicitud, null, tablaCambioDt, datos, objModal, btnEnviar);
         }
     });
 
-    $('#formCambio select').on('change', function() {
+    $('#tasa').on('keyup input autoNumeric:rawValueModified', function () {
         if ($('#btnSubmitModal').attr('value') === 'actualizar') {
-            hasChanged = true;
-            evaluarBotonModificar();
+            verificarCambiosCambio();
         }
+        evaluarBotonModificar();
     });
 
-    function evaluarBotonModificar() {
-        setTimeout(() => {
-            let validador = $('#formCambio').validate();
-            let esValido = validador.checkForm();
-            let btnEnviar = $('#btnSubmitModal');
-            let solicitud = btnEnviar.attr('value');
-            let tasaNumerica = tasaInput ? tasaInput.getNumber() : 0;
-            let monedaVal = $("#moneda").val();
-            
-            let valValidos = (tasaNumerica !== null && tasaNumerica > 0 && monedaVal !== null && monedaVal !== "");
+    $('#btnSubmitModal').on('click', function (event) {
+        event.preventDefault();
+        $('#formCambio').trigger('submit');
+    });
 
-            if (solicitud === 'actualizar') {
-                btnEnviar.prop('disabled', !(esValido && valValidos && hasChanged));
-            } else {
-                btnEnviar.prop('disabled', !(esValido && valValidos));
-            }
-        }, 0);
+    $('#formCambio select').on('change', function () {
+        $(this).valid();
+        if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+            verificarCambiosCambio();
+        }
+        evaluarBotonModificar();
+    });
+
+    function verificarCambiosCambio() {
+        const originalesAttr = $('#formCambio').attr('data-originales');
+        if (!originalesAttr) {
+            hasChanged = false;
+            return;
+        }
+        const originales = JSON.parse(originalesAttr);
+        const tasaOriginal = parseFloat(originales.tasa) || 0;
+        const monedaOriginal = String(originales.moneda || '');
+        const tasaActual = tasaInput ? (parseFloat(tasaInput.getNumber()) || 0) : 0;
+        const monedaActual = String($("#moneda").val() || '');
+
+        hasChanged = (tasaOriginal.toFixed(2) !== tasaActual.toFixed(2)) || (monedaOriginal !== monedaActual);
     }
 
-    // Modal Eliminar
-    $("table tbody").on("click", ".btn-eliminar", function (event) {
+    function evaluarBotonModificar() {
+        const btnEnviar = $('#btnSubmitModal');
+        const solicitud = btnEnviar.attr('value');
+        const tasaNumerica = tasaInput ? tasaInput.getNumber() : 0;
+        const monedaVal = $("#moneda").val();
+
+        const monedaOk = monedaVal !== null && monedaVal !== "";
+        const tasaOk = tasaNumerica !== null && !isNaN(tasaNumerica) && Number(tasaNumerica) > 0;
+        const valValidos = monedaOk && tasaOk;
+
+        if (solicitud === 'actualizar') {
+            btnEnviar.prop('disabled', !(valValidos && hasChanged));
+        } else {
+            btnEnviar.prop('disabled', !valValidos);
+        }
+    }
+
+    $("#tablaCambio tbody").on("click", ".btn-eliminar", function (event) {
         event.preventDefault();
         const idCambio = $(this).attr("data-id");
         const swalWithBootstrapButtons = Swal.mixin({
@@ -167,221 +317,56 @@ $(document).ready(function () {
             confirmButtonText: "Confirmar",
             cancelButtonText: "Cancelar",
             reverseButtons: true,
-            didOpen: () => { if(document.activeElement) document.activeElement.blur(); }
+            didOpen: () => { if (document.activeElement) document.activeElement.blur(); }
         }).then((result) => {
             if (result.isConfirmed) {
-                const datos = { cod_cambio: idCambio };
-                ajaxEnvioDatosCambio("eliminar", null, null, datos);
+                ajaxEnvioDatosGlobal('cambiomoneda', 'eliminar', null, tablaCambioDt, { cod_cambio: idCambio }, null, null);
             } else if (result.dismiss === Swal.DismissReason.cancel) {
-                swalWithBootstrapButtons.fire({ 
+                swalWithBootstrapButtons.fire({
                     title: "Cancelado",
-                    text: "Eliminación cancelada.", 
+                    text: "Eliminación cancelada.",
                     icon: "error",
-                    didOpen: () => { if(document.activeElement) document.activeElement.blur(); }
+                    didOpen: () => { if (document.activeElement) document.activeElement.blur(); }
                 });
             }
         });
     });
 });
 
-
-function ajaxEnvioDatosCambio(solicitud, modal, btnEnviar, datos) {
-    const startTime = Date.now();
-    $.ajax({
-        url: "index.php?url=cambiomoneda",
-        type: "POST",
-        dataType: "json",
-        data: { tipoSolicitud: solicitud, datos: datos },
-        beforeSend: function () {
-            if (modal) { modal.hide(); }
-            if (btnEnviar) { $(btnEnviar).prop("disabled", true); }
-            Swal.fire({ 
-                title: 'Procesando...',
-                text: 'Por favor espere un momento.', 
-                allowOutsideClick: false, 
-                didOpen: () => { 
-                    if(document.activeElement) document.activeElement.blur(); 
-                    Swal.showLoading(); 
-                } 
-            });
-        }
-    })
-    .done(function (response) {
-        console.log("Respuesta del servidor:", response);
-        const elapsedTime = Date.now() - startTime;
-        const delay = Math.max(0, 500 - elapsedTime);
-
-        setTimeout(() => {
-            mostrarAlerta(response.status, response.message);
-            ajaxConsultarCambio();
-        }, delay);
-    })
-    .fail(function (xhr, status, error) {
-        console.error("Error AJAX:", error);
-        console.log("Respuesta cruda del servidor:", xhr.responseText);
-        Swal.fire({ 
-            title: "Error de Servidor", 
-            text: "Ocurrió un problema de conexión al procesar la solicitud.", 
-            icon: "error",
-            didOpen: () => { if(document.activeElement) document.activeElement.blur(); }
-        });
-    })
-    .always(function () {
-        if (btnEnviar) { $(btnEnviar).prop("disabled", false); }
-    });
-}
-
-function ajaxConsultarCambio() {
-    $.ajax({
-        url: "index.php?url=cambiomoneda", 
-        type: "POST", 
-        dataType: "json", 
-        data: { tipoSolicitud: "consultar" }
-    })
-    .done(function (response) {
-        let tbody = $("table tbody");
-        tbody.empty();
-
-        if (Array.isArray(response) && response.length > 0) {
-            let rowsHtml = "";
-            $.each(response, function (index, dato) {
-                let tasaComparar = dato.tasa;
-                for (let i = index + 1; i < response.length; i++) {
-                    if (response[i].cod_moneda === dato.cod_moneda) {
-                        tasaComparar = response[i].tasa;
-                        break;
-                    }
-                }
-                
-                let color = "";
-                let icono = "";
-                if (parseFloat(dato.tasa) > parseFloat(tasaComparar)) {
-                    color = "text-success";
-                    icono = "bi-arrow-up";
-                } else if (parseFloat(dato.tasa) < parseFloat(tasaComparar)) {
-                    color = "text-danger";
-                    icono = "bi-arrow-down";
-                } else {
-                    color = "text-secondary";
-                    icono = "bi-dash"; 
-                }
-
-                let formatearATabla = (num) => parseFloat(num).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true });
-                let tasaFormateada = formatearATabla(dato.tasa);
-                
-                let fechaObjeto = new Date(dato.fecha.replace(' ', 'T'));
-                let fechaString = fechaObjeto.toLocaleDateString('es-VE', {day: '2-digit', month: '2-digit', year: 'numeric'});
-                let horaString = fechaObjeto.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
-
-                rowsHtml += `
-                    <tr>
-                        <td class="ps-4 fw-medium">${fechaString}</td>
-                        <td class="text-secondary">${horaString}</td>
-                        <td class="text-secondary">${dato.abreviatura}</td>
-                        <td class="fw-bold">
-                            ${tasaFormateada} VES
-                            ${icono !== "bi-dash" ? `<small class="${color} ms-1"><i class="bi ${icono}"></i></small>` : ''}
-                        </td>
-                        <td class="pe-4 text-center">
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline me-3 btn-editar" title="Editar" data-bs-toggle="modal" data-bs-target="#modalCambio"
-                                data-id="${dato.cod_cambio}" data-moneda="${dato.cod_moneda}" data-tasa="${parseFloat(dato.tasa)}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar" title="Eliminar" data-id="${dato.cod_cambio}">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.html(rowsHtml);
-        } else {
-            tbody.html('<tr><td colspan="5" class="text-center text-muted py-4">No hay registros disponibles.</td></tr>');
-        }
-    })
-    .fail(function (xhr, status, error) { 
-        console.error(`Error AJAX al cargar la tabla:`, error); 
-        console.log("Respuesta cruda del servidor:", xhr.responseText);
-    });
-}
-
 function accionModalCambio(boton) {
-    if(document.activeElement) document.activeElement.blur(); 
-    hasChanged = false; 
+    if (document.activeElement) document.activeElement.blur();
+    hasChanged = false;
     const tituloModal = $('#modalLabel');
     const btnSubmit = $('#btnSubmitModal');
-    
+
     let validador = $('#formCambio').validate();
     validador.resetForm();
     $('#formCambio input, #formCambio select').removeClass('is-valid is-invalid');
     $('.mensaje-error').hide().text('');
+    $('#formCambio').removeAttr('data-originales');
 
-    if (boton.attr('title') === "Registrar") {
+    if (boton && boton.attr('title') === "Registrar") {
         tituloModal.html('<i class="bi bi-currency-exchange"></i> Registrar Cambio Moneda');
         btnSubmit.val("registrar").html('<i class="bi bi-save"></i> Registrar');
-        
+
         $("#id_cambio, #moneda").val("");
-        if(tasaInput) tasaInput.set(''); 
+        if (tasaInput) tasaInput.set('');
         btnSubmit.prop('disabled', true);
 
-    } else if (boton.attr('title') === "Editar") {
+    } else if (boton && boton.attr('title') === "Editar") {
         tituloModal.html('<i class="bi bi-pencil-square"></i> Editar Tasa de Cambio');
         btnSubmit.val("actualizar").html('<i class="bi bi-save"></i> Guardar');
-        
+
         $("#id_cambio").val(boton.attr('data-id'));
         $("#moneda").val(boton.attr('data-moneda'));
-        
-        if(tasaInput) tasaInput.set(boton.attr('data-tasa')); 
+
+        if (tasaInput) tasaInput.set(boton.attr('data-tasa'));
 
         const datosOriginales = {
-            moneda: boton.attr('data-moneda'),
-            tasa: parseFloat(boton.attr('data-tasa'))
+            moneda: String(boton.attr('data-moneda') || ''),
+            tasa: parseFloat(boton.attr('data-tasa')) || 0
         };
         $('#formCambio').attr('data-originales', JSON.stringify(datosOriginales));
         btnSubmit.prop('disabled', true);
-    }
-}
-
-// Mensajes y alertas
-function mostrarAlerta(status, mensaje = "") {
-    let title, text, icon;
-    switch (status) {
-        case 'success': 
-            title = "Registro exitoso!"; 
-            text = mensaje !== "" ? mensaje : "Registro realizado exitosamente."; 
-            icon = "success"; 
-            break;
-        case 'exists': 
-            title = "¡Tasa existente!"; 
-            text = mensaje !== "" ? mensaje : "Ya existe una tasa registrada el día de hoy."; 
-            icon = "warning"; 
-            break;
-        case 'updated': 
-            title = "Modificación exitosa!"; 
-            text = mensaje !== "" ? mensaje : "Modificación realizada exitosamente."; 
-            icon = "success"; 
-            break;
-        case 'deleted': 
-            title = "¡Eliminado!"; 
-            text = mensaje !== "" ? mensaje : "Eliminación realizada exitosamente."; 
-            icon = "success"; 
-            break;
-        case 'error': 
-            title = "¡Error!"; 
-            text = mensaje !== "" ? mensaje : "Verifique los datos ingresados."; 
-            icon = "error"; 
-            break;
-        default: 
-            title = "¡Error!"; 
-            text = "Ha ocurrido un error inesperado."; 
-            icon = "error"; 
-            break;
-    }
-    if (title && text && icon) {
-        Swal.fire({ 
-            title: title, text: text, icon: icon, 
-            didOpen: () => { if(document.activeElement) document.activeElement.blur(); },
-            willClose: () => { if(document.activeElement) document.activeElement.blur(); }
-        });
     }
 }

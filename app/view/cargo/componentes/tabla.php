@@ -4,11 +4,10 @@
             <thead class="table-light table-header-custom">
                 <tr>
                     <th class="ps-4">NOMBRE DEL CARGO</th>
-                    <th class="text-end pe-4 text-center">ACCIONES</th>
+                    <th class="text-center pe-4">ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Se inyecta desde cargo.js -->
             </tbody>
         </table>
     </div>

@@ -36,33 +36,28 @@ class Municipio extends Conexion
 
     public function obt_RegistrosMunicipio()
     {
-        // 2. Parámetros enviados por DataTables
         $draw        = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
         $start       = isset($_POST['start']) ? intval($_POST['start']) : 0;
         $length      = isset($_POST['length']) ? intval($_POST['length']) : 5;
         $searchValue = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
 
-        // Mapeo de columnas para ordenamiento seguro (evita inyección SQL)
         $columnas = [
             0 => 'mun.nombre',
             1 => 'est.nombre'
         ];
 
-        // Ordenamiento por defecto (tu ORDER BY original) o el que elija el usuario en la tabla
         $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 1;
         $orderColumn      = $columnas[$orderColumnIndex] ?? 'est.nombre';
         $orderDir         = (isset($_POST['order'][0]['dir']) && strtoupper($_POST['order'][0]['dir']) === 'DESC') ? 'DESC' : 'ASC';
 
-        // Base de la consulta y filtro inicial
-        $sqlBase = " FROM municipio AS mun
+            $sqlBase = " FROM municipio AS mun
              INNER JOIN estado AS est ON mun.cod_estado = est.cod_estado
              WHERE mun.estado = 1";
 
-        // 3. Total de registros sin el filtro del buscador (pero respetando tu WHERE LIKE 'A%')
         $stmtTotal = $this->conexion->query("SELECT COUNT(*) " . $sqlBase);
         $recordsTotal = (int) $stmtTotal->fetchColumn();
 
-        // 4. Filtro dinámico del buscador de DataTables
+
         $sqlSearch = "";
         $params = [];
 
@@ -71,7 +66,6 @@ class Municipio extends Conexion
             $params[':search'] = "%{$searchValue}%";
         }
 
-        // 5. Total de registros filtrados
         $stmtFiltered = $this->conexion->prepare("SELECT COUNT(*) " . $sqlBase . $sqlSearch);
         foreach ($params as $key => $val) {
             $stmtFiltered->bindValue($key, $val, \PDO::PARAM_STR);
@@ -79,13 +73,11 @@ class Municipio extends Conexion
         $stmtFiltered->execute();
         $recordsFiltered = (int) $stmtFiltered->fetchColumn();
 
-        // 6. Consulta final con ordenamiento y paginación
         $sqlData = "SELECT mun.cod_municipio, mun.nombre AS Municipio, mun.cod_estado, mun.estado, est.nombre AS Estado "
             . $sqlBase
             . $sqlSearch
             . " ORDER BY {$orderColumn} {$orderDir} ";
 
-        // Si length es -1 (mostrar todos), no aplicamos LIMIT
         if ($length != -1) {
             $sqlData .= " LIMIT :start, :length";
         }
@@ -96,7 +88,6 @@ class Municipio extends Conexion
             $stmtData->bindValue($key, $val, \PDO::PARAM_STR);
         }
 
-        // IMPORTANTE: En PDO, LIMIT requiere bindValue con PDO::PARAM_INT
         if ($length != -1) {
             $stmtData->bindValue(':start', $start, \PDO::PARAM_INT);
             $stmtData->bindValue(':length', $length, \PDO::PARAM_INT);
@@ -122,8 +113,7 @@ class Municipio extends Conexion
                      </div>';
         }
         unset($datos);
-        // 7. Respuesta JSON para DataTables
-        return json_encode([
+                return json_encode([
             "draw"            => $draw,
             "recordsTotal"    => $recordsTotal,
             "recordsFiltered" => $recordsFiltered,
@@ -131,10 +121,10 @@ class Municipio extends Conexion
         ]);
     }
 
-    public function obt_RegistrosMunicipioNoAjax()
+    public function obt_MunicipiosSelect()
     {
         try {
-            $sentencia = "SELECT municipio.*, estado.nombre AS nombre_estado, 
+            $sentencia = "SELECT municipio.cod_municipio ,municipio.nombre as nombre_municipio, estado.nombre AS nombre_estado, 
             estado.cod_estado
             FROM municipio
             INNER JOIN estado 

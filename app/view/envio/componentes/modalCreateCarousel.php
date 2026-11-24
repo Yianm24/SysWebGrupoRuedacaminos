@@ -8,6 +8,7 @@
 
             <form action="" method="POST" id="formEnvio">
                 <div class="modal-body">
+                    <input type="hidden" id="cod_envio" name="cod_envio">
                     <div id="carouselExampleCaptions" class="carousel slide">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
@@ -18,19 +19,16 @@
                                         <!-- Columna 1: Origen -->
                                         <div class="col-12 col-md-6">
                                             <div class="p-3 bg-light border rounded h-100">
-                                                <label for="direccion_origen" class="form-label small fw-semibold text-secondary text-uppercase mb-2">Dirección de Origen</label>
+                                                <label for="direccion_despacho" class="form-label small fw-semibold text-secondary text-uppercase mb-2">Dirección de Origen</label>
 
                                                 <div class="mb-2">
-                                                    <select id="municipio_origen" name="municipio_origen" class="form-select form-select-sm" aria-label="Seleccionar Municipio">
-                                                        <option selected disabled value="">Seleccionar Municipio...</option>
-                                                        <?php foreach ($datosForaneos['municipio'] as $dato): ?>
-                                                            <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
-                                                        <?php endforeach; ?>
+                                                    <select id="municipio_despacho" name="municipio_despacho" class="form-select form-select-sm" aria-label="Seleccionar Municipio">
+
                                                     </select>
                                                 </div>
 
                                                 <div>
-                                                    <textarea id="direccion_origen" name="direccion_origen" class="form-control" rows="3" placeholder="Calle, número, punto de referencia..." required></textarea>
+                                                    <textarea id="direccion_despacho" name="direccion_despacho" class="form-control" rows="3" placeholder="Calle, número, punto de referencia..." required></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -42,10 +40,7 @@
 
                                                 <div class="mb-2">
                                                     <select name="municipio_destino" id="municipio_destino" class="form-select form-select-sm" aria-label="Seleccionar Municipio Destino">
-                                                        <option selected disabled value="">Seleccionar Municipio...</option>
-                                                        <?php foreach ($datosForaneos['municipio'] as $dato): ?>
-                                                            <option value="<?php echo $dato['cod_municipio']; ?>"><?php echo $dato['nombre']; ?></option>
-                                                        <?php endforeach; ?>
+
                                                     </select>
                                                 </div>
 
@@ -327,8 +322,8 @@
                                             <!-- Switch de Frágil (En un contenedor con un poco de fondo para resaltar) -->
                                             <div class="p-3 bg-white rounded border border-danger-subtle d-inline-block w-100">
                                                 <div class="form-check form-switch d-flex align-items-center gap-2 m-0">
-                                                    <input class="form-check-input fs-5 m-0" type="checkbox" role="switch" id="articulos_fragil" name="articulos_fragil" value="fragil">
-                                                    <label class="form-check-label text-danger fw-bold m-0" for="articulos_fragil">¿Contiene Artículos Frágiles?</label>
+                                                    <input class="form-check-input fs-5 m-0" type="checkbox" role="switch" id="articulos_fragil" name="fragil" value="">
+                                                    <label class="form-check-label text-danger fw-bold m-0" for="fragil">¿Contiene Artículos Frágiles?</label>
                                                 </div>
                                             </div>
 

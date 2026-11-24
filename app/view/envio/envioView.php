@@ -16,9 +16,9 @@
 
             <!-- <?php //require 'componentes/modalCreate.php'; 
                     ?> -->
-            <?php require 'componentes/modalCotizar.php'; ?>
+            <!-- <?php// require 'componentes/modalCotizar.php'; ?> -->
             <?php require 'componentes/modalCreateCarousel.php'; ?>
-            <?php require 'componentes/modalModificar.php'; ?>
+            <!-- <?php //require 'componentes/modalModificar.php'; ?> -->
 
 
             <section class="card shadow-sm border-0 h-100">
