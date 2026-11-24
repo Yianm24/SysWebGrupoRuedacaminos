@@ -63,6 +63,36 @@ $(document).ready(function () {
     }, 'fast');
   });
 
+  $("#tablaDespacho tbody").on("click", ".btn-eliminar", function (event) {
+    event.preventDefault();
+
+    const coddespacho = this.getAttribute("datos-cod-despacho");
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success ms-2",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+
+    Swal.fire({
+      title: "¿Anular este despacho?",
+      html: `Al anular el despacho <strong>DCH-${String(coddespacho)}</strong>, todos los envíos contenidos serán <strong>liberados y devueltos a estatus PENDIENTE</strong> para ser asignados a otra ruta.<br><br><em>Esta acción no eliminará los registros de los envíos.</em>`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "<i class='bi bi-trash me-1'></i> Confirmar Anulación",
+      cancelButtonText: "Cancelar",
+      customClass: { confirmButton: "btn btn-danger ms-2", cancelButton: "btn btn-secondary" },
+      buttonsStyling: false,
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ajaxEnvioDatosGlobal('despacho', 'eliminar', dibujarTabla, objDatatable, { cod_despacho: coddespacho }, null, null);
+      }
+    });
+  });
+
 });
 
 function limpiarInputModal() {
@@ -90,19 +120,20 @@ function dibujarTabla(objTable) {
 
 
         const botones = `
-        <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMarca"
-        datos-cod-marca="${dato.cod_marca}"
+        <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modaldespacho"
+        datos-cod-despacho="${dato.cod_despacho}"
         datos-nombre="${dato.nombre}"
         datos-estado="${dato.estado}">
           <i class="bi bi-pencil"></i>
         </button>
         <a href="#" class="text-secondary btn-eliminar"
-        datos-cod-marca="${dato.cod_marca}">
+        datos-cod-despacho="${dato.cod_despacho}">
           <i class="bi bi-trash"></i>
         </a>
         `;
 
         objTable.row.add([
+          "<strong>DCH-"+dato.cod_despacho+"</strong>",
           dato.fecha_salida,
           dato.total_envios,
           dato.nombre_chofer + dato.apellido_chofer,
@@ -143,7 +174,7 @@ function datosForaneos(response) {
   }
 
   let tbody = $("#tablaEnviosPendientes tbody");
-  
+
   tbody.empty();
 
   if (datosEnvios.length > 0) {

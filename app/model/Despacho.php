@@ -3,9 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTraitAjax;
 
 class Despacho extends Conexion
 {
+    use ValidadorTraitAjax;
     private $cod_despacho;
     private $enviosSelect;
     private $cod_empleado;
@@ -110,13 +112,13 @@ class Despacho extends Conexion
             $select->execute();
             $choferes = $select->fetchAll(\PDO::FETCH_ASSOC);
 
-            return json_encode(['despachos' => $despachos ,'enviosPendientes' => $enviosPendientes, 'vehiculos' => $vehiculos, 'choferes' => $choferes]);
+            return json_encode(['despachos' => $despachos, 'enviosPendientes' => $enviosPendientes, 'vehiculos' => $vehiculos, 'choferes' => $choferes]);
         } catch (\PDOException $e) {
             return [];
         }
     }
 
-    public function regDatosDespacho($cod_empleado, $cod_vehiculo, $fecha_salida, array $envios_seleccionados = [])
+    public function regDatosDespacho(int $cod_empleado, int $cod_vehiculo,string $fecha_salida, array $envios_seleccionados = [])
     {
         if (empty($cod_empleado) || empty($cod_vehiculo) || empty($fecha_salida)) {
             return json_encode(['status' => 'empty', 'message' => 'Uno o más campos están vacíos.']);
@@ -126,7 +128,7 @@ class Despacho extends Conexion
         $this->cod_empleado = $cod_empleado;
         $this->cod_vehiculo = $cod_vehiculo;
         $this->fecha_salida = $fecha_salida;
-        $this->enviosSelect = $envios_seleccionados; 
+        $this->enviosSelect = $envios_seleccionados;
 
         return $this->regDespacho();
     }
@@ -139,7 +141,7 @@ class Despacho extends Conexion
             $sql = "INSERT INTO despacho (cod_empleado, cod_vehiculo, fecha_salida, estatus, estado) 
                     VALUES (?, ?, ?, 'PENDIENTE', 1)";
             $stmt = $this->conexion->prepare($sql);
-            
+
             $stmt->execute([$this->cod_empleado, $this->cod_vehiculo, $this->fecha_salida]);
 
             $cod_despacho = (int)$this->conexion->lastInsertId();
@@ -159,13 +161,12 @@ class Despacho extends Conexion
             }
 
             $this->conexion->commit();
-            
+
             $cantidadAsignada = is_array($this->enviosSelect) ? count($this->enviosSelect) : 0;
             return json_encode([
-                'status' => 'success', 
+                'status' => 'success',
                 'message' => "El despacho ha sido registrado correctamente con $cantidadAsignada envíos."
             ]);
-            
         } catch (\PDOException $e) {
             if ($this->conexion->inTransaction()) {
                 $this->conexion->rollBack();
@@ -174,20 +175,37 @@ class Despacho extends Conexion
         }
     }
 
-    /* private function regDespacho()
+    public function elmDatosDespacho(array $campos)
+    {
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_despacho = $resultadoTrait[0];
+        } else {
+            return $resultadoTrait;
+        }
+        return $this->eliminarDespacho();
+    }
+
+    private function eliminarDespacho()
     {
         try {
-            $sentencia = "INSERT INTO `despacho`(`cod_vehiculo`, `fecha_salida`, `estado`) VALUES ('[value-1]','[value-2]','[value-3]')";
-            $insert = $this->conexion->prepare($sentencia);
-            $insert->bindValue(1, $this->cod_vehiculo);
-            $insert->bindValue(2, $this->fecha_salida);
-            $insert->bindValue(3, $this->estado);
-            $resultado = $insert->execute();
+            $this->conexion->beginTransaction();
+            $sentencia = "UPDATE despacho SET estatus = 'ANULADO', estado = 0 WHERE cod_despacho = ?";
+            $update = $this->conexion->prepare($sentencia);
+            $update->execute([$this->cod_despacho]);
 
-            return $resultado;
+            // 2. Liberar los envíos asignados
+            $stmtEnvios = $this->conexion->prepare("UPDATE envio SET cod_despacho = NULL, estatus = 'PENDIENTE' WHERE cod_despacho = ?");
+            $stmtEnvios->execute([$this->cod_despacho]);
+
+            $this->conexion->commit();
+            return json_encode(['status' => 'deleted', 'message' => "El Despacho DCH-".$this->cod_despacho. " ha sido anulado correctamente."]);
         } catch (\PDOException $e) {
-            urlencode($e);
-            return header("Location: ?url=despacho&status=bdError&msg='$e'");
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+           return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
-    } */
+    }
 }
