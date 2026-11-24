@@ -17,8 +17,6 @@ $envioObj = new Envio();
 
 $despacho = new Despacho();
 
-$registros = json_encode($despacho->obt_RegistrosDespacho());
-
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
@@ -50,6 +48,7 @@ switch ($solicitud) {
         exit();
     break;
     case 'consultar':
+        $registros = $despacho->obt_RegistrosDespacho();
         echo $registros;
         exit();
     break;

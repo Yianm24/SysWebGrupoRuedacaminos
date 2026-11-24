@@ -1,26 +1,46 @@
 $(document).ready(function () {
-  ajaxConsultar();
+  const objDatatable = instanciarDatatableGlobal('#tablaDespacho');
+  dibujarTabla(objDatatable);
   ajaxConsultarEnvios();
-  // Mostrar el formulario al hacer clic en "Registrar"
+
+  $("#modalDespacho").on("input change", "#fecha_salida, #hora_salida, #select_vehiculo, #select_chofer, .check-envio, #check_todos_head", function () {
+    const fechaSalida = ($("#fecha_salida").val() || "").trim();
+    const horaSalida = ($("#hora_salida").val() || "").trim();
+    const vehiculo = $("#select_vehiculo").val();
+    const chofer = $("#select_chofer").val();
+    const enviosMarcados = $(".check-envio:checked").length > 0;
+
+    const valoresInput = Boolean(
+      fechaSalida !== "" &&
+      horaSalida !== "" &&
+      vehiculo && vehiculo != 0 &&
+      chofer && chofer != 0 &&
+      enviosMarcados
+    );
+
+    const $btnRegistrar = $('button[name="tipoSolicitud"]');
+    $btnRegistrar.prop("disabled", !valoresInput);
+    $btnRegistrar.toggleClass("disabled", !valoresInput);
+  });
+
   $('#botonRegistrar').on('click', function (e) {
     e.preventDefault();
     $(this).attr('disabled', true); // Deshabilitar el botón para evitar múltiples clics
-    // Quitamos la clase que oculta el formulario
+
     $('#formularioRegistrar').removeClass('d-none');
 
-    // (Opcional) Animación de scroll suave hacia el formulario para mejor experiencia UX
+    //Animación de scroll 
     $('html, body').animate({
       scrollTop: $("#formularioRegistrar").offset().top - 20
     }, 'fast');
   });
 
-  // Ocultar el formulario al hacer clic en el botón "Cancelar" inferior
+  // botón "Cancelar" inferior
   $('#cancelarRegistro').on('click', function (e) {
     e.preventDefault();
-    $('#botonRegistrar').attr('disabled', false); // Habilitar el botón nuevamente
+    $('#botonRegistrar').attr('disabled', false);
     $('#formularioRegistrar').addClass('d-none');
 
-    // (Opcional) Limpiar el formulario al cancelar
     $('#formularioDespacho')[0].reset();
   });
 
@@ -28,112 +48,70 @@ $(document).ready(function () {
   $('#btnCerrarForm').on('click', function (e) {
     e.preventDefault();
     $('#formularioRegistrar').addClass('d-none');
-    $('#botonRegistrar').attr('disabled', false); // Habilitar el botón nuevamente
-    // (Opcional) Limpiar el formulario al cerrar
+    $('#botonRegistrar').attr('disabled', false); // Habilitar el botón 
+    // Limpiar el formulario al cerrar
     $('#formularioDespacho')[0].reset();
   });
 
- /*  $('#footerForm').on("click", "button[name='tipoSolicitud']", function (event) {
-        event.preventDefault();
-        const solicitud = $(this).val();
-        let enviosSeleccionados = $('.check-envio:checked').map(function () {
-        return $(this).val();
-      }).get();
 
-      let envSeleccionados = { codEnvios:enviosSeleccionados}
-      let datosDespacho = {
-        chofer: $('#select_chofer').val(),
-        vehiculo: $('#select_vehiculo').val(),
-        fechaSalida: $('#fecha_salida').val()+" "+$('#hora_salida').val()
-      }
-
-      ajaxEnvioDatos(solicitud,datosDespacho,envSeleccionados)
-
-      });
- */
-
-$('#footerForm').on("click", "button[name='tipoSolicitud']", function (event) {
+  $('#footerForm').on("click", "button[name='tipoSolicitud']", function (event) {
     event.preventDefault();
-    
-    const solicitud = $(this).val().toLowerCase(); 
-    
+
+    const solicitud = $(this).val();
+
     let enviosSeleccionados = $('.check-envio:checked').map(function () {
-        return $(this).val();
+      return $(this).val();
     }).get();
 
     let datosDespacho = {
-        chofer: $('#select_chofer').val(),
-        vehiculo: $('#select_vehiculo').val(),
-        fechaSalida: $('#fecha_salida').val() + " " + $('#hora_salida').val()
+      chofer: $('#select_chofer').val(),
+      vehiculo: $('#select_vehiculo').val(),
+      fechaSalida: $('#fecha_salida').val() + " " + $('#hora_salida').val()
     };
-
-    if(!datosDespacho.chofer || !datosDespacho.vehiculo || $('#fecha_salida').val() === '' || $('#hora_salida').val() === ''){
-        mostrarAlerta('empty', 'Debe seleccionar un chofer, un vehículo y una fecha/hora válida.');
-        return;
-    }
-// Se pasa directamente el array
     ajaxEnvioDatos(solicitud, datosDespacho, enviosSeleccionados);
+    });
+
+
 });
 
+function dibujarTabla(objTable) {
+  const modulo = 'despacho';
+  ajaxConsultarGlobal(modulo, (response) => {
 
-}); 
+    objTable.clear();
 
-function ajaxConsultar() {
-    iconoCargar("#tablaDespacho tbody");
-    $.ajax({
-        url: "index.php?url=despacho",
-        type: "POST",
-        dataType: "json",
-        data: {
-            tipoSolicitud: "consultar"
-        }
-    })
-        .done(function (response) {
+    let lista = Array.isArray(response) ? response : [];
 
-            let tbody = $("#tablaDespacho tbody");
-            tbody.empty();
+    if (lista.length > 0) {
+      $.each(lista, function (index, dato) {
 
-            let lista = Array.isArray(response) ? response.enviosPendientes : ['error al obtener los datos'];
 
-            if (lista.length > 0) {
-                let rowsHtml = "";
+        const botones = `
+        <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modalMarca"
+        datos-cod-marca="${dato.cod_marca}"
+        datos-nombre="${dato.nombre}"
+        datos-estado="${dato.estado}">
+          <i class="bi bi-pencil"></i>
+        </button>
+        <a href="#" class="text-secondary btn-eliminar"
+        datos-cod-marca="${dato.cod_marca}">
+          <i class="bi bi-trash"></i>
+        </a>
+        `;
 
-                $.each(lista, function (index, dato) {
-                    rowsHtml += `
-                        <tr class="align-middle">
-                            <td class="ps-4 fw-semibold text-dark py-3">
-                                ${dato.fecha_salida}
-                            </td>
-                            <td>
-                                <span class="fw-medium">
-                                ${dato.total_envios}
-                                </span>
-                            </td>
-                            <td class="py-3">
-                                ${dato.nombre_chofer} ${dato.apellido_chofer}
-                            </td>
-                            <td class="text-secondary py-3">
-                            ${dato.placa_vehiculo} ${dato.modelo_vehiculo}
-                            </td>
-                            <td class="text-secondary fw-medium py-3">${dato.estatus}</td>
-                        </tr>`;
-                });
+        objTable.row.add([
+          dato.fecha_salida,
+          dato.total_envios,
+          dato.nombre_chofer + dato.apellido_chofer,
+          dato.placa_vehiculo + dato.modelo_vehiculo,
+          dato.estatus,
+          botones
+        ])
+      });
+      objTable.draw();
+    }
+  })
 
-                tbody.html(rowsHtml);
-            } else {
-                tbody.html(`
-    <tr>
-      <td colspan="2" class="text-center text-muted py-3">
-        No se encontraron registros.
-      </td>
-    </tr>
-  `);
-            }
-        })
-        .fail(function (xhr, status, error) {
-            console.error("Error al cargar los datos:", error);
-            console.log("Respuesta cruda del servidor:", xhr.responseText);
-        })
 }
 
 function ajaxConsultarEnvios() {
@@ -151,19 +129,19 @@ function ajaxConsultarEnvios() {
       let choferes = response.choferes;
       let vehiculos = response.vehiculos;
 
-      if (choferes.length > 0){
+      if (choferes.length > 0) {
         $.each(choferes, function (index, chofer) {
           $('#select_chofer').append(`<option value="${chofer.cod_empleado}">${chofer.nombreEmpleado} ${chofer.apellidoEmpleado}</option>`);
         })
-      }else {
+      } else {
         $('#select_chofer').append(`<option value="">Sin choferes registrados</option>`);
       }
 
-      if (vehiculos.length > 0){
+      if (vehiculos.length > 0) {
         $.each(vehiculos, function (index, vehiculo) {
           $('#select_vehiculo').append(`<option value="${vehiculo.cod_vehiculo}">${vehiculo.placaVehiculo}-${vehiculo.modeloVehiculo}</option>`);
         })
-      }else {
+      } else {
         $('#select_vehiculo').append(`<option value="">Sin choferes registrados</option>`);
       }
 
@@ -222,33 +200,33 @@ function ajaxConsultarEnvios() {
 
 }
 
-function ajaxEnvioDatos(solicitud, datos,codEnvios) {
+function ajaxEnvioDatos(solicitud, datos, codEnvios) {
 
-    iconoCargar("#tablaEnviosPendientes tbody");
-    $.ajax({
-        url: 'index.php?url=despacho',
-        type: "POST",
-        dataType: "json",
-        data: {
-            tipoSolicitud: solicitud,
-            datosDespacho: datos,
-            envSeleccionados:codEnvios
-        }
+  iconoCargar("#tablaEnviosPendientes tbody");
+  $.ajax({
+    url: 'index.php?url=despacho',
+    type: "POST",
+    dataType: "json",
+    data: {
+      tipoSolicitud: solicitud,
+      datosDespacho: datos,
+      envSeleccionados: codEnvios
+    }
+  })
+    .done(function (response) {
+      console.log("Respuesta del servidor:", response);
+
+      mostrarAlerta(response.status, response.message);
     })
-        .done(function (response) {
-            console.log("Respuesta del servidor:", response);
+    .fail(function (xhr, status, error) {
+      console.error("Error al cargar los datos:", error);
+      console.log("Respuesta cruda del servidor:", xhr.responseText);
+    })
+    .always(function () {
+      // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
+      dibujarTabla(objDatatable);
 
-            mostrarAlerta(response.status, response.message);
-        })
-        .fail(function (xhr, status, error) {
-            console.error("Error al cargar los datos:", error);
-            console.log("Respuesta cruda del servidor:", xhr.responseText);
-        })
-        .always(function () {
-            // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
-            ajaxConsultar();
-
-        });
+    });
 
 }
 
@@ -265,55 +243,56 @@ function iconoCargar(selector) {
     </tr>
   `);
 }
+
 function mostrarAlerta(status, mensaje) {
-    // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-    setTimeout(() => {
-        let title, text, icon;
+  // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
+  setTimeout(() => {
+    let title, text, icon;
 
-        switch (status) {
-            case 'success':
-                title = "Registro exitoso!";
-                text = mensaje;
-                icon = "success";
-                break;
-            case 'updated':
-                title = "Actualización exitosa!";
-                text = "El Estado ha sido actualizado correctamente.";
-                icon = "success";
-                break;
-            case 'deleted':
-                title = "Eliminación exitosa!";
-                text = mensaje;
-                icon = "success";
-                break;
-            case 'exists':
-                title = "Estado existente!";
-                text = "El Estado ingresado ya existe en la base de datos.";
-                icon = "warning";
-                break;
-            case 'empty':
-                title = "Campos vacíos!";
-                text = mensaje;
-                icon = "warning";
-                break;
-            case 'error':
-                title = "Error!";
-                text = `Se produjo un error en el processo de ${mensaje}`;
-                icon = "error";
-                break;
-            case 'exception':
-                title = "Exception Retornada!";
-                text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-                icon = "error";
-                break;
-        }
+    switch (status) {
+      case 'success':
+        title = "Registro exitoso!";
+        text = mensaje;
+        icon = "success";
+        break;
+      case 'updated':
+        title = "Actualización exitosa!";
+        text = "El Estado ha sido actualizado correctamente.";
+        icon = "success";
+        break;
+      case 'deleted':
+        title = "Eliminación exitosa!";
+        text = mensaje;
+        icon = "success";
+        break;
+      case 'exists':
+        title = "Estado existente!";
+        text = "El Estado ingresado ya existe en la base de datos.";
+        icon = "warning";
+        break;
+      case 'empty':
+        title = "Campos vacíos!";
+        text = mensaje;
+        icon = "warning";
+        break;
+      case 'error':
+        title = "Error!";
+        text = `Se produjo un error en el processo de ${mensaje}`;
+        icon = "error";
+        break;
+      case 'exception':
+        title = "Exception Retornada!";
+        text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+        icon = "error";
+        break;
+    }
 
-        if (title && text && icon) {
-            Swal.fire({
-                title: title,
-                text: text,
-                icon: icon
-            });
-        }
-    }, 100);
+    if (title && text && icon) {
+      Swal.fire({
+        title: title,
+        text: text,
+        icon: icon
+      });
+    }
+  }, 100);
 }

@@ -8,6 +8,7 @@
                     <th class="text-center">CHOFER</th>
                     <th class="text-center">VEHICULO</th>
                     <th class="text-center">ESTATUS</th>
+                    <th class="text-center">ACCIONES</th>
                 </tr>
             </thead>
             <tbody>

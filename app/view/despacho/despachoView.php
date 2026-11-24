@@ -10,21 +10,13 @@
 
             <?php require 'componentes/modal.php';  ?>
 
-            <!-- SE AGREGÓ EL CONTENEDOR CARD PARA ENGLOBAR LA TABLA -->
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 fw-bold">Historial</h4>
+            <div class="card shadow-sm border-0 pb-2">
+                <div class="card-header bg-secondary text-white border-bottom-0 pt-2 pb-2 px-4 d-flex justify-content-center align-items-center">
+                    <h4 class="mb-0 fw-bold">Listado</h4>
                 </div>
 
                 <?php require 'componentes/tabla.php'; ?>
 
-                <footer class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center px-4 py-3">
-                    <span class="text-muted small">Mostrando resultados</span>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm px-3 text-muted" disabled>Anterior</button>
-                        <button class="btn btn-outline-secondary btn-sm px-3 text-muted">Siguiente</button>
-                    </div>
-                </footer>
             </div> 
         </div>
     </div>

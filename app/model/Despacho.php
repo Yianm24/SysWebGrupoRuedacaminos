@@ -51,7 +51,7 @@ class Despacho extends Conexion
             LEFT JOIN municipio m_dest ON u_dest.cod_municipio = m_dest.cod_municipio
             LEFT JOIN estado est_dest ON m_dest.cod_estado = est_dest.cod_estado
             WHERE e.estatus = 'PENDIENTE'
-            ORDER BY e.cod_envio DESC";
+            ORDER BY e.fecha ASC";
 
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
@@ -83,7 +83,7 @@ class Despacho extends Conexion
         }
     }
 
-    public function obt_RegistrosDespacho(): array
+    public function obt_RegistrosDespacho()
     {
         try {
             $sentencia = "SELECT 
@@ -114,61 +114,14 @@ class Despacho extends Conexion
                      v.cod_vehiculo, v.placa, v.peso_max, m.nombre
             ORDER BY d.cod_despacho DESC";
 
-            $stmt = $this->conexion->prepare($sentencia);
-            $stmt->execute();
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            return $registros;
         } catch (\PDOException $e) {
             return [];
         }
     }
-
-    /* public function regDatosDespacho($cod_empleado, $cod_vehiculo, $fecha_salida, array $envios_seleccionados = [])
-    {
-        if (empty($cod_empleado) || empty($cod_vehiculo) || empty($fecha_salida)) {
-            return json_encode(['status' => 'empty', 'message' => 'Uno o más campos están vacíos.']);
-        }else{
-        $this->enviosSelect = $envios_seleccionados;
-        $this->cod_vehiculo = $cod_vehiculo;
-        $this->fecha_salida = $fecha_salida;
-        $this->cod_empleado = $cod_empleado;
-        }
-        return $this->regDespacho();
-    }
-
-    private function regDespacho()
-    {
-        try {
-            $this->conexion->beginTransaction();
-
-            $sql = "INSERT INTO despacho (cod_empleado, cod_vehiculo, fecha_salida, estatus, estado) 
-                    VALUES (?, ?, ?, 'PENDIENTE', 1)";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->execute([$this->cod_empleado,$this->cod_vehiculo,$this->fecha_salida]);
-
-            $cod_despacho = (int)$this->conexion->lastInsertId();
-
-            if (!empty($this->enviosSelect)) {
-                $sqlEnvio = "UPDATE envio SET cod_despacho = ?, estatus = 'EN DESPACHO' 
-                             WHERE cod_envio = ? AND estado = 1 AND (estatus = 'PENDIENTE' OR estatus IS NULL)";
-                $stmtEnvio = $this->conexion->prepare($sqlEnvio);
-
-                foreach ($this->enviosSelect as $cod_envio) {
-                    $cod = (int)$cod_envio;
-                    if ($cod > 0) {
-                        $stmtEnvio->execute([$cod_despacho, $cod]);
-                    }
-                }
-            }
-
-            $this->conexion->commit();
-            return json_encode(['status' => 'success', 'message' => 'El despacho ha sido registrado correctamente.']);
-        } catch (\PDOException $e) {
-            if ($this->conexion->inTransaction()) {
-                $this->conexion->rollBack();
-            }
-            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
-        }
-    } */
 
     public function regDatosDespacho($cod_empleado, $cod_vehiculo, $fecha_salida, array $envios_seleccionados = [])
     {

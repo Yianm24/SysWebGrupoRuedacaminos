@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalDespacho" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <!-- El form envuelve el contenido del modal para incluir cuerpo y botones del footer -->
+            
             <form action="?url=despacho" method="POST" id="formularioDespacho">
                 
                 <header class="modal-header bg-secondary text-white">
@@ -12,7 +12,7 @@
                 </header>
 
                 <div class="modal-body p-4">
-                    <!-- Paso 1: Recursos y Salida -->
+
                     <div class="border-bottom pb-4 mb-4">
                         <h6 class="fw-bold text-secondary mb-3">
                             <span class="badge bg-primary rounded-circle me-1">1</span> Asignación de Chofer, Vehículo y Fecha
@@ -21,14 +21,14 @@
                             <div class="col-md-4">
                                 <label for="select_chofer" class="form-label small fw-semibold">Chofer Conductor</label>
                                 <select class="form-select" id="select_chofer" name="cod_empleado" required>
-                                    <option value="" selected disabled>Seleccione un chofer</option>
+                                    <option value="0" selected disabled>Seleccione un chofer</option>
                                 </select>
                             </div>
 
                             <div class="col-md-4">
                                 <label for="select_vehiculo" class="form-label small fw-semibold">Vehículo de Carga</label>
                                 <select class="form-select" id="select_vehiculo" name="cod_vehiculo" required>
-                                    <option value="" selected disabled data-capacidad="0">Seleccione un vehículo</option>
+                                    <option value="0" selected disabled data-capacidad="0">Seleccione un vehículo</option>
                                 </select>
                             </div>
 
@@ -42,7 +42,7 @@
                         </div>
                     </div>
 
-                    <!-- Paso 2: Selección de Envíos Pendientes -->
+                    <!-- Selección de Envíos Pendientes -->
                     <div class="mb-2">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
@@ -55,7 +55,7 @@
 
                         <!-- Tabla de Envíos Disponibles -->
                         <div class="table-responsive border rounded-3" style="max-height: 350px; overflow-y: auto;">
-                            <table class="table table-hover align-middle mb-0" id="tablaEnviosPendientes">
+                            <table id="tablaEnviosPendientes" class="table table-hover align-middle mb-0">
                                 <thead class="table-light sticky-top">
                                     <tr>
                                         <th class="ps-3" style="width: 50px;">
@@ -77,7 +77,7 @@
 
                 <footer id="footerForm" class="modal-footer bg-light">
                     <button type="button" id="btnCerrar" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" name="tipoSolicitud" value="Registrar" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                    <button type="button" name="tipoSolicitud" value="registrar" class="btn btn-primary px-4 fw-semibold shadow-sm disabled">
                         <i class="bi bi-save me-1"></i> Registrar
                     </button>
                 </footer>
