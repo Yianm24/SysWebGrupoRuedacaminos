@@ -1,7 +1,9 @@
 $(document).ready(function () {
   const objDatatable = instanciarDatatableGlobal('#tablaDespacho');
+  
   dibujarTabla(objDatatable);
   ajaxConsultarEnvios();
+  limpiarInputModal();
 
   const modal = $('#modalDespacho');
 
@@ -46,6 +48,10 @@ $(document).ready(function () {
     $btnRegistrar.toggleClass("disabled", !valoresInput);
   });
 
+  $("#modalDespacho").on("hidden.bs.modal", function () {
+    limpiarInputModal();
+  });
+
   $('#botonRegistrar').on('click', function (e) {
     e.preventDefault();
     $(this).attr('disabled', true); // Deshabilitar el botón para evitar múltiples clics
@@ -58,25 +64,19 @@ $(document).ready(function () {
     }, 'fast');
   });
 
-  // botón "Cancelar" inferior
-  $('#cancelarRegistro').on('click', function (e) {
-    e.preventDefault();
-    $('#botonRegistrar').attr('disabled', false);
-    $('#formularioRegistrar').addClass('d-none');
-
-    $('#formularioDespacho')[0].reset();
-  });
-
-  // Ocultar el formulario al hacer clic en la "X" (btnCerrarForm) de la cabecera
-  $('#btnCerrarForm').on('click', function (e) {
-    e.preventDefault();
-    $('#formularioRegistrar').addClass('d-none');
-    $('#botonRegistrar').attr('disabled', false); // Habilitar el botón 
-    // Limpiar el formulario al cerrar
-    $('#formularioDespacho')[0].reset();
-  });
-
 });
+
+function limpiarInputModal() {
+  const modal = $("#modalDespacho");
+
+  modal.find("#select_chofer, #select_vehiculo").val("0");
+  modal.find("#fecha_salida, #hora_salida").val("");
+  modal.find('input[type="checkbox"]').prop("checked", false);
+
+  modal.find('button[name="tipoSolicitud"]')
+    .prop("disabled", true)
+    .addClass("disabled");
+}
 
 function dibujarTabla(objTable) {
   const modulo = 'despacho';
