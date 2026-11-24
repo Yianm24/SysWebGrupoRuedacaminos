@@ -53,6 +53,7 @@ $(document).ready(function () {
 
             const btnEnviar = this;
             const solicitud = $(this).val();
+
             const objmodal = bootstrap.Modal.getInstance(modal[0]) ?? null;
 
             ajaxEnvioDatosGlobal('envio', solicitud, dibujarTabla, miTabla, datos, objmodal, btnEnviar);
@@ -304,6 +305,7 @@ function AccionModal(boton) {
             break;
 
         case "modificar":
+
             encabezadoModal.html('<i class="bi bi-box-seam me-2"></i> Modificar Envío');
             botonModal.val("modificar");
             botonModal.html('<i class="bi bi-save"></i> Modificar');

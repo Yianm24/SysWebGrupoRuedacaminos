@@ -14,7 +14,7 @@ class Envio extends Conexion
 
     private $cod_remitente, $cod_destinatario;
     private $cod_envio;
-    private $ancho, $alto, $peso_total, $descripcion_cont;
+    private $ancho, $alto, $peso_total, $descripcion;
     private $monto_total;
     // private $cod_municipio_despacho, $cod_municipio_destino;
     private $ubicacion_despacho, $ubicacion_destino;
@@ -156,7 +156,7 @@ class Envio extends Conexion
             $this->fecha = $fecha;
             $this->ancho = $resultTrait[0];
             $this->alto = $resultTrait[1];
-            $this->descripcion_cont = $resultTrait[2];
+            $this->descripcion = $resultTrait[2];
             $this->monto_total = $this->calcularCosteEnvio($resultTrait[4]);
             $this->distancia_total = $resultTrait[4];
             $this->estado = 1;
@@ -178,7 +178,6 @@ class Envio extends Conexion
         try {
             $this->conexion->beginTransaction();
 
-            // 1. Inserción en la tabla 'envio'
             $sqlEnvio = "INSERT INTO `envio` (
             `fecha`, 
             `estatus_fragil`, 
@@ -196,7 +195,7 @@ class Envio extends Conexion
                 $this->fecha,
                 $this->estatus_fragil,
                 $this->estado,
-                $this->descripcion_cont,
+                $this->descripcion,
                 $this->ancho,
                 $this->alto,
                 $this->peso_total,
@@ -204,10 +203,8 @@ class Envio extends Conexion
                 $this->monto_total
             ]);
 
-            // Obtener el ID autogenerado del envío
             $cod_envio = $this->conexion->lastInsertId();
 
-            // 2. Inserción de participantes (Remitente y Destinatario)
             $sqlParticipante = "INSERT INTO `participante_envio` (`cod_cliente`, `cod_envio`, `rol_cliente`) 
                             VALUES (?, ?, ?)";
             $insertParticipante = $this->conexion->prepare($sqlParticipante);
@@ -215,7 +212,6 @@ class Envio extends Conexion
             $insertParticipante->execute([$this->cod_remitente, $cod_envio, 'Remitente']);
             $insertParticipante->execute([$this->cod_destinatario, $cod_envio, 'Destinatario']);
 
-            // 3. Inserción de ubicaciones (Despacho y Destino) en 'ubicaciones_envio'
             $sqlUbicacion = "INSERT INTO `ubicaciones_envio` (`cod_ubicacion`, `cod_envio`,`tipo_ubicacion`) VALUES (?, ?, ?)";
             $insertUbicacion = $this->conexion->prepare($sqlUbicacion);
 
@@ -244,19 +240,19 @@ class Envio extends Conexion
             $insert->bindValue(2, $cod_municipio);
             $insert->bindValue(3, 1);
             $insert->execute();
-
-            // Obtiene el ID autoincremental generado por el INSERT anterior
             $idInsertado = $this->conexion->lastInsertId();
 
             $this->conexion->commit();
 
             return $idInsertado;
         } catch (\PDOException $e) {
-            // Si hay error, deshace los cambios
+
             $this->conexion->rollBack();
-            return null; // O manejar el error según necesites
+            return null;
         }
     }
+
+
 
 
     public function elmDatosEnvio(array $campos)
@@ -287,9 +283,103 @@ class Envio extends Conexion
     }
 
 
-    public function modEnvio(array $campos)
+    public function modDatosEnvio(array $campos)
     {
+        $resultadoTrait = $this->validarPost($campos);
 
-        $array = $this->validarPost($campos, 'envio');
+        // if ($this->verificarEstadoDuplicado($this->formatearPalabra($resultadoTrait[1]))) {
+        //     return json_encode(['status' => 'exists', 'message' => 'El Estado se encuentra registrado']);
+        // }
+
+
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_envio = $resultadoTrait[0];
+            $this->ancho = $resultadoTrait[1];
+            $this->alto = $resultadoTrait[2];
+            $this->descripcion = $resultadoTrait[3];
+            $this->peso_total = $resultadoTrait[4];
+            $this->distancia_total= $resultadoTrait[5];
+            $this->monto_total=$this->calcularCosteEnvio($resultadoTrait[5]);
+            $this->estatus_fragil=$resultadoTrait[6];
+        } else {
+            return $resultadoTrait;
+        }
+
+        return $this->modificarEnvio();
+    }
+
+    private function modificarEnvio()
+    {
+        try {
+            // $checkStmt = $this->conexion->prepare("SELECT estatus, cod_despacho, estado FROM envio WHERE cod_envio = ?");
+            // $checkStmt->execute([$cod_envio]);
+            // $envio = $checkStmt->fetch(\PDO::FETCH_ASSOC);
+
+            // if (!$envio || $envio['estado'] != 1) {
+            //     return 'not_found&msg=El+envio+no+existe+o+esta+inactivo';
+            // }
+
+            // if ($envio['estatus'] !== 'PENDIENTE' || !empty($envio['cod_despacho'])) {
+            //     return 'no_editable&msg=Solo+se+pueden+modificar+envios+en+estatus+PENDIENTE+que+no+esten+en+despacho';
+            // }
+
+            // $distancia = (float)($datos['distancia_total'] ?? 0);
+            // $monto_total = $this->calcularCosteEnvio($distancia);
+
+            $this->conexion->beginTransaction();
+
+            $sql = "UPDATE envio SET 
+                descrip_contenido = ?, 
+                anchura = ?, 
+                altura = ?, 
+                peso_total = ?, 
+                distancia_total = ?, 
+                monto_total = ?, 
+                estatus_fragil = ?
+                WHERE cod_envio = ?";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+              $this->descripcion,
+              $this->ancho,
+              $this->alto,
+              $this->peso_total,
+              $this->distancia_total,
+              $this->monto_total,
+              $this->estatus_fragil,
+              $this->cod_envio
+            ]);
+
+            //     $findUbi = $this->conexion->prepare("SELECT cod_ubicacion FROM ubicaciones_envio WHERE cod_envio = ? AND tipo_ubicacion = 'Destino' LIMIT 1");
+            //     $findUbi->execute([$cod_envio]);
+            //     $codUbi = $findUbi->fetchColumn();
+
+            //     if ($codUbi) {
+            //         $updUbi = $this->conexion->prepare("UPDATE ubicacion SET descripcion = ?, cod_municipio = ? WHERE cod_ubicacion = ?");
+            //         $updUbi->execute([$datos['direccion_destino'], $datos['municipio_destino'], $codUbi]);
+            //     }
+            
+
+            // // Actualizar dirección de origen si se proporcionó
+            // if (!empty($datos['direccion_origen']) && !empty($datos['municipio_origen'])) {
+            //     $findUbiOrig = $this->conexion->prepare("SELECT cod_ubicacion FROM ubicaciones_envio WHERE cod_envio = ? AND tipo_ubicacion = 'Despacho' LIMIT 1");
+            //     $findUbiOrig->execute([$cod_envio]);
+            //     $codUbiOrig = $findUbiOrig->fetchColumn();
+
+            //     if ($codUbiOrig) {
+            //         $updUbiOrig = $this->conexion->prepare("UPDATE ubicacion SET descripcion = ?, cod_municipio = ? WHERE cod_ubicacion = ?");
+            //         $updUbiOrig->execute([$datos['direccion_origen'], $datos['municipio_origen'], $codUbiOrig]);
+            //     }
+            // }
+
+            $this->conexion->commit();
+            return json_encode(['status' => 'updated', 'message' => 'El envio ha sido modificiado correctamente.']);
+        } catch (\PDOException $e) {
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+            return "exception&msg=" . urlencode($e->getMessage());
+        }
     }
 }
