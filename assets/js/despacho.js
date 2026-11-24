@@ -3,6 +3,29 @@ $(document).ready(function () {
   dibujarTabla(objDatatable);
   ajaxConsultarEnvios();
 
+  const modal = $('#modalDespacho');
+
+  $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
+    event.preventDefault();
+
+     const objModal = bootstrap.Modal.getInstance(modal) ?? ''; 
+    const solicitud = $(this).val();
+
+    let enviosSeleccionados = $('.check-envio:checked').map(function () {
+      return $(this).val();
+    }).get();
+
+    let datosDespacho = {
+      chofer: $('#select_chofer').val(),
+      vehiculo: $('#select_vehiculo').val(),
+      fechaSalida: $('#fecha_salida').val() + " " + $('#hora_salida').val()
+    };
+    
+
+    ajaxEnvioDatosGlobal('despacho',solicitud,dibujarTabla,objDatatable,{'datosDespacho':datosDespacho, 'enviosSeleccionados':enviosSeleccionados},objModal,this)
+    ajaxConsultarEnvios();
+  });
+
   $("#modalDespacho").on("input change", "#fecha_salida, #hora_salida, #select_vehiculo, #select_chofer, .check-envio, #check_todos_head", function () {
     const fechaSalida = ($("#fecha_salida").val() || "").trim();
     const horaSalida = ($("#hora_salida").val() || "").trim();
@@ -52,25 +75,6 @@ $(document).ready(function () {
     // Limpiar el formulario al cerrar
     $('#formularioDespacho')[0].reset();
   });
-
-
-  $('#footerForm').on("click", "button[name='tipoSolicitud']", function (event) {
-    event.preventDefault();
-
-    const solicitud = $(this).val();
-
-    let enviosSeleccionados = $('.check-envio:checked').map(function () {
-      return $(this).val();
-    }).get();
-
-    let datosDespacho = {
-      chofer: $('#select_chofer').val(),
-      vehiculo: $('#select_vehiculo').val(),
-      fechaSalida: $('#fecha_salida').val() + " " + $('#hora_salida').val()
-    };
-    ajaxEnvioDatos(solicitud, datosDespacho, enviosSeleccionados);
-    });
-
 
 });
 

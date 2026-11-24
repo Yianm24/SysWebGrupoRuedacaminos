@@ -20,16 +20,9 @@ $despacho = new Despacho();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 switch ($solicitud) {
     case 'registrar':
+        $datosDespacho = json_decode(json_encode($_POST['datos']['datosDespacho']),true) ?? [];
         
-      /*   $datosDespacho = json_decode(json_encode($_POST['datosDespacho']), true);
-        $enviosSeleccionados = json_decode(json_encode($_POST['envSeleccionados']), true); 
-        $resultado = $despacho->regDatosDespacho($datosDespacho['chofer'],$datosDespacho['vehiculo'],$datosDespacho['fechaSalida'],[$enviosSeleccionados['envSeleccionados']]);
-        echo $resultado;
-        exit(); */
-
-        $datosDespacho = $_POST['datosDespacho'] ?? [];
-        
-        $enviosSeleccionados = $_POST['envSeleccionados'] ?? [];
+        $enviosSeleccionados = json_decode(json_encode($_POST['datos']['enviosSeleccionados']),true) ?? [];
         
         $resultado = $despacho->regDatosDespacho(
             $datosDespacho['chofer'] ?? null,

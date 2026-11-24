@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             
-            <form action="?url=despacho" method="POST" id="formularioDespacho">
+            <form method="POST" id="formularioDespacho">
                 
                 <header class="modal-header bg-secondary text-white">
                     <h1 class="modal-title fs-5 fw-bold" id="modalLabel">
