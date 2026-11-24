@@ -34,23 +34,12 @@ switch ($solicitud) {
         echo $resultado;
         exit();
         break;
-    case 'datos-foraneos':
-
-        $registros = $despacho->obt_datosForaneos();
-        echo $registros;
-        exit();
-    break;
     case 'consultar':
         $registros = $despacho->obt_RegistrosDespacho();
         echo $registros;
         exit();
     break;
 }
-
-//header('Content-Type: application/json; charset=utf-8');
-
-//$choferJson = json_encode($datosForaneos['empleado'], JSON_UNESCAPED_UNICODE); 
-
 
 include 'app/view/layout/header.php';
 include 'app/view/despacho/despachoView.php';

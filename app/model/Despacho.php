@@ -20,8 +20,41 @@ class Despacho extends Conexion
         parent::__construct();
     }
 
-    public function obt_datosForaneos(){
+    public function obt_RegistrosDespacho()
+    {
         try {
+            $sentencia = "SELECT 
+                d.cod_despacho,
+                d.fecha_salida,
+                d.fecha_entrega,
+                COALESCE(d.estatus, 'PENDIENTE') AS estatus,
+                d.estado,
+                e.cod_empleado,
+                e.nombre AS nombre_chofer,
+                e.apellido AS apellido_chofer,
+                e.cedula AS cedula_chofer,
+                e.telefono AS telefono_chofer,
+                v.cod_vehiculo,
+                v.placa AS placa_vehiculo,
+                v.peso_max,
+                m.nombre AS modelo_vehiculo,
+                COUNT(env.cod_envio) AS total_envios,
+                COALESCE(SUM(env.peso_total), 0) AS peso_total_despacho
+            FROM despacho d
+            INNER JOIN empleado e ON d.cod_empleado = e.cod_empleado
+            INNER JOIN vehiculo v ON d.cod_vehiculo = v.cod_vehiculo
+            LEFT JOIN modelo m ON v.cod_modelo = m.cod_modelo
+            LEFT JOIN envio env ON d.cod_despacho = env.cod_despacho AND env.estado = 1
+            WHERE d.estado = 1
+            GROUP BY d.cod_despacho, d.fecha_salida, d.fecha_entrega, d.estatus, d.estado,
+                     e.cod_empleado, e.nombre, e.apellido, e.cedula, e.telefono,
+                     v.cod_vehiculo, v.placa, v.peso_max, m.nombre
+            ORDER BY d.cod_despacho DESC";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $despachos = $select->fetchAll(\PDO::FETCH_ASSOC);
+
             $sentencia = "SELECT 
 				e.cod_envio,
                 e.fecha,
@@ -77,47 +110,7 @@ class Despacho extends Conexion
             $select->execute();
             $choferes = $select->fetchAll(\PDO::FETCH_ASSOC);
 
-            return json_encode(['enviosPendientes' => $enviosPendientes, 'vehiculos' => $vehiculos, 'choferes' => $choferes]);
-        } catch (\PDOException $e) {
-            return [];
-        }
-    }
-
-    public function obt_RegistrosDespacho()
-    {
-        try {
-            $sentencia = "SELECT 
-                d.cod_despacho,
-                d.fecha_salida,
-                d.fecha_entrega,
-                COALESCE(d.estatus, 'PENDIENTE') AS estatus,
-                d.estado,
-                e.cod_empleado,
-                e.nombre AS nombre_chofer,
-                e.apellido AS apellido_chofer,
-                e.cedula AS cedula_chofer,
-                e.telefono AS telefono_chofer,
-                v.cod_vehiculo,
-                v.placa AS placa_vehiculo,
-                v.peso_max,
-                m.nombre AS modelo_vehiculo,
-                COUNT(env.cod_envio) AS total_envios,
-                COALESCE(SUM(env.peso_total), 0) AS peso_total_despacho
-            FROM despacho d
-            INNER JOIN empleado e ON d.cod_empleado = e.cod_empleado
-            INNER JOIN vehiculo v ON d.cod_vehiculo = v.cod_vehiculo
-            LEFT JOIN modelo m ON v.cod_modelo = m.cod_modelo
-            LEFT JOIN envio env ON d.cod_despacho = env.cod_despacho AND env.estado = 1
-            WHERE d.estado = 1
-            GROUP BY d.cod_despacho, d.fecha_salida, d.fecha_entrega, d.estatus, d.estado,
-                     e.cod_empleado, e.nombre, e.apellido, e.cedula, e.telefono,
-                     v.cod_vehiculo, v.placa, v.peso_max, m.nombre
-            ORDER BY d.cod_despacho DESC";
-
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
-            return $registros;
+            return json_encode(['despachos' => $despachos ,'enviosPendientes' => $enviosPendientes, 'vehiculos' => $vehiculos, 'choferes' => $choferes]);
         } catch (\PDOException $e) {
             return [];
         }

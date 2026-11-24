@@ -1,8 +1,8 @@
 $(document).ready(function () {
   const objDatatable = instanciarDatatableGlobal('#tablaDespacho');
-  
+
   dibujarTabla(objDatatable);
-  ajaxConsultarEnvios();
+  //ajaxConsultarEnvios();
   limpiarInputModal();
 
   const modal = $('#modalDespacho');
@@ -10,7 +10,7 @@ $(document).ready(function () {
   $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
     event.preventDefault();
 
-     const objModal = bootstrap.Modal.getInstance(modal) ?? ''; 
+    const objModal = bootstrap.Modal.getInstance(modal) ?? '';
     const solicitud = $(this).val();
 
     let enviosSeleccionados = $('.check-envio:checked').map(function () {
@@ -22,9 +22,8 @@ $(document).ready(function () {
       vehiculo: $('#select_vehiculo').val(),
       fechaSalida: $('#fecha_salida').val() + " " + $('#hora_salida').val()
     };
-    
 
-    ajaxEnvioDatosGlobal('despacho',solicitud,dibujarTabla,objDatatable,{'datosDespacho':datosDespacho, 'enviosSeleccionados':enviosSeleccionados},objModal,this)
+    ajaxEnvioDatosGlobal('despacho', solicitud, dibujarTabla, objDatatable, { 'datosDespacho': datosDespacho, 'enviosSeleccionados': enviosSeleccionados }, objModal, this)
     ajaxConsultarEnvios();
   });
 
@@ -54,7 +53,7 @@ $(document).ready(function () {
 
   $('#botonRegistrar').on('click', function (e) {
     e.preventDefault();
-    $(this).attr('disabled', true); // Deshabilitar el botón para evitar múltiples clics
+    $(this).prop('disabled', true); // Deshabilitar el botón para evitar múltiples clics
 
     $('#formularioRegistrar').removeClass('d-none');
 
@@ -84,10 +83,10 @@ function dibujarTabla(objTable) {
 
     objTable.clear();
 
-    let lista = Array.isArray(response) ? response : [];
+    let despachos = Array.isArray(response.despachos) ? response.despachos : [];
 
-    if (lista.length > 0) {
-      $.each(lista, function (index, dato) {
+    if (despachos.length > 0) {
+      $.each(despachos, function (index, dato) {
 
 
         const botones = `
@@ -114,49 +113,44 @@ function dibujarTabla(objTable) {
       });
       objTable.draw();
     }
+
+    datosForaneos(response);
   })
 
 }
 
-function ajaxConsultarEnvios() {
-  iconoCargar("#tablaEnviosPendientes tbody");
-  $.ajax({
-    url: "index.php?url=despacho",
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: "datos-foraneos"
-    }
-  })
-    .done(function (response) {
-      let datosEnvios = response.enviosPendientes;
-      let choferes = response.choferes;
-      let vehiculos = response.vehiculos;
+function datosForaneos(response) {
+  iconoCargar('#tablaEnviosPendientes tbody');
 
-      if (choferes.length > 0) {
-        $.each(choferes, function (index, chofer) {
-          $('#select_chofer').append(`<option value="${chofer.cod_empleado}">${chofer.nombreEmpleado} ${chofer.apellidoEmpleado}</option>`);
-        })
-      } else {
-        $('#select_chofer').append(`<option value="">Sin choferes registrados</option>`);
-      }
+  let datosEnvios = response.enviosPendientes;
+  let choferes = response.choferes;
+  let vehiculos = response.vehiculos;
 
-      if (vehiculos.length > 0) {
-        $.each(vehiculos, function (index, vehiculo) {
-          $('#select_vehiculo').append(`<option value="${vehiculo.cod_vehiculo}">${vehiculo.placaVehiculo}-${vehiculo.modeloVehiculo}</option>`);
-        })
-      } else {
-        $('#select_vehiculo').append(`<option value="">Sin choferes registrados</option>`);
-      }
+  if (choferes.length > 0) {
+    $.each(choferes, function (index, chofer) {
+      $('#select_chofer').append(`<option value="${chofer.cod_empleado}">${chofer.nombreEmpleado} ${chofer.apellidoEmpleado}</option>`);
+    })
+  } else {
+    $('#select_chofer').append(`<option value="">Sin choferes registrados</option>`);
+  }
 
-      let tbody = $("#tablaEnviosPendientes tbody");
-      tbody.empty();
+  if (vehiculos.length > 0) {
+    $.each(vehiculos, function (index, vehiculo) {
+      $('#select_vehiculo').append(`<option value="${vehiculo.cod_vehiculo}">${vehiculo.placaVehiculo}-${vehiculo.modeloVehiculo}</option>`);
+    })
+  } else {
+    $('#select_vehiculo').append(`<option value="">Sin choferes registrados</option>`);
+  }
 
-      if (datosEnvios.length > 0) {
-        let rowsHtml = "";
+  let tbody = $("#tablaEnviosPendientes tbody");
+  
+  tbody.empty();
 
-        $.each(datosEnvios, function (index, dato) {
-          rowsHtml += `
+  if (datosEnvios.length > 0) {
+    let rowsHtml = "";
+
+    $.each(datosEnvios, function (index, dato) {
+      rowsHtml += `
              <tr class="align-middle fila-envio-disponible">
                 <td class="ps-3">
                     <input class="form-check-input check-envio" type="checkbox"
@@ -183,11 +177,11 @@ function ajaxConsultarEnvios() {
                 </td>
             </tr>
           `;
-        });
+    });
 
-        tbody.html(rowsHtml);
-      } else {
-        tbody.html(`
+    tbody.html(rowsHtml);
+  } else {
+    tbody.html(`
     <tr>
         <td colspan="7" class="text-center py-4 text-muted">
             <i class="bi bi-inbox fs-3 d-block mb-1 text-secondary"></i>
@@ -195,43 +189,7 @@ function ajaxConsultarEnvios() {
         </td>
     </tr>
   `);
-      }
-    })
-    .fail(function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-
-}
-
-function ajaxEnvioDatos(solicitud, datos, codEnvios) {
-
-  iconoCargar("#tablaEnviosPendientes tbody");
-  $.ajax({
-    url: 'index.php?url=despacho',
-    type: "POST",
-    dataType: "json",
-    data: {
-      tipoSolicitud: solicitud,
-      datosDespacho: datos,
-      envSeleccionados: codEnvios
-    }
-  })
-    .done(function (response) {
-      console.log("Respuesta del servidor:", response);
-
-      mostrarAlerta(response.status, response.message);
-    })
-    .fail(function (xhr, status, error) {
-      console.error("Error al cargar los datos:", error);
-      console.log("Respuesta cruda del servidor:", xhr.responseText);
-    })
-    .always(function () {
-      // Opcional: Código que se ejecuta siempre al finalizar (éxito o error)
-      dibujarTabla(objDatatable);
-
-    });
-
+  }
 }
 
 function iconoCargar(selector) {
@@ -246,57 +204,4 @@ function iconoCargar(selector) {
       </td>
     </tr>
   `);
-}
-
-function mostrarAlerta(status, mensaje) {
-  // Usamos un pequeño retraso para asegurar que la página esté completamente cargada
-  setTimeout(() => {
-    let title, text, icon;
-
-    switch (status) {
-      case 'success':
-        title = "Registro exitoso!";
-        text = mensaje;
-        icon = "success";
-        break;
-      case 'updated':
-        title = "Actualización exitosa!";
-        text = "El Estado ha sido actualizado correctamente.";
-        icon = "success";
-        break;
-      case 'deleted':
-        title = "Eliminación exitosa!";
-        text = mensaje;
-        icon = "success";
-        break;
-      case 'exists':
-        title = "Estado existente!";
-        text = "El Estado ingresado ya existe en la base de datos.";
-        icon = "warning";
-        break;
-      case 'empty':
-        title = "Campos vacíos!";
-        text = mensaje;
-        icon = "warning";
-        break;
-      case 'error':
-        title = "Error!";
-        text = `Se produjo un error en el processo de ${mensaje}`;
-        icon = "error";
-        break;
-      case 'exception':
-        title = "Exception Retornada!";
-        text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
-        icon = "error";
-        break;
-    }
-
-    if (title && text && icon) {
-      Swal.fire({
-        title: title,
-        text: text,
-        icon: icon
-      });
-    }
-  }, 100);
 }
