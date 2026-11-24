@@ -37,6 +37,12 @@ switch ($solicitud) {
         echo $registros;
         exit();
         break;
+    case 'consultarToSelect':
+
+        $registros = $municipio->obt_MunicipiosSelect();
+        echo $registros;
+        exit();
+        break;
 }
 
 
