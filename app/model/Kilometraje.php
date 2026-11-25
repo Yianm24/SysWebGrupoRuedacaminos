@@ -16,9 +16,9 @@ class Kilometraje extends Conexion
     public function __construct() {
         parent::__construct();
     }
-    
+
     public function obt_RegistrosKilometraje() {
-        try{
+        try {
             $sentencia = "SELECT * FROM precio_kilometraje WHERE estado = 1";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
@@ -29,7 +29,7 @@ class Kilometraje extends Conexion
     }
 
     public function verificarTarifaDuplicada($kilometraje, $id_actual = null) {
-        if ($id_actual === null) {
+        if ($id_actual === null || $id_actual === '') {
             $sentencia = "SELECT COUNT(*) FROM precio_kilometraje WHERE kilometraje = ? AND estado = 1";
             $stmt = $this->conexion->prepare($sentencia);
             $stmt->bindValue(1, $kilometraje);
@@ -46,21 +46,36 @@ class Kilometraje extends Conexion
     public function regDatosKilometraje(array $campos) {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
-            if (strlen($resultadoTrait[0]) < 1 || strlen($resultadoTrait[0]) > 8) {
-                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
-            }
-            if (strlen($resultadoTrait[1]) < 1 || strlen($resultadoTrait[1]) > 8) {
-                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
+            $kmLimpio = $resultadoTrait[0];
+            $precioLimpio = $resultadoTrait[1];
+
+            if ($this->verificarTarifaDuplicada($kmLimpio)) {
+                return json_encode(['status' => 'exists', 'message' => 'Ya existe una tarifa registrada para este kilometraje.']);
             }
 
-            $valKm = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[0]]);
+            if (strlen($kmLimpio) < 1 || strlen($kmLimpio) > 10 || strlen($precioLimpio) < 1 || strlen($precioLimpio) > 10) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje o el monto supera el límite permitido.']);
+            }
+
+            $valKm = $this->ExplorarDatos(['numeros-decimales' => $kmLimpio]);
             if ($valKm !== true) return $valKm;
 
-            $valPrecio = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[1]]);
+            $valPrecio = $this->ExplorarDatos(['numeros-decimales' => $precioLimpio]);
             if ($valPrecio !== true) return $valPrecio;
 
-            $this->kilometraje = $resultadoTrait[0];
-            $this->monto_tarifa = $resultadoTrait[1];
+            $kmFloat = (float)$kmLimpio;
+            $precioFloat = (float)$precioLimpio;
+
+            if ($kmFloat < 1 || $kmFloat > 99999.99) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje debe estar entre 1,00 y 99.999,99']);
+            }
+
+            if ($precioFloat <= 0 || $precioFloat > 99999.99) {
+                return json_encode(['status' => 'error', 'message' => 'El monto de la tarifa debe ser mayor a 0,00 y no superar 99.999,99']);
+            }
+
+            $this->kilometraje = $kmLimpio;
+            $this->monto_tarifa = $precioLimpio;
             $this->estado = 1;
         } else {
             return $resultadoTrait;
@@ -76,31 +91,47 @@ class Kilometraje extends Conexion
             $insert->bindValue(2, $this->monto_tarifa);
             $insert->bindValue(3, $this->estado);
             $insert->execute();
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'La tarifa ha sido registrada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function actDatosKilometraje(array $campos) {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
-            if (strlen($resultadoTrait[1]) < 1 || strlen($resultadoTrait[1]) > 8) {
-                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
-            }
-            if (strlen($resultadoTrait[2]) < 1 || strlen($resultadoTrait[2]) > 8) {
-                return json_encode(['status' => 'error', 'message' => 'El kilometraje supera el límite permitido.']);
+            $codTarifa = $resultadoTrait[0];
+            $kmLimpio = $resultadoTrait[1];
+            $precioLimpio = $resultadoTrait[2];
+
+            if ($this->verificarTarifaDuplicada($kmLimpio, $codTarifa)) {
+                return json_encode(['status' => 'exists', 'message' => 'Ya existe una tarifa registrada para este kilometraje.']);
             }
 
-            $valKm = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[1]]);
+            if (strlen($kmLimpio) < 1 || strlen($kmLimpio) > 10 || strlen($precioLimpio) < 1 || strlen($precioLimpio) > 10) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje o el monto supera el límite permitido.']);
+            }
+
+            $valKm = $this->ExplorarDatos(['numeros-decimales' => $kmLimpio]);
             if ($valKm !== true) return $valKm;
 
-            $valPrecio = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[2]]);
+            $valPrecio = $this->ExplorarDatos(['numeros-decimales' => $precioLimpio]);
             if ($valPrecio !== true) return $valPrecio;
 
-            $this->cod_preciokilometraje = $resultadoTrait[0];
-            $this->kilometraje = $resultadoTrait[1];
-            $this->monto_tarifa = $resultadoTrait[2];
+            $kmFloat = (float)$kmLimpio;
+            $precioFloat = (float)$precioLimpio;
+
+            if ($kmFloat < 1 || $kmFloat > 99999.99) {
+                return json_encode(['status' => 'error', 'message' => 'El kilometraje debe estar entre 1,00 y 99.999,99']);
+            }
+
+            if ($precioFloat <= 0 || $precioFloat > 99999.99) {
+                return json_encode(['status' => 'error', 'message' => 'El monto de la tarifa debe ser mayor a 0,00 y no superar 99.999,99']);
+            }
+
+            $this->cod_preciokilometraje = $codTarifa;
+            $this->kilometraje = $kmLimpio;
+            $this->monto_tarifa = $precioLimpio;
         } else {
             return $resultadoTrait;
         }
@@ -115,10 +146,18 @@ class Kilometraje extends Conexion
             $update->bindValue(2, $this->monto_tarifa);
             $update->bindValue(3, $this->cod_preciokilometraje);
             $update->execute();
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'La tarifa ha sido modificada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
+    }
+
+    private function contarTarifasActivasExcluyendo($id_tarifa) {
+        $sql = "SELECT COUNT(*) FROM precio_kilometraje WHERE estado = 1 AND cod_preciokilometraje != ?";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(1, $id_tarifa);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
     }
 
     public function elmDatosKilometraje(array $campos) {
@@ -127,19 +166,27 @@ class Kilometraje extends Conexion
             $this->cod_preciokilometraje = $resultadoTrait[0];
         } else {
             return $resultadoTrait;
-        }   
+        }
         return $this->eliminarKilometraje();
     }
 
+
     private function eliminarKilometraje() {
         try {
+            if ($this->contarTarifasActivasExcluyendo($this->cod_preciokilometraje) < 1) {
+                return json_encode([
+                    'status' => 'error',
+                    'message' => 'No se pudo eliminar este kilometraje, debe existir al menos una tarifa registrada para calcular el costo del envío.'
+                ]);
+            }
+
             $sentencia = "UPDATE precio_kilometraje SET estado = 0 WHERE cod_preciokilometraje = ?";
             $delete = $this->conexion->prepare($sentencia);
             $delete->bindValue(1, $this->cod_preciokilometraje);
             $delete->execute();
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'La tarifa ha sido eliminada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }

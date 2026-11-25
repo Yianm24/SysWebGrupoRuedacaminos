@@ -29,8 +29,20 @@ class CambioMoneda extends Conexion
         }
     }
 
+    public function obtenerFechaPorId($cod_cambio) {
+        try {
+            $sentencia = "SELECT DATE(fecha) AS fecha_dia FROM cambio_moneda WHERE cod_cambio = ? LIMIT 1";
+            $stmt = $this->conexion->prepare($sentencia);
+            $stmt->execute([$cod_cambio]);
+            $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $fila ? $fila['fecha_dia'] : null;
+        } catch (\PDOException $e) {
+            return null;
+        }
+    }
+
     public function verificarTasaDuplicada($cod_moneda, $fecha, $id_actual = null) {
-        if ($id_actual === null) {
+        if ($id_actual === null || $id_actual === '') {
             $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND estado = 1";
             $stmt = $this->conexion->prepare($sentencia);
             $stmt->bindValue(1, $cod_moneda);
@@ -64,20 +76,100 @@ class CambioMoneda extends Conexion
         }
     }
 
-    public function obt_RegistrosCambios() {
+    public function obt_RegistrosCambiosServerSide() {
         try {
-            $sentencia ="SELECT c.cod_cambio, c.tasa, c.fecha, c.cod_moneda, m.abreviatura FROM cambio_moneda c INNER JOIN moneda m ON c.cod_moneda = m.cod_moneda WHERE c.estado = 1 GROUP BY c.cod_cambio ORDER BY c.fecha DESC";
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
+            $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+            $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+            $length = isset($_POST['length']) ? intval($_POST['length']) : 5;
+            $searchValue = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
+
+            $columnas = [
+                0 => 'c.fecha',
+                1 => 'c.fecha',
+                2 => 'm.abreviatura',
+                3 => 'c.tasa'
+            ];
+
+            $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
+            $orderColumn = $columnas[$orderColumnIndex] ?? 'c.fecha';
+            $orderDir = (isset($_POST['order'][0]['dir']) && strtoupper($_POST['order'][0]['dir']) === 'ASC') ? 'ASC' : 'DESC';
+
+            $sqlBase = " FROM cambio_moneda AS c
+                        INNER JOIN moneda AS m ON c.cod_moneda = m.cod_moneda
+                        WHERE c.estado = 1";
+
+            $stmtTotal = $this->conexion->query("SELECT COUNT(*) AS total " . $sqlBase);
+            $recordsTotal = (int) $stmtTotal->fetch(\PDO::FETCH_ASSOC)['total'];
+
+            $sqlSearch = "";
+            $params = [];
+
+            if ($searchValue !== '') {
+                $sqlSearch = " AND (m.abreviatura LIKE :search OR m.nombre LIKE :search OR CAST(c.tasa AS CHAR) LIKE :search OR DATE_FORMAT(c.fecha, '%d/%m/%Y') LIKE :search) ";
+                $params[':search'] = "%{$searchValue}%";
+            }
+
+            $stmtFiltered = $this->conexion->prepare("SELECT COUNT(*) AS total " . $sqlBase . $sqlSearch);
+            foreach ($params as $key => $val) {
+                $stmtFiltered->bindValue($key, $val, \PDO::PARAM_STR);
+            }
+            $stmtFiltered->execute();
+            $recordsFiltered = (int) $stmtFiltered->fetch(\PDO::FETCH_ASSOC)['total'];
+
+            $sqlData = "SELECT c.cod_cambio, c.cod_moneda, c.tasa, c.fecha, m.abreviatura,
+                            (
+                                SELECT c2.tasa FROM cambio_moneda AS c2
+                                WHERE c2.cod_moneda = c.cod_moneda AND c2.estado = 1
+                                AND c2.fecha < c.fecha ORDER BY c2.fecha DESC LIMIT 1
+                            ) AS tasa_anterior
+                        " . $sqlBase
+                        . $sqlSearch
+                        . " ORDER BY {$orderColumn} {$orderDir} ";
+
+            if ($length != -1) {
+                $sqlData .= " LIMIT :start, :length";
+            }
+
+            $stmtData = $this->conexion->prepare($sqlData);
+            foreach ($params as $key => $val) {
+                $stmtData->bindValue($key, $val, \PDO::PARAM_STR);
+            }
+
+            if ($length != -1) {
+                $stmtData->bindValue(':start', $start, \PDO::PARAM_INT);
+                $stmtData->bindValue(':length', $length, \PDO::PARAM_INT);
+            }
+
+            $stmtData->execute();
+            $data = $stmtData->fetchAll(\PDO::FETCH_ASSOC);
+
+            return json_encode([
+                "draw" => $draw,
+                "recordsTotal" => $recordsTotal,
+                "recordsFiltered" => $recordsFiltered,
+                "data" => $data
+            ]);
         } catch (\PDOException $e) {
-            return [];
+            return json_encode([
+                "draw" => isset($_POST['draw']) ? intval($_POST['draw']) : 1,
+                "recordsTotal" => 0,
+                "recordsFiltered" => 0,
+                "data" => [],
+                "error" => $e->getMessage()
+            ]);
         }
     }
 
     public function regDatosCambio(array $campos) {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
+            date_default_timezone_set('America/Caracas');
+            $fecha_actual = date('Y-m-d');
+
+            if ($this->verificarTasaDuplicada($resultadoTrait[1], $fecha_actual)) {
+                return json_encode(['status' => 'exists', 'message' => 'Esta moneda ya posee una tasa registrada el día de hoy.']);
+            }
+
             if (strlen($resultadoTrait[0]) < 1 || strlen($resultadoTrait[0]) > 10) {
                 return json_encode(['status' => 'error', 'message' => 'La tasa supera el límite numérico permitido.']);
             }
@@ -87,7 +179,6 @@ class CambioMoneda extends Conexion
             $valMoneda = $this->ExplorarDatos(['solo-numeros' => $resultadoTrait[1]]);
             if ($valMoneda !== true) return $valMoneda;
 
-            date_default_timezone_set('America/Caracas');
             $this->tasa = $resultadoTrait[0];
             $this->cod_moneda = $resultadoTrait[1];
             $this->fecha = date('Y-m-d H:i:s');
@@ -107,27 +198,36 @@ class CambioMoneda extends Conexion
             $insert->bindValue(3, $this->cod_moneda);
             $insert->bindValue(4, $this->estado);
             $insert->execute();
-            return 'success';
+            return json_encode(['status' => 'success', 'message' => 'La tasa de cambio ha sido registrada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";;
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
     public function actDatosCambio(array $campos) {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
-            if (strlen($resultadoTrait[1]) < 1 || strlen($resultadoTrait[1]) > 10) {
+            $codCambio = $resultadoTrait[0];
+            $tasa = $resultadoTrait[1];
+            $moneda = $resultadoTrait[2];
+
+            $fechaRegistro = $this->obtenerFechaPorId($codCambio);
+            if (!empty($fechaRegistro) && $this->verificarTasaDuplicada($moneda, $fechaRegistro, $codCambio)) {
+                return json_encode(['status' => 'exists', 'message' => 'Esta moneda ya posee otra tasa registrada en esa fecha.']);
+            }
+
+            if (strlen($tasa) < 1 || strlen($tasa) > 10) {
                 return json_encode(['status' => 'error', 'message' => 'La tasa supera el límite numérico permitido.']);
             }
-            $valTasa = $this->ExplorarDatos(['numeros-decimales' => $resultadoTrait[1]]);
+            $valTasa = $this->ExplorarDatos(['numeros-decimales' => $tasa]);
             if ($valTasa !== true) return $valTasa;
 
-            $valMoneda = $this->ExplorarDatos(['solo-numeros' => $resultadoTrait[2]]);
+            $valMoneda = $this->ExplorarDatos(['solo-numeros' => $moneda]);
             if ($valMoneda !== true) return $valMoneda;
 
-            $this->cod_cambio = $resultadoTrait[0];
-            $this->tasa = $resultadoTrait[1];
-            $this->cod_moneda = $resultadoTrait[2];
+            $this->cod_cambio = $codCambio;
+            $this->tasa = $tasa;
+            $this->cod_moneda = $moneda;
         } else {
             return $resultadoTrait;
         }
@@ -142,9 +242,9 @@ class CambioMoneda extends Conexion
             $update->bindValue(2, $this->cod_moneda);
             $update->bindValue(3, $this->cod_cambio);
             $update->execute();
-            return 'updated';
+            return json_encode(['status' => 'updated', 'message' => 'La tasa de cambio ha sido modificada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
@@ -168,9 +268,10 @@ class CambioMoneda extends Conexion
             $delete = $this->conexion->prepare($sentencia);
             $delete->bindValue(1, $this->cod_cambio);
             $delete->execute();
-            return 'deleted';
+            return json_encode(['status' => 'deleted', 'message' => 'La tasa de cambio ha sido eliminada correctamente.']);
         } catch (\PDOException $e) {
-            return "exception";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
-} ?>
+}
+?>
