@@ -254,7 +254,7 @@ class Envio extends Conexion
         }
     }
 
-    public function modificarUbicacion($cod_ubi, $descripcion, $cod_municipio)
+    private function modificarUbicacion($cod_ubi, $descripcion, $cod_municipio)
     {
         try {
             $this->conexion->beginTransaction();
@@ -270,14 +270,13 @@ class Envio extends Conexion
 
             $this->conexion->commit();
 
-            // return $idInsertado;
+          //  return $idInsertado;
         } catch (\PDOException $e) {
 
             $this->conexion->rollBack();
-            // return null;
+        // return null;
         }
     }
-
 
     public function elmDatosEnvio(array $campos)
     {
@@ -307,9 +306,20 @@ class Envio extends Conexion
     }
 
 
-    public function modDatosEnvio(array $campos, $estatus_fragil)
+    public function modDatosEnvio(array $campos, $estatus_fragil, array $camposDespacho, array $camposDestino)
     {
         $resultadoTrait = $this->validarPost($campos);
+        $resultTraitDespacho = $this->validarPost($camposDespacho);
+        $resultTraitDestino = $this->validarPost($camposDestino);
+
+        //valida si inputs de despacho estan vacios
+        if (!is_array($resultTraitDespacho)) {
+            return $resultTraitDespacho;
+        }
+        //valida si inputs de destino estan vacios
+        if (!is_array($resultTraitDestino)) {
+            return $resultTraitDestino;
+        }
 
         if (is_array($resultadoTrait)) {
 
@@ -320,8 +330,11 @@ class Envio extends Conexion
             $this->peso_total = $resultadoTrait[4];
             $this->distancia_total = $resultadoTrait[5];
             $this->estatus_fragil = $estatus_fragil;
-
             $this->monto_total = $this->calcularCosteEnvio($resultadoTrait[5]);
+
+            $this->modificarUbicacion($resultTraitDespacho[0], $resultTraitDespacho[1], $resultTraitDespacho[2]);
+
+            $this->modificarUbicacion($resultTraitDestino[0], $resultTraitDestino[1], $resultTraitDestino[2]);
         } else {
             return $resultadoTrait;
         }
@@ -368,28 +381,6 @@ class Envio extends Conexion
                 $this->estatus_fragil,
                 $this->cod_envio
             ]);
-
-            // $findUbi = $this->conexion->prepare("SELECT cod_ubicacion FROM ubicaciones_envio WHERE cod_envio = ? AND tipo_ubicacion = 'Destino' LIMIT 1");
-            // $findUbi->execute([$this->cod_envio]);
-            // $codUbi = $findUbi->fetchColumn();
-
-            // if ($codUbi) {
-            //     $updUbi = $this->conexion->prepare("UPDATE ubicacion SET descripcion = ?, cod_municipio = ? WHERE cod_ubicacion = ?");
-            //     $updUbi->execute([$datos['direccion_destino'], $datos['municipio_destino'], $codUbi]);
-            // }
-
-
-            // Actualizar dirección de origen si se proporcionó
-            // if (!empty($datos['direccion_origen']) && !empty($datos['municipio_origen'])) {
-            //     $findUbiOrig = $this->conexion->prepare("SELECT cod_ubicacion FROM ubicaciones_envio WHERE cod_envio = ? AND tipo_ubicacion = 'Despacho' LIMIT 1");
-            //     $findUbiOrig->execute([$this->cod_envio]);
-            //     $codUbiOrig = $findUbiOrig->fetchColumn();
-
-            //     if ($codUbiOrig) {
-            //         $updUbiOrig = $this->conexion->prepare("UPDATE ubicacion SET descripcion = ?, cod_municipio = ? WHERE cod_ubicacion = ?");
-            //         $updUbiOrig->execute([$datos['direccion_origen'], $datos['municipio_origen'], $codUbiOrig]);
-            //     }
-            // }
 
             $this->conexion->commit();
             return json_encode(['status' => 'updated', 'message' => 'El envio ha sido modificiado correctamente.']);
