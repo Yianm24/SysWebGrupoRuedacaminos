@@ -3,9 +3,11 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTraitAjax;
 
 class Usuario extends Conexion
 {
+    use ValidadorTraitAjax;
 
     private $cod_usuario;
     private $cedula;
@@ -21,16 +23,16 @@ class Usuario extends Conexion
         parent::__construct();
     }
 
-public function accesoDatosUsuario($cedula, $password)
+    public function accesoDatosUsuario($cedula, $password)
     {
-        
+
         $this->cedula = $cedula;
         $this->password = $password;
 
         return $this->accesoUsuario();
     }
 
-private function accesoUsuario()
+    private function accesoUsuario()
     {
         try {
             $sentencia = "SELECT * FROM usuario WHERE cedula = ? AND estado = 1";
@@ -38,10 +40,10 @@ private function accesoUsuario()
             $select->bindValue(1, $this->cedula);
             $select->execute();
             return $select->fetch();
-        } catch (\PDOException $e) { 
+        } catch (\PDOException $e) {
             return "Error buscar al usuario: " . $e->getMessage();
         }
-    }   
+    }
 
     public function verificarUsuarioExiste($cedula)
     {
@@ -52,15 +54,45 @@ private function accesoUsuario()
         return $count->fetchColumn() > 0;
     }
 
-    public function regDatosUsuario($cedula, $nombre, $rol, $password)
+    public function obt_RegistrosUsuario()
+    {
+        try {
+            $sentencia = "SELECT usuario.*, rol.nombre 
+            AS nombrerol
+            FROM usuario
+            INNER JOIN rol 
+            ON usuario.cod_rol= rol.cod_rol
+            WHERE usuario.estado=1";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $registros = json_encode($select->fetchAll(\PDO::FETCH_ASSOC));
+            return $registros;
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
+
+
+    public function regDatosUsuario(array $campos)
     {
 
-        $this->cedula = $cedula;
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->rol = $rol;
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
-        $this->estado = 1;
+        $resultadoTrait = $this->validarPost($campos);
 
+        if (is_array($resultadoTrait)) {
+
+            if ($this->verificarUsuarioExiste($resultadoTrait[1])) {
+                return json_encode(['status' => 'exists', 'message' => 'El Usuario ya se encuentra registrado con esa cédula.']);
+            }
+
+            $this->nombre = $this->formatearPalabra($resultadoTrait[0]);
+            $this->cedula = $resultadoTrait[1];
+            $this->password = password_hash($resultadoTrait[2], PASSWORD_BCRYPT);
+            $this->rol = $resultadoTrait[3];
+            $this->estado = 1;
+        } else {
+            return $resultadoTrait;
+        }
         return $this->registrarUsuario();
     }
 
@@ -77,39 +109,27 @@ private function accesoUsuario()
             $insert->bindValue(4, $this->password);
             $insert->bindValue(5, $this->estado);
 
-            $resultado = $insert->execute();
+            $insert->execute();
 
-            return $resultado;
+            return json_encode(['status' => 'success', 'message' => 'El Usuario ha sido registrado correctamente.']);
         } catch (\PDOException $e) {
-            return "<script>alert('Error al registrar el usuario: " . $e->getMessage() . "');</script>";
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
-    public function obt_RegistrosUsuario()
+    public function actDatosUsuario(array $campos)
     {
-        try {
-            $sentencia = "SELECT usuario.*, rol.nombre 
-            AS nombre_rol
-            FROM usuario
-            INNER JOIN rol 
-            ON usuario.cod_rol= rol.cod_rol
-            WHERE usuario.estado=1";
+        $resultadoTrait = $this->validarPost($campos);
 
-            $select = $this->conexion->prepare($sentencia);
-            $select->execute();
-            return $select->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
+        if (is_array($resultadoTrait)) {
+            $this->cod_usuario = $resultadoTrait[0];
+            $this->cedula = $resultadoTrait[1];
+            $this->nombre = $this->formatearPalabra($resultadoTrait[2]);
+            $this->rol = $resultadoTrait[3];
+            $this->password = password_hash($resultadoTrait[4], PASSWORD_BCRYPT);
+        } else {
+            return $resultadoTrait;
         }
-    }
-
-    public function actDatosUsuario($cod_usuario, $cedula, $nombre, $rol, $password)
-    {
-        $this->cod_usuario = $cod_usuario;
-        $this->nombre = $this->formatearPalabra($nombre);
-        $this->cedula = $cedula;
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
-        $this->rol = $rol;
 
         return $this->actualizarUsuario();
     }
@@ -127,17 +147,24 @@ private function accesoUsuario()
             $update->bindValue(4, $this->password);
             $update->bindValue(5, $this->cod_usuario);
 
-
             $update->execute();
+
+            return json_encode(['status' => 'updated', 'message' => 'El Usuario ha sido actualizado correctamente.']);
         } catch (\PDOException $e) {
-            return "Error al actualizar el método de pago: " . $e->getMessage();
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 
 
-    public function elmDatosUsuario(int $cod_usuario)
+    public function elmDatosUsuario(array $campos)
     {
-        $this->cod_usuario = $cod_usuario;
+        $resultadoTrait = $this->validarPost($campos);
+
+        if (is_array($resultadoTrait)) {
+            $this->cod_usuario = $resultadoTrait[0];
+        } else {
+            return $resultadoTrait;
+        }
 
         return $this->eliminarUsuario();
     }
@@ -151,9 +178,9 @@ private function accesoUsuario()
             $delete->bindValue(1, $this->cod_usuario);
             $delete->execute();
 
-            return "Usuario eliminado exitosamente";
+            return json_encode(['status' => 'deleted', 'message' => 'El Usuario ha sido eliminado correctamente.']);
         } catch (\PDOException $e) {
-            return "Error al eliminar el usuario: " . $e->getMessage();
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
     }
 }
