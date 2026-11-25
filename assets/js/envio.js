@@ -20,6 +20,10 @@ $(document).ready(function () {
             }
         });
 
+        modal.on('hidden.bs.modal', () => {
+            toggleCamposClientes(false);
+        });
+
         $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
             event.preventDefault();
 
@@ -29,12 +33,14 @@ $(document).ready(function () {
 
             const despacho = {
                 municipio: $('#municipio_despacho').val(),
-                direccion: $('textarea[name="direccion_despacho"]').val().trim()
+                direccion: $('textarea[name="direccion_despacho"]').val().trim(),
+                cod_ubi: $('#cod_ubi_despacho_hidden').val()
             };
 
             const destino = {
                 municipio: $('#municipio_destino').val(),
-                direccion: $('textarea[name="direccion_destino"]').val().trim()
+                direccion: $('textarea[name="direccion_destino"]').val().trim(),
+                cod_ubi: $('#cod_ubi_destino_hidden').val()
             };
 
             const datos = {
@@ -53,11 +59,12 @@ $(document).ready(function () {
 
             const btnEnviar = this;
             const solicitud = $(this).val();
+
             const objmodal = bootstrap.Modal.getInstance(modal[0]) ?? null;
 
             ajaxEnvioDatosGlobal('envio', solicitud, dibujarTabla, miTabla, datos, objmodal, btnEnviar);
         });
-    } 
+    }
 
     $("#tablaEnvio tbody").on("click", ".btn-eliminar", function (event) {
         event.preventDefault();
@@ -107,6 +114,8 @@ function dibujarTabla(objTable) {
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline" title="Modificar" data-bs-toggle="modal" data-bs-target="#carouselEnvio"
                                  datos-cod-envio="${dato.cod_envio}"
                                  datos-estado="${dato.estado}"
+                                 datos-cod-ubi-despacho="${dato.cod_ubicacion_origen ?? ''}"
+                                 datos-cod-ubi-destino="${dato.cod_ubicacion_destino ?? ''}"
                                  datos-municipio-despacho="${dato.cod_municipio_origen ?? ''}"
                                  datos-direccion-despacho="${dato.direccion_origen ?? ''}"
                                  datos-municipio-destino="${dato.cod_municipio_destino ?? ''}"
@@ -139,8 +148,8 @@ function dibujarTabla(objTable) {
                          </a>
                      </td>`;
                 objTable.row.add([
-                    dato.rem_tipo_doc+ '-' +dato.rem_doc + '-' + dato.rem_nombre + ' ' + (dato.rem_apellido ?? ''),
-                    dato.dest_tipo_doc+ '-' +dato.dest_doc + '-' + dato.dest_nombre + ' ' + (dato.dest_apellido ?? ''),
+                    dato.rem_tipo_doc + '-' + dato.rem_doc + '-' + dato.rem_nombre + ' ' + (dato.rem_apellido ?? ''),
+                    dato.dest_tipo_doc + '-' + dato.dest_doc + '-' + dato.dest_nombre + ' ' + (dato.dest_apellido ?? ''),
                     dato.direccion_destino,
                     dato.descrip_contenido,
                     dato.peso_total,
@@ -178,13 +187,13 @@ function dibujarSelect(objtSelect) {
     })
         .done(function (response) {
             let opciones = "";
-            const data=response;
-        $.each(data, function (index, dato) {
-            opciones += `
+            const data = response;
+            $.each(data, function (index, dato) {
+                opciones += `
          <option value=${dato.cod_municipio}>${dato.nombre_municipio}</option>
         `
-        })
-        $(objtSelect).html(opciones);
+            })
+            $(objtSelect).html(opciones);
 
         })
         .fail(function (xhr, status, error) {
@@ -213,6 +222,8 @@ function AccionModal(boton) {
 
     // Referencias a los campos del formulario dentro del modal
     const inputCodEnvio = $('#cod_envio');
+    const inputCodUbiDespachoHidden = $('#cod_ubi_despacho_hidden');
+    const inputCodUbiDestinoHidden = $('#cod_ubi_destino_hidden');
     const selectMunicipioDespacho = $('#municipio_despacho');
     const inputDireccionDespacho = $('#direccion_despacho');
     const selectMunicipioDestino = $('#municipio_destino');
@@ -253,6 +264,8 @@ function AccionModal(boton) {
 
     // 1. Limpiar TODOS los inputs al inicio para que no queden datos viejos ("inputs sucios")
     inputCodEnvio.val("");
+    inputCodUbiDespachoHidden.val("");
+    inputCodUbiDestinoHidden.val("");
     selectMunicipioDespacho.val("").prop('selectedIndex', 0);
     inputDireccionDespacho.val("");
     selectMunicipioDestino.val("").prop('selectedIndex', 0);
@@ -285,6 +298,7 @@ function AccionModal(boton) {
 
     actualizarFormulario("remitente");
     actualizarFormulario("destinatario");
+    toggleCamposClientes(false);
 
     inputDescripcion.val("");
     inputAlto.val("");
@@ -304,6 +318,7 @@ function AccionModal(boton) {
             break;
 
         case "modificar":
+
             encabezadoModal.html('<i class="bi bi-box-seam me-2"></i> Modificar Envío');
             botonModal.val("modificar");
             botonModal.html('<i class="bi bi-save"></i> Modificar');
@@ -313,6 +328,8 @@ function AccionModal(boton) {
             const estado = $(boton).attr('datos-estado');
 
             if (cod_envio !== "" && estado == 1) {
+                const cod_ubi_despacho = $(boton).attr('datos-cod-ubi-despacho');
+                const cod_ubi_destino = $(boton).attr('datos-cod-ubi-destino');
                 const municipio_despacho = $(boton).attr('datos-municipio-despacho');
                 const direccion_despacho = $(boton).attr('datos-direccion-despacho');
                 const municipio_destino = $(boton).attr('datos-municipio-destino');
@@ -342,6 +359,13 @@ function AccionModal(boton) {
 
                 // Autocompletar Datos del Envío
                 inputCodEnvio.val(cod_envio);
+                inputCodUbiDespachoHidden.val(cod_ubi_despacho);
+                inputCodUbiDestinoHidden.val(cod_ubi_destino);
+
+                console.log(inputCodUbiDestinoHidden.val());
+
+                console.log(cod_ubi_despacho);
+
                 selectMunicipioDespacho.val(municipio_despacho);
                 inputDireccionDespacho.val(direccion_despacho);
                 selectMunicipioDestino.val(municipio_destino);
@@ -384,6 +408,9 @@ function AccionModal(boton) {
                 inputDestCorreo.val(dest_correo);
                 actualizarFormulario("destinatario");
 
+                // Deshabilitar todos los campos de Remitente y Destinatario en modo modificar
+                toggleCamposClientes(true);
+
                 // Autocompletar Paquetería
                 inputDescripcion.val(descripcion);
                 inputAlto.val(alto);
@@ -400,6 +427,18 @@ function AccionModal(boton) {
             }
             break;
     }
+}
+
+function toggleCamposClientes(deshabilitar) {
+    const camposClientes = $(
+        '#persona_natural_remitente, #persona_juridica_remitente, ' +
+        '#rem_documento_natural, #rem_cedula, #rem_nombre, #rem_apellido, ' +
+        '#rem_documento_juridico, #rem_rif, #rem_razon_social, #rem_telefono, #rem_correo, ' +
+        '#persona_natural_destinatario, #persona_juridica_destinatario, ' +
+        '#dest_documento_natural, #dest_cedula, #dest_nombre, #dest_apellido, ' +
+        '#dest_documento_juridico, #dest_rif, #dest_razon_social, #dest_telefono, #dest_correo'
+    );
+    camposClientes.prop('disabled', deshabilitar);
 }
 
 function obtenerValoreCliente(tipoCliente, abrev) {

@@ -52,18 +52,44 @@ switch ($solicitud) {
 
 
     case 'modificar':
-        
+        $datosEnvio = $_POST['datos'];
+
+        $datosDespacho = $datosEnvio['despacho'];
+
+        $datosDestino = $datosEnvio['destino'];
+
+        $resultado = $envio->modDatosEnvio(
+            [
+                $datosEnvio['cod_envio'],
+                $datosEnvio['ancho'],
+                $datosEnvio['alto'],
+                $datosEnvio['descripcion'],
+                $datosEnvio['peso_total'],
+                $datosEnvio['kilometraje']
+            ],
+            $datosEnvio['articuloFragil'] ?? 0,
+            [
+                $datosDespacho['cod_ubi'],
+                $datosDespacho['direccion'],
+                $datosDespacho['municipio']
+            ],
+            [
+                $datosDestino['cod_ubi'],
+                $datosDestino['direccion'],
+                $datosDestino['municipio']
+            ]
+        );
+
+        echo  $resultado;
+        exit();
+        break;
     case 'consultar':
         $registros = $envio->obt_RegistrosEnvio();
-        /* print_r($registros); */
         echo $registros;
         exit();
         break;
 }
 
-//$registros = $envio->obt_RegistrosEnvio();
-
-// app/controller/envioController.php
 include 'app/view/layout/header.php';
 include 'app/view/envio/envioView.php';
 include 'app/view/layout/footer.php';

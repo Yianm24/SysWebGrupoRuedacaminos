@@ -14,7 +14,7 @@ class Envio extends Conexion
 
     private $cod_remitente, $cod_destinatario;
     private $cod_envio;
-    private $ancho, $alto, $peso_total, $descripcion_cont;
+    private $ancho, $alto, $peso_total, $descripcion;
     private $monto_total;
     // private $cod_municipio_despacho, $cod_municipio_destino;
     private $ubicacion_despacho, $ubicacion_destino;
@@ -56,10 +56,12 @@ class Envio extends Conexion
                 c_dest.apellido AS dest_apellido,
                 c_dest.telefono AS dest_telefono,
                 c_dest.email AS dest_correo,
+                u_dest.cod_ubicacion AS cod_ubicacion_destino,
                 u_dest.cod_municipio AS cod_municipio_destino,
                 m_dest.nombre AS municipio_destino,
                 est_dest.nombre AS estado_destino,
                 u_dest.descripcion AS direccion_destino,
+                u_orig.cod_ubicacion AS cod_ubicacion_origen,
                 u_orig.cod_municipio AS cod_municipio_origen,
                 m_orig.nombre AS municipio_origen,
                 est_orig.nombre AS estado_origen,
@@ -114,7 +116,7 @@ class Envio extends Conexion
             $this->fecha = $fecha;
             $this->ancho = $resultTrait[0];
             $this->alto = $resultTrait[1];
-            $this->descripcion_cont = $resultTrait[2];
+            $this->descripcion = $resultTrait[2];
             $this->monto_total = $this->calcularCosteEnvio($resultTrait[4]);
             $this->distancia_total = $resultTrait[4];
             $this->estado = 1;
@@ -136,7 +138,6 @@ class Envio extends Conexion
         try {
             $this->conexion->beginTransaction();
 
-            // 1. Inserción en la tabla 'envio'
             $sqlEnvio = "INSERT INTO `envio` (
             `fecha`, 
             `estatus_fragil`, 
@@ -154,7 +155,7 @@ class Envio extends Conexion
                 $this->fecha,
                 $this->estatus_fragil,
                 $this->estado,
-                $this->descripcion_cont,
+                $this->descripcion,
                 $this->ancho,
                 $this->alto,
                 $this->peso_total,
@@ -162,10 +163,8 @@ class Envio extends Conexion
                 $this->monto_total
             ]);
 
-            // Obtener el ID autogenerado del envío
             $cod_envio = $this->conexion->lastInsertId();
 
-            // 2. Inserción de participantes (Remitente y Destinatario)
             $sqlParticipante = "INSERT INTO `participante_envio` (`cod_cliente`, `cod_envio`, `rol_cliente`) 
                             VALUES (?, ?, ?)";
             $insertParticipante = $this->conexion->prepare($sqlParticipante);
@@ -173,7 +172,6 @@ class Envio extends Conexion
             $insertParticipante->execute([$this->cod_remitente, $cod_envio, 'Remitente']);
             $insertParticipante->execute([$this->cod_destinatario, $cod_envio, 'Destinatario']);
 
-            // 3. Inserción de ubicaciones (Despacho y Destino) en 'ubicaciones_envio'
             $sqlUbicacion = "INSERT INTO `ubicaciones_envio` (`cod_ubicacion`, `cod_envio`,`tipo_ubicacion`) VALUES (?, ?, ?)";
             $insertUbicacion = $this->conexion->prepare($sqlUbicacion);
 
@@ -202,20 +200,41 @@ class Envio extends Conexion
             $insert->bindValue(2, $cod_municipio);
             $insert->bindValue(3, 1);
             $insert->execute();
-
-            // Obtiene el ID autoincremental generado por el INSERT anterior
             $idInsertado = $this->conexion->lastInsertId();
 
             $this->conexion->commit();
 
             return $idInsertado;
         } catch (\PDOException $e) {
-            // Si hay error, deshace los cambios
+
             $this->conexion->rollBack();
-            return null; // O manejar el error según necesites
+            return null;
         }
     }
 
+    private function modificarUbicacion($cod_ubi, $descripcion, $cod_municipio)
+    {
+        try {
+            $this->conexion->beginTransaction();
+
+            $sentencia = "UPDATE ubicacion SET descripcion=?,cod_municipio=? WHERE cod_ubicacion=?";
+            $update = $this->conexion->prepare($sentencia);
+
+            $update->bindValue(1, $descripcion);
+            $update->bindValue(2, $cod_municipio);
+            $update->bindValue(3, $cod_ubi);
+            $update->execute();
+            $idInsertado = $this->conexion->lastInsertId();
+
+            $this->conexion->commit();
+
+          //  return $idInsertado;
+        } catch (\PDOException $e) {
+
+            $this->conexion->rollBack();
+        // return null;
+        }
+    }
 
     public function elmDatosEnvio(array $campos)
     {
@@ -245,9 +264,89 @@ class Envio extends Conexion
     }
 
 
-    public function modEnvio(array $campos)
+    public function modDatosEnvio(array $campos, $estatus_fragil, array $camposDespacho, array $camposDestino)
     {
+        $resultadoTrait = $this->validarPost($campos);
+        $resultTraitDespacho = $this->validarPost($camposDespacho);
+        $resultTraitDestino = $this->validarPost($camposDestino);
 
-        $array = $this->validarPost($campos, 'envio');
+        //valida si inputs de despacho estan vacios
+        if (!is_array($resultTraitDespacho)) {
+            return $resultTraitDespacho;
+        }
+        //valida si inputs de destino estan vacios
+        if (!is_array($resultTraitDestino)) {
+            return $resultTraitDestino;
+        }
+
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_envio = $resultadoTrait[0];
+            $this->ancho = $resultadoTrait[1];
+            $this->alto = $resultadoTrait[2];
+            $this->descripcion = $resultadoTrait[3];
+            $this->peso_total = $resultadoTrait[4];
+            $this->distancia_total = $resultadoTrait[5];
+            $this->estatus_fragil = $estatus_fragil;
+            $this->monto_total = $this->calcularCosteEnvio($resultadoTrait[5]);
+
+            $this->modificarUbicacion($resultTraitDespacho[0], $resultTraitDespacho[1], $resultTraitDespacho[2]);
+
+            $this->modificarUbicacion($resultTraitDestino[0], $resultTraitDestino[1], $resultTraitDestino[2]);
+        } else {
+            return $resultadoTrait;
+        }
+
+        return $this->modificarEnvio();
+    }
+
+    private function modificarEnvio()
+    {
+        try {
+            $checkStmt = $this->conexion->prepare("SELECT estatus, cod_despacho, estado FROM envio WHERE cod_envio = ?");
+            $checkStmt->execute([$this->cod_envio]);
+            $envio = $checkStmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$envio || $envio['estado'] != 1) {
+                return  json_encode(['status' => 'error', 'message' => 'El envio se encuentra inactivo']);
+            }
+
+            if ($envio['estatus'] !== 'PENDIENTE' || !empty($envio['cod_despacho'])) {
+                return  json_encode(['status' => 'error', 'message' => 'Solo se pueden modificar envios que se encuentren PENDIENTES']);
+            }
+
+
+            $this->conexion->beginTransaction();
+
+            $sql = "UPDATE envio SET 
+                descrip_contenido = ?, 
+                anchura = ?, 
+                altura = ?, 
+                peso_total = ?, 
+                distancia_total = ?, 
+                monto_total = ?, 
+                estatus_fragil = ?
+                WHERE cod_envio = ?";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+                $this->descripcion,
+                $this->ancho,
+                $this->alto,
+                $this->peso_total,
+                $this->distancia_total,
+                $this->monto_total,
+                $this->estatus_fragil,
+                $this->cod_envio
+            ]);
+
+            $this->conexion->commit();
+            return json_encode(['status' => 'updated', 'message' => 'El envio ha sido modificiado correctamente.']);
+        } catch (\PDOException $e) {
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+            return "exception&msg=" . urlencode($e->getMessage());
+        }
     }
 }
