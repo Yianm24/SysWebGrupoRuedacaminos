@@ -154,7 +154,7 @@ function accionModal(boton) {
 
             break;
         case "Actualizar":
-            encabezadoModal.html('<i class="bi bi-coin me-2"></i> Modificación de Método de Pago');
+            encabezadoModal.html('<i class="bi bi-coin me-2"></i> Actualizacion de Método de Pago');
             botonModal.val("actualizar");
             botonModal.html('<i class="bi bi-pencil"></i> Actualizar');
 
