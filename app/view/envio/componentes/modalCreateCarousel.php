@@ -30,6 +30,8 @@
                                                 <div>
                                                     <textarea id="direccion_despacho" name="direccion_despacho" class="form-control" rows="3" placeholder="Calle, número, punto de referencia..." required></textarea>
                                                 </div>
+
+                                                <input type="hidden" name="cod_ubi_despacho" id="cod_ubi_despacho_hidden" value="">
                                             </div>
                                         </div>
 
@@ -47,6 +49,8 @@
                                                 <div>
                                                     <textarea id="direccion_destino" name="direccion_destino" class="form-control" rows="3" placeholder="Calle, número, punto de referencia..." required></textarea>
                                                 </div>
+
+                                                <input type="hidden" name="cod_ubi_destino" id="cod_ubi_destino_hidden" value="">
                                             </div>
                                         </div>
 
