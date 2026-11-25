@@ -48,6 +48,7 @@ switch ($solicitud) {
 
     case 'consultar':
         $registros = $usuario->obt_RegistrosUsuario();
+
         echo $registros;
         exit();
         break;
