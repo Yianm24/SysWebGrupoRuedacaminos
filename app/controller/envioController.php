@@ -54,15 +54,29 @@ switch ($solicitud) {
     case 'modificar':
         $datosEnvio = $_POST['datos'];
 
+        $datosDespacho = $datosEnvio['despacho'];
+        $envio->modificarUbicacion(
+            $datosDespacho['cod_ubi'],
+            $datosDespacho['direccion'],
+            $datosDespacho['municipio']
+        );
+
+        $datosDestino = $datosEnvio['destino'];
+        $envio->modificarUbicacion(
+            $datosDestino['cod_ubi'],
+            $datosDestino['direccion'],
+            $datosDestino['municipio']
+        );
+
         $resultado = $envio->modDatosEnvio([
             $datosEnvio['cod_envio'],
             $datosEnvio['ancho'],
             $datosEnvio['alto'],
             $datosEnvio['descripcion'],
             $datosEnvio['peso_total'],
-            $datosEnvio['kilometraje'],
-            $datosEnvio['articuloFragil'] ?? 0
-        ]);
+            $datosEnvio['kilometraje']
+        ], $datosEnvio['articuloFragil'] ?? 0
+        );
 
         echo  $resultado;
         exit();

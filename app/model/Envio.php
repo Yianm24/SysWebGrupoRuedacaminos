@@ -98,10 +98,12 @@ class Envio extends Conexion
                 c_dest.apellido AS dest_apellido,
                 c_dest.telefono AS dest_telefono,
                 c_dest.email AS dest_correo,
+                u_dest.cod_ubicacion AS cod_ubicacion_destino,
                 u_dest.cod_municipio AS cod_municipio_destino,
                 m_dest.nombre AS municipio_destino,
                 est_dest.nombre AS estado_destino,
                 u_dest.descripcion AS direccion_destino,
+                u_orig.cod_ubicacion AS cod_ubicacion_origen,
                 u_orig.cod_municipio AS cod_municipio_origen,
                 m_orig.nombre AS municipio_origen,
                 est_orig.nombre AS estado_origen,
@@ -252,7 +254,29 @@ class Envio extends Conexion
         }
     }
 
+    public function modificarUbicacion($cod_ubi, $descripcion, $cod_municipio)
+    {
+        try {
+            $this->conexion->beginTransaction();
 
+            $sentencia = "UPDATE ubicacion SET descripcion=?,cod_municipio=? WHERE cod_ubicacion=?";
+            $update = $this->conexion->prepare($sentencia);
+
+            $update->bindValue(1, $descripcion);
+            $update->bindValue(2, $cod_municipio);
+            $update->bindValue(3, $cod_ubi);
+            $update->execute();
+            $idInsertado = $this->conexion->lastInsertId();
+
+            $this->conexion->commit();
+
+            // return $idInsertado;
+        } catch (\PDOException $e) {
+
+            $this->conexion->rollBack();
+            // return null;
+        }
+    }
 
 
     public function elmDatosEnvio(array $campos)
@@ -283,14 +307,9 @@ class Envio extends Conexion
     }
 
 
-    public function modDatosEnvio(array $campos)
+    public function modDatosEnvio(array $campos, $estatus_fragil)
     {
         $resultadoTrait = $this->validarPost($campos);
-
-        // if ($this->verificarEstadoDuplicado($this->formatearPalabra($resultadoTrait[1]))) {
-        //     return json_encode(['status' => 'exists', 'message' => 'El Estado se encuentra registrado']);
-        // }
-
 
         if (is_array($resultadoTrait)) {
 
@@ -299,9 +318,10 @@ class Envio extends Conexion
             $this->alto = $resultadoTrait[2];
             $this->descripcion = $resultadoTrait[3];
             $this->peso_total = $resultadoTrait[4];
-            $this->distancia_total= $resultadoTrait[5];
-            $this->monto_total=$this->calcularCosteEnvio($resultadoTrait[5]);
-            $this->estatus_fragil=$resultadoTrait[6];
+            $this->distancia_total = $resultadoTrait[5];
+            $this->estatus_fragil = $estatus_fragil;
+
+            $this->monto_total = $this->calcularCosteEnvio($resultadoTrait[5]);
         } else {
             return $resultadoTrait;
         }
@@ -312,20 +332,18 @@ class Envio extends Conexion
     private function modificarEnvio()
     {
         try {
-            // $checkStmt = $this->conexion->prepare("SELECT estatus, cod_despacho, estado FROM envio WHERE cod_envio = ?");
-            // $checkStmt->execute([$cod_envio]);
-            // $envio = $checkStmt->fetch(\PDO::FETCH_ASSOC);
+            $checkStmt = $this->conexion->prepare("SELECT estatus, cod_despacho, estado FROM envio WHERE cod_envio = ?");
+            $checkStmt->execute([$this->cod_envio]);
+            $envio = $checkStmt->fetch(\PDO::FETCH_ASSOC);
 
-            // if (!$envio || $envio['estado'] != 1) {
-            //     return 'not_found&msg=El+envio+no+existe+o+esta+inactivo';
-            // }
+            if (!$envio || $envio['estado'] != 1) {
+                return  json_encode(['status' => 'error', 'message' => 'El envio se encuentra inactivo']);
+            }
 
-            // if ($envio['estatus'] !== 'PENDIENTE' || !empty($envio['cod_despacho'])) {
-            //     return 'no_editable&msg=Solo+se+pueden+modificar+envios+en+estatus+PENDIENTE+que+no+esten+en+despacho';
-            // }
+            if ($envio['estatus'] !== 'PENDIENTE' || !empty($envio['cod_despacho'])) {
+                return  json_encode(['status' => 'error', 'message' => 'Solo se pueden modificar envios que se encuentren PENDIENTES']);
+            }
 
-            // $distancia = (float)($datos['distancia_total'] ?? 0);
-            // $monto_total = $this->calcularCosteEnvio($distancia);
 
             $this->conexion->beginTransaction();
 
@@ -341,30 +359,30 @@ class Envio extends Conexion
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute([
-              $this->descripcion,
-              $this->ancho,
-              $this->alto,
-              $this->peso_total,
-              $this->distancia_total,
-              $this->monto_total,
-              $this->estatus_fragil,
-              $this->cod_envio
+                $this->descripcion,
+                $this->ancho,
+                $this->alto,
+                $this->peso_total,
+                $this->distancia_total,
+                $this->monto_total,
+                $this->estatus_fragil,
+                $this->cod_envio
             ]);
 
-            //     $findUbi = $this->conexion->prepare("SELECT cod_ubicacion FROM ubicaciones_envio WHERE cod_envio = ? AND tipo_ubicacion = 'Destino' LIMIT 1");
-            //     $findUbi->execute([$cod_envio]);
-            //     $codUbi = $findUbi->fetchColumn();
+            // $findUbi = $this->conexion->prepare("SELECT cod_ubicacion FROM ubicaciones_envio WHERE cod_envio = ? AND tipo_ubicacion = 'Destino' LIMIT 1");
+            // $findUbi->execute([$this->cod_envio]);
+            // $codUbi = $findUbi->fetchColumn();
 
-            //     if ($codUbi) {
-            //         $updUbi = $this->conexion->prepare("UPDATE ubicacion SET descripcion = ?, cod_municipio = ? WHERE cod_ubicacion = ?");
-            //         $updUbi->execute([$datos['direccion_destino'], $datos['municipio_destino'], $codUbi]);
-            //     }
-            
+            // if ($codUbi) {
+            //     $updUbi = $this->conexion->prepare("UPDATE ubicacion SET descripcion = ?, cod_municipio = ? WHERE cod_ubicacion = ?");
+            //     $updUbi->execute([$datos['direccion_destino'], $datos['municipio_destino'], $codUbi]);
+            // }
 
-            // // Actualizar dirección de origen si se proporcionó
+
+            // Actualizar dirección de origen si se proporcionó
             // if (!empty($datos['direccion_origen']) && !empty($datos['municipio_origen'])) {
             //     $findUbiOrig = $this->conexion->prepare("SELECT cod_ubicacion FROM ubicaciones_envio WHERE cod_envio = ? AND tipo_ubicacion = 'Despacho' LIMIT 1");
-            //     $findUbiOrig->execute([$cod_envio]);
+            //     $findUbiOrig->execute([$this->cod_envio]);
             //     $codUbiOrig = $findUbiOrig->fetchColumn();
 
             //     if ($codUbiOrig) {
