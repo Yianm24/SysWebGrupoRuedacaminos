@@ -119,11 +119,13 @@ function dibujarSelect(objtSelect) {
 function accionModal(boton) {
     const encabezadoModal = $('#modalLabel');
     const botonModal = $('button[name="tipoSolicitud"]');
+    const avisoPassword = $('#avisoPasswordActualizar');
 
     // Obtener los datos del usuario desde los atributos datos- del botón
     const codusuario = $(boton).attr('datos-cod-usuario');
     const nombre = $(boton).attr('datos-nombre');
     const cedula = $(boton).attr('datos-cedula');
+    const password= $(boton).attr('datos-password');
     const rol = $(boton).attr('datos-cod-rol');
     const estado = $(boton).attr('datos-estado');
 
@@ -139,6 +141,7 @@ function accionModal(boton) {
             encabezadoModal.html('<i class="bi bi-person-plus me-2"></i> Registro de Usuario');
             botonModal.val("registrar");
             botonModal.html('<i class="bi bi-save"></i> Registrar');
+            avisoPassword.addClass('d-none');
             inputCodUsuario.val("");
             inputNombre.val("");
             inputCedula.val("");
@@ -150,6 +153,7 @@ function accionModal(boton) {
             encabezadoModal.html('<i class="bi bi-pencil-square me-2"></i> Actualización de Usuario');
             botonModal.val("actualizar");
             botonModal.html('<i class="bi bi-pencil"></i> Actualizar');
+            avisoPassword.removeClass('d-none');
 
             if (codusuario != "" && estado == 1) {
                 inputCodUsuario.val(codusuario);
@@ -161,8 +165,8 @@ function accionModal(boton) {
                 inputCodUsuario.val("Error: Registro inactivo");
                 inputNombre.val("Error: Registro inactivo");
                 inputCedula.val("Error: Registro inactivo");
-                inputPassword.val("");
-                inputRol.val("");
+                inputPassword.val("Error: Registro inactivo");
+                inputRol.val("Error: Registro inactivo");
             }
             break;
     }

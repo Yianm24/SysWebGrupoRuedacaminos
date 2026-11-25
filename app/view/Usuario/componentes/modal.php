@@ -14,12 +14,14 @@
                             <div class="col-md-2 mb-md-0">
                                 <label for="cedula" class="form-label">Cédula</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="cedula" name="cedula" placeholder="12345678">
+                                    <input type="text" class="form-control input-evualuar solo-numeros" id="cedula" name="cedula" placeholder="12345678">
+                                    <span class="mensaje-error"></span>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-md-0">
                                 <label for="nombre_usuario" class="form-label">Nombre del Usuario</label>
-                                <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario">
+                                <input type="text" class="form-control input-evaluar solo-letras" id="nombre_usuario" name="nombre_usuario">
+                                <span class="mensaje-error"></span>
                             </div>
                             <div class="col-md-3">
                                 <label for="cod_rol" class="form-label">Rol</label>
@@ -28,7 +30,14 @@
                             </div>
                             <div class="col-md-3 mb-md-0">
                                 <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="password" name="password">
+                                <input type="password" class="form-control input-evaluar letra-num-ceb" id="password" name="password">
+                                <span class="mensaje-error"></span>
+                            </div>
+                        </div>
+                        <div id="avisoPasswordActualizar" class="alert alert-warning d-flex align-items-center py-2 px-3 mb-0 d-none" role="alert">
+                            <i class="bi bi-shield-lock-fill me-2 fs-5"></i>
+                            <div class="small">
+                                <strong>Nota de seguridad:</strong> Por políticas de protección de datos, al actualizar la información del usuario es obligatorio asignar una nueva contraseña.
                             </div>
                         </div>
                     </fieldset>
