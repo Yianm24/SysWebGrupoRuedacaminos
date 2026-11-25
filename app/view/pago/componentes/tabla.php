@@ -1,85 +1,27 @@
+<?php
+$rolUsuario = (int)($_SESSION['usuario']['rol'] ?? 0);
+$esAdmin = ($rolUsuario === 6);
+$puedeRegistrar = in_array($rolUsuario, [2, 6], true);
+?>
 <div class="card-body p-0">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0"
+                id="tablaPagos"
+                data-es-admin="<?= $esAdmin ? '1' : '0' ?>"
+                data-puede-registrar="<?= $puedeRegistrar ? '1' : '0' ?>">
             <thead class="table-light table-header-custom">
                 <tr>
                     <th class="ps-4">CÓDIGO ENVÍO</th>
-                    <th class="text-center">ESTADO</th>
+                    <th class="text-center">ESTATUS</th>
                     <th>MONTO TOTAL</th>
-                    <th>ÚLTIMO ABONO</th>
+                    <th>MONTO ABONADO</th>
+                    <th class="text-center">CANTIDAD</th>
                     <th>MONTO RESTANTE</th>
-                    <th class="text-center">AÑADIR PAGO</th>
-                    <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
+                    <th class="text-center">ESTADO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
-                    <?php endif;?>
                 </tr>
             </thead>
-            <tbody>
-                <?php if (!empty($registros)): ?>
-                    <?php foreach ($registros as $value):
-                        $montoTotal = $value['monto_total'] ?? 0;
-                        $totalAbonadoEnvio = $value['total_abonado_envio'] ?? 0;
-                        $montoRestante = $montoTotal - $totalAbonadoEnvio;
-                        $montoBaseEditar = $montoRestante + ($value['monto_abonado_usd'] ?? 0);
-                        $tienePago = !empty($value['cod_pago']);
-                    ?>
-                        <tr>
-                            <td class="ps-4 fw-medium"><?= $value['cod_envio']; ?></td>
-                            <td class="text-center">
-                                <?php if ($tienePago): ?>
-                                    <span class="badge bg-<?= ($value['estado_pago'] == 1) ? 'success' : 'warning'; ?>">
-                                        <?= ($value['estado_pago'] == 1) ? 'Completado' : 'Pendiente'; ?>
-                                    </span>
-                                <?php else: ?>
-                                    <span class="badge bg-secondary">Sin pagos</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-secondary">$<?= number_format($montoTotal, 2); ?></td>
-                            <td class="text-secondary">$<?= number_format($value['monto_abonado_usd'] ?? 0, 2); ?></td>
-                            <td class="text-secondary">$<?= number_format(max(0, $montoRestante), 2); ?></td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" title="Registrar"
-                                    data-bs-toggle="modal" data-bs-target="#modalPago"
-                                    data-envio="<?= $value['cod_envio']; ?>"
-                                    data-montorestante="<?= max(0, $montoRestante); ?>">
-                                    <i class="bi bi-wallet2 me-1"></i> Añadir
-                                </button>
-                            </td>
-                            <?php if ($_SESSION['usuario']['rol'] == '6'): ?>
-                            <td class="pe-4 text-center">
-                                <?php if ($tienePago): ?>
-                                    <a href="#" class="text-secondary me-2 text-decoration-none" title="Editar"
-                                        data-bs-toggle="modal" data-bs-target="#modalPago"
-                                        data-id="<?= $value['cod_pago']; ?>"
-                                        data-envio="<?= $value['cod_envio']; ?>"
-                                        data-monto="<?= $value['monto_abonado_usd']; ?>"
-                                        data-monto-original="<?= $value['monto_ingresado_original']; ?>"
-                                        data-fecha="<?= $value['fecha']; ?>"
-                                        data-referencia="<?= $value['referencia']; ?>"
-                                        data-estatus="<?= $value['estado_pago']; ?>"
-                                        data-metodo="<?= $value['cod_metodopago'] ?? ''; ?>"
-                                        data-banco="<?= $value['cod_banco'] ?? ''; ?>"
-                                        data-detalle="<?= $value['cod_detallepago']; ?>"
-                                        data-montobaseeditar="<?= max(0, $montoBaseEditar); ?>">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="#" class="text-secondary text-decoration-none btn-eliminar" title="Eliminar"
-                                        data-id="<?= $value['cod_pago']; ?>">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                <?php else: ?>
-                                    <span class="text-muted small">N/A</span>
-                                <?php endif; ?>
-                            </td>
-                            <?php endif; ?>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-4">No hay envíos registrados actualmente.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
