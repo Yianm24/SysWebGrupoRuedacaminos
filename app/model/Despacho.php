@@ -13,6 +13,7 @@ class Despacho extends Conexion
     private $cod_empleado;
     private $cod_vehiculo;
     private $fecha_salida;
+    private $hora_salida;
     private $fecha_entrega;
     private $estatus;
     private $estado;
@@ -28,6 +29,7 @@ class Despacho extends Conexion
             $sentencia = "SELECT 
                 d.cod_despacho,
                 d.fecha_salida,
+                d.hora_salida,
                 d.fecha_entrega,
                 COALESCE(d.estatus, 'PENDIENTE') AS estatus,
                 d.estado,
@@ -118,7 +120,7 @@ class Despacho extends Conexion
         }
     }
 
-    public function regDatosDespacho(int $cod_empleado, int $cod_vehiculo,string $fecha_salida, array $envios_seleccionados = [])
+    public function regDatosDespacho(int $cod_empleado, int $cod_vehiculo,string $fecha_salida,string $hora_salida, array $envios_seleccionados = [])
     {
         if (empty($cod_empleado) || empty($cod_vehiculo) || empty($fecha_salida)) {
             return json_encode(['status' => 'empty', 'message' => 'Uno o más campos están vacíos.']);
@@ -128,6 +130,7 @@ class Despacho extends Conexion
         $this->cod_empleado = $cod_empleado;
         $this->cod_vehiculo = $cod_vehiculo;
         $this->fecha_salida = $fecha_salida;
+        $this->hora_salida = $hora_salida;
         $this->enviosSelect = $envios_seleccionados;
 
         return $this->regDespacho();
@@ -138,11 +141,11 @@ class Despacho extends Conexion
         try {
             $this->conexion->beginTransaction();
 
-            $sql = "INSERT INTO despacho (cod_empleado, cod_vehiculo, fecha_salida, estatus, estado) 
-                    VALUES (?, ?, ?, 'PENDIENTE', 1)";
+            $sql = "INSERT INTO despacho (cod_empleado, cod_vehiculo, fecha_salida, hora_salida, estatus, estado) 
+                    VALUES (?, ?, ?, ?, 'PENDIENTE', 1)";
             $stmt = $this->conexion->prepare($sql);
 
-            $stmt->execute([$this->cod_empleado, $this->cod_vehiculo, $this->fecha_salida]);
+            $stmt->execute([$this->cod_empleado, $this->cod_vehiculo, $this->fecha_salida,$this->hora_salida]);
 
             $cod_despacho = (int)$this->conexion->lastInsertId();
 

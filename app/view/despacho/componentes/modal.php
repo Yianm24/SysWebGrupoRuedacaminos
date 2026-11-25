@@ -6,12 +6,13 @@
                 
                 <header class="modal-header bg-secondary text-white">
                     <h1 class="modal-title fs-5 fw-bold" id="modalLabel">
-                        <i class="bi bi-boxes me-2"></i> Programar Nuevo Despacho y Carga
+                        
                     </h1>
                     <button type="button" class="btn-close btn-close-white" id="btnCerrarForm" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </header>
 
                 <div class="modal-body p-4">
+                     <input type="hidden" name="cod_despacho" id="cod_despacho" value="">
 
                     <div class="border-bottom pb-4 mb-4">
                         <h6 class="fw-bold text-secondary mb-3">
@@ -20,7 +21,7 @@
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label for="select_chofer" class="form-label small fw-semibold">Chofer Conductor</label>
-                                <select class="form-select" id="select_chofer" name="cod_empleado" required>
+                                <select class="form-select" id="select_chofer" name="select_chofer" required>
                                     <option value="0" selected disabled>Seleccione un chofer</option>
                                 </select>
                             </div>
@@ -77,8 +78,8 @@
 
                 <footer id="footerForm" class="modal-footer bg-light">
                     <button type="button" id="btnCerrar" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" name="tipoSolicitud" value="registrar" class="btn btn-primary px-4 fw-semibold shadow-sm disabled">
-                        <i class="bi bi-save me-1"></i> Registrar
+                    <button type="button" name="tipoSolicitud" value="" class="btn btn-primary px-4 fw-semibold shadow-sm disabled">
+                        
                     </button>
                 </footer>
 

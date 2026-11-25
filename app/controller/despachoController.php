@@ -20,6 +20,7 @@ switch ($solicitud) {
             $datosDespacho['chofer'] ?? null,
             $datosDespacho['vehiculo'] ?? null,
             $datosDespacho['fechaSalida'] ?? null,
+            $datosDespacho['horaSalida'] ?? null,
             $enviosSeleccionados 
         );
         

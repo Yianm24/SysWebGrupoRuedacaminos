@@ -7,6 +7,13 @@ $(document).ready(function () {
 
   const modal = $('#modalDespacho');
 
+  modal.on('show.bs.modal', event => {
+    // Obtener acceso al botón que disparó el modal
+    const boton = event.relatedTarget;
+    AccionModal(boton);
+
+  });
+
   $(modal).on("click", "button[name='tipoSolicitud']", function (event) {
     event.preventDefault();
 
@@ -20,11 +27,12 @@ $(document).ready(function () {
     let datosDespacho = {
       chofer: $('#select_chofer').val(),
       vehiculo: $('#select_vehiculo').val(),
-      fechaSalida: $('#fecha_salida').val() + " " + $('#hora_salida').val()
+      fechaSalida: $('#fecha_salida').val(),
+      horaSalida: $('#hora_salida').val()
     };
 
     ajaxEnvioDatosGlobal('despacho', solicitud, dibujarTabla, objDatatable, { 'datosDespacho': datosDespacho, 'enviosSeleccionados': enviosSeleccionados }, objModal, this)
-    ajaxConsultarEnvios();
+    datosForaneos();
   });
 
   $("#modalDespacho").on("input change", "#fecha_salida, #hora_salida, #select_vehiculo, #select_chofer, .check-envio, #check_todos_head", function () {
@@ -95,6 +103,57 @@ $(document).ready(function () {
 
 });
 
+function AccionModal(boton) {
+  const encadezadoModal = $('#modalLabel');
+  const botonModal = $('button[name="tipoSolicitud"]');
+  const btn = $(boton);
+
+  const cod_despacho = (btn.attr('datos-cod-despacho') || '').trim();
+  const cod_empleado = (btn.attr('datos-cod-empleado') || '').trim();
+  const cod_vehiculo = (btn.attr('datos-cod-vehiculo') || '').trim();
+  const fecha_salida = (btn.attr('datos-fecha-salida') || '').trim();
+  const hora_salida = (btn.attr('datos-hora-salida') || '').trim();
+
+  const inputCodDespacho = $('#cod_despacho');
+  const selectChofer = $('#select_chofer');
+  const selectVehiculo = $('#select_vehiculo');
+  const inputFecha = $('#fecha_salida');
+  const inputHora = $('#hora_salida');
+
+  switch (btn.attr('title')) {
+    case "Registrar":
+      encadezadoModal.html('<i class="bi bi-boxes me-2"></i> Programar Nuevo Despacho y Carga');
+      botonModal.val("registrar");
+      botonModal.html('<i class="bi bi-save me-1"></i> Registrar');
+      inputCodDespacho.val('');
+      break;
+
+    case "Modificar":
+      encadezadoModal.html('<i class="bi bi-boxes me-2"></i> Modificación de Despacho');
+      botonModal.val("modificar");
+      botonModal.html('<i class="bi bi-save me-1"></i> Modificar');
+
+      if (cod_despacho !== "") {
+        const horaFormateada = hora_salida.length >= 5 ? hora_salida.substring(0, 5) : hora_salida;
+
+        inputCodDespacho.val(cod_despacho);
+        selectChofer.val(cod_empleado);
+        selectVehiculo.val(cod_vehiculo);
+        inputFecha.val(fecha_salida);
+        inputHora.val(horaFormateada);
+
+        selectChofer.trigger('change');
+      } else {
+        inputCodDespacho.val('');
+        selectChofer.val('0');
+        selectVehiculo.val('0');
+        inputFecha.val('');
+        inputHora.val('');
+      }
+      break;
+  }
+}
+
 function limpiarInputModal() {
   const modal = $("#modalDespacho");
 
@@ -120,10 +179,12 @@ function dibujarTabla(objTable) {
 
 
         const botones = `
-        <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Actualizar" data-bs-toggle="modal" data-bs-target="#modaldespacho"
-        datos-cod-despacho="${dato.cod_despacho}"
-        datos-nombre="${dato.nombre}"
-        datos-estado="${dato.estado}">
+        <button type="button" id="btn-modificar" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar" title="Modificar" data-bs-toggle="modal" data-bs-target="#modalDespacho"
+        datos-cod-despacho="${dato.cod_despacho}",
+        datos-fecha-salida="${dato.fecha_salida}",
+        datos-hora-salida="${dato.hora_salida}",
+        datos-cod-empleado="${dato.cod_empleado}",
+        datos-cod-vehiculo="${dato.cod_vehiculo}">
           <i class="bi bi-pencil"></i>
         </button>
         <a href="#" class="text-secondary btn-eliminar"
@@ -133,7 +194,7 @@ function dibujarTabla(objTable) {
         `;
 
         objTable.row.add([
-          "<strong>DCH-"+dato.cod_despacho+"</strong>",
+          "<strong>DCH-" + dato.cod_despacho + "</strong>",
           dato.fecha_salida,
           dato.total_envios,
           dato.nombre_chofer + dato.apellido_chofer,
@@ -153,24 +214,30 @@ function dibujarTabla(objTable) {
 function datosForaneos(response) {
   iconoCargar('#tablaEnviosPendientes tbody');
 
+  const selectChofer = $('#select_chofer');
+  const selectVehiculo = $('#select_vehiculo');
+
+  selectChofer.find('option:not([value="0"])').remove();
+  selectVehiculo.find('option:not([value="0"])').remove();
+
   let datosEnvios = response.enviosPendientes;
   let choferes = response.choferes;
   let vehiculos = response.vehiculos;
 
   if (choferes.length > 0) {
     $.each(choferes, function (index, chofer) {
-      $('#select_chofer').append(`<option value="${chofer.cod_empleado}">${chofer.nombreEmpleado} ${chofer.apellidoEmpleado}</option>`);
+      $(selectChofer).append(`<option value="${chofer.cod_empleado}">${chofer.nombreEmpleado} ${chofer.apellidoEmpleado}</option>`);
     })
   } else {
-    $('#select_chofer').append(`<option value="">Sin choferes registrados</option>`);
+    $(selectChofer).append(`<option value="">Sin choferes registrados</option>`);
   }
 
   if (vehiculos.length > 0) {
     $.each(vehiculos, function (index, vehiculo) {
-      $('#select_vehiculo').append(`<option value="${vehiculo.cod_vehiculo}">${vehiculo.placaVehiculo}-${vehiculo.modeloVehiculo}</option>`);
+      $(selectVehiculo).append(`<option value="${vehiculo.cod_vehiculo}">${vehiculo.placaVehiculo}-${vehiculo.modeloVehiculo}</option>`);
     })
   } else {
-    $('#select_vehiculo').append(`<option value="">Sin choferes registrados</option>`);
+    $(selectVehiculo).append(`<option value="">Sin choferes registrados</option>`);
   }
 
   let tbody = $("#tablaEnviosPendientes tbody");
