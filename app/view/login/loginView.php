@@ -1,39 +1,64 @@
-<div class="vh-100 ">
-  <div class="container-fluid py-5 h-100 ">
-    <main class="row d-flex justify-content-center align-items-center h-100">
-      <section class="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div class="card bg-dark bg-opacity-75 text-white rounded-4" >
-          <div class="card-body p-3 text-center">
+<?php $msgLogin = $_GET['msg'] ?? ''; ?>
 
-            <div class="mb-md-2 mx-4">
+<div class="min-vh-100 d-flex align-items-center justify-content-center p-3"
+    style="background: radial-gradient(circle at top right, rgba(234, 179, 8, 0.14), transparent 45%), #f4f6f9;">
+  <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white w-100" style="max-width: 420px;">
+    <div class="p-4 text-center text-white"
+        style="background: linear-gradient(135deg, #111315, #1f2328); border-bottom: 3px solid #eab308;">
+      <div class="d-inline-flex align-items-center justify-content-center rounded-circle overflow-hidden mb-2 shadow-sm"
+          style="width: 78px; height: 78px; background-color: #ffffff; border: 2px solid #eab308;">
+        <img src="app/view/img/logo2.png"
+            alt="Logo Grupo RuedaCaminos C.A."
+            style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <h1 class="h5 fw-bold mb-0">Grupo RuedaCaminos C.A.</h1>
+      <small class="text-white-50">Sistema de Gestión de Envíos de Paquetería</small>
+    </div>
 
-              <h2 class="fw-bold mb-2 text-uppercase">Iniciar Sesión</h2>
-              <p class="text-white-50 mb-3">Por favor, ingrese su Cedula y Contraseña</p>
+    <div class="card-body p-4">
+      <div class="text-center mb-3">
+        <h2 class="h6 fw-bold text-dark text-uppercase mb-1">Iniciar Sesión</h2>
+        <p class="text-muted small mb-0">Ingrese su cédula y contraseña para acceder</p>
+      </div>
 
-              <form action="?url=login" method="post">
-                <div class="form-outline form-white mb-2">
-                  <input type="text" id="cedula_input" name="cedula" class="form-control form-control-sm anillo-foco" />
-                  <label class="fw-bold text-light" for="cedula_input">Cedula</label>
-                </div>
+      <?php if (!empty($msgLogin)): ?>
+        <div class="alert alert-danger py-2 px-3 small rounded-3 mb-3" role="alert">
+          <i class="bi bi-exclamation-circle-fill me-1"></i>
+          <?= htmlspecialchars($msgLogin, ENT_QUOTES, 'UTF-8') ?>
+        </div>
+      <?php endif; ?>
 
-              <div class="form-outline form-white mb-2">
-                <input type="password" id="password_input" name="password" class="form-control form-control-sm anillo-foco" />
-                <label class="fw-bold text-light" for="password_input">Contraseña</label>
-              </div>
+      <form id="formLogin" action="?url=login" method="post" autocomplete="off">
+        <div class="mb-3">
+          <label class="form-label fw-semibold small" for="cedula_input">Cédula</label>
+          <input type="text" id="cedula_input" name="cedula"
+                class="form-control form-control-lg fs-6 anillo-foco"
+                placeholder="Ej. 28123456" required autofocus>
+        </div>
 
-              <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Olvido su contraseña?</a></p>
-
-              <button class="btn btn-outline-light btn-lg px-5 mb-2" value="acceder" name="Solicitud" type="submit">Entrar</button>
-              </form>
-              <!-- <a class="btn btn-outline-light btn-lg px-5" href="?url=dashboard">Dashboard</a> -->
-
-            </div>
-
-        <!--     <div>
-              <p class="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
-              </p>
-            </div>
- -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold small" for="password_input">Contraseña</label>
+          <div class="input-group input-group-lg">
+            <input type="password" id="password_input" name="password"
+                  class="form-control fs-6 anillo-foco"
+                  placeholder="Ingrese su contraseña" required>
+            <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn"
+                    aria-label="Mostrar o ocultar contraseña" title="Mostrar / Ocultar contraseña">
+              <i class="bi bi-eye" id="togglePasswordIcon"></i>
+            </button>
           </div>
         </div>
-      </section>
+
+        <button class="btn btn-dark btn-lg w-100 fw-semibold py-2 rounded-3"
+                id="btnAcceder" value="acceder" name="Solicitud" type="button"
+                style="border-bottom: 2px solid #eab308;">
+          Entrar
+        </button>
+      </form>
+    </div>
+
+    <div class="card-footer bg-light border-0 py-2 text-center">
+      <small class="text-muted" style="font-size: 0.78rem;">Acceso restringido al personal autorizado</small>
+    </div>
+  </div>
+</div>
