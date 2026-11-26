@@ -3,61 +3,56 @@
 namespace App\Controller;
 
 use App\Model\Usuario;
-use App\Model\Rol;
 
 $usuario = new Usuario();
-$rol = new Rol();
 
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['rol']) && !empty($_POST['nombre']) && !empty($_POST['cedula'])&& !empty($_POST['password'])) {
-                if ($usuario->verificarUsuarioExiste($_POST['cedula'])) {
-                    header("Location: ?url=usuario&status=exists");
-                    exit();
-                }
 
-                $resultado = $usuario->regDatosUsuario($_POST['cedula'], $_POST['nombre'], $_POST['rol'], $_POST['password']);
-                echo $resultado;
-                header("Location: ?url=usuario&status=success");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</script>";
-            }
-        }
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
+
+        $resultado = $usuario->regDatosUsuario([
+            $datosAjax['nombre_usuario'],
+            $datosAjax['cedula'],
+            $datosAjax['password'],
+            $datosAjax['cod_rol']
+        ]);
+        echo $resultado;
+        exit();
+
         break;
 
     case 'actualizar':
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cod-usuario'])) {
-            if (!empty($_POST['nombre']) && !empty($_POST['cedula']) && !empty($_POST['rol']) && !empty($_POST['password'])) {
+        $datosAjax = json_decode(json_encode($_POST['datos']), true);
 
-                $resultado = $usuario->actDatosUsuario($_POST['cod-usuario'], $_POST['cedula'], $_POST['nombre'], $_POST['rol'], $_POST['password']);
-                echo $resultado;
-                header("Location: ?url=usuario&status=updated");
-                exit();
-            } else {
-                echo "<script>alert('Falta uno o varios datos por ingresar');</>";
-            }
-        }
+        $resultado = $usuario->actDatosUsuario([
+            $datosAjax['cod_usuario'],
+            $datosAjax['cedula'],
+            $datosAjax['nombre_usuario'],
+            $datosAjax['cod_rol'],
+            $datosAjax['password']
+        ]);
+        echo $resultado;
+        exit();
         break;
 
 
     case 'eliminar':
-        if (isset($_POST['cod_usuario'])) {
-            echo "<script>confirm('¿Está seguro de que deseas eliminar este usuario?');</script>";
-            $resultado = $usuario->elmDatosUsuario($_POST['cod_usuario']);
-            header("Location: ?url=usuario&status=deleted");
-            exit();
-        }
+        $resultado = $usuario->elmDatosUsuario([$_POST['datos']['cod_usuario']]);
+        echo $resultado;
+        exit();
+        break;
+
+    case 'consultar':
+        $registros = $usuario->obt_RegistrosUsuario();
+
+        echo $registros;
+        exit();
         break;
 }
-
-
-$regRol = $rol->obt_RegistrosRol();
-$registros = $usuario->obt_RegistrosUsuario();
 
 include 'app/view/layout/header.php';
 include 'app/view/usuario/usuarioView.php';
