@@ -9,26 +9,37 @@ $solicitud = $_POST['tipoSolicitud'] ?? '';
 
 switch ($solicitud) {
     case 'registrar':
-        $resultado = $gastoDespacho->regDatosGastoDespacho(['descripcion', 'monto', 'cod_despacho']);
+        if ($gastoDespacho->verificarGastoDuplicado($_POST['cod_despacho'] ?? 0, $_POST['descripcion'] ?? '')) {
+            header("Location: ?url=gastoDespacho&status=exists");
+            exit();
+        }
+
+        $resultado = $gastoDespacho->regDatosGasto(['cod_despacho', 'descripcion', 'monto']);
         header("Location: ?url=gastoDespacho&status={$resultado}");
         exit();
-        break;
 
     case 'actualizar':
-        $resultado = $gastoDespacho->actGastoDespacho(['cod_gasto_despacho', 'descripcion', 'monto', 'cod_despacho']);
+        if ($gastoDespacho->verificarGastoDuplicado(
+            $_POST['cod_despacho'] ?? 0,
+            $_POST['descripcion'] ?? '',
+            $_POST['cod_gasto_despacho'] ?? null
+        )) {
+            header("Location: ?url=gastoDespacho&status=exists");
+            exit();
+        }
+
+        $resultado = $gastoDespacho->actGasto(['cod_gasto_despacho', 'cod_despacho', 'descripcion', 'monto']);
         header("Location: ?url=gastoDespacho&status={$resultado}");
         exit();
-        break;
 
     case 'eliminar':
-        $resultado = $gastoDespacho->elmDatosGastoDespacho(['cod_gasto_despacho']);
+        $resultado = $gastoDespacho->elmDatosGasto(['cod_gasto_despacho']);
         header("Location: ?url=gastoDespacho&status={$resultado}");
         exit();
-        break;
 }
 
-$registros = $gastoDespacho->obt_RegistrosGastoDespacho();
+$registros = $gastoDespacho->obt_RegistrosGasto();
 
 include 'app/view/layout/header.php';
-include 'app/view/gasto_despacho/gastoDespachoView.php';
+include 'app/view/gastoDespacho/gastoDespachoView.php';
 include 'app/view/layout/footer.php';
