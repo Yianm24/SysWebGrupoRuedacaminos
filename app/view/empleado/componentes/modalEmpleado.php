@@ -9,7 +9,7 @@
 
             <form action="?url=empleado" method="POST" id="formEmpleado">
                 <div class="modal-body">
-                    <input type="hidden" name="" id="id_empleado" value="">
+                    <input type="hidden" name="id_empleado" id="id_empleado" value="">
 
                     <div class="row mb-3">
                         <div class="col-md-4 mb-3 mb-md-0">
@@ -51,11 +51,22 @@
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                     </div>
+
+                    <div class="p-3 bg-light rounded border d-flex justify-content-between align-items-center" id="div_estado_empleado" style="display:none !important;">
+                        <div>
+                            <label class="form-label fw-semibold mb-0" for="estado_empleado">Estatus del Registro</label>
+                            <small class="d-block text-muted">Indica si el empleado se encuentra activo o inactivo</small>
+                        </div>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input fs-5" type="checkbox" role="switch" id="estado_empleado" name="estado" value="1">
+                            <label class="form-check-label fw-medium" id="label_estado_empleado" for="estado_empleado">Activo</label>
+                        </div>
+                    </div>
                 </div>
 
                 <footer class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" name="tipoSolicitud" id="btnSubmitModal" value="" class="btn btn-primary" disabled></button>
+                    <button type="button" name="tipoSolicitud" id="btnSubmitModal" value="" class="btn btn-primary" disabled></button>
                 </footer>
             </form>
         </div>

@@ -206,10 +206,13 @@ class Pago extends Conexion
                 e.cod_envio DESC
             ";
 
-            $tieneOrdenManual = isset($_POST['order'][0]['column']) && isset($_POST['order'][0]['dir']);
-            $orderClauseSql = $tieneOrdenManual
-                ? " ORDER BY {$orderColumn} {$orderDir}, {$ordenPredeterminadoSql} "
-                : " ORDER BY {$ordenPredeterminadoSql} ";
+            $inactivosAlFinalSql = "CASE WHEN COALESCE(pu.estado, pu_any.estado, 1) = 0 THEN 1 ELSE 0 END ASC";
+
+            if ($orderColumnIndex === 6 || $orderColumnIndex === 1) {
+                $orderClauseSql = " ORDER BY {$orderColumn} {$orderDir}, {$ordenPredeterminadoSql} ";
+            } else {
+                $orderClauseSql = " ORDER BY {$inactivosAlFinalSql}, {$orderColumn} {$orderDir}, {$ordenPredeterminadoSql} ";
+            }
 
             $sqlData = "SELECT
                             e.cod_envio,

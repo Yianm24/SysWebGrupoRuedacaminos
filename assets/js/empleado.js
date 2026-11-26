@@ -123,7 +123,7 @@ $(document).ready(function () {
             spanError.hide().text('');
         },
         submitHandler: function (form, event) {
-            event.preventDefault();
+            if (event) event.preventDefault();
 
             const btnEnviar = $('#btnSubmitModal');
             const solicitud = btnEnviar.attr('value');
@@ -148,11 +148,13 @@ $(document).ready(function () {
                 apellido: $("#apellido").val().trim(),
                 telefono: $("#telefono").val().trim(),
                 telefono_emergencia: $("#telefono_emergencia").val().trim(),
-                cod_cargo: $("#cod_cargo").val()
+                cod_cargo: $("#cod_cargo").val(),
+                estado: solicitud === "registrar" ? 1 : getEstadoSwitchEmpleado()
             };
 
             const objModal = bootstrap.Modal.getInstance(modalEmpleado[0]) || new bootstrap.Modal(modalEmpleado[0]);
             ajaxEnvioDatosGlobal(moduloActual, solicitud, ajaxConsultarEmpleado, dataTable, datos, objModal, btnEnviar);
+            return false;
         }
     });
 
@@ -169,12 +171,29 @@ $(document).ready(function () {
         evaluarBotonModificar();
     });
 
+    $('#estado_empleado').on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).prop('disabled', true);
+            $('#label_estado_empleado').text('Activo');
+        } else {
+            $('#label_estado_empleado').text('Inactivo');
+        }
+        if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+            verificarCambiosEmpleado();
+        }
+        evaluarBotonModificar();
+    });
+
     $('#formEmpleado input').on('keyup input', function () {
         if ($('#btnSubmitModal').attr('value') === 'actualizar') {
             verificarCambiosEmpleado();
         }
         evaluarBotonModificar();
     });
+
+    function getEstadoSwitchEmpleado() {
+        return $('#estado_empleado').is(':checked') ? 1 : 0;
+    }
 
     function obtenerEstadoActualEmpleado() {
         return {
@@ -183,7 +202,8 @@ $(document).ready(function () {
             apellido: ($("#apellido").val() || '').trim(),
             telefono: ($("#telefono").val() || '').trim(),
             emergencia: ($("#telefono_emergencia").val() || '').trim(),
-            cargo: String($("#cod_cargo").val() || '')
+            cargo: String($("#cod_cargo").val() || ''),
+            estado: String(getEstadoSwitchEmpleado())
         };
     }
 
@@ -267,13 +287,23 @@ $(document).ready(function () {
                     const nombreCargo = dato.nombre_cargo
                         ? dato.nombre_cargo.charAt(0).toUpperCase() + dato.nombre_cargo.slice(1)
                         : "";
+                    const estaActivo = String(dato.estado) === '1';
+
+                    const badgeEstado = estaActivo
+                        ? `<div class="text-center"><span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                <i class="bi bi-check-circle-fill me-1"></i>Activo
+                            </span></div>`
+                        : `<div class="text-center"><span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2">
+                                <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                            </span></div>`;
 
                     const fila = [
                         `<span class="ps-2 fw-medium">${dato.cedula}</span>`,
                         `<span class="fw-medium">${dato.nombre} ${dato.apellido}</span>`,
                         `<span class="text-secondary">${dato.telefono}</span>`,
                         `<span class="text-secondary">${dato.telefono_emergencia || '-'}</span>`,
-                        `<span class="text-secondary">${nombreCargo}</span>`
+                        `<span class="text-secondary">${nombreCargo}</span>`,
+                        badgeEstado
                     ];
 
                     if (esAdmin) {
@@ -287,7 +317,8 @@ $(document).ready(function () {
                                     data-apellido="${dato.apellido}"
                                     data-telefono="${dato.telefono}"
                                     data-emergencia="${dato.telefono_emergencia || ''}"
-                                    data-cargo="${dato.cod_cargo}">
+                                    data-cargo="${dato.cod_cargo}"
+                                    data-estado="${dato.estado}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar"
@@ -323,12 +354,18 @@ $(document).ready(function () {
             tituloModal.html('<i class="bi bi-person-plus"></i> Registro de Empleado');
             btnSubmit.val("registrar").html('<i class="bi bi-save"></i> Registrar');
 
+            $('#div_estado_empleado').hide();
+            $('#estado_empleado').prop('checked', true).prop('disabled', true);
+            $('#label_estado_empleado').text('Activo');
+
             $("#id_empleado, #cedula, #nombre, #apellido, #telefono, #telefono_emergencia, #cod_cargo").val("");
             btnSubmit.prop('disabled', true);
 
         } else if (boton && boton.attr('title') === "Editar") {
             tituloModal.html('<i class="bi bi-pencil-square"></i> Modificar Empleado');
             btnSubmit.val("actualizar").html('<i class="bi bi-save"></i> Guardar');
+
+            const estadoActual = String(boton.attr('data-estado') ?? '1');
 
             $("#id_empleado").val(boton.attr('data-id'));
             $("#cedula").val(boton.attr('data-cedula'));
@@ -337,6 +374,15 @@ $(document).ready(function () {
             $("#telefono").val(boton.attr('data-telefono'));
             $("#telefono_emergencia").val(boton.attr('data-emergencia') || '');
             $("#cod_cargo").val(boton.attr('data-cargo'));
+
+            $('#div_estado_empleado').css('display', 'flex');
+            if (estadoActual === '0') {
+                $('#estado_empleado').prop('checked', false).prop('disabled', false);
+                $('#label_estado_empleado').text('Inactivo');
+            } else {
+                $('#estado_empleado').prop('checked', true).prop('disabled', true);
+                $('#label_estado_empleado').text('Activo');
+            }
 
             $('#formEmpleado').attr('data-originales', JSON.stringify(obtenerEstadoActualEmpleado()));
             btnSubmit.prop('disabled', true);

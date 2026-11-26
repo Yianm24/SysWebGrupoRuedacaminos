@@ -12,15 +12,10 @@ switch ($solicitud) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['cedula']) && !empty($_POST['password'])) {
                 $resultado = $usuario->accesoDatosUsuario($_POST['cedula'], $_POST['password']);
-                //var_dump($resultado);
                 if (!$resultado) {
                     header("Location: ?url=login&status=incorrect&msg=Cédula incorrecta");
                     exit();
-                    //echo "<script>alert('Cedula incorrecta');</script>";
-                    //break;
                 }
-                /*echo $resultado['password']; */
-                //Funcion para verificar la contraseña ingresada con la almacenada en la base de datos
                 if (password_verify($_POST['password'], $resultado['password'])) {
                     $_SESSION['usuario'] = [
                         'codigo' => $resultado['cod_usuario'],
@@ -44,7 +39,7 @@ switch ($solicitud) {
         session_unset();
         session_destroy();
         header("Location: ?url=login");
-        break;
+        exit();
 }
 include 'app/view/layout/header.php';
 include 'app/view/login/loginView.php';

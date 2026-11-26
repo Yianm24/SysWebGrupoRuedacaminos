@@ -22,6 +22,17 @@
                             <span class="mensaje-error text-danger font-monospace small" style="display:none;"></span>
                         </div>
                     </div>
+
+                    <div class="p-3 bg-light rounded border d-flex justify-content-between align-items-center" id="div_estado_kilometraje" style="display:none !important;">
+                        <div>
+                            <label class="form-label fw-semibold mb-0" for="estado_kilometraje">Estatus del Registro</label>
+                            <small class="d-block text-muted">Indica si la tarifa se encuentra activa o inactiva</small>
+                        </div>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input fs-5" type="checkbox" role="switch" id="estado_kilometraje" name="estado" value="1">
+                            <label class="form-check-label fw-medium" id="label_estado_kilometraje" for="estado_kilometraje">Activo</label>
+                        </div>
+                    </div>
                 </div>
 
                 <footer class="modal-footer">

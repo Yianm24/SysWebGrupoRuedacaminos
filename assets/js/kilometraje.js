@@ -32,11 +32,15 @@ $(document).ready(function () {
         const elemento = $(selector);
         if (!elemento.length) return null;
         elemento.attr('autocomplete', 'off');
-        return new AutoNumeric(selector, opcionesDecimal);
+        return AutoNumeric.getAutoNumericElement(elemento[0]) || new AutoNumeric(selector, opcionesDecimal);
     }
 
     kmInput = inicializarAutoNumeric('#kilometraje_input');
     precioInput = inicializarAutoNumeric('#precio_kilometraje');
+
+    function getEstadoSwitchKilometraje() {
+        return $('#estado_kilometraje').is(':checked') ? 1 : 0;
+    }
 
     $.validator.addMethod("rangoKilometraje", function (value, element) {
         if (!kmInput) return false;
@@ -122,7 +126,8 @@ $(document).ready(function () {
             const datos = {
                 cod_preciokilometraje: $("#id_tarifa").val(),
                 kilometraje: kmLimpio.toFixed(2),
-                precio_kilometraje: precioLimpio.toFixed(2)
+                precio_kilometraje: precioLimpio.toFixed(2),
+                estado: solicitud === "registrar" ? 1 : getEstadoSwitchKilometraje()
             };
 
             const objModal = bootstrap.Modal.getInstance(modalKilometraje[0]) || new bootstrap.Modal(modalKilometraje[0]);
@@ -131,6 +136,19 @@ $(document).ready(function () {
     });
 
     $('#kilometraje_input, #precio_kilometraje').on('keyup input autoNumeric:rawValueModified', function () {
+        if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+            verificarCambiosKilometraje();
+        }
+        evaluarBotonModificar();
+    });
+
+    $('#estado_kilometraje').on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).prop('disabled', true);
+            $('#label_estado_kilometraje').text('Activo');
+        } else {
+            $('#label_estado_kilometraje').text('Inactivo');
+        }
         if ($('#btnSubmitModal').attr('value') === 'actualizar') {
             verificarCambiosKilometraje();
         }
@@ -151,10 +169,14 @@ $(document).ready(function () {
         const originales = JSON.parse(originalesAttr);
         const kmOriginal = parseFloat(originales.km) || 0;
         const precioOriginal = parseFloat(originales.precio) || 0;
+        const estadoOriginal = String(originales.estado ?? '1');
         const kmActual = kmInput ? (parseFloat(kmInput.getNumber()) || 0) : 0;
         const precioActual = precioInput ? (parseFloat(precioInput.getNumber()) || 0) : 0;
+        const estadoActual = String(getEstadoSwitchKilometraje());
 
-        hasChanged = (kmOriginal.toFixed(2) !== kmActual.toFixed(2)) || (precioOriginal.toFixed(2) !== precioActual.toFixed(2));
+        hasChanged = (kmOriginal.toFixed(2) !== kmActual.toFixed(2))
+            || (precioOriginal.toFixed(2) !== precioActual.toFixed(2))
+            || (estadoOriginal !== estadoActual);
     }
 
     function evaluarBotonModificar() {
@@ -228,6 +250,7 @@ $(document).ready(function () {
                 $.each(response, function (index, dato) {
                     const kmNum = parseFloat(dato.kilometraje) || 0;
                     const precioNum = parseFloat(dato.monto_tarifa) || 0;
+                    const estaActivo = String(dato.estado) === '1';
 
                     const kmFormateado = kmNum.toLocaleString('es-VE', {
                         minimumFractionDigits: 2,
@@ -241,13 +264,22 @@ $(document).ready(function () {
                         useGrouping: true
                     });
 
+                    const badgeEstado = estaActivo
+                        ? `<div class="text-center"><span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                <i class="bi bi-check-circle-fill me-1"></i>Activo
+                            </span></div>`
+                        : `<div class="text-center"><span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2">
+                                <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                            </span></div>`;
+
                     const botones = `
                         <div class="d-inline-flex align-items-center gap-2">
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline me-3 btn-editar"
                                 title="Editar" data-bs-toggle="modal" data-bs-target="#modalKilometraje"
                                 data-id="${dato.cod_preciokilometraje}"
                                 data-kilometraje="${kmNum}"
-                                data-precio="${precioNum}">
+                                data-precio="${precioNum}"
+                                data-estado="${dato.estado}">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar"
@@ -261,6 +293,7 @@ $(document).ready(function () {
                         `<span class="ps-4 fw-medium">T-${dato.cod_preciokilometraje}</span>`,
                         `<span class="text-secondary">${kmFormateado} KM</span>`,
                         `<span class="text-secondary">$ ${precioFormateado}</span>`,
+                        badgeEstado,
                         `<div class="pe-4 text-center">${botones}</div>`
                     ]);
                 });
@@ -286,6 +319,10 @@ $(document).ready(function () {
             tituloModal.html('<i class="bi bi-currency-dollar"></i> Registrar Precio de Kilometraje');
             btnSubmit.val("registrar").html('<i class="bi bi-save"></i> Registrar');
 
+            $('#div_estado_kilometraje').hide();
+            $('#estado_kilometraje').prop('checked', true).prop('disabled', true);
+            $('#label_estado_kilometraje').text('Activo');
+
             $("#id_tarifa").val("");
             if (kmInput) kmInput.set('');
             if (precioInput) precioInput.set('');
@@ -297,14 +334,25 @@ $(document).ready(function () {
 
             const kmVal = parseFloat(boton.attr('data-kilometraje')) || 0;
             const precioVal = parseFloat(boton.attr('data-precio')) || 0;
+            const estadoActual = String(boton.attr('data-estado') ?? '1');
 
             $("#id_tarifa").val(boton.attr('data-id'));
             if (kmInput) kmInput.set(kmVal);
             if (precioInput) precioInput.set(precioVal);
 
+            $('#div_estado_kilometraje').css('display', 'flex');
+            if (estadoActual === '0') {
+                $('#estado_kilometraje').prop('checked', false).prop('disabled', false);
+                $('#label_estado_kilometraje').text('Inactivo');
+            } else {
+                $('#estado_kilometraje').prop('checked', true).prop('disabled', true);
+                $('#label_estado_kilometraje').text('Activo');
+            }
+
             $('#formKilometraje').attr('data-originales', JSON.stringify({
                 km: kmVal,
-                precio: precioVal
+                precio: precioVal,
+                estado: estadoActual === '1' ? '1' : '0'
             }));
             btnSubmit.prop('disabled', true);
         }

@@ -8,6 +8,7 @@
                     <th>HORA</th>
                     <th>MONEDA</th>
                     <th>TASA</th>
+                    <th class="text-center">ESTADO</th>
                     <?php if ($esAdmin === '1'): ?>
                         <th class="text-end pe-4">ACCIONES</th>
                     <?php endif; ?>

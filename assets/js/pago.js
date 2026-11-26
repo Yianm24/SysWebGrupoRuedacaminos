@@ -314,7 +314,8 @@ $(document).ready(function () {
     ];
 
     const dataTable = datatableServer(tablaSelector, moduloActual, columnasPago);
-
+    dataTable.order([0, 'desc']).draw();
+    
     function prepararYMostrarModal(modo, botonTrig) {
         if (!modalPago.length) return;
         montoInput = inicializarAutoNumeric('#monto_ingresado');

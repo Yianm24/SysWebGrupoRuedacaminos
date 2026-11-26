@@ -6,6 +6,7 @@
                     <th class="ps-4">CODIGO</th>
                     <th>KILOMETRAJE</th>
                     <th>PRECIO ($)</th>
+                    <th class="text-center">ESTADO</th>
                     <th class="pe-4 text-center">ACCIONES</th>
                 </tr>
             </thead>

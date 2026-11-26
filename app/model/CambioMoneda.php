@@ -43,34 +43,58 @@ class CambioMoneda extends Conexion
 
     public function verificarTasaDuplicada($cod_moneda, $fecha, $id_actual = null) {
         if ($id_actual === null || $id_actual === '') {
-            $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND estado = 1";
+            $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ?";
             $stmt = $this->conexion->prepare($sentencia);
             $stmt->bindValue(1, $cod_moneda);
             $stmt->bindValue(2, $fecha);
         } else {
-            $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND cod_cambio != ? AND estado = 1";
+            $sentencia = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND DATE(fecha) = ? AND cod_cambio != ?";
             $stmt = $this->conexion->prepare($sentencia);
             $stmt->bindValue(1, $cod_moneda);
             $stmt->bindValue(2, $fecha);
             $stmt->bindValue(3, $id_actual);
         }
         $stmt->execute();
-        return $stmt->fetchColumn() > 0;
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    private function contarTasasActivasMoneda($cod_moneda, $excluir_cod_cambio = null) {
+        try {
+            if ($excluir_cod_cambio === null || $excluir_cod_cambio === '') {
+                $sql = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND estado = 1";
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->execute([$cod_moneda]);
+            } else {
+                $sql = "SELECT COUNT(*) FROM cambio_moneda WHERE cod_moneda = ? AND estado = 1 AND cod_cambio != ?";
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->execute([$cod_moneda, $excluir_cod_cambio]);
+            }
+            return (int)$stmt->fetchColumn();
+        } catch (\PDOException $e) {
+            return 0;
+        }
     }
 
     public function verificarUsoEnPagos($cod_cambio) {
         try {
-            $stmt = $this->conexion->prepare("SELECT cod_moneda, fecha FROM cambio_moneda WHERE cod_cambio = ?");
+            $stmt = $this->conexion->prepare("SELECT cod_cambio, cod_moneda, fecha FROM cambio_moneda WHERE cod_cambio = ? LIMIT 1");
             $stmt->execute([$cod_cambio]);
             $cambio = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
-            if ($cambio) {
-                $sql = "SELECT COUNT(*) FROM pago p INNER JOIN detalle_pago dp ON p.cod_detallepago = dp.cod_detallepago INNER JOIN metodo_pago mp ON dp.cod_metodopago = mp.cod_metodo WHERE mp.cod_moneda = ? AND p.fecha = DATE(?) AND p.estado = 1";
-                $check = $this->conexion->prepare($sql);
-                $check->execute([$cambio['cod_moneda'], $cambio['fecha']]);
-                return $check->fetchColumn() > 0;
+
+            if (!$cambio) {
+                return false;
             }
-            return false;
+
+            $sql = "SELECT COUNT(*)
+                    FROM pago p
+                    INNER JOIN detalle_pago dp ON p.cod_detallepago = dp.cod_detallepago
+                    INNER JOIN metodo_pago mp ON dp.cod_metodopago = mp.cod_metodo
+                    WHERE mp.cod_moneda = ?
+                        AND DATE(p.fecha) = DATE(?)
+                        AND p.estado = 1";
+            $check = $this->conexion->prepare($sql);
+            $check->execute([(int)$cambio['cod_moneda'], $cambio['fecha']]);
+            return (int)$check->fetchColumn() > 0;
         } catch (\PDOException $e) {
             return true;
         }
@@ -87,7 +111,8 @@ class CambioMoneda extends Conexion
                 0 => 'c.fecha',
                 1 => 'c.fecha',
                 2 => 'm.abreviatura',
-                3 => 'c.tasa'
+                3 => 'c.tasa',
+                4 => 'c.estado'
             ];
 
             $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
@@ -95,8 +120,7 @@ class CambioMoneda extends Conexion
             $orderDir = (isset($_POST['order'][0]['dir']) && strtoupper($_POST['order'][0]['dir']) === 'ASC') ? 'ASC' : 'DESC';
 
             $sqlBase = " FROM cambio_moneda AS c
-                        INNER JOIN moneda AS m ON c.cod_moneda = m.cod_moneda
-                        WHERE c.estado = 1";
+                        INNER JOIN moneda AS m ON c.cod_moneda = m.cod_moneda";
 
             $stmtTotal = $this->conexion->query("SELECT COUNT(*) AS total " . $sqlBase);
             $recordsTotal = (int) $stmtTotal->fetch(\PDO::FETCH_ASSOC)['total'];
@@ -105,8 +129,29 @@ class CambioMoneda extends Conexion
             $params = [];
 
             if ($searchValue !== '') {
-                $sqlSearch = " AND (m.abreviatura LIKE :search OR m.nombre LIKE :search OR CAST(c.tasa AS CHAR) LIKE :search OR DATE_FORMAT(c.fecha, '%d/%m/%Y') LIKE :search) ";
-                $params[':search'] = "%{$searchValue}%";
+                // Normaliza separadores decimales (. y ,) y espacios alrededor de ':' o AM/PM
+                $busquedaNormalizada = preg_replace('/\s+/', ' ', $searchValue);
+                $busquedaPunto = str_replace(',', '.', $busquedaNormalizada);
+                $busquedaComa = str_replace('.', ',', $busquedaNormalizada);
+                $busquedaHoraLimpia = preg_replace('/\s*(am|pm)\s*/i', ' $1', trim($busquedaNormalizada));
+
+                $sqlSearch = " WHERE (
+                    m.abreviatura LIKE :search
+                    OR m.nombre LIKE :search
+                    OR CAST(c.tasa AS CHAR) LIKE :search_punto
+                    OR REPLACE(CAST(c.tasa AS CHAR), '.', ',') LIKE :search_coma
+                    OR DATE_FORMAT(c.fecha, '%d/%m/%Y') LIKE :search
+                    OR DATE_FORMAT(c.fecha, '%H:%i:%s') LIKE :search_hora
+                    OR DATE_FORMAT(c.fecha, '%H:%i') LIKE :search_hora
+                    OR DATE_FORMAT(c.fecha, '%h:%i %p') LIKE :search_hora
+                    OR DATE_FORMAT(c.fecha, '%l:%i %p') LIKE :search_hora
+                    OR DATE_FORMAT(c.fecha, '%p') LIKE :search_hora
+                ) ";
+
+                $params[':search'] = "%{$busquedaNormalizada}%";
+                $params[':search_punto'] = "%{$busquedaPunto}%";
+                $params[':search_coma'] = "%{$busquedaComa}%";
+                $params[':search_hora'] = "%{$busquedaHoraLimpia}%";
             }
 
             $stmtFiltered = $this->conexion->prepare("SELECT COUNT(*) AS total " . $sqlBase . $sqlSearch);
@@ -116,7 +161,12 @@ class CambioMoneda extends Conexion
             $stmtFiltered->execute();
             $recordsFiltered = (int) $stmtFiltered->fetch(\PDO::FETCH_ASSOC)['total'];
 
-            $sqlData = "SELECT c.cod_cambio, c.cod_moneda, c.tasa, c.fecha, m.abreviatura,
+            $orderClause = " ORDER BY c.estado DESC, {$orderColumn} {$orderDir} ";
+            if ($orderColumnIndex === 4) {
+                $orderClause = " ORDER BY {$orderColumn} {$orderDir}, c.fecha DESC ";
+            }
+
+            $sqlData = "SELECT c.cod_cambio, c.cod_moneda, c.tasa, c.fecha, c.estado, m.abreviatura,
                             (
                                 SELECT c2.tasa FROM cambio_moneda AS c2
                                 WHERE c2.cod_moneda = c.cod_moneda AND c2.estado = 1
@@ -124,7 +174,7 @@ class CambioMoneda extends Conexion
                             ) AS tasa_anterior
                         " . $sqlBase
                         . $sqlSearch
-                        . " ORDER BY {$orderColumn} {$orderDir} ";
+                        . $orderClause;
 
             if ($length != -1) {
                 $sqlData .= " LIMIT :start, :length";
@@ -205,11 +255,36 @@ class CambioMoneda extends Conexion
     }
 
     public function actDatosCambio(array $campos) {
-        $resultadoTrait = $this->validarPost($campos);
+        $codCambioEntrada = $campos[0] ?? '';
+        $tasaEntrada = $campos[1] ?? '';
+        $monedaEntrada = $campos[2] ?? '';
+        $estadoEntrada = $campos[3] ?? '1';
+
+        $resultadoTrait = $this->validarPost([$codCambioEntrada, $tasaEntrada, $monedaEntrada]);
         if (is_array($resultadoTrait)) {
             $codCambio = $resultadoTrait[0];
             $tasa = $resultadoTrait[1];
             $moneda = $resultadoTrait[2];
+            $estadoRecibido = is_numeric($estadoEntrada) ? (int)$estadoEntrada : 1;
+
+            if (!in_array($estadoRecibido, [0, 1], true)) {
+                return json_encode(['status' => 'error', 'message' => 'El estatus seleccionado no es válido.']);
+            }
+
+            if ($estadoRecibido === 0) {
+                if ($this->verificarUsoEnPagos($codCambio)) {
+                    return json_encode([
+                        'status' => 'error',
+                        'message' => 'No se puede inactivar esta tasa porque ya fue usada en cálculos dentro de pagos.'
+                    ]);
+                }
+                if ($this->contarTasasActivasMoneda($moneda, $codCambio) < 1) {
+                    return json_encode([
+                        'status' => 'error',
+                        'message' => 'No se puede inactivar esta tasa, debe existir al menos una tasa de cambio activa para esta moneda.'
+                    ]);
+                }
+            }
 
             $fechaRegistro = $this->obtenerFechaPorId($codCambio);
             if (!empty($fechaRegistro) && $this->verificarTasaDuplicada($moneda, $fechaRegistro, $codCambio)) {
@@ -228,6 +303,7 @@ class CambioMoneda extends Conexion
             $this->cod_cambio = $codCambio;
             $this->tasa = $tasa;
             $this->cod_moneda = $moneda;
+            $this->estado = $estadoRecibido;
         } else {
             return $resultadoTrait;
         }
@@ -236,11 +312,12 @@ class CambioMoneda extends Conexion
 
     private function actualizarCambio() {
         try {
-            $sentencia = "UPDATE cambio_moneda SET tasa = ?, cod_moneda = ? WHERE cod_cambio = ?";
+            $sentencia = "UPDATE cambio_moneda SET tasa = ?, cod_moneda = ?, estado = ? WHERE cod_cambio = ?";
             $update = $this->conexion->prepare($sentencia);
             $update->bindValue(1, $this->tasa);
             $update->bindValue(2, $this->cod_moneda);
-            $update->bindValue(3, $this->cod_cambio);
+            $update->bindValue(3, $this->estado);
+            $update->bindValue(4, $this->cod_cambio);
             $update->execute();
             return json_encode(['status' => 'updated', 'message' => 'La tasa de cambio ha sido modificada correctamente.']);
         } catch (\PDOException $e) {
@@ -254,7 +331,20 @@ class CambioMoneda extends Conexion
             $this->cod_cambio = $resultadoTrait[0];
 
             if ($this->verificarUsoEnPagos($this->cod_cambio)) {
-                return json_encode(['status' => 'error', 'message' => 'No se puede eliminar esta tasa porque ya fue usada en uno o más registros de pagos.']);
+                return json_encode([
+                    'status' => 'error',
+                    'message' => 'No se puede eliminar esta tasa de cambio porque ya fue usada en cálculos dentro de pagos.'
+                ]);
+            }
+
+            $stmt = $this->conexion->prepare("SELECT cod_moneda FROM cambio_moneda WHERE cod_cambio = ? LIMIT 1");
+            $stmt->execute([$this->cod_cambio]);
+            $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($fila && $this->contarTasasActivasMoneda($fila['cod_moneda'], $this->cod_cambio) < 1) {
+                return json_encode([
+                    'status' => 'error',
+                    'message' => 'No se puede eliminar esta tasa, debe existir al menos una tasa de cambio activa para esta moneda.'
+                ]);
             }
         } else {
             return $resultadoTrait;
