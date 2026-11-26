@@ -1,3 +1,13 @@
+<?php
+$enviosAgendados = $datosDashboard['envios_agendados'] ?? 0;
+$ingresosMes = $datosDashboard['ingresos_mes'] ?? 0.00;
+$vehiculosEnRuta = $datosDashboard['vehiculos_en_ruta'] ?? 0;
+$clientesActivos = $datosDashboard['clientes_activos'] ?? 0;
+$ultimosEnvios = $datosDashboard['ultimos_envios'] ?? [];
+$totalVehiculos = $datosDashboard['total_vehiculos'] ?? 0;
+$despachosPendientes = $datosDashboard['despachos_pendientes'] ?? 0;
+?>
+
 <div class="row mb-4">
     <div class="col-12">
         <h2 class="fw-bold text-primary">Dashboard Resumen</h2>
@@ -12,7 +22,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-uppercase fw-bold mb-2">Envíos Agendados</h6>
-                        <h2 class="mb-0">24</h2>
+                        <h2 class="mb-0"><?= (int) $enviosAgendados ?></h2>
                     </div>
                     <div>
                         <i class="bi bi-box-seam fs-1 opacity-50"></i>
@@ -24,14 +34,14 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3 mb-4">
         <div class="card bg-success text-white h-100 shadow">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-uppercase fw-bold mb-2">Ingresos Mes</h6>
-                        <h2 class="mb-0">$4,250</h2>
+                        <h2 class="mb-0">$<?= number_format((float) $ingresosMes, 2, '.', ',') ?></h2>
                     </div>
                     <div>
                         <i class="bi bi-wallet2 fs-1 opacity-50"></i>
@@ -39,18 +49,18 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top border-white border-opacity-25 text-end">
-                <a href="?url=cuenta" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+                <a href="?url=pago" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3 mb-4">
         <div class="card bg-warning text-dark h-100 shadow">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-uppercase fw-bold mb-2">Vehículos en Ruta</h6>
-                        <h2 class="mb-0">8</h2>
+                        <h2 class="mb-0"><?= (int) $vehiculosEnRuta ?></h2>
                     </div>
                     <div>
                         <i class="bi bi-truck fs-1 opacity-50"></i>
@@ -58,18 +68,18 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top border-dark border-opacity-25 text-end">
-                <a href="?url=vehiculo" class="text-dark text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+                <a href="?url=despacho" class="text-dark text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3 mb-4">
         <div class="card bg-info text-white h-100 shadow">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-uppercase fw-bold mb-2">Nuevos Clientes</h6>
-                        <h2 class="mb-0">12</h2>
+                        <h6 class="text-uppercase fw-bold mb-2">Clientes Activos</h6>
+                        <h2 class="mb-0"><?= (int) $clientesActivos ?></h2>
                     </div>
                     <div>
                         <i class="bi bi-people-fill fs-1 opacity-50"></i>
@@ -97,46 +107,38 @@
                                 <th># Tracking</th>
                                 <th>Cliente</th>
                                 <th>Destino</th>
-                                <!-- <th>Estatus</th> -->
                                 <th>Monto</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><span class="fw-bold text-primary">ENV-10042</span></td>
-                                <td>Corporación XYZ, C.A.</td>
-                                <td>Valencia</td>
-                                <!-- <td><span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">En Tránsito</span></td> -->
-                                <td>$150.00</td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold text-primary">ENV-10041</span></td>
-                                <td>Pedro Pérez</td>
-                                <td>Maracaibo</td>
-                                <!-- <td><span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Entregado</span></td> -->
-                                <td>$45.00</td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold text-primary">ENV-10040</span></td>
-                                <td>Inversiones ABC</td>
-                                <td>Barquisimeto</td>
-                                <!-- <td><span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">Incidencia</span></td> -->
-                                <td>$210.00</td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold text-primary">ENV-10039</span></td>
-                                <td>Maria López</td>
-                                <td>Caracas</td>
-                                <!-- <td><span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Entregado</span></td> -->
-                                <td>$12.50</td>
-                            </tr>
+                            <?php if (!empty($ultimosEnvios)): ?>
+                                <?php foreach ($ultimosEnvios as $envio): ?>
+                                    <?php
+                                    $nombreCliente = trim(($envio['razon_social'] ?? '') . ' ' . ($envio['apellido'] ?? ''));
+                                    if ($nombreCliente === '') {
+                                        $nombreCliente = 'Sin cliente asignado';
+                                    }
+                                    $codigoEnvio = 'ENV-' . str_pad((string) $envio['cod_envio'], 5, '0', STR_PAD_LEFT);
+                                    ?>
+                                    <tr>
+                                        <td><span class="fw-bold text-primary"><?= htmlspecialchars($codigoEnvio, ENT_QUOTES, 'UTF-8') ?></span></td>
+                                        <td><?= htmlspecialchars($nombreCliente, ENT_QUOTES, 'UTF-8') ?></td>
+                                        <td><?= htmlspecialchars((string) $envio['destino'], ENT_QUOTES, 'UTF-8') ?></td>
+                                        <td>$<?= number_format((float) $envio['monto_total'], 2, '.', ',') ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No hay envíos registrados.</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4 mb-4">
         <div class="card h-100 shadow-sm">
             <div class="card-header bg-white">
@@ -145,19 +147,19 @@
             <div class="card-body">
                 <div class="alert alert-warning border-start border-warning border-4 mb-3" role="alert">
                     <div class="d-flex">
-                        <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                        <i class="bi bi-truck fs-4 me-3"></i>
                         <div>
-                            <h6 class="alert-heading fw-bold mb-1">Camión NPR - ABC12D</h6>
-                            <p class="mb-0 small">Mantenimiento preventivo programado para mañana.</p>
+                            <h6 class="alert-heading fw-bold mb-1">Flota Operativa: <?= (int) $totalVehiculos ?></h6>
+                            <p class="mb-0 small">Vehículos en ruta actualmente: <?= (int) $vehiculosEnRuta ?>.</p>
                         </div>
                     </div>
                 </div>
-                <div class="alert alert-danger border-start border-danger border-4 mb-0" role="alert">
+                <div class="alert alert-info border-start border-info border-4 mb-0" role="alert">
                     <div class="d-flex">
-                        <i class="bi bi-x-circle-fill fs-4 me-3"></i>
+                        <i class="bi bi-boxes fs-4 me-3"></i>
                         <div>
-                            <h6 class="alert-heading fw-bold mb-1">Furgón - XYZ987</h6>
-                            <p class="mb-0 small">En taller por reemplazo de cauchos y frenos.</p>
+                            <h6 class="alert-heading fw-bold mb-1">Despachos Pendientes: <?= (int) $despachosPendientes ?></h6>
+                            <p class="mb-0 small">Control de salidas y asignaciones de flota en tiempo real.</p>
                         </div>
                     </div>
                 </div>
