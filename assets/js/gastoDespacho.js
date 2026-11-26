@@ -4,45 +4,56 @@ document.addEventListener("DOMContentLoaded", function () {
   if (modal) {
     modal.addEventListener('show.bs.modal', event => {
       const encabezadoModal = modal.querySelector('h1#modalLabel');
-      const botonModal = document.querySelector('button[name="tipoSolicitud"]');
+      const botonModal = modal.querySelector('button[name="tipoSolicitud"]');
       const boton = event.relatedTarget;
 
-      const cod_gasto_despacho = boton.getAttribute('datos-cod-gasto-despacho');
-      const cod_despacho = boton.getAttribute('datos-cod-despacho');
+      if (!boton) return;
+
+      const codGasto = boton.getAttribute('datos-cod-gasto');
+      const codDespacho = boton.getAttribute('datos-cod-despacho');
       const descripcion = boton.getAttribute('datos-descripcion');
       const monto = boton.getAttribute('datos-monto');
       const estado = boton.getAttribute('datos-estado');
 
-      const inputCodGasto = modal.querySelector('.modal-body #cod-gasto-despacho');
-      const inputCodDespacho = modal.querySelector('.modal-body #cod_despacho');
-      const inputDescripcion = modal.querySelector('.modal-body #descripcion');
-      const inputMonto = modal.querySelector('.modal-body #monto');
+      const inputCodGasto = modal.querySelector('#cod_gasto_despacho');
+      const inputCodDespacho = modal.querySelector('#cod_despacho');
+      const inputDescripcion = modal.querySelector('#descripcion');
+      const inputMonto = modal.querySelector('#monto');
 
       switch (boton.title) {
         case "Registrar":
           encabezadoModal.innerHTML = '<i class="bi bi-cash-stack me-2"></i> Registro de Gasto de Despacho';
           botonModal.value = "registrar";
           botonModal.innerHTML = '<i class="bi bi-save"></i> Registrar';
+          botonModal.disabled = true;
           inputCodGasto.value = "";
           inputCodDespacho.value = "";
           inputDescripcion.value = "";
           inputMonto.value = "";
           break;
+
         case "Actualizar":
           encabezadoModal.innerHTML = '<i class="bi bi-cash-stack me-2"></i> Actualización de Gasto de Despacho';
           botonModal.value = "actualizar";
           botonModal.innerHTML = '<i class="bi bi-save"></i> Actualizar';
 
-          if (cod_gasto_despacho != "" && estado == 1) {
-            inputCodGasto.value = cod_gasto_despacho;
-            inputCodDespacho.value = cod_despacho;
+          if (codGasto !== "" && estado == 1) {
+            inputCodGasto.value = codGasto;
+            inputCodDespacho.value = codDespacho;
             inputDescripcion.value = descripcion;
             inputMonto.value = monto;
+
+            [inputCodDespacho, inputDescripcion, inputMonto].forEach(el => {
+              if (el) {
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+            });
           } else {
-            inputCodGasto.value = "Error: Registro inactivo";
+            inputCodGasto.value = "";
             inputCodDespacho.value = "";
             inputDescripcion.value = "Error: Registro inactivo";
             inputMonto.value = "";
+            botonModal.disabled = true;
           }
           break;
       }
@@ -53,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
   botonesEliminar.forEach(boton => {
     boton.addEventListener('click', function (event) {
       event.preventDefault();
-      let codGasto = this.getAttribute('datos-cod-gasto-despacho');
+      const codGasto = this.getAttribute('datos-cod-gasto');
 
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: { confirmButton: "btn btn-success ms-2", cancelButton: "btn btn-danger" },
@@ -70,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
         reverseButtons: true
       }).then((result) => {
         if (result.isConfirmed) {
-          let form = document.createElement('form');
+          const form = document.createElement('form');
           form.method = 'POST';
           form.action = '?url=gastoDespacho';
           form.innerHTML = `
@@ -94,38 +105,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
       switch (status) {
         case 'success':
-          title = "Registro exitoso!";
-          text = "El Gasto de Despacho ha sido registrado correctamente.";
+          title = "¡Registro exitoso!";
+          text = "El gasto de despacho ha sido registrado correctamente.";
           icon = "success";
           break;
         case 'updated':
-          title = "Actualización exitosa!";
-          text = "El Gasto de Despacho ha sido actualizado correctamente.";
+          title = "¡Actualización exitosa!";
+          text = "El gasto de despacho ha sido actualizado correctamente.";
           icon = "success";
           break;
         case 'deleted':
-          title = "Eliminación exitosa!";
-          text = "El Gasto de Despacho ha sido eliminado correctamente.";
+          title = "¡Eliminación exitosa!";
+          text = "El gasto de despacho ha sido eliminado correctamente.";
           icon = "success";
           break;
         case 'exists':
-          title = "Registro existente!";
-          text = "El registro ingresado ya existe en la base de datos.";
+          title = "Gasto duplicado";
+          text = "Ya existe un gasto con esa descripción para este código de despacho.";
           icon = "warning";
           break;
         case 'empty':
-          title = "Campos vacíos!";
+          title = "¡Campos vacíos!";
           text = "Uno o más campos están vacíos.";
           icon = "warning";
           break;
         case 'error':
-          title = "Error!";
-          text = `Se produjo un error en el proceso de ${mensaje}.`;
+          title = "¡Error!";
+          text = mensaje === 'DespachoNoExiste'
+            ? "El código de despacho ingresado no existe en la tabla de despachos."
+            : `Se produjo un error en el proceso de ${mensaje}.`;
           icon = "error";
           break;
         case 'exception':
-          title = "Exception Retornada!";
-          text = `El servidor devolvio el siguiente mensaje: ${mensaje}`;
+          title = "¡Excepción retornada!";
+          text = `El servidor devolvió el siguiente mensaje: ${mensaje}`;
           icon = "error";
           break;
       }
