@@ -9,6 +9,7 @@
                     <th>TELÉFONO</th>
                     <th>EMERGENCIA</th>
                     <th>CARGO</th>
+                    <th class="text-center">ESTADO</th>
                     <?php if ($esAdmin === '1'): ?>
                         <th class="pe-4 text-center">ACCIONES</th>
                     <?php endif; ?>

@@ -54,7 +54,7 @@ class Empleado extends Conexion
     public function obt_RegistrosEmpleado()
     {
         try {
-            $sentencia = "SELECT e.*, c.nombre AS nombre_cargo FROM empleado e INNER JOIN cargo c ON e.cod_cargo = c.cod_cargo WHERE e.estado = 1";
+            $sentencia = "SELECT e.*, c.nombre AS nombre_cargo FROM empleado e INNER JOIN cargo c ON e.cod_cargo = c.cod_cargo ORDER BY e.estado DESC, e.cod_empleado DESC";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
             return $select->fetchAll(\PDO::FETCH_ASSOC);
@@ -66,11 +66,11 @@ class Empleado extends Conexion
     public function verificarEmpleadoDuplicado($cedula, $id_actual = null)
     {
         if ($id_actual === null || $id_actual === '') {
-            $sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND estado = 1";
+            $sentencia = "SELECT COUNT(*) FROM empleado WHERE TRIM(cedula) = TRIM(?)";
             $count = $this->conexion->prepare($sentencia);
             $count->bindValue(1, $cedula);
         } else {
-            $sentencia = "SELECT COUNT(*) FROM empleado WHERE cedula = ? AND cod_empleado != ? AND estado = 1";
+            $sentencia = "SELECT COUNT(*) FROM empleado WHERE TRIM(cedula) = TRIM(?) AND cod_empleado != ?";
             $count = $this->conexion->prepare($sentencia);
             $count->bindValue(1, $cedula);
             $count->bindValue(2, $id_actual);
@@ -130,6 +130,10 @@ class Empleado extends Conexion
         $cargoLimpio = $resultadoTrait[4];
         $emergenciaLimpio = $this->input($telEmergencia, '');
 
+        if ($this->verificarEmpleadoDuplicado($cedulaLimpia)) {
+            return json_encode(['status' => 'exists', 'message' => 'La cédula ingresada ya está registrada.']);
+        }
+
         $validacion = $this->validarCamposEmpleado($cedulaLimpia, $nombreLimpio, $apellidoLimpio, $telefonoLimpio, $emergenciaLimpio);
         if ($validacion !== true) {
             return $validacion;
@@ -165,7 +169,7 @@ class Empleado extends Conexion
         }
     }
 
-    public function modDatosEmpleado(array $campos, $telEmergencia = '')
+    public function modDatosEmpleado(array $campos, $telEmergencia = '', $estadoEntrada = '1')
     {
         $resultadoTrait = $this->validarPost($campos);
         if (!is_array($resultadoTrait)) {
@@ -179,6 +183,15 @@ class Empleado extends Conexion
         $telefonoLimpio = $resultadoTrait[4];
         $cargoLimpio = $resultadoTrait[5];
         $emergenciaLimpio = $this->input($telEmergencia, '');
+        $estadoRecibido = is_numeric($estadoEntrada) ? (int)$estadoEntrada : 1;
+
+        if (!in_array($estadoRecibido, [0, 1], true)) {
+            return json_encode(['status' => 'error', 'message' => 'El estatus seleccionado no es válido.']);
+        }
+
+        if ($this->verificarEmpleadoDuplicado($cedulaLimpia, $codLimpio)) {
+            return json_encode(['status' => 'exists', 'message' => 'La cédula ya pertenece a otro empleado.']);
+        }
 
         $validacion = $this->validarCamposEmpleado($cedulaLimpia, $nombreLimpio, $apellidoLimpio, $telefonoLimpio, $emergenciaLimpio);
         if ($validacion !== true) {
@@ -192,6 +205,7 @@ class Empleado extends Conexion
         $this->telefono = $telefonoLimpio;
         $this->telefono_emergencia = $emergenciaLimpio;
         $this->cod_cargo = $cargoLimpio;
+        $this->estado = $estadoRecibido;
 
         return $this->modificarEmpleado();
     }
@@ -199,7 +213,7 @@ class Empleado extends Conexion
     private function modificarEmpleado()
     {
         try {
-            $sentencia = "UPDATE `empleado` SET cedula = ?, nombre = ?, apellido = ?, telefono = ?, telefono_emergencia = ?, cod_cargo = ? WHERE cod_empleado = ?";
+            $sentencia = "UPDATE `empleado` SET cedula = ?, nombre = ?, apellido = ?, telefono = ?, telefono_emergencia = ?, cod_cargo = ?, estado = ? WHERE cod_empleado = ?";
             $update = $this->conexion->prepare($sentencia);
             $update->bindValue(1, $this->cedula);
             $update->bindValue(2, $this->nombre);
@@ -207,7 +221,8 @@ class Empleado extends Conexion
             $update->bindValue(4, $this->telefono);
             $update->bindValue(5, $this->telefono_emergencia);
             $update->bindValue(6, $this->cod_cargo);
-            $update->bindValue(7, $this->cod_empleado);
+            $update->bindValue(7, $this->estado);
+            $update->bindValue(8, $this->cod_empleado);
             $update->execute();
             return json_encode(['status' => 'updated', 'message' => 'El empleado ha sido modificado correctamente.']);
         } catch (\PDOException $e) {

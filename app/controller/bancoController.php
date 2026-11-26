@@ -1,48 +1,60 @@
 <?php
-
 namespace App\Controller;
 
-use App\Model\Banco;
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
-$banco = new Banco();
 $solicitud = $_POST['tipoSolicitud'] ?? '';
 
-$registros = $banco->obt_RegistrosBanco();
+if (!isset($_SESSION['usuario'])) {
+    if (!empty($solicitud)) {
+        echo json_encode(['status' => 'error', 'message' => 'No autorizado']);
+        exit();
+    }
+    header('Location: index.php');
+    exit();
+}
+
+use App\Model\CambioMoneda;
+
+$cambio = new CambioMoneda();
+$rol_usuario = $_SESSION['usuario']['rol'] ?? 0;
+
+if (in_array($solicitud, ['actualizar', 'eliminar'], true) && $rol_usuario != 6) {
+    echo json_encode(['status' => 'error', 'message' => 'No autorizado para realizar esta acción.']);
+    exit();
+}
+
+date_default_timezone_set('America/Caracas');
 
 switch ($solicitud) {
     case 'registrar':
-
-        $datosAjax = json_decode(json_encode($_POST['datos']), true);
-
-        $resultado = $banco->regDatosBanco([$datosAjax['nombre_banco']]);
-        echo $resultado;
-
+        $datosObt = json_decode(json_encode($_POST['datos'] ?? []), true);
+        echo $cambio->regDatosCambio([$datosObt['tasa'] ?? '', $datosObt['moneda'] ?? '']);
         exit();
-        break;
-    case 'actualizar':
-
-        $datosAjax = json_decode(json_encode($_POST['datos']), true);
-
-        $resultado = $banco->actDatosBanco([$datosAjax['cod_banco'], $datosAjax['nombre_banco']]);
-        echo $resultado;
-        exit();
-
-        break;
-    case 'eliminar':
-
-
-        $resultado = $banco->elmDatosBanco([$_POST['datos']['cod_banco']]);
-
-        echo $resultado;
-        exit();
-        break;
 
     case 'consultar':
-
-        echo $registros;
+        echo $cambio->obt_RegistrosCambiosServerSide();
         exit();
-        break;
+
+    case 'actualizar':
+        $datosObt = json_decode(json_encode($_POST['datos'] ?? []), true);
+        echo $cambio->actDatosCambio([
+            $datosObt['cod_cambio'] ?? '',
+            $datosObt['tasa'] ?? '',
+            $datosObt['moneda'] ?? '',
+            $datosObt['estado'] ?? 1
+        ]);
+        exit();
+
+    case 'eliminar':
+        $datosObt = json_decode(json_encode($_POST['datos'] ?? []), true);
+        echo $cambio->elmDatosCambio([$datosObt['cod_cambio'] ?? '']);
+        exit();
 }
+
+$listaMonedas = $cambio->obt_TodasLasMonedas();
 include 'app/view/layout/header.php';
-include 'app/view/banco/bancoView.php';
+include 'app/view/cambiomoneda/cambiomonedaView.php';
 include 'app/view/layout/footer.php';

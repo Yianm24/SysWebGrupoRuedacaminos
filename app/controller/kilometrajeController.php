@@ -38,7 +38,8 @@ switch ($solicitud) {
         echo $kilometraje->actDatosKilometraje([
             $datosObt['cod_preciokilometraje'] ?? '',
             $datosObt['kilometraje'] ?? '',
-            $datosObt['precio_kilometraje'] ?? ''
+            $datosObt['precio_kilometraje'] ?? '',
+            $datosObt['estado'] ?? 1
         ]);
         exit();
 

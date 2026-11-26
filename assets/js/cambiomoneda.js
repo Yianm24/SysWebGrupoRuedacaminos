@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     if (document.getElementById('tasa')) {
         $('#tasa').attr('autocomplete', 'off');
-        tasaInput = new AutoNumeric('#tasa', {
+        tasaInput = AutoNumeric.getAutoNumericElement('#tasa') || new AutoNumeric('#tasa', {
             digitGroupSeparator: '.',
             decimalCharacter: ',',
             decimalPlaces: 2,
@@ -22,6 +22,10 @@ $(document).ready(function () {
             modifyValueOnWheel: false,
             modifyValueOnUpDownArrow: false
         });
+    }
+
+    function getEstadoSwitchCambio() {
+        return $('#estado_cambio').is(':checked') ? 1 : 0;
     }
 
     const columnasConfig = [
@@ -88,6 +92,20 @@ $(document).ready(function () {
 
                 return `${tasaFormateada} VES ${flechaHtml}`;
             }
+        },
+        {
+            data: 'estado',
+            className: 'text-center',
+            render: function (data) {
+                const estaActivo = String(data) === '1';
+                return estaActivo
+                    ? `<span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                            <i class="bi bi-check-circle-fill me-1"></i>Activo
+                        </span>`
+                    : `<span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2">
+                            <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                        </span>`;
+            }
         }
     ];
 
@@ -101,7 +119,7 @@ $(document).ready(function () {
                     <div class="d-inline-flex align-items-center gap-2">
                         <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-editar"
                             title="Editar" data-bs-toggle="modal" data-bs-target="#modalCambio"
-                            data-id="${row.cod_cambio}" data-moneda="${row.cod_moneda}" data-tasa="${parseFloat(row.tasa) || 0}">
+                            data-id="${row.cod_cambio}" data-moneda="${row.cod_moneda}" data-tasa="${parseFloat(row.tasa) || 0}" data-estado="${row.estado}">
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button type="button" class="btn btn-link text-secondary p-0 m-0 align-baseline btn-eliminar"
@@ -219,7 +237,7 @@ $(document).ready(function () {
             spanError.hide().text('');
         },
         submitHandler: function (form, event) {
-            event.preventDefault();
+            if (event) event.preventDefault();
 
             const btnEnviar = $('#btnSubmitModal');
             const solicitud = btnEnviar.attr('value');
@@ -241,15 +259,30 @@ $(document).ready(function () {
             const datos = {
                 cod_cambio: $("#id_cambio").val(),
                 moneda: $("#moneda").val(),
-                tasa: (Number(tasaLimpia) || 0).toFixed(2)
+                tasa: (Number(tasaLimpia) || 0).toFixed(2),
+                estado: solicitud === "registrar" ? 1 : getEstadoSwitchCambio()
             };
 
             const objModal = bootstrap.Modal.getInstance(modalCambio[0]);
             ajaxEnvioDatosGlobal('cambiomoneda', solicitud, null, tablaCambioDt, datos, objModal, btnEnviar);
+            return false;
         }
     });
 
     $('#tasa').on('keyup input autoNumeric:rawValueModified', function () {
+        if ($('#btnSubmitModal').attr('value') === 'actualizar') {
+            verificarCambiosCambio();
+        }
+        evaluarBotonModificar();
+    });
+
+    $('#estado_cambio').on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).prop('disabled', true);
+            $('#label_estado_cambio').text('Activo');
+        } else {
+            $('#label_estado_cambio').text('Inactivo');
+        }
         if ($('#btnSubmitModal').attr('value') === 'actualizar') {
             verificarCambiosCambio();
         }
@@ -278,10 +311,14 @@ $(document).ready(function () {
         const originales = JSON.parse(originalesAttr);
         const tasaOriginal = parseFloat(originales.tasa) || 0;
         const monedaOriginal = String(originales.moneda || '');
+        const estadoOriginal = String(originales.estado ?? '1');
         const tasaActual = tasaInput ? (parseFloat(tasaInput.getNumber()) || 0) : 0;
         const monedaActual = String($("#moneda").val() || '');
+        const estadoActual = String(getEstadoSwitchCambio());
 
-        hasChanged = (tasaOriginal.toFixed(2) !== tasaActual.toFixed(2)) || (monedaOriginal !== monedaActual);
+        hasChanged = (tasaOriginal.toFixed(2) !== tasaActual.toFixed(2))
+            || (monedaOriginal !== monedaActual)
+            || (estadoOriginal !== estadoActual);
     }
 
     function evaluarBotonModificar() {
@@ -349,6 +386,10 @@ function accionModalCambio(boton) {
         tituloModal.html('<i class="bi bi-currency-exchange"></i> Registrar Cambio Moneda');
         btnSubmit.val("registrar").html('<i class="bi bi-save"></i> Registrar');
 
+        $('#div_estado_cambio').hide();
+        $('#estado_cambio').prop('checked', true).prop('disabled', true);
+        $('#label_estado_cambio').text('Activo');
+
         $("#id_cambio, #moneda").val("");
         if (tasaInput) tasaInput.set('');
         btnSubmit.prop('disabled', true);
@@ -357,14 +398,26 @@ function accionModalCambio(boton) {
         tituloModal.html('<i class="bi bi-pencil-square"></i> Editar Tasa de Cambio');
         btnSubmit.val("actualizar").html('<i class="bi bi-save"></i> Guardar');
 
+        const estadoActual = String(boton.attr('data-estado') ?? '1');
+
         $("#id_cambio").val(boton.attr('data-id'));
         $("#moneda").val(boton.attr('data-moneda'));
 
         if (tasaInput) tasaInput.set(boton.attr('data-tasa'));
 
+        $('#div_estado_cambio').css('display', 'flex');
+        if (estadoActual === '0') {
+            $('#estado_cambio').prop('checked', false).prop('disabled', false);
+            $('#label_estado_cambio').text('Inactivo');
+        } else {
+            $('#estado_cambio').prop('checked', true).prop('disabled', true);
+            $('#label_estado_cambio').text('Activo');
+        }
+
         const datosOriginales = {
             moneda: String(boton.attr('data-moneda') || ''),
-            tasa: parseFloat(boton.attr('data-tasa')) || 0
+            tasa: parseFloat(boton.attr('data-tasa')) || 0,
+            estado: estadoActual === '1' ? '1' : '0'
         };
         $('#formCambio').attr('data-originales', JSON.stringify(datosOriginales));
         btnSubmit.prop('disabled', true);

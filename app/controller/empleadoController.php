@@ -24,11 +24,6 @@ switch ($solicitud) {
     case 'registrar':
         $datosObt = json_decode(json_encode($_POST['datos'] ?? []), true);
 
-        if ($empleado->verificarEmpleadoDuplicado($datosObt['cedula'] ?? '')) {
-            echo json_encode(['status' => 'exists', 'message' => 'La cédula ingresada ya está registrada.']);
-            exit();
-        }
-
         echo $empleado->regDatosEmpleado(
             [
                 $datosObt['cedula'] ?? '',
@@ -48,11 +43,6 @@ switch ($solicitud) {
     case 'actualizar':
         $datosObt = json_decode(json_encode($_POST['datos'] ?? []), true);
 
-        if ($empleado->verificarEmpleadoDuplicado($datosObt['cedula'] ?? '', $datosObt['cod_empleado'] ?? '')) {
-            echo json_encode(['status' => 'exists', 'message' => 'La cédula ya pertenece a otro empleado.']);
-            exit();
-        }
-
         echo $empleado->modDatosEmpleado(
             [
                 $datosObt['cod_empleado'] ?? '',
@@ -62,7 +52,8 @@ switch ($solicitud) {
                 $datosObt['telefono'] ?? '',
                 $datosObt['cod_cargo'] ?? ''
             ],
-            $datosObt['telefono_emergencia'] ?? ''
+            $datosObt['telefono_emergencia'] ?? '',
+            $datosObt['estado'] ?? 1
         );
         exit();
 
