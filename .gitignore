@@ -3,6 +3,3 @@ assets/icons/bootstrap-icons/
 
 #Composer archivos dependencias
 vendor/
-#No ignorar la carpeta principal de composer y el autoload
-!vendor/composer/
-!vendor/autoload.php
