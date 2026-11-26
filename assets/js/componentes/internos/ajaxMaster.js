@@ -11,7 +11,41 @@ function instanciarDatatableGlobal(idTabla) {
     return objDatatable;
 }
 
-function ajaxConsultarGlobal(modulo,datos = null ,devolverDatos) {
+function ajaxConsultarGlobal(modulo,devolverDatos) {
+    $.ajax({
+        url: `index.php?url=${modulo}`,
+        type: "POST",
+        dataType: "json",
+        data: {
+            tipoSolicitud: "consultar"
+        },
+        beforeSend: function () {
+            Swal.fire({
+                title: 'Procesando...',
+                text: 'Por favor espere un momento.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    if (document.activeElement) document.activeElement.blur();
+                    Swal.showLoading();
+                }
+            });
+        }
+    })
+        .done(function (response) {
+            if (typeof devolverDatos === "function") {
+                devolverDatos(response);
+            }
+        })
+        .fail(function (xhr, status, error) {
+            console.error("Error al cargar los datos:", error);
+            console.log("Respuesta cruda del servidor:", xhr.responseText);
+        })
+        .always(function () {
+            Swal.close();
+        })
+}
+
+function ajaxCntParametroGlobal(modulo,datos = null ,devolverDatos) {
     $.ajax({
         url: `index.php?url=${modulo}`,
         type: "POST",
@@ -45,7 +79,6 @@ function ajaxConsultarGlobal(modulo,datos = null ,devolverDatos) {
             Swal.close();
         })
 }
-
 
 function datatableServer(idTabla, modulo, colunms) {
     const objDatatable = $(idTabla).DataTable({

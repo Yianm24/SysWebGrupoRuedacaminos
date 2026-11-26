@@ -170,9 +170,10 @@ CREATE TABLE `despacho` (
   `cod_despacho` int(11) NOT NULL,
   `cod_empleado` int(2) NOT NULL,
   `cod_vehiculo` int(2) NOT NULL,
-  `fecha_salida` datetime NOT NULL,
+  `fecha_salida` date NOT NULL,
+  `hora_salida` time NOT NULL,
   `fecha_entrega` datetime NOT NULL,
-  `estatus` enum('PENDIENTE','ENTREGADO','','') NOT NULL,
+  `estatus` enum('PENDIENTE','ENTREGADO','ANULADO','EN DESPACHO') NOT NULL,
   `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1267,6 +1268,12 @@ ALTER TABLE `cuenta_banco`
 --
 ALTER TABLE `detalle_pago`
   MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
+-- AUTO_INCREMENT de la tabla `despacho`
+--
+ALTER TABLE `despacho`
+  MODIFY `cod_despacho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`

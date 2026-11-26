@@ -170,7 +170,7 @@ function limpiarInputModal() {
 
 function dibujarTabla(objTable, codDespacho = null) {
   const modulo = 'despacho';
-  ajaxConsultarGlobal(modulo,{codDespacho:codDespacho},(response) => {
+  ajaxCntParametroGlobal(modulo,{codDespacho:codDespacho},(response) => {
 
     objTable.clear();
 
@@ -215,7 +215,7 @@ function dibujarTabla(objTable, codDespacho = null) {
 
 function modificarDespacho(codDespacho){
   const modulo = 'despacho';
-  ajaxConsultarGlobal(modulo,{codDespacho:codDespacho},(response) => {
+  ajaxCntParametroGlobal(modulo,{codDespacho:codDespacho},(response) => {
 
    datosForaneos(response);
 
