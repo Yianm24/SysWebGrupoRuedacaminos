@@ -25,6 +25,7 @@ $(document).ready(function () {
     }).get();
 
     let datosDespacho = {
+      cod_despacho: $('#cod_despacho').val(),
       chofer: $('#select_chofer').val(),
       vehiculo: $('#select_vehiculo').val(),
       fechaSalida: $('#fecha_salida').val(),
@@ -129,6 +130,7 @@ function AccionModal(boton) {
       break;
 
     case "Modificar":
+      modificarDespacho(cod_despacho)
       encadezadoModal.html('<i class="bi bi-boxes me-2"></i> Modificación de Despacho');
       botonModal.val("modificar");
       botonModal.html('<i class="bi bi-save me-1"></i> Modificar');
@@ -166,9 +168,9 @@ function limpiarInputModal() {
     .addClass("disabled");
 }
 
-function dibujarTabla(objTable) {
+function dibujarTabla(objTable, codDespacho = null) {
   const modulo = 'despacho';
-  ajaxConsultarGlobal(modulo, (response) => {
+  ajaxConsultarGlobal(modulo,{codDespacho:codDespacho},(response) => {
 
     objTable.clear();
 
@@ -197,8 +199,8 @@ function dibujarTabla(objTable) {
           "<strong>DCH-" + dato.cod_despacho + "</strong>",
           dato.fecha_salida,
           dato.total_envios,
-          dato.nombre_chofer + dato.apellido_chofer,
-          dato.placa_vehiculo + dato.modelo_vehiculo,
+          dato.nombre_chofer+" "+dato.apellido_chofer,
+          dato.placa_vehiculo +" "+dato.modelo_vehiculo,
           dato.estatus,
           botones
         ])
@@ -211,7 +213,132 @@ function dibujarTabla(objTable) {
 
 }
 
+function modificarDespacho(codDespacho){
+  const modulo = 'despacho';
+  ajaxConsultarGlobal(modulo,{codDespacho:codDespacho},(response) => {
+
+   datosForaneos(response);
+
+  })
+}
+
+function crearFilaEnvio(dato, marcado = false) {
+  return `
+    <tr class="align-middle fila-envio-disponible">
+      <td class="ps-3">
+        <input class="form-check-input check-envio" type="checkbox"
+          name="envios_seleccionados[]"
+          value="${dato.cod_envio}"
+          ${marcado ? 'checked' : ''}>
+      </td>
+      <td class="fw-medium text-dark">
+        ${dato.cod_envio}
+      </td>
+      <td class="fw-medium text-dark">
+        ${dato.dest_nombre} ${dato.dest_apellido}
+      </td>
+      <td>
+        <span class="fw-small text-dark"><i class="bi bi-geo-alt text-danger me-1"></i>${dato.estado_destino}-${dato.municipio_destino}</span>
+        <div class="text-muted small">${dato.direccion_destino}</div>
+      </td>
+      <td class="text-secondary small" style="max-width: 180px;">
+        <div class="text-truncate" title="${dato.descrip_contenido}">
+          ${dato.descrip_contenido}
+        </div>
+      </td>
+      <td class="text-center fw-bold text-dark">
+        ${dato.peso_total} kg
+      </td>
+    </tr>
+  `;
+}
+
 function datosForaneos(response) {
+  if (!response) return;
+
+  iconoCargar('#tablaEnviosPendientes tbody');
+
+  const selectChofer = $('#select_chofer');
+  const selectVehiculo = $('#select_vehiculo');
+
+  // Guardamos los valores actuales por si se llamó desde modificarDespacho()
+  const choferSeleccionado = selectChofer.val();
+  const vehiculoSeleccionado = selectVehiculo.val();
+
+  selectChofer.find('option:not([value="0"])').remove();
+  selectVehiculo.find('option:not([value="0"])').remove();
+
+  const enviosDespachados = Array.isArray(response.enviosDespachados) ? response.enviosDespachados : null;
+  const datosEnvios = Array.isArray(response.enviosPendientes) ? response.enviosPendientes : [];
+  const choferes = Array.isArray(response.choferes) ? response.choferes : [];
+  const vehiculos = Array.isArray(response.vehiculos) ? response.vehiculos : [];
+
+  if (choferes.length > 0) {
+    const opcionesChoferes = choferes
+      .map(chofer => `<option value="${chofer.cod_empleado}">${chofer.nombreEmpleado} ${chofer.apellidoEmpleado}</option>`)
+      .join('');
+    selectChofer.append(opcionesChoferes);
+  } else {
+    selectChofer.append('<option value="" disabled>Sin choferes registrados</option>');
+  }
+
+  if (vehiculos.length > 0) {
+    const opcionesVehiculos = vehiculos
+      .map(vehiculo => `<option value="${vehiculo.cod_vehiculo}">${vehiculo.placaVehiculo}-${vehiculo.modeloVehiculo}</option>`)
+      .join('');
+    selectVehiculo.append(opcionesVehiculos);
+  } else {
+    selectVehiculo.append('<option value="" disabled>Sin vehículos registrados</option>');
+  }
+
+  // Restauramos la selección previa si existía (evita que modificarDespacho borre el chofer/vehículo)
+  if (choferSeleccionado && choferSeleccionado !== '0') selectChofer.val(choferSeleccionado);
+  if (vehiculoSeleccionado && vehiculoSeleccionado !== '0') selectVehiculo.val(vehiculoSeleccionado);
+
+  const tbody = $('#tablaEnviosPendientes tbody');
+  tbody.empty();
+  let rowsHtml = '';
+
+  // 1. Condicional solicitada: ambos arreglos traen registros
+  if (enviosDespachados != null && enviosDespachados.length > 0 && datosEnvios.length > 0) {
+    $.each(enviosDespachados, function (index, dato) {
+      rowsHtml += crearFilaEnvio(dato, true);
+    });
+    $.each(datosEnvios, function (index, dato) {
+      rowsHtml += crearFilaEnvio(dato, false);
+    });
+  } else {
+    // 2. Respaldo si solo uno de los dos trae registros (ej. Modificar sin pendientes, o Registrar sin despachados)
+    if (enviosDespachados != null && enviosDespachados.length > 0) {
+      $.each(enviosDespachados, function (index, dato) {
+        rowsHtml += crearFilaEnvio(dato, true);
+      });
+    }
+
+    if (datosEnvios.length > 0) {
+      $.each(datosEnvios, function (index, dato) {
+        rowsHtml += crearFilaEnvio(dato, false);
+      });
+    }
+  }
+
+  if (rowsHtml !== '') {
+    tbody.html(rowsHtml);
+    // Dispara change para reevaluar la validación y habilitar el botón si ya hay checkboxes marcados
+    tbody.find('.check-envio').first().trigger('change');
+  } else {
+    tbody.html(`
+      <tr>
+        <td colspan="6" class="text-center py-4 text-muted">
+          <i class="bi bi-inbox fs-3 d-block mb-1 text-secondary"></i>
+          No hay envíos disponibles ni asignados para mostrar.
+        </td>
+      </tr>
+    `);
+  }
+}
+
+/* function datosForaneos(response) {
   iconoCargar('#tablaEnviosPendientes tbody');
 
   const selectChofer = $('#select_chofer');
@@ -220,6 +347,8 @@ function datosForaneos(response) {
   selectChofer.find('option:not([value="0"])').remove();
   selectVehiculo.find('option:not([value="0"])').remove();
 
+  let enviosDespachados = response.enviosDespachados ?? null;
+  console.log(enviosDespachados)
   let datosEnvios = response.enviosPendientes;
   let choferes = response.choferes;
   let vehiculos = response.vehiculos;
@@ -243,9 +372,44 @@ function datosForaneos(response) {
   let tbody = $("#tablaEnviosPendientes tbody");
 
   tbody.empty();
+  let rowsHtml = "";
+
+  if(enviosDespachados != null){
+    $.each(enviosDespachados, function (index, dato) {
+      rowsHtml += `
+             <tr class="align-middle fila-envio-disponible">
+                <td class="ps-3">
+                    <input class="form-check-input check-envio" type="checkbox"
+                        name="envios_seleccionados[]"
+                        value="${dato.cod_envio}"
+                        checked>
+                </td>
+                <td class="fw-medium text-dark">
+                     ${dato.cod_envio}
+                </td>
+                <td class="fw-medium text-dark">
+                     ${dato.dest_nombre} ${dato.dest_apellido}
+                </td>
+                <td>
+                        <span class="fw-small text-dark"><i class="bi bi-geo-alt text-danger me-1"></i>${dato.estado_destino}-${dato.municipio_destino}</span>
+                        <div class="text-muted small">${dato.direccion_destino}</div>
+                </td>
+                <td class="text-secondary small" style="max-width: 180px;">
+                    <div class="text-truncate" title="${dato.descrip_contenido}">
+                        ${dato.descrip_contenido}
+                    </div>
+                </td>
+                <td class="text-center fw-bold text-dark">
+                    ${dato.peso_total} kg
+                </td>
+            </tr>
+          `;
+    });
+    tbody.append(rowsHtml);
+  }
 
   if (datosEnvios.length > 0) {
-    let rowsHtml = "";
+    rowsHtml = "";
 
     $.each(datosEnvios, function (index, dato) {
       rowsHtml += `
@@ -278,7 +442,7 @@ function datosForaneos(response) {
     });
 
     tbody.html(rowsHtml);
-  } else {
+  }else {
     tbody.html(`
     <tr>
         <td colspan="7" class="text-center py-4 text-muted">
@@ -287,8 +451,8 @@ function datosForaneos(response) {
         </td>
     </tr>
   `);
-  }
-}
+  } 
+} */
 
 function iconoCargar(selector) {
   const elementoHtml = $(`${selector}`);

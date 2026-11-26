@@ -11,13 +11,14 @@ function instanciarDatatableGlobal(idTabla) {
     return objDatatable;
 }
 
-function ajaxConsultarGlobal(modulo, devolverDatos) {
+function ajaxConsultarGlobal(modulo,datos = null ,devolverDatos) {
     $.ajax({
         url: `index.php?url=${modulo}`,
         type: "POST",
         dataType: "json",
         data: {
-            tipoSolicitud: "consultar"
+            tipoSolicitud: "consultar",
+            datos: datos
         },
         beforeSend: function () {
             Swal.fire({
