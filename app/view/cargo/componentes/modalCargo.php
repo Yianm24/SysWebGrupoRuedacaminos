@@ -8,7 +8,7 @@
 
             <form action="?url=cargo" method="POST" id="formCargo">
                 <div class="modal-body">
-                    <input type="hidden" name="" id="cod_cargo" value="">
+                    <input type="hidden" name="cod_cargo" id="cod_cargo" value="">
                     
                     <div class="mb-3">
                         <label class="form-label">Nombre del Cargo</label>

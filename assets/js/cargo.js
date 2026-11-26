@@ -2,20 +2,9 @@ $(document).ready(function () {
     const moduloActual = "cargo";
     const tablaSelector = "#tablaCargo";
 
-    $.fn.dataTable.ext.type.order['estado-cargo-pre'] = function (data) {
-        const texto = String(data || '').replace(/<[^>]*>/g, '').trim().toLowerCase();
-        return texto === 'activo' ? 1 : 0;
-    };
-
-    const dataTable = instanciarDatatableGlobal('table#tablaCargo', {
-        order: [],
-        columnDefs: [
-            { targets: 1, type: 'estado-cargo' },
-            { targets: 2, orderable: false }
-        ]
-    });
-
+    const dataTable = instanciarDatatableGlobal('table#tablaCargo');
     ajaxConsultarCargo();
+
     const modalCargo = $('#modalCargo');
     let hasChanged = false;
 
@@ -75,9 +64,9 @@ $(document).ready(function () {
             }
 
             const datos = {
-                cod_cargo: $("#cod_cargo").val(),
-                nombre: $("#nombre").val().trim(),
-                estado: solicitud === "registrar" ? 1 : getEstadoSwitchCargo()
+                cod_cargo: String($("#cod_cargo").val() || "").trim(),
+                nombre: String($("#nombre").val() || "").trim(),
+                estado: solicitud === "registrar" ? "1" : String(getEstadoSwitchCargo())
             };
             const objModal = bootstrap.Modal.getInstance(modalCargo[0]);
 

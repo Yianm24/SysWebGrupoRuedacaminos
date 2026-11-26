@@ -34,11 +34,11 @@ class Cargo extends Conexion
     public function verificarCargoDuplicado($nombre, $cod_cargo = null)
     {
         if ($cod_cargo === null) {
-            $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND estado = 1";
+            $sentencia = "SELECT COUNT(*) FROM cargo WHERE LOWER(TRIM(nombre)) = LOWER(TRIM(?))";
             $count = $this->conexion->prepare($sentencia);
             $count->bindValue(1, $nombre);
         } else {
-            $sentencia = "SELECT COUNT(*) FROM cargo WHERE nombre = ? AND cod_cargo != ? AND estado = 1";
+            $sentencia = "SELECT COUNT(*) FROM cargo WHERE LOWER(TRIM(nombre)) = LOWER(TRIM(?)) AND cod_cargo != ?";
             $count = $this->conexion->prepare($sentencia);
             $count->bindValue(1, $nombre);
             $count->bindValue(2, $cod_cargo);
@@ -100,17 +100,21 @@ class Cargo extends Conexion
 
     public function modDatosCargo(array $campos)
     {
-        $resultadoTrait = $this->validarPost($campos);
+        $codCargoEntrada = $campos[0] ?? '';
+        $nombreEntrada = $campos[1] ?? '';
+        $estadoEntrada = $campos[2] ?? '1';
+
+        $resultadoTrait = $this->validarPost([$codCargoEntrada, $nombreEntrada]);
         if (is_array($resultadoTrait)) {
             $codCargo = $resultadoTrait[0];
             $nombreLimpio = $this->formatearPalabra($resultadoTrait[1]);
-            $estadoRecibido = isset($campos[2]) ? (int)$campos[2] : 1;
+            $estadoRecibido = is_numeric($estadoEntrada) ? (int)$estadoEntrada : 1;
 
             if (!in_array($estadoRecibido, [0, 1], true)) {
                 return json_encode(['status' => 'error', 'message' => 'El estatus seleccionado no es válido.']);
             }
 
-            if ($estadoRecibido === 1 && $this->verificarCargoDuplicado($nombreLimpio, $codCargo)) {
+            if ($this->verificarCargoDuplicado($nombreLimpio, $codCargo)) {
                 return json_encode(['status' => 'exists', 'message' => 'El cargo ya existe.']);
             }
 
