@@ -9,9 +9,9 @@
                 </button>
             </header>
             <?php require 'componentes/modal.php'; ?>
-            <section class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 fw-bold">Usuarios Disponibles</h4>
+            <section class="card shadow-sm border-0 pb-2">
+                <div class="card-header bg-secondary text-white border-bottom-0 pt-2 pb-2 px-4 d-flex justify-content-center align-items-center">
+                    <h4 class="mb-0 fw-bold">Listado</h4>
                 </div>
 
                 <?php require 'componentes/tabla.php'; ?>
