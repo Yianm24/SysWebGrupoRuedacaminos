@@ -629,6 +629,16 @@ class Pago extends Conexion
         $valEnv = $this->ExplorarDatos(['solo-numeros' => $codEnvio]);
         if ($valEnv !== true) return $valEnv;
 
+        $stmtEnv = $this->conexion->prepare("SELECT estado, estatus FROM envio WHERE cod_envio = ? LIMIT 1");
+        $stmtEnv->execute([(int)$codEnvio]);
+        $envio = $stmtEnv->fetch(\PDO::FETCH_ASSOC);
+        if (!$envio) {
+            return json_encode(['status' => 'error', 'message' => 'El envío indicado no existe.']);
+        }
+        if ((int)$envio['estado'] !== 0 && strtoupper((string)$envio['estatus']) !== 'ANULADO') {
+            return json_encode(['status' => 'error', 'message' => 'Solo se pueden reembolsar pagos de un envío anulado.']);
+        }
+
         $validacion = $this->validarCamposComunesPago($fecha, $montoUsd, $montoOriginal, $referencia, $codMetodo, $codBanco);
         if (is_string($validacion)) {
             return $validacion;
