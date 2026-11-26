@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-11-2026 a las 23:47:58
+-- Tiempo de generación: 26-11-2026 a las 01:43:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -69,7 +69,9 @@ INSERT INTO `cambio_moneda` (`cod_cambio`, `tasa`, `fecha`, `cod_moneda`, `estad
 (7, 667.05, '2026-07-06 14:13:04', 1, 1),
 (8, 763.19, '2026-07-06 14:15:50', 3, 1),
 (9, 757.23, '2026-07-06 14:16:09', 4, 1),
-(10, 12122, '2026-07-06 14:17:11', 2, 0);
+(11, 917.45, '2026-11-25 16:32:25', 1, 1),
+(12, 987.77, '2026-11-25 16:32:49', 4, 1),
+(13, 1017.22, '2026-11-25 16:33:17', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -119,7 +121,9 @@ INSERT INTO `cliente` (`cod_cliente`, `doc_identidad`, `razon_social`, `apellido
 (1, 30324703, 'Maria', 'Perez', '04125452001', 'malau200104@gmail.com', 'V', 1),
 (2, 30353577, 'Yancarlos', 'Camacaro', '04245188451', 'yancamacaro@gmail.com', 'V', 1),
 (3, 298061260, 'transnorte', '', '02518861594', 'malau200104@gmail.com', 'J', 1),
-(4, 888911, 'uptaeb', '', '05050', 'malau200104@gmail.com', 'G', 1);
+(4, 888911, 'uptaeb', '', '05050', 'malau200104@gmail.com', 'G', 1),
+(5, 30405439, 'Jose', 'Mogollon', '04123004000', 'jfabremogollon@gmail.com', 'V', 1),
+(6, 12500290, 'Lupita', 'Dalecio', '03232323233', 'lupidale@gmail.com', 'V', 1);
 
 -- --------------------------------------------------------
 
@@ -180,9 +184,9 @@ CREATE TABLE `despacho` (
 
 CREATE TABLE `detalle_pago` (
   `cod_detallepago` int(11) NOT NULL,
-  `referencia` int(11) NOT NULL,
+  `referencia` int(11) DEFAULT NULL,
   `cod_metodopago` int(1) NOT NULL,
-  `cod_banco` int(1) NOT NULL,
+  `cod_banco` int(1) DEFAULT NULL,
   `monto` decimal(8,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -197,15 +201,29 @@ INSERT INTO `detalle_pago` (`cod_detallepago`, `referencia`, `cod_metodopago`, `
 (4, 1111, 1, 1, 0.03),
 (5, 11113, 1, 1, 16.66),
 (6, 44444, 1, 1, 10.49),
-(9, 1002, 2, 3, 16676.25),
-(10, 1000, 2, 3, 433582.50),
-(12, 1001, 1, 2, 60034.50),
+(9, 1002, 2, 3, 10000.00),
+(10, 1000, 2, 3, 280000.00),
+(12, NULL, 3, NULL, 59.97),
 (14, 1, 1, 3, 22000.00),
-(16, 2, 2, 4, 10000.00),
+(16, 2, 2, 4, 9999.08),
 (17, 3, 1, 3, 2881.66),
-(18, 4, 4, 4, 6.88),
+(18, 4, 1, 4, 31271.30),
 (19, 5, 1, 1, 40000.00),
-(20, 6, 5, 4, 0.54);
+(20, 6, 5, 4, 0.54),
+(21, 3899, 2, 2, 27523.50),
+(22, 232233, 1, 6, 5000.00),
+(23, 2122, 1, 2, 2293.63),
+(24, 2999, 1, 1, 60000.00),
+(25, NULL, 3, NULL, 7.20),
+(26, NULL, 3, NULL, 21.80),
+(27, 10100, 2, 2, 27551.02),
+(28, NULL, 3, NULL, 10.01),
+(29, 78778, 2, 1, 200000.00),
+(30, NULL, 3, NULL, 10.00),
+(31, 5000, 1, 3, 2055.09),
+(32, NULL, 3, NULL, 80.00),
+(33, 101011, 1, 4, 13211.28),
+(34, 101011, 1, 2, 13211.28);
 
 -- --------------------------------------------------------
 
@@ -271,7 +289,8 @@ INSERT INTO `envio` (`cod_envio`, `fecha`, `monto_total`, `estado`, `cod_despach
 (4, '2026-10-04 18:32:02', 650.00, 1, NULL, 'PENDIENTE', NULL, 10.00, 50.00, 'cajas', NULL, NULL, NULL, 1),
 (11, '2026-10-07 21:42:19', 37.30, 1, NULL, 'PENDIENTE', 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
 (12, '2026-10-07 21:42:49', 46.88, 1, NULL, 'PENDIENTE', 3.80, 15.50, 25.00, 'Caja con repuestos electrónicos', 45.50, NULL, NULL, 1),
-(13, '2026-10-07 21:49:28', 75.50, 1, NULL, 'PENDIENTE', 5555.00, 999.99, 999.99, 'fdfff', 99999.99, NULL, NULL, 1);
+(13, '2026-10-07 21:49:28', 75.50, 1, NULL, 'PENDIENTE', 5555.00, 999.99, 999.99, 'fdfff', 99999.99, NULL, NULL, 1),
+(14, '2026-11-25 17:07:57', 94.40, 0, NULL, 'ANULADO', 2.00, 50.00, 35.00, '10 cajas de cereal', 40.00, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -373,7 +392,7 @@ INSERT INTO `metodo_pago` (`cod_metodo`, `nombre`, `cod_moneda`, `estado`) VALUE
 (1, 'Pago Movil', 2, 1),
 (2, 'Transferencia', 2, 1),
 (3, 'Efectivo', 1, 1),
-(4, 'Zelle', 1, 1),
+(4, 'Zelle', 1, 0),
 (5, 'Paypal', 1, 1),
 (6, 'Juan', 3, 0),
 (7, 'Rapipago', 2, 0),
@@ -790,9 +809,9 @@ INSERT INTO `municipio` (`cod_municipio`, `nombre`, `cod_estado`, `estado`) VALU
 CREATE TABLE `pago` (
   `cod_pago` int(11) NOT NULL,
   `fecha` date NOT NULL,
-  `hora` datetime NOT NULL,
+  `hora` time NOT NULL,
   `monto` decimal(8,2) NOT NULL,
-  `referencia` varchar(20) NOT NULL,
+  `referencia` int(11) DEFAULT NULL,
   `estado_pago` tinyint(1) NOT NULL DEFAULT 0,
   `cod_envio` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL,
@@ -804,16 +823,29 @@ CREATE TABLE `pago` (
 --
 
 INSERT INTO `pago` (`cod_pago`, `fecha`, `hora`, `monto`, `referencia`, `estado_pago`, `cod_envio`, `estado`, `cod_detallepago`) VALUES
-(3, '2026-10-07', '0000-00-00 00:00:00', 90.00, '123456', 1, 1, 0, 1),
-(9, '2026-10-07', '2021-05-26 00:00:00', 25.00, '1002', 1, 3, 1, 9),
-(10, '2026-10-07', '2021-05-18 00:00:00', 650.00, '1000', 1, 4, 1, 10),
-(12, '2026-10-28', '2021-07-18 00:00:00', 90.00, '1001', 1, 1, 1, 12),
-(14, '2026-10-28', '2021-12-27 00:00:00', 32.98, '0001', 1, 11, 1, 14),
-(16, '2026-10-28', '0000-00-00 00:00:00', 14.99, '0002', 1, 13, 1, 16),
-(17, '2026-10-28', '0000-00-00 00:00:00', 4.32, '0003', 1, 11, 1, 17),
-(18, '2026-10-28', '0000-00-00 00:00:00', 6.88, '0004', 1, 12, 1, 18),
-(19, '2026-10-28', '0000-00-00 00:00:00', 59.97, '0005', 1, 13, 1, 19),
-(20, '2026-10-28', '0000-00-00 00:00:00', 0.54, '0006', 1, 13, 1, 20);
+(3, '2026-10-07', '00:00:00', 90.00, 123456, 1, 1, 0, 1),
+(9, '2026-10-07', '00:00:00', 14.99, 1002, 1, 3, 1, 9),
+(10, '2026-10-07', '00:00:00', 419.76, 1000, 1, 4, 1, 10),
+(12, '2026-10-28', '00:00:00', 59.97, NULL, 1, 1, 1, 12),
+(14, '2026-10-28', '00:00:00', 32.98, 1, 1, 11, 1, 14),
+(16, '2026-10-28', '00:00:00', 14.99, 2, 1, 13, 1, 16),
+(17, '2026-10-28', '00:00:00', 4.32, 3, 1, 11, 1, 17),
+(18, '2026-10-28', '00:00:00', 46.88, 4, 1, 12, 1, 18),
+(19, '2026-10-28', '00:00:00', 59.97, 5, 1, 13, 1, 19),
+(20, '2026-10-28', '00:00:00', 0.54, 6, 1, 13, 1, 20),
+(21, '2026-11-25', '00:00:00', 30.00, 3899, 1, 2, 1, 21),
+(22, '2026-11-25', '00:00:00', 7.50, 232233, 1, 1, 1, 22),
+(23, '2026-11-25', '00:00:00', 2.50, 2122, 1, 1, 1, 23),
+(24, '2026-11-25', '00:00:00', 65.40, 2999, 0, 14, 1, 24),
+(25, '2026-11-25', '00:00:00', 7.20, NULL, 0, 14, 1, 25),
+(26, '2026-11-25', '00:00:00', 21.80, NULL, 0, 14, 1, 26),
+(27, '2026-11-25', '00:00:00', 30.03, 10100, 1, 1, 1, 27),
+(28, '2026-11-25', '00:00:00', 10.01, NULL, 1, 3, 1, 28),
+(29, '2026-11-25', '00:00:00', 218.00, 78778, 1, 4, 1, 29),
+(30, '2026-11-25', '18:50:26', 10.00, NULL, 1, 4, 1, 30),
+(31, '2026-11-25', '18:50:56', 2.24, 5000, 1, 4, 1, 31),
+(32, '2026-11-25', '19:15:24', -80.00, NULL, 0, 14, 1, 32),
+(33, '2026-11-25', '19:15:49', -14.40, 101011, 0, 14, 0, 33);
 
 -- --------------------------------------------------------
 
@@ -845,7 +877,9 @@ INSERT INTO `participante_envio` (`cod_cliente`, `cod_envio`, `rol_cliente`) VAL
 (1, 12, 'Remitente'),
 (2, 12, 'Destinatario'),
 (2, 13, 'Remitente'),
-(2, 13, 'Destinatario');
+(2, 13, 'Destinatario'),
+(5, 14, 'Remitente'),
+(6, 14, 'Destinatario');
 
 -- --------------------------------------------------------
 
@@ -865,10 +899,7 @@ CREATE TABLE `precio_kilometraje` (
 --
 
 INSERT INTO `precio_kilometraje` (`cod_preciokilometraje`, `kilometraje`, `monto_tarifa`, `estado`) VALUES
-(1, 1.00, 2.36, 1),
-(2, 5.00, 4.50, 1),
-(3, 10.00, 9.00, 0),
-(5, 6.00, 888.09, 0);
+(1, 1.00, 2.36, 1);
 
 -- --------------------------------------------------------
 
@@ -915,7 +946,9 @@ INSERT INTO `ubicacion` (`cod_ubicacion`, `descripcion`, `cod_municipio`, `estad
 (11, 'fg', 2, 1),
 (12, 'sada', 9, 1),
 (13, 'ddd', 4, 1),
-(14, 'cdcd', 11, 1);
+(14, 'cdcd', 11, 1),
+(15, '33434', 1, 1),
+(16, '343434', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -939,7 +972,9 @@ INSERT INTO `ubicaciones_envio` (`cod_ubicacion`, `cod_envio`, `tipo_ubicacion`)
 (7, 12, NULL),
 (8, 12, NULL),
 (13, 13, 'Despacho'),
-(14, 13, 'Destino');
+(14, 13, 'Destino'),
+(15, 14, 'Despacho'),
+(16, 14, 'Destino');
 
 -- --------------------------------------------------------
 
@@ -1207,7 +1242,7 @@ ALTER TABLE `banco`
 -- AUTO_INCREMENT de la tabla `cambio_moneda`
 --
 ALTER TABLE `cambio_moneda`
-  MODIFY `cod_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `cod_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `cargo`
@@ -1219,7 +1254,7 @@ ALTER TABLE `cargo`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `cod_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cod_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `cuenta_banco`
@@ -1231,7 +1266,7 @@ ALTER TABLE `cuenta_banco`
 -- AUTO_INCREMENT de la tabla `detalle_pago`
 --
 ALTER TABLE `detalle_pago`
-  MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`
@@ -1243,7 +1278,7 @@ ALTER TABLE `empleado`
 -- AUTO_INCREMENT de la tabla `envio`
 --
 ALTER TABLE `envio`
-  MODIFY `cod_envio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `cod_envio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -1255,7 +1290,7 @@ ALTER TABLE `estado`
 -- AUTO_INCREMENT de la tabla `gastos_despacho`
 --
 ALTER TABLE `gastos_despacho`
-  MODIFY `cod_gasto_despacho` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cod_gasto_despacho` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
@@ -1291,7 +1326,7 @@ ALTER TABLE `municipio`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `cod_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `cod_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `precio_kilometraje`
@@ -1309,7 +1344,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `ubicacion`
 --
 ALTER TABLE `ubicacion`
-  MODIFY `cod_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `cod_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `unidad_medida`
@@ -1440,3 +1475,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
