@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-11-2026 a las 01:43:57
+-- Tiempo de generación: 26-11-2026 a las 14:24:38
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -345,7 +345,7 @@ CREATE TABLE `gastos_despacho` (
   `cod_gasto_despacho` int(15) NOT NULL,
   `descripcion` varchar(70) NOT NULL,
   `monto` decimal(6,2) NOT NULL,
-  `cod_despacho` int(11) NOT NULL,
+  `cod_despacho` int(11) DEFAULT NULL,
   `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1264,16 +1264,16 @@ ALTER TABLE `cuenta_banco`
   MODIFY `cod_cuenta` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
+-- AUTO_INCREMENT de la tabla `despacho`
+--
+ALTER TABLE `despacho`
+  MODIFY `cod_despacho` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `detalle_pago`
 --
 ALTER TABLE `detalle_pago`
   MODIFY `cod_detallepago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
-
---
--- AUTO_INCREMENT de la tabla `despacho`
---
-ALTER TABLE `despacho`
-  MODIFY `cod_despacho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`
@@ -1482,4 +1482,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
