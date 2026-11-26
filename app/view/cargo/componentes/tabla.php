@@ -4,6 +4,7 @@
             <thead class="table-light table-header-custom">
                 <tr>
                     <th class="ps-4">NOMBRE DEL CARGO</th>
+                    <th class="text-center">ESTADO</th>
                     <th class="text-center pe-4">ACCIONES</th>
                 </tr>
             </thead>

@@ -22,7 +22,7 @@ class Cargo extends Conexion
     public function obt_RegistrosCargo()
     {
         try {
-            $sentencia = "SELECT * FROM cargo WHERE estado = 1";
+            $sentencia = "SELECT * FROM cargo ORDER BY estado DESC, cod_cargo DESC";
             $select = $this->conexion->prepare($sentencia);
             $select->execute();
             return $select->fetchAll(\PDO::FETCH_ASSOC);
@@ -102,9 +102,15 @@ class Cargo extends Conexion
     {
         $resultadoTrait = $this->validarPost($campos);
         if (is_array($resultadoTrait)) {
+            $codCargo = $resultadoTrait[0];
             $nombreLimpio = $this->formatearPalabra($resultadoTrait[1]);
+            $estadoRecibido = isset($campos[2]) ? (int)$campos[2] : 1;
 
-            if ($this->verificarCargoDuplicado($nombreLimpio, $resultadoTrait[0])) {
+            if (!in_array($estadoRecibido, [0, 1], true)) {
+                return json_encode(['status' => 'error', 'message' => 'El estatus seleccionado no es válido.']);
+            }
+
+            if ($estadoRecibido === 1 && $this->verificarCargoDuplicado($nombreLimpio, $codCargo)) {
                 return json_encode(['status' => 'exists', 'message' => 'El cargo ya existe.']);
             }
 
@@ -116,8 +122,9 @@ class Cargo extends Conexion
                 return $validacionRegex;
             }
 
-            $this->cod_cargo = $resultadoTrait[0];
+            $this->cod_cargo = $codCargo;
             $this->nombre = $nombreLimpio;
+            $this->estado = $estadoRecibido;
         } else {
             return $resultadoTrait;
         }
@@ -127,9 +134,9 @@ class Cargo extends Conexion
     private function modificarCargo()
     {
         try {
-            $sentencia = "UPDATE `cargo` SET nombre = ? WHERE cod_cargo = ?";
+            $sentencia = "UPDATE `cargo` SET nombre = ?, estado = ? WHERE cod_cargo = ?";
             $update = $this->conexion->prepare($sentencia);
-            $update->execute([$this->nombre, $this->cod_cargo]);
+            $update->execute([$this->nombre, $this->estado, $this->cod_cargo]);
             return json_encode(['status' => 'updated', 'message' => 'El cargo ha sido modificado correctamente.']);
         } catch (\PDOException $e) {
             return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);

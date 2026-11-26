@@ -194,6 +194,10 @@ class Pago extends Conexion
             $recordsFiltered = (int)($stmtFiltered->fetch(\PDO::FETCH_ASSOC)['total'] ?? 0);
 
             $ordenPredeterminadoSql = "
+                CASE
+                    WHEN COALESCE(pu_any.estado, 1) = 0 THEN 2
+                    ELSE 1
+                END ASC,
                 CASE ({$exprEstatus})
                     WHEN 'Sin pagos'  THEN 1
                     WHEN 'Pendiente'  THEN 2
@@ -207,9 +211,15 @@ class Pago extends Conexion
             ";
 
             $tieneOrdenManual = isset($_POST['order'][0]['column']) && isset($_POST['order'][0]['dir']);
-            $orderClauseSql = $tieneOrdenManual
-                ? " ORDER BY {$orderColumn} {$orderDir}, {$ordenPredeterminadoSql} "
-                : " ORDER BY {$ordenPredeterminadoSql} ";
+            $inactivosAlFinalSql = "CASE WHEN COALESCE(pu_any.estado, 1) = 0 THEN 1 ELSE 0 END ASC";
+
+            if ($tieneOrdenManual) {
+                $orderClauseSql = ($orderColumnIndex === 6)
+                    ? " ORDER BY {$orderColumn} {$orderDir}, {$ordenPredeterminadoSql} "
+                    : " ORDER BY {$inactivosAlFinalSql}, {$orderColumn} {$orderDir}, {$ordenPredeterminadoSql} ";
+            } else {
+                $orderClauseSql = " ORDER BY {$inactivosAlFinalSql}, {$ordenPredeterminadoSql} ";
+            }
 
             $sqlData = "SELECT
                             e.cod_envio,

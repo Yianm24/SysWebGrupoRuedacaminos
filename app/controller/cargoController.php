@@ -32,7 +32,11 @@ switch ($solicitud) {
 
     case 'modificar':
         $datosObt = json_decode(json_encode($_POST['datos'] ?? []), true);
-        echo $cargo->modDatosCargo([$datosObt['cod_cargo'] ?? '', $datosObt['nombre'] ?? '']);
+        echo $cargo->modDatosCargo([
+            $datosObt['cod_cargo'] ?? '',
+            $datosObt['nombre'] ?? '',
+            $datosObt['estado'] ?? 1
+        ]);
         exit();
 
     case 'eliminar':
