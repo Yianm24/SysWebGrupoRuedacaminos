@@ -3,14 +3,17 @@
 namespace App\Model;
 
 use App\Config\Conexion;
+use App\Traits\ValidadorTraitAjax;
 
 class Despacho extends Conexion
 {
+    use ValidadorTraitAjax;
     private $cod_despacho;
     private $enviosSelect;
     private $cod_empleado;
     private $cod_vehiculo;
     private $fecha_salida;
+    private $hora_salida;
     private $fecha_entrega;
     private $estatus;
     private $estado;
@@ -20,12 +23,51 @@ class Despacho extends Conexion
         parent::__construct();
     }
 
-    public function obt_RegistrosDespacho(): array
+    public function obt_RegistrosDespacho($cod_despacho = null)
     {
         try {
+
+            if ($cod_despacho != null) {
+                $sentencia = "SELECT 
+				e.cod_envio,
+                e.fecha,
+                e.monto_total,
+                e.estado,
+                e.cod_despacho,
+                COALESCE(e.estatus, 'EN DESPACHO') AS estatus,
+                e.peso_total,
+                e.anchura,
+                e.altura,
+                e.descrip_contenido,
+                e.distancia_total,
+                e.estatus_fragil,
+                c_dest.tipo_documento AS dest_tipo_doc,
+                c_dest.doc_identidad AS dest_doc,
+                c_dest.razon_social AS dest_nombre,
+                c_dest.apellido AS dest_apellido,
+                c_dest.telefono AS dest_telefono,
+                m_dest.nombre AS municipio_destino,
+                est_dest.nombre AS estado_destino,
+                u_dest.descripcion AS direccion_destino
+                FROM envio e
+                LEFT JOIN despacho ON e.cod_despacho = despacho.cod_despacho
+                LEFT JOIN participante_envio pe_dest ON e.cod_envio = pe_dest.cod_envio AND pe_dest.rol_cliente = 'Destinatario'
+                LEFT JOIN cliente c_dest ON pe_dest.cod_cliente = c_dest.cod_cliente
+                LEFT JOIN ubicaciones_envio ue_dest ON e.cod_envio = ue_dest.cod_envio AND ue_dest.tipo_ubicacion = 'Destino'
+                LEFT JOIN ubicacion u_dest ON ue_dest.cod_ubicacion = u_dest.cod_ubicacion
+                LEFT JOIN municipio m_dest ON u_dest.cod_municipio = m_dest.cod_municipio
+                LEFT JOIN estado est_dest ON m_dest.cod_estado = est_dest.cod_estado
+                WHERE e.estatus = 'EN DESPACHO' AND e.cod_despacho = ?
+                ORDER BY e.fecha ASC";
+
+                $select = $this->conexion->prepare($sentencia);
+                $select->execute([$cod_despacho]);
+                $enviosDespachados = $select->fetchAll(\PDO::FETCH_ASSOC);
+            }
             $sentencia = "SELECT 
                 d.cod_despacho,
                 d.fecha_salida,
+                d.hora_salida,
                 d.fecha_entrega,
                 COALESCE(d.estatus, 'PENDIENTE') AS estatus,
                 d.estado,
@@ -51,63 +93,72 @@ class Despacho extends Conexion
                      v.cod_vehiculo, v.placa, v.peso_max, m.nombre
             ORDER BY d.cod_despacho DESC";
 
-            $stmt = $this->conexion->prepare($sentencia);
-            $stmt->execute();
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $despachos = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $sentencia = "SELECT 
+				e.cod_envio,
+                e.fecha,
+                e.monto_total,
+                e.estado,
+                e.cod_despacho,
+                COALESCE(e.estatus, 'PENDIENTE') AS estatus,
+                e.peso_total,
+                e.anchura,
+                e.altura,
+                e.descrip_contenido,
+                e.distancia_total,
+                e.estatus_fragil,
+                c_dest.tipo_documento AS dest_tipo_doc,
+                c_dest.doc_identidad AS dest_doc,
+                c_dest.razon_social AS dest_nombre,
+                c_dest.apellido AS dest_apellido,
+                c_dest.telefono AS dest_telefono,
+                m_dest.nombre AS municipio_destino,
+                est_dest.nombre AS estado_destino,
+                u_dest.descripcion AS direccion_destino
+            FROM envio e
+            LEFT JOIN participante_envio pe_dest ON e.cod_envio = pe_dest.cod_envio AND pe_dest.rol_cliente = 'Destinatario'
+            LEFT JOIN cliente c_dest ON pe_dest.cod_cliente = c_dest.cod_cliente
+            LEFT JOIN ubicaciones_envio ue_dest ON e.cod_envio = ue_dest.cod_envio AND ue_dest.tipo_ubicacion = 'Destino'
+            LEFT JOIN ubicacion u_dest ON ue_dest.cod_ubicacion = u_dest.cod_ubicacion
+            LEFT JOIN municipio m_dest ON u_dest.cod_municipio = m_dest.cod_municipio
+            LEFT JOIN estado est_dest ON m_dest.cod_estado = est_dest.cod_estado
+            WHERE e.estatus = 'PENDIENTE'
+            ORDER BY e.fecha ASC";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $enviosPendientes = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $sentencia = "SELECT vehiculo.cod_vehiculo,vehiculo.placa AS placaVehiculo , modelo.nombre AS modeloVehiculo
+                            FROM vehiculo
+                            INNER JOIN modelo
+                            ON vehiculo.cod_modelo = modelo.cod_modelo
+                            WHERE vehiculo.estado= 1;";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $vehiculos = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            $sentencia = "SELECT emp.cod_empleado, emp.nombre AS nombreEmpleado, emp.apellido AS apellidoEmpleado
+                            FROM empleado AS emp
+                            INNER JOIN cargo
+                            ON emp.cod_cargo = cargo.cod_cargo
+                            WHERE cargo.nombre = 'chofer';";
+
+            $select = $this->conexion->prepare($sentencia);
+            $select->execute();
+            $choferes = $select->fetchAll(\PDO::FETCH_ASSOC);
+
+            return json_encode(['despachos' => $despachos, 'enviosDespachados' => $enviosDespachados ?? null, 'enviosPendientes' => $enviosPendientes, 'vehiculos' => $vehiculos, 'choferes' => $choferes]);
         } catch (\PDOException $e) {
             return [];
         }
     }
 
-    /* public function regDatosDespacho($cod_empleado, $cod_vehiculo, $fecha_salida, array $envios_seleccionados = [])
-    {
-        if (empty($cod_empleado) || empty($cod_vehiculo) || empty($fecha_salida)) {
-            return json_encode(['status' => 'empty', 'message' => 'Uno o más campos están vacíos.']);
-        }else{
-        $this->enviosSelect = $envios_seleccionados;
-        $this->cod_vehiculo = $cod_vehiculo;
-        $this->fecha_salida = $fecha_salida;
-        $this->cod_empleado = $cod_empleado;
-        }
-        return $this->regDespacho();
-    }
-
-    private function regDespacho()
-    {
-        try {
-            $this->conexion->beginTransaction();
-
-            $sql = "INSERT INTO despacho (cod_empleado, cod_vehiculo, fecha_salida, estatus, estado) 
-                    VALUES (?, ?, ?, 'PENDIENTE', 1)";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->execute([$this->cod_empleado,$this->cod_vehiculo,$this->fecha_salida]);
-
-            $cod_despacho = (int)$this->conexion->lastInsertId();
-
-            if (!empty($this->enviosSelect)) {
-                $sqlEnvio = "UPDATE envio SET cod_despacho = ?, estatus = 'EN DESPACHO' 
-                             WHERE cod_envio = ? AND estado = 1 AND (estatus = 'PENDIENTE' OR estatus IS NULL)";
-                $stmtEnvio = $this->conexion->prepare($sqlEnvio);
-
-                foreach ($this->enviosSelect as $cod_envio) {
-                    $cod = (int)$cod_envio;
-                    if ($cod > 0) {
-                        $stmtEnvio->execute([$cod_despacho, $cod]);
-                    }
-                }
-            }
-
-            $this->conexion->commit();
-            return json_encode(['status' => 'success', 'message' => 'El despacho ha sido registrado correctamente.']);
-        } catch (\PDOException $e) {
-            if ($this->conexion->inTransaction()) {
-                $this->conexion->rollBack();
-            }
-            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
-        }
-    } */
-
-    public function regDatosDespacho($cod_empleado, $cod_vehiculo, $fecha_salida, array $envios_seleccionados = [])
+    public function regDatosDespacho(int $cod_empleado, int $cod_vehiculo, string $fecha_salida, string $hora_salida, array $envios_seleccionados = [])
     {
         if (empty($cod_empleado) || empty($cod_vehiculo) || empty($fecha_salida)) {
             return json_encode(['status' => 'empty', 'message' => 'Uno o más campos están vacíos.']);
@@ -117,21 +168,21 @@ class Despacho extends Conexion
         $this->cod_empleado = $cod_empleado;
         $this->cod_vehiculo = $cod_vehiculo;
         $this->fecha_salida = $fecha_salida;
-        $this->enviosSelect = $envios_seleccionados; 
+        $this->hora_salida = $hora_salida;
+        $this->enviosSelect = $envios_seleccionados;
 
         return $this->regDespacho();
     }
-
     private function regDespacho()
     {
         try {
             $this->conexion->beginTransaction();
 
-            $sql = "INSERT INTO despacho (cod_empleado, cod_vehiculo, fecha_salida, estatus, estado) 
-                    VALUES (?, ?, ?, 'PENDIENTE', 1)";
+            $sql = "INSERT INTO despacho (cod_empleado, cod_vehiculo, fecha_salida, hora_salida, estatus, estado) 
+                    VALUES (?, ?, ?, ?, 'PENDIENTE', 1)";
             $stmt = $this->conexion->prepare($sql);
-            
-            $stmt->execute([$this->cod_empleado, $this->cod_vehiculo, $this->fecha_salida]);
+
+            $stmt->execute([$this->cod_empleado, $this->cod_vehiculo, $this->fecha_salida, $this->hora_salida]);
 
             $cod_despacho = (int)$this->conexion->lastInsertId();
 
@@ -150,13 +201,12 @@ class Despacho extends Conexion
             }
 
             $this->conexion->commit();
-            
+
             $cantidadAsignada = is_array($this->enviosSelect) ? count($this->enviosSelect) : 0;
             return json_encode([
-                'status' => 'success', 
+                'status' => 'success',
                 'message' => "El despacho ha sido registrado correctamente con $cantidadAsignada envíos."
             ]);
-            
         } catch (\PDOException $e) {
             if ($this->conexion->inTransaction()) {
                 $this->conexion->rollBack();
@@ -165,20 +215,102 @@ class Despacho extends Conexion
         }
     }
 
-    /* private function regDespacho()
+    public function modDatosDespacho(int $cod_despacho,int $cod_empleado, int $cod_vehiculo, string $fecha_salida, string $hora_salida, array $envios_seleccionados = [])
+    {
+        if (empty($cod_empleado) || empty($cod_vehiculo) || empty($fecha_salida)) {
+            return json_encode(['status' => 'empty', 'message' => 'Uno o más campos están vacíos.']);
+        }
+
+        // Asignamos los datos a las propiedades de la clase
+        $this->cod_despacho = $cod_despacho;
+        $this->cod_empleado = $cod_empleado;
+        $this->cod_vehiculo = $cod_vehiculo;
+        $this->fecha_salida = $fecha_salida;
+        $this->hora_salida = $hora_salida;
+        $this->enviosSelect = $envios_seleccionados;
+
+        return $this->modificarDespacho();
+    }
+
+    private function modificarDespacho()
     {
         try {
-            $sentencia = "INSERT INTO `despacho`(`cod_vehiculo`, `fecha_salida`, `estado`) VALUES ('[value-1]','[value-2]','[value-3]')";
-            $insert = $this->conexion->prepare($sentencia);
-            $insert->bindValue(1, $this->cod_vehiculo);
-            $insert->bindValue(2, $this->fecha_salida);
-            $insert->bindValue(3, $this->estado);
-            $resultado = $insert->execute();
+            $this->conexion->beginTransaction();
 
-            return $resultado;
+            $sql = "UPDATE despacho
+                        SET cod_empleado = ?,
+                            cod_vehiculo = ?,
+                            fecha_salida = ?,
+                            hora_salida  = ?
+                        WHERE cod_despacho = ?;";
+            $stmt = $this->conexion->prepare($sql);
+
+            $stmt->execute([$this->cod_empleado, $this->cod_vehiculo, $this->fecha_salida, $this->hora_salida, $this->cod_despacho]);
+
+            $sql = "UPDATE envio SET estatus = 'PENDIENTE' ,cod_despacho = NULL WHERE envio.cod_despacho = ?;";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([$this->cod_despacho]);
+
+            // Ingresar cod_depacho a los envíos si seleccionados
+            if (!empty($this->enviosSelect) && is_array($this->enviosSelect)) {
+                $sqlEnvio = "UPDATE envio SET cod_despacho = ?, estatus = 'EN DESPACHO' 
+                             WHERE cod_envio = ? AND estado = 1 AND (estatus = 'PENDIENTE' OR estatus IS NULL)";
+                $stmtEnvio = $this->conexion->prepare($sqlEnvio);
+
+                foreach ($this->enviosSelect as $cod_envio) {
+                    $cod = (int)$cod_envio;
+                    if ($cod > 0) {
+                        $stmtEnvio->execute([$this->cod_despacho, $cod]);
+                    }
+                }
+            }
+
+            $this->conexion->commit();
+
+            $cantidadAsignada = is_array($this->enviosSelect) ? count($this->enviosSelect) : 0;
+            return json_encode([
+                'status' => 'success',
+                'message' => "El despacho ha sido modificado correctamente con $cantidadAsignada envíos."
+            ]);
         } catch (\PDOException $e) {
-            urlencode($e);
-            return header("Location: ?url=despacho&status=bdError&msg='$e'");
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
         }
-    } */
+    }
+
+    public function elmDatosDespacho(array $campos)
+    {
+        $resultadoTrait = $this->validarPost($campos);
+        if (is_array($resultadoTrait)) {
+
+            $this->cod_despacho = $resultadoTrait[0];
+        } else {
+            return $resultadoTrait;
+        }
+        return $this->eliminarDespacho();
+    }
+
+    private function eliminarDespacho()
+    {
+        try {
+            $this->conexion->beginTransaction();
+            $sentencia = "UPDATE despacho SET estatus = 'ANULADO', estado = 0 WHERE cod_despacho = ?";
+            $update = $this->conexion->prepare($sentencia);
+            $update->execute([$this->cod_despacho]);
+
+            // 2. Liberar los envíos asignados
+            $stmtEnvios = $this->conexion->prepare("UPDATE envio SET cod_despacho = NULL, estatus = 'PENDIENTE' WHERE cod_despacho = ?");
+            $stmtEnvios->execute([$this->cod_despacho]);
+
+            $this->conexion->commit();
+            return json_encode(['status' => 'deleted', 'message' => "El Despacho DCH-" . $this->cod_despacho . " ha sido anulado correctamente."]);
+        } catch (\PDOException $e) {
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+            return json_encode(['status' => 'exception', 'message' => $e->getMessage()]);
+        }
+    }
 }
