@@ -287,8 +287,10 @@ $(document).ready(function () {
                 const esCompletado = !envioAnulado && tienePago && (restante <= 0);
 
                 let btnPrincipalHtml = '';
+                const ultimoInactivo = String(dato.estado_registro_pago) === '0';
+
                 if (envioAnulado) {
-                    if (esAdmin && totalAbonado > 0) {
+                    if (esAdmin && totalAbonado > 0 && !ultimoInactivo) {
                         btnPrincipalHtml = `<button type="button" class="btn btn-link text-danger p-0 m-0 align-baseline btn-reembolsar" title="Reembolsar saldo abonado" data-accion="Reembolsar" data-envio="${dato.cod_envio}" data-totalabonado="${totalAbonado}"><i class="bi bi-arrow-counterclockwise"></i></button>`;
                     }
                 } else if (!esCompletado && restante > 0) {
