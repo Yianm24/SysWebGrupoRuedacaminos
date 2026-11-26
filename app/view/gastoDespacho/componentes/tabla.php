@@ -14,7 +14,7 @@
                 <?php $sinDespacho = ($dato['despacho_texto'] === 'no se encontro despacho asociado'); ?>
                 <tr>
                     <td class="ps-4 text-center fw-bold <?= $sinDespacho ? 'text-danger' : 'text-secondary' ?>">
-                        <?= htmlspecialchars($dato['despacho_texto']) ?>
+                        <?= $sinDespacho ? '' : 'DCH-' ?><?= htmlspecialchars($dato['despacho_texto']) ?>
                     </td>
                     <td class="text-start fw-bold text-secondary"><?= htmlspecialchars($dato['descripcion']) ?></td>
                     <td class="text-end fw-bold text-secondary"><?= number_format((float)$dato['monto'], 2, '.', ',') ?></td>
